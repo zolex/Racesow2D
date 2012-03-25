@@ -1,13 +1,12 @@
 package org.racenet.racesow;
 
-
+import org.racenet.framework.AnimatedMesh;
 import org.racenet.framework.CollisionDetecctor;
 import org.racenet.framework.GLGame;
-import org.racenet.framework.GameObject;
 import org.racenet.framework.Mesh;
 import org.racenet.framework.Vector2;
 
-class Player extends Mesh {
+class Player extends AnimatedMesh {
 	
 	public final Vector2 velocity = new Vector2();
 	public final Vector2 accel = new Vector2();
@@ -17,17 +16,19 @@ class Player extends Mesh {
 	private boolean distanceRemembered = false;
 	public float virtualSpeed = 0;
 	private float startSpeed = 450;
+	private boolean jumpAnimation = false;
 	
-	public Player(GLGame game, float x, float y, float width, float height, String texture) {
+	public Player(GLGame game, float x, float y, float width, float height, String ... frames) {
 		
-		super(game, x, y, width, height, texture);
+		super(game, x, y, width, height, 0.1f, frames);
 	}
 	
-	public void jump(GameObject world) {
+	public void jump(Map map) {
 		
 		if (!this.distanceRemembered && this.velocity.y < 0) {
 			
-			this.distanceOnJump = Math.max(0.1f, this.position.y - (world.position.y + world.bounds.height));
+			Mesh ground = map.getGround(this.position);
+			this.distanceOnJump = Math.max(0.1f, this.position.y - (ground.position.y + ground.bounds.height));
 			this.distanceRemembered = true;
 		}
 		
@@ -48,21 +49,41 @@ class Player extends Mesh {
 			this.onFloor = false;
 			this.distanceRemembered = false;
 			this.distanceOnJump = -1;
+			
+			this.jumpAnimation = true;
+			this.animTime = 0.09f;
 		}
 	}
 	
-	public void applyGravity(Vector2 gravity, GameObject world, float deltaTime) {
+	public void move(Vector2 gravity, Map map, float deltaTime) {
+		
+		if (this.jumpAnimation) {
+			
+			this.animTime += deltaTime;
+			if (this.animTime > 0.2f) {
+				
+				this.jumpAnimation = false;
+				this.animTime = 0;
+			}
+		}
 		
 		if (!this.onFloor) {
 			
-			this.velocity.add(gravity.x * deltaTime, gravity.y * deltaTime);
+			this.velocity.add(gravity.x * deltaTime, gravity.y * deltaTime);			
 			this.position.add(this.velocity.x * deltaTime, this.velocity.y * deltaTime);
 			this.bounds.lowerLeft.set(this.position);
 			
-			if (CollisionDetecctor.rectangleCollision(world.bounds, this.bounds)) {
-				
-				this.velocity.set(0, 0);
-				this.onFloor = true;
+			int length = map.numMeshes();
+			for (int i = 0; i < length; i++) {
+			
+				Mesh part = map.getMesh(i);
+				int collision = CollisionDetecctor.rectangleCollision(part.bounds, this.bounds);
+				if (0 != collision) {
+					
+					this.velocity.set(this.velocity.x, 0);
+					this.onFloor = true;
+					break;
+				}
 			}
 			
 		} else {
@@ -72,5 +93,7 @@ class Player extends Mesh {
 				this.virtualSpeed = Math.max(0, this.virtualSpeed - 10000 * deltaTime);
 			}
 		}
+		
+		this.velocity.set(this.virtualSpeed / 30, this.velocity.y);
 	}
 }

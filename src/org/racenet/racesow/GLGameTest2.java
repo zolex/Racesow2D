@@ -1,5 +1,6 @@
 package org.racenet.racesow;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -10,25 +11,20 @@ import org.racenet.framework.interfaces.Screen;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
-import org.racenet.framework.GLTexture;
+import org.racenet.framework.GameObject;
 import org.racenet.framework.Mesh;
-import org.racenet.framework.SpriteBatcher;
-import org.racenet.framework.TextureRegion;
+import org.racenet.framework.SpatialHashGrid;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.CameraText;
 
 public class GLGameTest2 extends GLGame {
 	
 	Player player;
-	
-	Mesh world, world2;
-	
 	CameraText ups, fps;
+	Map map = new Map();
 	
 	Vector2 gravity = new Vector2(0, -30);
-	GLTexture textureAtlas;
-	TextureRegion playerRegion;
-	SpriteBatcher batcher;
+	
 	
 	class WorldScreen extends Screen {
 		
@@ -56,11 +52,19 @@ public class GLGameTest2 extends GLGame {
 			camera.addHud(ups);
 			camera.addHud(fps);
 			
-			player = new Player((GLGame)game, 7, 22, 3.4f, 6.5f, "player.png");
-			world = new Mesh((GLGame)game, -100, 0, 1000, 10, "wood.png");
-
+			player = new Player((GLGame)game, 7, 22, 3.4f, 6.5f, "player.png", "player2.png");
 			
-			batcher = new SpriteBatcher(glGraphics, 1);
+			map.addMesh(new Mesh((GLGame)game, -100, 0, 2000, 10, "wood.png"));
+			map.addMesh(new Mesh((GLGame)game, 0, 10, 28, 5, "wood.png"));
+			map.addMesh(new Mesh((GLGame)game, 60, 10, 150, 2.5f, "wood.png"));
+			
+			map.addMesh(new Mesh((GLGame)game, 100, 12.5f, 7.5f, 2.5f, "wood.png"));
+			map.addMesh(new Mesh((GLGame)game, 102.5f, 15.0f, 5.0f, 2.5f, "wood.png"));
+			map.addMesh(new Mesh((GLGame)game, 105, 17.5f, 2.5f, 2.5f, "wood.png"));
+			
+			map.addMesh(new Mesh((GLGame)game, 107.5f, 12.5f, 60, 7.5f, "wood.png"));
+			
+			//map.addMesh(new Mesh((GLGame)game, 220, 10, 10, 30, "stone.png"));
 			
 			fps.setupText((GLGame)game, "fps");
 		}
@@ -87,17 +91,12 @@ public class GLGameTest2 extends GLGame {
 			
 			if (touchedDown) {
 				
-				player.jump(world);
+				player.jump(map);
 			}
 			
-			player.applyGravity(gravity, world, deltaTime);
+			player.move(gravity, map, deltaTime);		
 			
-			player.velocity.set(player.virtualSpeed / 50, player.velocity.y);
-			
-			camera.setPosition(player.position.x + 20, camera.position.y);
-			
-			
-			
+			camera.setPosition(player.position.x + 20, camera.position.y);		
 			
 			// draw UPS
 			ups.setupText((GLGame)game, "ups " + String.valueOf(new Integer((int)player.virtualSpeed)));
@@ -127,7 +126,11 @@ public class GLGameTest2 extends GLGame {
 			
 			gl.glEnable(GL10.GL_TEXTURE_2D);
 			
-			world.draw();
+			int length = map.numMeshes();
+			for (int i = 0; i < length; i++) {
+				
+				map.getMesh(i).draw();
+			}
 			
 			gl.glEnable(GL10.GL_BLEND);
 			gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
@@ -147,8 +150,9 @@ public class GLGameTest2 extends GLGame {
 			//textureAtlas = new GLTexture((GLGame)game, "player.png");
 			//playerRegion = new TextureRegion(textureAtlas, 0, 0, 64, 128);
 			
-			player.setupTexture("player.png");
-			world.setupTexture("wood.png");
+			//player.setupTexture("player.png");
+			
+			//map.loadTextures();
 		}
 
 		public void dispose() {

@@ -9,17 +9,27 @@ public class CollisionDetecctor {
 		return distance <= radiusSum * radiusSum;
 	}
 	
-	public static boolean rectangleCollision(Rectangle r1, Rectangle r2) {
+	public static int rectangleCollision(Rectangle r1, Rectangle r2) {
 		
 		if (r1.lowerLeft.x < r2.lowerLeft.x + r2.width &&
 			r1.lowerLeft.x + r1.width > r2.lowerLeft.x &&
 			r1.lowerLeft.y < r2.lowerLeft.y + r2.height &&
 			r1.lowerLeft.y + r1.height > r2.lowerLeft.y) {
 			
-			return true;
+			// collision from left
+			if (r1.lowerLeft.x + r1.width > r2.lowerLeft.x &&
+				r1.lowerLeft.x > r2.lowerLeft.x && r1.lowerLeft.x < r2.lowerLeft.x + r2.height) {
+				
+				return 2;
+			
+			// other collision
+			} else {
+			
+				return 1;
+			}
 		}
 		
-		return false;
+		return 0;
 	}
 	
 	public static boolean rectangleCircleCollision(Rectangle r, Circle c) {

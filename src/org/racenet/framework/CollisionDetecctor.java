@@ -2,6 +2,9 @@ package org.racenet.framework;
 
 public class CollisionDetecctor {
 
+	public static final short FROM_TOP = 1;
+	public static final short FROM_LEFT = 2;
+	
 	public static boolean circleCollision(Circle c1, Circle c2) {
 		
 		float distance = c1.center.distanceSquared(c2.center);
@@ -16,16 +19,15 @@ public class CollisionDetecctor {
 			r1.lowerLeft.y < r2.lowerLeft.y + r2.height &&
 			r1.lowerLeft.y + r1.height > r2.lowerLeft.y) {
 			
-			// collision from left
 			if (r1.lowerLeft.x + r1.width > r2.lowerLeft.x &&
-				r1.lowerLeft.x > r2.lowerLeft.x && r1.lowerLeft.x < r2.lowerLeft.x + r2.height) {
+				r1.lowerLeft.x > r2.lowerLeft.x && r1.lowerLeft.x < r2.lowerLeft.x + r2.height &&
+				r1.height > r2.height / 2) {
 				
-				return 2;
+				return FROM_LEFT;
 			
-			// other collision
 			} else {
 			
-				return 1;
+				return FROM_TOP;
 			}
 		}
 		

@@ -12,6 +12,7 @@ class Player extends AnimatedMesh {
 	public final Vector2 accel = new Vector2();
 	
 	private boolean onFloor = false;
+	private boolean onWall = false;
 	private float distanceOnJump = -1;
 	private boolean distanceRemembered = false;
 	public float virtualSpeed = 0;
@@ -77,12 +78,18 @@ class Player extends AnimatedMesh {
 			for (int i = 0; i < length; i++) {
 			
 				Mesh part = map.getMesh(i);
-				int collision = CollisionDetecctor.rectangleCollision(part.bounds, this.bounds);
-				if (0 != collision) {
-					
-					this.velocity.set(this.velocity.x, 0);
-					this.onFloor = true;
-					break;
+				switch (CollisionDetecctor.rectangleCollision(part.bounds, this.bounds)) {
+				
+					case CollisionDetecctor.FROM_LEFT:
+						this.position.set(this.position.x - 0.05f, this.position.y);
+						this.bounds.lowerLeft.set(this.position);
+						break;
+
+				
+					case CollisionDetecctor.FROM_TOP:
+						this.velocity.set(this.velocity.x, 0);
+						this.onFloor = true;
+						break;
 				}
 			}
 			

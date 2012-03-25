@@ -11,9 +11,7 @@ import org.racenet.framework.interfaces.Screen;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
-import org.racenet.framework.GameObject;
 import org.racenet.framework.Mesh;
-import org.racenet.framework.SpatialHashGrid;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.CameraText;
 
@@ -23,7 +21,7 @@ public class GLGameTest2 extends GLGame {
 	CameraText ups, fps;
 	Map map = new Map();
 	
-	Vector2 gravity = new Vector2(0, -30);
+	Vector2 gravity = new Vector2(5, -30);
 	
 	
 	class WorldScreen extends Screen {
@@ -64,7 +62,10 @@ public class GLGameTest2 extends GLGame {
 			
 			map.addMesh(new Mesh((GLGame)game, 107.5f, 12.5f, 60, 7.5f, "wood.png"));
 			
-			//map.addMesh(new Mesh((GLGame)game, 220, 10, 10, 30, "stone.png"));
+			map.addMesh(new Mesh((GLGame)game, 225, 10, 10, 5, "stone.png"));
+			
+			
+			map.addMesh(new Mesh((GLGame)game, 250, 10, 10, 20, "stone.png"));
 			
 			fps.setupText((GLGame)game, "fps");
 		}

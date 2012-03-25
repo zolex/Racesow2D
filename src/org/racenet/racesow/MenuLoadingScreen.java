@@ -25,6 +25,8 @@ public class MenuLoadingScreen extends Screen {
 				
 				Assets assets = Assets.getInstance();
 				assets.addPixmap("play_button", g.newPixmap("play.jpg", PixmapFormat.ARGB8888));
+				assets.addPixmap("play_button2", g.newPixmap("play.jpg", PixmapFormat.ARGB8888));
+				assets.addPixmap("play_button3", g.newPixmap("play.jpg", PixmapFormat.ARGB8888));
 				assets.addPixmap("menu_header", g.newPixmap("racesow.jpg", PixmapFormat.ARGB8888));
 				
 				game.setScreen(new MenuScreen(game));

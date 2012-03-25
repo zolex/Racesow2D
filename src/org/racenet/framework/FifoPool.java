@@ -3,54 +3,58 @@ package org.racenet.framework;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pool<T> {
+public class FifoPool<T> {
 
 	public interface PoolObjectFactory<T> {
 		
 		public T createObject();
 	}
 	
-	private final List<T> freeObjects;
+	private final List<T> pool;
 	private final PoolObjectFactory<T> factory;
 	private final int maxSize;
+	private int reuseIndex = 0;
 	
-	public Pool(PoolObjectFactory<T> f, int s) {
+	public FifoPool(PoolObjectFactory<T> f, int s) {
 		
 		factory = f;
 		maxSize = s;
-		freeObjects = new ArrayList<T>(maxSize);
+		pool = new ArrayList<T>(maxSize);
 	}
-	
+
 	public int length() {
 		
-		return freeObjects.size();
+		return pool.size();
 	}
 	
 	public T get(int index) {
 		
-		return freeObjects.get(index);
+		return pool.get(index);
 	}
 	
 	public T newObject() {
 		
 		T object = null;
-		if (freeObjects.size() == 0) {
+		if (pool.size() == maxSize) {
 			
-			object = factory.createObject();
+			object = pool.get(reuseIndex);
+			reuseIndex++;
+			if (reuseIndex == maxSize) {
+				
+				reuseIndex = 0;
+			}
 			
 		} else {
 			
-			object = freeObjects.remove(freeObjects.size() - 1);
+			object = factory.createObject();
+			pool.add(object);
 		}
 		
 		return object;
 	}
 	
-	public void free(T object) {
+	public void free() {
 		
-		if (freeObjects.size() < maxSize) {
-			
-			freeObjects.add(object);
-		}
+		pool.clear();
 	}
 }

@@ -10,11 +10,13 @@ import org.racenet.framework.interfaces.Graphics;
 import org.racenet.framework.interfaces.Pixmap;
 import org.racenet.framework.interfaces.Input.TouchEvent;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 
 public class MenuScreen extends AndroidScreen {
 
-	Pixmap button;
+	Pixmap button, button2, button3, button4;
 	
 	public MenuScreen(Game game) {
 		
@@ -44,7 +46,8 @@ public class MenuScreen extends AndroidScreen {
 			
 			if (touchEventInPixmap(e, button)) {
 				
-				game.setScreen(new TestLoadingScreen(game));
+				Intent intent = new Intent((AndroidGame)game, GLGameTest2.class);
+				((AndroidGame)game).startActivity(intent);
 			}
 		}
 	}

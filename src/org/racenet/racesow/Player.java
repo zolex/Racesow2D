@@ -96,7 +96,7 @@ class Player extends AnimatedMesh {
 			
 			if (this.distanceOnJump > 0) {
 				
-				float boost = (1000 / (this.virtualSpeed / 2) / (this.distanceOnJump * this.distanceOnJump));
+				float boost = (5000 / (this.virtualSpeed / 2) / this.distanceOnJump);
 				this.virtualSpeed += boost;
 			}
 			

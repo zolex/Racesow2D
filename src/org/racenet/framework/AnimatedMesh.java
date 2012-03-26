@@ -64,4 +64,13 @@ public class AnimatedMesh extends GameObject {
 		this.vertices.unbind();
 		gl.glPopMatrix();
 	}
+	
+	public void reloadTextures() {
+		
+		int length = this.anims.length;
+		for (int i = 0; i < length; i++) {
+			
+			this.anims[i].reloadTextures();
+		}
+	}
 }

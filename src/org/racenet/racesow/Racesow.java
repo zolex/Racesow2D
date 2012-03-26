@@ -131,12 +131,8 @@ public class Racesow extends GLGame {
 
 		public void resume() {
 
-			//textureAtlas = new GLTexture((GLGame)game, "player.png");
-			//playerRegion = new TextureRegion(textureAtlas, 0, 0, 64, 128);
-			
-			//player.setupTexture("player.png");
-			
-			//map.loadTextures();
+			map.reloadTextures();
+			player.reloadTextures();
 		}
 
 		public void dispose() {

@@ -37,7 +37,7 @@ public class GLTexture {
     	return textureId;
     }
     
-    private void load() {
+    public void load() {
     	
         GL10 gl = glGraphics.getGL();
         int[] textureIds = new int[1];

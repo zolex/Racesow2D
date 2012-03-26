@@ -123,6 +123,21 @@ public class Map {
 		}
 	}
 	
+	public void reloadTextures() {
+		
+		int length = this.front.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.front.get(i).reloadTexture();
+		}
+		
+		length = this.back.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.back.get(i).reloadTexture();
+		}
+	}
+	
 	public void addFront(Mesh mesh) {
 		
 		this.front.add(mesh);

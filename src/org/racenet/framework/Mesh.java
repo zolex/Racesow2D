@@ -36,6 +36,14 @@ public class Mesh extends GameObject {
 		this.texScaleHeight = scaleHeight == 0 ? 0.05f : scaleHeight;
 	}
 	
+	public void reloadTexture() {
+		
+		if (this.texture != null) {
+			
+			this.texture.load();
+		}
+	}
+	
 	private void setupVertices() {
 		
 		this.vertices = new GLVertices(this.game.getGLGraphics(), 4, 6 , false, true);

@@ -17,4 +17,13 @@ public class Animation {
 		frameNumber = frameNumber % keyFrames.length;
 		return keyFrames[frameNumber];
 	}
+	
+	public void reloadTextures() {
+		
+		int length = this.keyFrames.length;
+		for (int i = 0; i < length; i++) {
+			
+			keyFrames[i].load();
+		}
+	}
 }

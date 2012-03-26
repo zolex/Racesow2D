@@ -12,10 +12,12 @@ public class Map {
 	List<Mesh> front = new ArrayList<Mesh>();
 	List<Mesh> back = new ArrayList<Mesh>();
 	SpatialHashGrid frontGrid;
+	SpatialHashGrid backGrid;
 	
 	public Map() {
 		
 		frontGrid = new SpatialHashGrid(1000, 200, 50);
+		backGrid = new SpatialHashGrid(1000, 200, 50);
 	}
 	
 	public void addFront(Mesh mesh) {
@@ -43,6 +45,7 @@ public class Map {
 	public void addBack(Mesh mesh) {
 		
 		this.back.add(mesh);
+		this.backGrid.insertStaticObject(mesh);
 	}
 	
 	public Mesh getBack(int i) {
@@ -55,7 +58,7 @@ public class Map {
 		return this.back.size();
 	}
 	
-public Mesh getGround(GameObject o) {
+	public Mesh getGround(GameObject o) {
 		
 		int tallestPart = 0;
 		float tallestHeight = 0;
@@ -79,10 +82,15 @@ public Mesh getGround(GameObject o) {
 		
 		return (Mesh)colliders.get(tallestPart);
 	}
-
-	public List<GameObject> getPotentialColliders(GameObject o) {
+	
+	public List<GameObject> getPotentialFrontColliders(GameObject o) {
 		
 		return frontGrid.getPotentialColliders(o);
+	}
+
+	public List<GameObject> getPotentialBackColliders(GameObject o) {
+		
+		return backGrid.getPotentialColliders(o);
 	}
 	
 	public void draw() {

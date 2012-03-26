@@ -113,7 +113,8 @@ class Player extends AnimatedMesh {
 			
 			if (eventTime == 0 && System.nanoTime() / 1000000000.0f > this.lastWallJumped + 2) {
 				
-				int length = map.numBack();
+				List<GameObject> colliders = map.getPotentialBackColliders(this);
+				int length = colliders.size();
 				for (int i = 0; i < length; i++) {
 				
 					Mesh part = map.getBack(i);
@@ -176,7 +177,7 @@ class Player extends AnimatedMesh {
 			this.position.add(this.velocity.x * deltaTime, this.velocity.y * deltaTime);
 			this.bounds.lowerLeft.set(this.position);
 			
-			List<GameObject> colliders = map.getPotentialColliders(this);
+			List<GameObject> colliders = map.getPotentialFrontColliders(this);
 			int length = colliders.size();
 			for (int i = 0; i < length; i++) {
 			

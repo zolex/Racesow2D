@@ -12,7 +12,7 @@ class Player extends AnimatedMesh {
 	public final Vector2 accel = new Vector2();
 	
 	private boolean onFloor = false;
-	private boolean onWall = false;
+	private float lastWallJumped = 0;
 	private float distanceOnJump = -1;
 	private boolean distanceRemembered = false;
 	public float virtualSpeed = 0;
@@ -24,7 +24,7 @@ class Player extends AnimatedMesh {
 		super(game, x, y, width, height, 0.1f, frames);
 	}
 	
-	public void jump(Map map) {
+	public void jump(Map map, float eventTime) {
 		
 		if (!this.distanceRemembered && this.velocity.y < 0) {
 			
@@ -46,13 +46,31 @@ class Player extends AnimatedMesh {
 				this.virtualSpeed += boost;
 			}
 			
-			this.velocity.set(0, 20);
+			this.velocity.add(0, 20);
 			this.onFloor = false;
 			this.distanceRemembered = false;
 			this.distanceOnJump = -1;
 			
 			this.jumpAnimation = true;
 			this.animTime = 0.09f;
+		
+		} else {
+			
+			if (eventTime == 0 && System.nanoTime() / 1000000000.0f > this.lastWallJumped + 2) {
+				
+				int length = map.numBack();
+				for (int i = 0; i < length; i++) {
+				
+					Mesh part = map.getBack(i);
+					if (0 != CollisionDetecctor.rectangleCollision(part.bounds, this.bounds)) {
+						
+						this.velocity.set(this.velocity.x + 5, 17);
+						this.lastWallJumped = System.nanoTime() / 1000000000.0f;
+						this.jumpAnimation = true;
+						this.animTime = 0.09f;
+					}
+				}
+			}
 		}
 	}
 	
@@ -61,7 +79,7 @@ class Player extends AnimatedMesh {
 		if (this.jumpAnimation) {
 			
 			this.animTime += deltaTime;
-			if (this.animTime > 0.2f) {
+			if (this.animTime > 0.4f) {
 				
 				this.jumpAnimation = false;
 				this.animTime = 0;
@@ -70,21 +88,38 @@ class Player extends AnimatedMesh {
 		
 		if (!this.onFloor) {
 			
-			this.velocity.add(gravity.x * deltaTime, gravity.y * deltaTime);			
+			/*
+			boolean straightUp = false;
+			if (this.velocity.x == 0 && this.velocity.y > 0) {
+				
+				straightUp = true;
+			}
+			*/
+			
+			this.velocity.add(gravity.x * deltaTime, gravity.y * deltaTime);
+			
+			/*
+			if (straightUp && this.velocity.y <= 0) {
+				
+				straightUp = false;
+				this.velocity.set(10, 1);
+			}
+			*/
+			
 			this.position.add(this.velocity.x * deltaTime, this.velocity.y * deltaTime);
 			this.bounds.lowerLeft.set(this.position);
 			
-			int length = map.numMeshes();
+			int length = map.numFront();
 			for (int i = 0; i < length; i++) {
 			
-				Mesh part = map.getMesh(i);
+				Mesh part = map.getFront(i);
 				switch (CollisionDetecctor.rectangleCollision(part.bounds, this.bounds)) {
 				
 					case CollisionDetecctor.FROM_LEFT:
-						this.position.set(this.position.x - 0.05f, this.position.y);
+						this.position.set(this.position.x - this.virtualSpeed * this.virtualSpeed / 5000000, this.position.y);
 						this.bounds.lowerLeft.set(this.position);
+						this.virtualSpeed = 0;
 						break;
-
 				
 					case CollisionDetecctor.FROM_TOP:
 						this.velocity.set(this.velocity.x, 0);

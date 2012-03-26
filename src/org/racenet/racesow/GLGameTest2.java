@@ -21,7 +21,7 @@ public class GLGameTest2 extends GLGame {
 	CameraText ups, fps;
 	Map map = new Map();
 	
-	Vector2 gravity = new Vector2(5, -30);
+	Vector2 gravity = new Vector2(0, -30);
 	
 	
 	class WorldScreen extends Screen {
@@ -30,6 +30,7 @@ public class GLGameTest2 extends GLGame {
 		GLGraphics glGraphics;
 		
 		boolean touchedDown = false;
+		float touchedDownTime = 0;
 		
 		int fpsInterval = 5;
 		int frames = 10;
@@ -50,22 +51,19 @@ public class GLGameTest2 extends GLGame {
 			camera.addHud(ups);
 			camera.addHud(fps);
 			
-			player = new Player((GLGame)game, 7, 22, 3.4f, 6.5f, "player.png", "player2.png");
+			player = new Player((GLGame)game, 3, 22, 3.4f, 6.5f,
+					"player.png", "player_jump_f1.png", "player_jump_f2.png", "player_jump_f1.png");
 			
-			map.addMesh(new Mesh((GLGame)game, -100, 0, 2000, 10, "wood.png"));
-			map.addMesh(new Mesh((GLGame)game, 0, 10, 28, 5, "wood.png"));
-			map.addMesh(new Mesh((GLGame)game, 60, 10, 150, 2.5f, "wood.png"));
-			
-			map.addMesh(new Mesh((GLGame)game, 100, 12.5f, 7.5f, 2.5f, "wood.png"));
-			map.addMesh(new Mesh((GLGame)game, 102.5f, 15.0f, 5.0f, 2.5f, "wood.png"));
-			map.addMesh(new Mesh((GLGame)game, 105, 17.5f, 2.5f, 2.5f, "wood.png"));
-			
-			map.addMesh(new Mesh((GLGame)game, 107.5f, 12.5f, 60, 7.5f, "wood.png"));
-			
-			map.addMesh(new Mesh((GLGame)game, 225, 10, 10, 5, "stone.png"));
-			
-			
-			map.addMesh(new Mesh((GLGame)game, 250, 10, 10, 20, "stone.png"));
+			map.addFront(new Mesh((GLGame)game, -100, 0, 2000, 10, "wood.png"));
+			map.addFront(new Mesh((GLGame)game, 0, 10, 28, 5, "wood.png"));
+			map.addFront(new Mesh((GLGame)game, 60, 10, 150, 2.5f, "wood.png"));			
+			map.addFront(new Mesh((GLGame)game, 100, 12.5f, 7.5f, 2.5f, "wood.png"));
+			map.addFront(new Mesh((GLGame)game, 102.5f, 15.0f, 5.0f, 2.5f, "wood.png"));
+			map.addFront(new Mesh((GLGame)game, 105, 17.5f, 2.5f, 2.5f, "wood.png"));
+			map.addFront(new Mesh((GLGame)game, 107.5f, 12.5f, 60, 7.5f, "wood.png"));
+			//map.addFront(new Mesh((GLGame)game, 220, 10, 10, 5, "stone.png"));
+			map.addBack(new Mesh((GLGame)game, 300, 10, 460, 20, "stone.png"));
+			map.addFront(new Mesh((GLGame)game, 850, 10, 10, 20, "stone.png"));
 			
 			fps.setupText((GLGame)game, "fps");
 		}
@@ -83,6 +81,7 @@ public class GLGameTest2 extends GLGame {
 				if (e.type == TouchEvent.TOUCH_DOWN) {
 					
 					touchedDown = true;
+					touchedDownTime = 0;
 				
 				} else if (e.type == TouchEvent.TOUCH_UP) {
 					
@@ -92,7 +91,8 @@ public class GLGameTest2 extends GLGame {
 			
 			if (touchedDown) {
 				
-				player.jump(map);
+				player.jump(map,touchedDownTime);
+				touchedDownTime += deltaTime;
 			}
 			
 			player.move(gravity, map, deltaTime);		
@@ -127,11 +127,7 @@ public class GLGameTest2 extends GLGame {
 			
 			gl.glEnable(GL10.GL_TEXTURE_2D);
 			
-			int length = map.numMeshes();
-			for (int i = 0; i < length; i++) {
-				
-				map.getMesh(i).draw();
-			}
+			map.draw();
 			
 			gl.glEnable(GL10.GL_BLEND);
 			gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);

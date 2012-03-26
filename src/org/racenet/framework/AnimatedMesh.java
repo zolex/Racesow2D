@@ -73,4 +73,13 @@ public class AnimatedMesh extends GameObject {
 			this.anims[i].reloadTextures();
 		}
 	}
+	
+	public void dispose() {
+		
+		int length = this.anims.length;
+		for (int i = 0; i < length; i++) {
+			
+			this.anims[i].dispose();
+		}
+	}
 }

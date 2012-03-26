@@ -138,6 +138,21 @@ public class Map {
 		}
 	}
 	
+	public void dispose() {
+		
+		int length = this.front.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.front.get(i).dispose();
+		}
+		
+		length = this.back.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.back.get(i).dispose();
+		}
+	}
+	
 	public void addFront(Mesh mesh) {
 		
 		this.front.add(mesh);

@@ -113,12 +113,10 @@ public class Racesow extends GLGame {
 			camera.setViewportAndMatrices();
 			
 			gl.glEnable(GL10.GL_TEXTURE_2D);
-			
-			map.draw();
-			
 			gl.glEnable(GL10.GL_BLEND);
 			gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 			
+			map.draw();
 			player.draw();
 			
 			ups.draw(gl);
@@ -137,6 +135,8 @@ public class Racesow extends GLGame {
 
 		public void dispose() {
 
+			map.dispose();
+			player.dispose();
 		}
 	}
 	

@@ -26,4 +26,13 @@ public class Animation {
 			keyFrames[i].load();
 		}
 	}
+
+	public void dispose() {
+		
+		int length = this.keyFrames.length;
+		for (int i = 0; i < length; i++) {
+			
+			keyFrames[i].dispose();
+		}
+	}
 }

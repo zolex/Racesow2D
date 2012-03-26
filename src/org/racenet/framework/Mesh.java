@@ -44,6 +44,14 @@ public class Mesh extends GameObject {
 		}
 	}
 	
+	public void dispose() {
+		
+		if (this.texture != null) {
+			
+			this.texture.dispose();
+		}
+	}
+	
 	private void setupVertices() {
 		
 		this.vertices = new GLVertices(this.game.getGLGraphics(), 4, 6 , false, true);

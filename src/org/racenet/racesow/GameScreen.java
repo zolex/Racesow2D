@@ -15,32 +15,32 @@ import org.racenet.framework.interfaces.Input.TouchEvent;
 
 class GameScreen extends Screen {
 		
-		public Player player;
-		CameraText ups, fps, timer;
-		public Map map;
-		
-		Vector2 gravity = new Vector2(0, -30);
-		Camera2 camera;
-		GLGraphics glGraphics;
-		
-		boolean touchedDown = false;
-		float touchedDownTime = 0;
-		
-		int fpsInterval = 5;
-		int frames = 10;
-		float sumDelta = 0;
-		
-		public GameScreen(Game game) {
+	public Player player;
+	CameraText ups, fps, timer;
+	public Map map;
+	
+	Vector2 gravity = new Vector2(0, -30);
+	Camera2 camera;
+	GLGraphics glGraphics;
+	
+	boolean touchedDown = false;
+	float touchedDownTime = 0;
+	
+	int fpsInterval = 5;
+	int frames = 10;
+	float sumDelta = 0;
+	
+	public GameScreen(Game game) {
 			
-			super(game);
-			glGraphics = ((GLGame)game).getGLGraphics();
-			
-			float camWidth = (float)game.getScreenWidth() / 10;
-			float camHeight = (float)game.getScreenHeight() / 10;
-			
-			ups = new CameraText(-25, camHeight / 2 - 3, 1, 1);
-			ups.setupVertices(glGraphics);
-			ups.setupText((GLGame)game, "ups");
+		super(game);
+		glGraphics = ((GLGame)game).getGLGraphics();
+		
+		float camWidth = (float)game.getScreenWidth() / 10;
+		float camHeight = (float)game.getScreenHeight() / 10;
+		
+		ups = new CameraText(-25, camHeight / 2 - 3, 1, 1);
+		ups.setupVertices(glGraphics);
+		ups.setupText((GLGame)game, "ups");
 		
 		fps = new CameraText(-5, camHeight / 2 - 3, 1, 1);
 		fps.setupVertices(glGraphics);
@@ -48,7 +48,7 @@ class GameScreen extends Screen {
 		
 		timer = new CameraText(15, camHeight / 2 - 3, 1, 1);
 		timer.setupVertices(glGraphics);
-		timer.setupText((GLGame)game, "0.00");
+		timer.setupText((GLGame)game, "t 0.00");
 		
 		camera = new Camera2(glGraphics, camWidth, camHeight);
 		camera.addHud(ups);
@@ -106,7 +106,7 @@ class GameScreen extends Screen {
 			
 		}
 		
-		timer.setupText((GLGame)game, String.format("%.2f", map.getCurrentTime()));
+		timer.setupText((GLGame)game, "t " + String.format("%.2f", map.getCurrentTime()));
 	}
 
 	public void present(float deltaTime) {

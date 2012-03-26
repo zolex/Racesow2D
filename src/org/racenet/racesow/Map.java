@@ -63,9 +63,9 @@ public class Map {
 				}
 			}
 			
-			this.frontGrid = new SpatialHashGrid(worldWidth, worldHeight, 15);
-			this.backGrid = new SpatialHashGrid(worldWidth, worldHeight, 15);
-			this.funcGrid = new SpatialHashGrid(worldWidth, worldHeight, 15);
+			this.frontGrid = new SpatialHashGrid(worldWidth, worldHeight, 20);
+			this.backGrid = new SpatialHashGrid(worldWidth, worldHeight, 20);
+			this.funcGrid = new SpatialHashGrid(worldWidth, worldHeight, 20);
 			
 			NodeList startTimerN = parser.doc.getElementsByTagName("starttimer");
 			if (startTimerN.getLength() == 1) {

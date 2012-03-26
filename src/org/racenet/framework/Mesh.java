@@ -4,11 +4,15 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class Mesh extends GameObject {
 
+	public static final short FUNC_NONE = 0;
+	public static final short FUNC_LAVA = 1;
+	
 	GLGame game = null;
 	public GLVertices vertices = null;
 	public GLTexture texture = null;
 	float texScaleWidth = 0.05f;
 	float texScaleHeight = 0.05f;
+	public short func = FUNC_NONE;
 	
 	public Mesh(GLGame game, float x, float y, float width, float height, String texture) {
 		
@@ -18,12 +22,35 @@ public class Mesh extends GameObject {
 		this.setupVertices();
 	}
 	
+	public Mesh(GLGame game, float x, float y, float width, float height, String texture, short func) {
+		
+		super(x, y, width, height);
+		this.game = game;
+		this.setupTexture(texture);
+		this.setupVertices();
+		this.setFunc(func);
+	}
+	
 	public Mesh(GLGame game, float x, float y, float width, float height, String texture, float texScaleWidth, float texScaleHeight) {
 		
 		super(x, y, width, height);
 		this.game = game;
 		this.setupTexture(texture, texScaleWidth, texScaleHeight);
 		this.setupVertices();
+	}
+
+	public Mesh(GLGame game, float x, float y, float width, float height, String texture, short func, float texScaleWidth, float texScaleHeight) {
+		
+		super(x, y, width, height);
+		this.game = game;
+		this.setupTexture(texture, texScaleWidth, texScaleHeight);
+		this.setupVertices();
+		this.setFunc(func);
+	}
+	
+	public void setFunc(short func) {
+		
+		this.func = func;
 	}
 
 	public void setupTexture(String fileName) {

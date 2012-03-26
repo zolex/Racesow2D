@@ -7,19 +7,29 @@ public class AnimatedMesh extends GameObject {
 	GLGame game = null;
 	public float animTime = 0;
 	public GLVertices vertices = null;
-	public Animation anim;
+	public Animation anims[];
+	public int numAnims;
+	public int activeAnimId = 0;
 	float texScaleWidth = 0.05f;
 	float texScaleHeight = 0.05f;
 	
-	public AnimatedMesh(GLGame game, float x, float y, float width, float height, float frameDuration, String ... keyFrames) {
+	public AnimatedMesh(GLGame game, float x, float y, float width, float height) {
 		
 		super(x, y, width, height);
 		this.game = game;
-		this.setupKeyFrames(frameDuration, keyFrames);
-		this.setupVertices();
 	}
 	
-	public void setupKeyFrames(float frameDuration, String ... keyFrames) {
+	protected void setAnimations(String[] ... animations) {
+		
+		this.numAnims = animations.length;
+		this.anims = new Animation[this.numAnims];
+		for (int i = 0; i < this.numAnims; i++) {
+		
+			this.setupKeyFrames(0.1f, i, animations[i]);
+		}
+	}
+	
+	public void setupKeyFrames(float frameDuration, int animId, String ... keyFrames) {
 		
 		GLTexture[] frames = new GLTexture[keyFrames.length];
 		for (int i = 0; i < keyFrames.length; i++) {
@@ -27,12 +37,12 @@ public class AnimatedMesh extends GameObject {
 			frames[i] = new GLTexture(this.game, keyFrames[i]);
 		}
 		
-		this.anim = new Animation(frameDuration, frames);
+		this.anims[animId] = new Animation(frameDuration, frames);
 	}
 	
-	private void setupVertices() {
+	protected void setupVertices() {
 		
-		GLTexture firstFrame = this.anim.getKeyFrame(0);
+		GLTexture firstFrame = this.anims[0].getKeyFrame(0); // TODO: choose proper frame
 		this.vertices = new GLVertices(this.game.getGLGraphics(), 4, 6 , false, true);
 		this.vertices.setVertices(new float[] {
 				0,					0,	  				0, this.bounds.height / (firstFrame.height * this.texScaleHeight),
@@ -48,7 +58,7 @@ public class AnimatedMesh extends GameObject {
 		
 		gl.glPushMatrix();
 		gl.glTranslatef(this.position.x, this.position.y, 0);
-		this.anim.getKeyFrame(animTime).bind();
+		this.anims[this.activeAnimId].getKeyFrame(animTime).bind();
 		this.vertices.bind();
 		this.vertices.draw(GL10.GL_TRIANGLES, 0, 6);
 		this.vertices.unbind();

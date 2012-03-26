@@ -12,6 +12,7 @@ import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
 import org.racenet.framework.Mesh;
+import org.racenet.framework.SpatialHashGrid;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.CameraText;
 
@@ -51,19 +52,19 @@ public class GLGameTest2 extends GLGame {
 			camera.addHud(ups);
 			camera.addHud(fps);
 			
-			player = new Player((GLGame)game, 3, 22, 3.4f, 6.5f,
-					"player.png", "player_jump_f1.png", "player_jump_f2.png", "player_jump_f1.png");
+			player = new Player((GLGame)game, 103, 22, 3.4f, 6.5f);
 			
-			map.addFront(new Mesh((GLGame)game, -100, 0, 2000, 10, "wood.png"));
-			map.addFront(new Mesh((GLGame)game, 0, 10, 28, 5, "wood.png"));
-			map.addFront(new Mesh((GLGame)game, 60, 10, 150, 2.5f, "wood.png"));			
-			map.addFront(new Mesh((GLGame)game, 100, 12.5f, 7.5f, 2.5f, "wood.png"));
-			map.addFront(new Mesh((GLGame)game, 102.5f, 15.0f, 5.0f, 2.5f, "wood.png"));
-			map.addFront(new Mesh((GLGame)game, 105, 17.5f, 2.5f, 2.5f, "wood.png"));
-			map.addFront(new Mesh((GLGame)game, 107.5f, 12.5f, 60, 7.5f, "wood.png"));
-			//map.addFront(new Mesh((GLGame)game, 220, 10, 10, 5, "stone.png"));
-			map.addBack(new Mesh((GLGame)game, 300, 10, 460, 20, "stone.png"));
-			map.addFront(new Mesh((GLGame)game, 850, 10, 10, 20, "stone.png"));
+			map.addFront(new Mesh((GLGame)game, 0, 0, 405, 10, "wood.png"), true);
+			map.addFront(new Mesh((GLGame)game, 435, 0, 500, 10, "wood.png"));
+			map.addFront(new Mesh((GLGame)game, 100, 10, 28, 5, "wood.png"));
+			map.addFront(new Mesh((GLGame)game, 160, 10, 150, 2.5f, "wood.png"));			
+			map.addFront(new Mesh((GLGame)game, 200, 12.5f, 7.5f, 2.5f, "wood.png"));
+			map.addFront(new Mesh((GLGame)game, 202.5f, 15.0f, 5.0f, 2.5f, "wood.png"));
+			map.addFront(new Mesh((GLGame)game, 205, 17.5f, 2.5f, 2.5f, "wood.png"));
+			map.addFront(new Mesh((GLGame)game, 207.5f, 12.5f, 60, 7.5f, "wood.png"));
+			map.addFront(new Mesh((GLGame)game, 405, 0, 30, 5, "lava.jpg", Mesh.FUNC_LAVA, 0.025f, 0.025f));
+			map.addBack(new Mesh((GLGame)game, 400, 0, 40, 30, "stone.png"));
+			map.addFront(new Mesh((GLGame)game, 900, 10, 10, 20, "stone.png"));
 			
 			fps.setupText((GLGame)game, "fps");
 		}

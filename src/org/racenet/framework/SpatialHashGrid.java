@@ -13,7 +13,8 @@ public class SpatialHashGrid {
     int cellsPerRow;
     int cellsPerCol;
     float cellSize;
-    int[] cellIds = new int[4];
+    int numCells;
+    int[] cellIds;
     List<GameObject> foundObjects;
     
     @SuppressWarnings("unchecked")
@@ -22,10 +23,11 @@ public class SpatialHashGrid {
         this.cellSize = cellSize;
         this.cellsPerRow = (int)FloatMath.ceil(worldWidth/cellSize);
         this.cellsPerCol = (int)FloatMath.ceil(worldHeight/cellSize);
-        int numCells = cellsPerRow * cellsPerCol;
-        dynamicCells = new List[numCells];
-        staticCells = new List[numCells];
-        for (int i = 0; i < numCells; i++) {
+        this.numCells = cellsPerRow * cellsPerCol;
+        this.cellIds = new int[this.numCells];
+        dynamicCells = new List[this.numCells];
+        staticCells = new List[this.numCells];
+        for (int i = 0; i < this.numCells; i++) {
         	
             dynamicCells[i] = new ArrayList<GameObject>(10);
             staticCells[i] = new ArrayList<GameObject>(10);
@@ -36,13 +38,13 @@ public class SpatialHashGrid {
     
     public void insertStaticObject(GameObject obj) {
     	
-        int[] cellIds = getCellIds(obj);
-        int i = 0;
-        int cellId = -1;
-        while (i < 4 && (cellId = cellIds[i++]) != -1) {
-        	
-            staticCells[cellId].add(obj);
-        }
+    	int[] cellIds = getCellIds(obj);
+    	int i = 0;
+    	int cellId = -1;
+    	while (i < this.numCells && (cellId = cellIds[i++]) != -1) {
+    		
+    		staticCells[cellId].add(obj);
+    	}
     }
     
     public void insertDynamicObject(GameObject obj) {
@@ -50,7 +52,7 @@ public class SpatialHashGrid {
         int[] cellIds = getCellIds(obj);
         int i = 0;
         int cellId = -1;
-        while (i < 4 && (cellId = cellIds[i++]) != -1) {
+        while (i < this.numCells && (cellId = cellIds[i++]) != -1) {
         	
             dynamicCells[cellId].add(obj);
         }
@@ -61,7 +63,7 @@ public class SpatialHashGrid {
         int[] cellIds = getCellIds(obj);
         int i = 0;
         int cellId = -1;
-        while (i < 4 && (cellId = cellIds[i++]) != -1) {
+        while (i < this.numCells && (cellId = cellIds[i++]) != -1) {
         	
             dynamicCells[cellId].remove(obj);
             staticCells[cellId].remove(obj);
@@ -82,7 +84,7 @@ public class SpatialHashGrid {
         int[] cellIds = getCellIds(obj);
         int i = 0;
         int cellId = -1;
-        while (i < 4 && (cellId = cellIds[i++]) != -1) {
+        while (i < this.numCells && (cellId = cellIds[i++]) != -1) {
         	
             int len = dynamicCells[cellId].size();
             for (int j = 0; j < len; j++) {
@@ -115,84 +117,19 @@ public class SpatialHashGrid {
         int x2 = (int)FloatMath.floor((obj.bounds.lowerLeft.x + obj.bounds.width) / cellSize);
         int y2 = (int)FloatMath.floor((obj.bounds.lowerLeft.y + obj.bounds.height) / cellSize);
         
-        if (x1 == x2 && y1 == y2) {
+        int i = 0;            
+        for (int xn = x1; xn <= x2; xn++) {
         	
-            if (x1 >= 0 && x1 < cellsPerRow && y1 >= 0 && y1 < cellsPerCol) {
-                
-            	cellIds[0] = x1 + y1 * cellsPerRow;
-            
-            } else {
-            	
-            	cellIds[0] = -1;
-            }
-                
-            cellIds[1] = -1;
-            cellIds[2] = -1;
-            cellIds[3] = -1;
-            
-        } else if (x1 == x2) {
-        	
-            int i = 0;
-            if (x1 >= 0 && x1 < cellsPerRow) {
-            	
-                if(y1 >= 0 && y1 < cellsPerCol) {
-                    
-                	cellIds[i++] = x1 + y1 * cellsPerRow;
-                }
-                
-                if (y2 >= 0 && y2 < cellsPerCol) {
-                    
-                	cellIds[i++] = x1 + y2 * cellsPerRow;
-                }
-            }
-            
-            while (i < 4) cellIds[i++] = -1;
-        
-        } else if (y1 == y2) {
-        	
-            int i = 0;
-            if (y1 >= 0 && y1 < cellsPerCol) {
-            	
-                if (x1 >= 0 && x1 < cellsPerRow) {
-                    
-                	cellIds[i++] = x1 + y1 * cellsPerRow;
-                }
-                
-                if (x2 >= 0 && x2 < cellsPerRow) {
-                
-                	cellIds[i++] = x2 + y1 * cellsPerRow;
-                }
-            }
-            
-            while (i < 4) cellIds[i++] = -1;                       
-        
-        } else {
-        	
-            int i = 0;
-            int y1CellsPerRow = y1 * cellsPerRow;
-            int y2CellsPerRow = y2 * cellsPerRow;
-            if (x1 >= 0 && x1 < cellsPerRow && y1 >= 0 && y1 < cellsPerCol) {
-                
-            	cellIds[i++] = x1 + y1CellsPerRow;
-            }
-            
-            if (x2 >= 0 && x2 < cellsPerRow && y1 >= 0 && y1 < cellsPerCol) {
-                
-            	cellIds[i++] = x2 + y1CellsPerRow;
-            }
-            
-            if (x2 >= 0 && x2 < cellsPerRow && y2 >= 0 && y2 < cellsPerCol) {
-                
-            	cellIds[i++] = x2 + y2CellsPerRow;
-            }
-            
-            if (x1 >= 0 && x1 < cellsPerRow && y2 >= 0 && y2 < cellsPerCol) {
-                
-            	cellIds[i++] = x1 + y2CellsPerRow;
-            }
-            
-            while (i < 4) cellIds[i++] = -1;
+			for (int yn = y1; yn <= y2; yn++) {
+				
+				if (xn >= 0 && xn < cellsPerRow && yn >= 0 && yn < cellsPerCol) {
+			     
+					cellIds[i++] = xn + yn * cellsPerRow;
+				}
+			}
         }
+        
+        while (i < this.numCells) cellIds[i++] = -1;
         
         return cellIds;
     }

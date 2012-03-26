@@ -13,10 +13,12 @@ import org.racenet.framework.GLGraphics;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.CameraText;
 
+import android.util.Log;
+
 public class Racesow extends GLGame {
 	
 	Player player;
-	CameraText ups, fps;
+	CameraText ups, fps, timer;
 	Map map;
 	
 	Vector2 gravity = new Vector2(0, -30);
@@ -42,20 +44,27 @@ public class Racesow extends GLGame {
 			float camWidth = (float)game.getScreenWidth() / 10;
 			float camHeight = (float)game.getScreenHeight() / 10;
 			
-			ups = new CameraText(-15, camHeight / 2 - 3, 1, 1);
+			ups = new CameraText(-25, camHeight / 2 - 3, 1, 1);
 			ups.setupVertices(glGraphics);
+			ups.setupText((GLGame)game, "ups");
 			
-			fps = new CameraText(15, camHeight / 2 - 3, 1, 1);
+			fps = new CameraText(-5, camHeight / 2 - 3, 1, 1);
 			fps.setupVertices(glGraphics);
+			fps.setupText((GLGame)game, "fps");
+			
+			timer = new CameraText(15, camHeight / 2 - 3, 1, 1);
+			timer.setupVertices(glGraphics);
+			timer.setupText((GLGame)game, "0.00");
 			
 			camera = new Camera2(glGraphics, camWidth, camHeight);
 			camera.addHud(ups);
 			camera.addHud(fps);
+			camera.addHud(timer);
 			
 			map = new Map((GLGame)game, "map_testing/testing.xml");
 			player = new Player((GLGame)game, map.playerX, map.playerY);
 			
-			fps.setupText((GLGame)game, "fps");
+			
 		}
 
 		public void update(float deltaTime) {
@@ -102,6 +111,8 @@ public class Racesow extends GLGame {
 				sumDelta = 0;
 				
 			}
+			
+			timer.setupText((GLGame)game, String.format("%.2f", map.getCurrentTime()));
 		}
 
 		public void present(float deltaTime) {
@@ -124,6 +135,7 @@ public class Racesow extends GLGame {
 			
 			ups.draw(gl);
 			fps.draw(gl);
+			timer.draw(gl);
 		}
 
 		public void pause() {
@@ -138,13 +150,26 @@ public class Racesow extends GLGame {
 
 		public void dispose() {
 
-			map.dispose();
-			player.dispose();
+			//map.dispose();
+			//player.dispose();
 		}
 	}
 	
     public Screen getStartScreen() {
     	
         return new WorldScreen(this);
+    }
+    
+    public void onBackPressed() {
+    	
+    	
+    	if (this.map.inRace() || this.map.raceFinished()) {
+    		
+    		map.restartRace(player);
+    	
+    	} else {
+    		
+    		finish();
+    	}
     }
 }

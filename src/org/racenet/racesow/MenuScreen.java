@@ -12,7 +12,6 @@ import org.racenet.framework.interfaces.Input.TouchEvent;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
 
 public class MenuScreen extends AndroidScreen {
 

@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <map>
 	<player><x>102</x><y>17</y></player>
+	<starttimer><x>105</x></starttimer>
+	<stoptimer><x>890</x></stoptimer>
 	<mesh><level>front</level><x>0</x><y>0</y><width>405</width><height>10</height><texture>map_testing/wood.png</texture></mesh>
 	<mesh><level>front</level><x>100</x><y>10</y><width>28</width><height>5</height><texture>map_testing/wood.png</texture></mesh>
 	<mesh><level>front</level><x>160</x><y>10</y><width>150</width><height>2.5</height><texture>map_testing/wood.png</texture></mesh>

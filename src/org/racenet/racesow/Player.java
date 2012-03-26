@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.racenet.framework.AnimatedMesh;
 import org.racenet.framework.CollisionDetecctor;
+import org.racenet.framework.Func;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.Mesh;
 import org.racenet.framework.Vector2;
+
+import android.util.Log;
 
 class Player extends AnimatedMesh {
 	
@@ -153,6 +156,28 @@ class Player extends AnimatedMesh {
 		
 		if (this.isDead) return;
 		
+		List<GameObject> colliders = map.getPotentialFuncColliders(this);
+		int length = colliders.size();
+		for (int i = 0; i < length; i++) {
+		
+			GameObject part = colliders.get(i);
+			if (0 != CollisionDetecctor.rectangleCollision(part.bounds, this.bounds)) {
+			
+				switch (((Func)part).type) {
+				
+					case Func.START_TIMER:
+						map.startTimer();
+						//Log.d("TIMER", "STARTTIMER");
+						break;
+						
+					case Func.STOP_TIMER:
+						map.stopTimer();
+						//Log.d("TIMER", "STOPTIMER");
+						break;
+				}
+			}
+		}
+		
 		if (!this.onFloor) {
 			
 			/*
@@ -176,8 +201,8 @@ class Player extends AnimatedMesh {
 			this.position.add(this.velocity.x * deltaTime, this.velocity.y * deltaTime);
 			this.bounds.lowerLeft.set(this.position);
 			
-			List<GameObject> colliders = map.getPotentialFrontColliders(this);
-			int length = colliders.size();
+			colliders = map.getPotentialFrontColliders(this);
+			length = colliders.size();
 			for (int i = 0; i < length; i++) {
 			
 				GameObject part = colliders.get(i);
@@ -191,7 +216,7 @@ class Player extends AnimatedMesh {
 							this.enableAnimation = true;
 							this.animDuration = 0.4f;							
 							this.die();
-							return;
+							return; // nothing else to do in this function
 					}
 				}
 				
@@ -224,5 +249,14 @@ class Player extends AnimatedMesh {
 	public void die() {
 		
 		this.isDead = true;
+	}
+	
+	public void reset(float x, float y) {
+		
+		this.isDead = false;
+		this.activeAnimId = ANIM_NONE;
+		this.virtualSpeed = 0;
+		this.velocity.set(0, 0);
+		this.position.set(x, y);
 	}
 }

@@ -46,7 +46,7 @@ public class MenuScreen extends AndroidScreen {
 			
 			if (touchEventInPixmap(e, button)) {
 				
-				Intent intent = new Intent((AndroidGame)game, GLGameTest2.class);
+				Intent intent = new Intent((AndroidGame)game, Racesow.class);
 				((AndroidGame)game).startActivity(intent);
 			}
 		}

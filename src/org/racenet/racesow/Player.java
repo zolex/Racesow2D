@@ -30,10 +30,9 @@ class Player extends AnimatedMesh {
 	private boolean isDead = false;
 	private float animDuration = 0;
 	
-	public Player(GLGame game, float x, float y, float width, float height) {
+	public Player(GLGame game, float x, float y) {
 		
-		super(game, x, y, width, height);
-		
+		super(game, x, y, 3.4f, 6.5f);
 		this.loadAnimations();
 		this.setupVertices();
 		
@@ -44,30 +43,30 @@ class Player extends AnimatedMesh {
 		String[][] animations = new String[5][];
 		
 		animations[ANIM_NONE] = new String[] {
-				"player.png"
-			};
+			"player/player.png"
+		};
 		
 		animations[ANIM_JUMP] = new String[] {
-				"player_jump_f1.png",
-				"player_jump_f2.png",
-				"player_jump_f1.png"
-			};
+			"player/player_jump_f1.png",
+			"player/player_jump_f2.png",
+			"player/player_jump_f1.png"
+		};
 		
 		animations[ANIM_WALLJUMP] = new String[] {
-				"player_walljump_f1.png",
-				"player_walljump_f2.png",
-				"player_walljump_f1.png"
+			"player/player_walljump_f1.png",
+			"player/player_walljump_f2.png",
+			"player/player_walljump_f1.png"
 		};
 		
 		animations[ANIM_BURN] = new String[] {
-			"player_burn_f1.png",
-			"player_burn_f2.png",
-			"player_burn_f3.png",
-			"player_burn_f4.png"
+			"player/player_burn_f1.png",
+			"player/player_burn_f2.png",
+			"player/player_burn_f3.png",
+			"player/player_burn_f4.png"
 		};
 		
 		animations[ANIM_INVISIBLE] = new String[] {
-			"transparent.png"
+			"player/transparent.png"
 		};
 	
 		this.setAnimations(animations);

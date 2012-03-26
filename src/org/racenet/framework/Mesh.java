@@ -13,31 +13,7 @@ public class Mesh extends GameObject {
 	float texScaleWidth = 0.05f;
 	float texScaleHeight = 0.05f;
 	public short func = FUNC_NONE;
-	
-	public Mesh(GLGame game, float x, float y, float width, float height, String texture) {
-		
-		super(x, y, width, height);
-		this.game = game;
-		this.setupTexture(texture);
-		this.setupVertices();
-	}
-	
-	public Mesh(GLGame game, float x, float y, float width, float height, String texture, short func) {
-		
-		super(x, y, width, height);
-		this.game = game;
-		this.setupTexture(texture);
-		this.setupVertices();
-		this.setFunc(func);
-	}
-	
-	public Mesh(GLGame game, float x, float y, float width, float height, String texture, float texScaleWidth, float texScaleHeight) {
-		
-		super(x, y, width, height);
-		this.game = game;
-		this.setupTexture(texture, texScaleWidth, texScaleHeight);
-		this.setupVertices();
-	}
+
 
 	public Mesh(GLGame game, float x, float y, float width, float height, String texture, short func, float texScaleWidth, float texScaleHeight) {
 		
@@ -52,17 +28,12 @@ public class Mesh extends GameObject {
 		
 		this.func = func;
 	}
-
-	public void setupTexture(String fileName) {
-		
-		this.texture = new GLTexture(this.game, fileName);
-	}
 	
 	public void setupTexture(String fileName, float scaleWidth, float scaleHeight) {
 		
-		this.setupTexture(fileName);
-		this.texScaleWidth = scaleWidth;
-		this.texScaleHeight = scaleHeight;
+		this.texture = new GLTexture(this.game, fileName);
+		this.texScaleWidth = scaleWidth == 0 ? 0.05f : scaleWidth;
+		this.texScaleHeight = scaleHeight == 0 ? 0.05f : scaleHeight;
 	}
 	
 	private void setupVertices() {

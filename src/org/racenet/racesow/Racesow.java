@@ -39,13 +39,16 @@ public class Racesow extends GLGame {
 			super(game);
 			glGraphics = ((GLGame)game).getGLGraphics();
 			
-			ups = new CameraText(-15, 17, 1, 1);
+			float camWidth = (float)game.getScreenWidth() / 10;
+			float camHeight = (float)game.getScreenHeight() / 10;
+			
+			ups = new CameraText(-15, camHeight / 2 - 3, 1, 1);
 			ups.setupVertices(glGraphics);
 			
-			fps = new CameraText(15, 17, 1, 1);
+			fps = new CameraText(15, camHeight / 2 - 3, 1, 1);
 			fps.setupVertices(glGraphics);
 			
-			camera = new Camera2(glGraphics, (float)game.getScreenWidth() / 10, (float)game.getScreenHeight() / 10);
+			camera = new Camera2(glGraphics, camWidth, camHeight);
 			camera.addHud(ups);
 			camera.addHud(fps);
 			

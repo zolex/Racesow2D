@@ -37,6 +37,8 @@ public class Racesow extends GLGame {
     	
     	} else {
     		
+    		// quit application
+    		LOOPER_PREPARED = false;
     		super.onBackPressed();
     	}
     }

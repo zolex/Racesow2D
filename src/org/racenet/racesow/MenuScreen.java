@@ -8,7 +8,7 @@ import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
 import org.racenet.framework.GLTexture;
-import org.racenet.framework.Mesh;
+import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Input.TouchEvent;
 import org.racenet.framework.interfaces.Screen;
@@ -20,7 +20,7 @@ import android.view.MotionEvent;
 
 public class MenuScreen extends Screen implements GestureDetector.OnGestureListener {
 	
-	public Mesh header, playButton, settingsButton, scoresButton;
+	public TexturedBlock header, playButton, settingsButton, scoresButton;
 	Camera2 camera;
 	GLGraphics glGraphics;
 	GestureDetector gestures;
@@ -47,19 +47,19 @@ public class MenuScreen extends Screen implements GestureDetector.OnGestureListe
 		camera = new Camera2(glGraphics, camWidth, camHeight);
 		
 		GLTexture.APP_FOLDER = "racesow";
-		header = new Mesh((GLGame)game, 0, 0, camWidth, -1, "racesow.jpg", Mesh.FUNC_NONE, -1, -1);
+		header = new TexturedBlock((GLGame)game, 0, 0, camWidth, -1, "racesow.jpg", TexturedBlock.FUNC_NONE, -1, -1);
 		header.position.y = camHeight - header.bounds.height;
 		header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
 		
-		playButton = new Mesh((GLGame)game, 0, 0, camWidth / 3, -1, "menu/play.png", Mesh.FUNC_NONE, -1, -1);
+		playButton = new TexturedBlock((GLGame)game, 0, 0, camWidth / 3, -1, "menu/play.png", TexturedBlock.FUNC_NONE, -1, -1);
 		playButton.position.y = camHeight / 2 - playButton.bounds.height / 2 - camHeight / 8;
 		playButton.position.x = camWidth / 2 - playButton.bounds.width / 2;
 		
-		settingsButton = new Mesh((GLGame)game, 0, 0, camWidth / 3, -1, "menu/settings.png", Mesh.FUNC_NONE, -1, -1);
+		settingsButton = new TexturedBlock((GLGame)game, 0, 0, camWidth / 3, -1, "menu/settings.png", TexturedBlock.FUNC_NONE, -1, -1);
 		settingsButton.position.y = camHeight / 2 - playButton.bounds.height / 2 - camHeight / 8;
 		settingsButton.position.x = camWidth / 2 - settingsButton.bounds.width / 2 + settingsButton.bounds.width + camWidth / 15;
 		
-		scoresButton = new Mesh((GLGame)game, 0, 0, camWidth / 3, -1, "menu/scores.png", Mesh.FUNC_NONE, -1, -1);
+		scoresButton = new TexturedBlock((GLGame)game, 0, 0, camWidth / 3, -1, "menu/scores.png", TexturedBlock.FUNC_NONE, -1, -1);
 		scoresButton.position.y = camHeight / 2 - playButton.bounds.height / 2 - camHeight / 8;
 		scoresButton.position.x = camWidth / 2 - scoresButton.bounds.width / 2 - scoresButton.bounds.width - camWidth / 15;
 	}

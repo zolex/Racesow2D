@@ -5,15 +5,15 @@ import java.util.Random;
 
 import org.racenet.framework.AndroidAudio;
 import org.racenet.framework.AndroidSound;
-import org.racenet.framework.AnimatedMesh;
+import org.racenet.framework.AnimatedBlock;
 import org.racenet.framework.CollisionDetecctor;
 import org.racenet.framework.Func;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
-import org.racenet.framework.Mesh;
+import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 
-class Player extends AnimatedMesh {
+class Player extends AnimatedBlock {
 	
 	public final Vector2 velocity = new Vector2();
 	public final Vector2 accel = new Vector2();
@@ -104,7 +104,7 @@ class Player extends AnimatedMesh {
 		
 		if (!this.distanceRemembered && this.velocity.y < 0) {
 			
-			Mesh ground = map.getGround(this);
+			TexturedBlock ground = map.getGround(this);
 			if (ground != null) {
 				
 				this.distanceOnJump = Math.max(0.1f, this.position.y - (ground.position.y + ground.bounds.height));
@@ -143,11 +143,11 @@ class Player extends AnimatedMesh {
 			
 			if (eventTime == 0 && System.nanoTime() / 1000000000.0f > this.lastWallJumped + 2) {
 				
-				List<GameObject> colliders = map.getPotentialBackColliders(this);
+				List<GameObject> colliders = map.getPotentialWallColliders(this);
 				int length = colliders.size();
 				for (int i = 0; i < length; i++) {
 				
-					Mesh part = map.getBack(i);
+					TexturedBlock part = map.getWall(i);
 					if (0 != CollisionDetecctor.rectangleCollision(part.bounds, this.bounds)) {
 						
 						int wjSound = this.rGen.nextInt(SOUND_WJ2 - SOUND_WJ1 + 1) + SOUND_WJ1;
@@ -235,7 +235,7 @@ class Player extends AnimatedMesh {
 			this.position.add(this.velocity.x * deltaTime, this.velocity.y * deltaTime);
 			this.bounds.lowerLeft.set(this.position);
 			
-			colliders = map.getPotentialFrontColliders(this);
+			colliders = map.getPotentialGroundColliders(this);
 			length = colliders.size();
 			for (int i = 0; i < length; i++) {
 			
@@ -243,9 +243,9 @@ class Player extends AnimatedMesh {
 				int collision = CollisionDetecctor.rectangleCollision(part.bounds, this.bounds);
 				if (collision != 0) {
 				
-					switch (((Mesh)part).func) {
+					switch (((TexturedBlock)part).func) {
 					
-						case Mesh.FUNC_LAVA:
+						case TexturedBlock.FUNC_LAVA:
 							this.activeAnimId = Player.ANIM_BURN;
 							this.enableAnimation = true;
 							this.animDuration = 0.4f;							

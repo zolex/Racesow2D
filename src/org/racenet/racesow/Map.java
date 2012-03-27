@@ -8,7 +8,7 @@ import java.util.List;
 import org.racenet.framework.Func;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
-import org.racenet.framework.Mesh;
+import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.SpatialHashGrid;
 import org.racenet.framework.XMLParser;
 import org.w3c.dom.Element;
@@ -16,10 +16,10 @@ import org.w3c.dom.NodeList;
 
 public class Map {
 	
-	private List<Mesh> front = new ArrayList<Mesh>();
-	private List<Mesh> back = new ArrayList<Mesh>();
-	private SpatialHashGrid frontGrid;
-	private SpatialHashGrid backGrid;
+	private List<TexturedBlock> ground = new ArrayList<TexturedBlock>();
+	private List<TexturedBlock> walls = new ArrayList<TexturedBlock>();
+	private SpatialHashGrid groundGrid;
+	private SpatialHashGrid wallGrid;
 	private SpatialHashGrid funcGrid;
 	public float playerX = 0;
 	public float playerY = 0;
@@ -67,30 +67,30 @@ public class Map {
 			}
 		}
 		
-		NodeList meshes = parser.doc.getElementsByTagName("mesh");
+		NodeList blockes = parser.doc.getElementsByTagName("block");
 		
 		float worldWidth = 0;
 		float worldHeight = 0;
 		
-		int numMeshes = meshes.getLength();
-		for (int i = 0; i < numMeshes; i++) {
+		int numblockes = blockes.getLength();
+		for (int i = 0; i < numblockes; i++) {
 			
-			Element mesh = (Element)meshes.item(i);
-			float meshMaxX = Float.valueOf(parser.getValue(mesh, "x")).floatValue() + Float.valueOf(parser.getValue(mesh, "width")).floatValue();
-			if (worldWidth < meshMaxX) {
+			Element block = (Element)blockes.item(i);
+			float blockMaxX = Float.valueOf(parser.getValue(block, "x")).floatValue() + Float.valueOf(parser.getValue(block, "width")).floatValue();
+			if (worldWidth < blockMaxX) {
 				
-				worldWidth = meshMaxX;
+				worldWidth = blockMaxX;
 			}
 			
-			float meshMaxY = Float.valueOf(parser.getValue(mesh, "y")).floatValue() + Float.valueOf(parser.getValue(mesh, "height")).floatValue();
-			if (worldHeight < meshMaxY) {
+			float blockMaxY = Float.valueOf(parser.getValue(block, "y")).floatValue() + Float.valueOf(parser.getValue(block, "height")).floatValue();
+			if (worldHeight < blockMaxY) {
 				
-				worldHeight = meshMaxY;
+				worldHeight = blockMaxY;
 			}
 		}
 		
-		this.frontGrid = new SpatialHashGrid(worldWidth, worldHeight, 20);
-		this.backGrid = new SpatialHashGrid(worldWidth, worldHeight, 20);
+		this.groundGrid = new SpatialHashGrid(worldWidth, worldHeight, 20);
+		this.wallGrid = new SpatialHashGrid(worldWidth, worldHeight, 20);
 		this.funcGrid = new SpatialHashGrid(worldWidth, worldHeight, 20);
 		
 		NodeList startTimerN = parser.doc.getElementsByTagName("starttimer");
@@ -111,14 +111,14 @@ public class Map {
 			this.funcGrid.insertStaticObject(stopTimer);
 		}
 		
-		for (int i = 0; i < numMeshes; i++) {
+		for (int i = 0; i < numblockes; i++) {
 			
-			Element xmlMesh = (Element)meshes.item(i);
+			Element xmlblock = (Element)blockes.item(i);
 			
 			short func;
 			try {
 				
-				func = Short.valueOf(parser.getValue(xmlMesh, "func"));
+				func = Short.valueOf(parser.getValue(xmlblock, "func"));
 				
 			} catch (NumberFormatException e) {
 				
@@ -128,7 +128,7 @@ public class Map {
 			float texSX;
 			try {
 				
-				texSX = Float.valueOf(parser.getValue(xmlMesh, "texsx")).floatValue();
+				texSX = Float.valueOf(parser.getValue(xmlblock, "texsx")).floatValue();
 						
 			} catch (NumberFormatException e) {
 				
@@ -138,32 +138,32 @@ public class Map {
 			float texSY;
 			try {
 				
-				texSY = Float.valueOf(parser.getValue(xmlMesh, "texsy")).floatValue();
+				texSY = Float.valueOf(parser.getValue(xmlblock, "texsy")).floatValue();
 						
 			} catch (NumberFormatException e) {
 				
 				texSY = 0;
 			}
 			
-			Mesh mesh = new Mesh(game,
-				Float.valueOf(parser.getValue(xmlMesh, "x")).floatValue(),
-				Float.valueOf(parser.getValue(xmlMesh, "y")).floatValue(),
-				Float.valueOf(parser.getValue(xmlMesh, "width")).floatValue(),
-				Float.valueOf(parser.getValue(xmlMesh, "height")).floatValue(),
-				parser.getValue(xmlMesh, "texture"),
+			TexturedBlock block = new TexturedBlock(game,
+				Float.valueOf(parser.getValue(xmlblock, "x")).floatValue(),
+				Float.valueOf(parser.getValue(xmlblock, "y")).floatValue(),
+				Float.valueOf(parser.getValue(xmlblock, "width")).floatValue(),
+				Float.valueOf(parser.getValue(xmlblock, "height")).floatValue(),
+				parser.getValue(xmlblock, "texture"),
 				func,
 				texSX,
 				texSY
 			);
 			
-			String level = parser.getValue(xmlMesh, "level");
-			if (level.equals("front")) {
+			String level = parser.getValue(xmlblock, "level");
+			if (level.equals("ground")) {
 				
-				this.addFront(mesh);
+				this.addGround(block);
 				
-			} else if (level.equals("back")) {
+			} else if (level.equals("wall")) {
 				
-				this.addBack(mesh);
+				this.addWall(block);
 			}
 		}
 		
@@ -172,72 +172,72 @@ public class Map {
 	
 	public void reloadTextures() {
 		
-		int length = this.front.size();
+		int length = this.ground.size();
 		for (int i = 0; i < length; i++) {
 			
-			this.front.get(i).reloadTexture();
+			this.ground.get(i).reloadTexture();
 		}
 		
-		length = this.back.size();
+		length = this.walls.size();
 		for (int i = 0; i < length; i++) {
 			
-			this.back.get(i).reloadTexture();
+			this.walls.get(i).reloadTexture();
 		}
 	}
 	
 	public void dispose() {
 		
-		int length = this.front.size();
+		int length = this.ground.size();
 		for (int i = 0; i < length; i++) {
 			
-			this.front.get(i).dispose();
+			this.ground.get(i).dispose();
 		}
 		
-		length = this.back.size();
+		length = this.walls.size();
 		for (int i = 0; i < length; i++) {
 			
-			this.back.get(i).dispose();
+			this.walls.get(i).dispose();
 		}
 	}
 	
-	public void addFront(Mesh mesh) {
+	public void addGround(TexturedBlock block) {
 		
-		this.front.add(mesh);
-		this.frontGrid.insertStaticObject(mesh);
+		this.ground.add(block);
+		this.groundGrid.insertStaticObject(block);
 	}
 	
-	public Mesh getFront(int i) {
+	public TexturedBlock getGround(int i) {
 		
-		return this.front.get(i);
+		return this.ground.get(i);
 	}
 	
-	public int numFront() {
+	public int numGround() {
 		
-		return this.front.size();
+		return this.ground.size();
 	}
 	
-	public void addBack(Mesh mesh) {
+	public void addWall(TexturedBlock block) {
 		
-		this.back.add(mesh);
-		this.backGrid.insertStaticObject(mesh);
+		this.walls.add(block);
+		this.wallGrid.insertStaticObject(block);
 	}
 	
-	public Mesh getBack(int i) {
+	public TexturedBlock getWall(int i) {
 		
-		return this.back.get(i);
+		return this.walls.get(i);
 	}
 	
-	public int numBack() {
+	public int numWalls() {
 		
-		return this.back.size();
+		return this.walls.size();
 	}
 	
-	public Mesh getGround(GameObject o) {
+	public TexturedBlock getGround(GameObject o) {
 		
 		int tallestPart = 0;
 		float tallestHeight = 0;
 		
-		List<GameObject> colliders = frontGrid.getPotentialColliders(o);
+		List<GameObject> colliders = groundGrid.getPotentialColliders(o);
 		int length = colliders.size();
 		if (length == 0) return null;
 		for (int i = 0; i < length; i++) {
@@ -254,17 +254,17 @@ public class Map {
 			}
 		}
 		
-		return (Mesh)colliders.get(tallestPart);
+		return (TexturedBlock)colliders.get(tallestPart);
 	}
 	
-	public List<GameObject> getPotentialFrontColliders(GameObject o) {
+	public List<GameObject> getPotentialGroundColliders(GameObject o) {
 		
-		return this.frontGrid.getPotentialColliders(o);
+		return this.groundGrid.getPotentialColliders(o);
 	}
 
-	public List<GameObject> getPotentialBackColliders(GameObject o) {
+	public List<GameObject> getPotentialWallColliders(GameObject o) {
 		
-		return this.backGrid.getPotentialColliders(o);
+		return this.wallGrid.getPotentialColliders(o);
 	}
 	
 	public List<GameObject> getPotentialFuncColliders(GameObject o) {
@@ -274,16 +274,16 @@ public class Map {
 	
 	public void draw() {
 		
-		int length = this.numBack();
+		int length = this.numWalls();
 		for (int i = 0; i < length; i++) {
 			
-			this.getBack(i).draw();
+			this.getWall(i).draw();
 		}
 		
-		length = this.numFront();
+		length = this.numGround();
 		for (int i = 0; i < length; i++) {
 			
-			this.getFront(i).draw();
+			this.getGround(i).draw();
 		}
 	}
 	

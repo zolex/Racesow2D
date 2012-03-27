@@ -12,6 +12,9 @@ import org.racenet.framework.interfaces.Screen;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
@@ -31,7 +34,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 		Idle
 	}
 	
-	private GLSurfaceView glView;
+	protected GLSurfaceView glView;
 	private GLGraphics glGraphics;
 	private Audio audio;
 	private Input input;
@@ -111,11 +114,10 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 			
 			if (state == GLGameState.Initialized) {
 				
-				screen = getStartScreen();
+				this.setScreen(this.getStartScreen());
 			}
 			
 			state = GLGameState.Running;
-			screen.resume();
 			startTime = System.nanoTime();
 		}
 	}
@@ -175,7 +177,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 	
 	public Graphics getGraphics() {
 		
-		throw new IllegalStateException("Use getGLGraphics() instead");
+		throw new RuntimeException("use getGLGraphics()");
 	}
 	
 	public GLGraphics getGLGraphics() {
@@ -195,8 +197,12 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 			throw new IllegalArgumentException("Screen must not be null");
 		}
 		
-		this.screen.pause();
-		this.screen.dispose();
+		if (this.screen != null) {
+		
+			this.screen.pause();
+			this.screen.dispose();
+		}
+		
 		screen.resume();
 		screen.update(0);
 		this.screen = screen;

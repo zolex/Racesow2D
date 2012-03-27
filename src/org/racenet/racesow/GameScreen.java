@@ -1,5 +1,6 @@
 package org.racenet.racesow;
 
+import java.io.File;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -8,7 +9,9 @@ import org.racenet.framework.Camera2;
 import org.racenet.framework.CameraText;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
+import org.racenet.framework.GLTexture;
 import org.racenet.framework.Vector2;
+import org.racenet.framework.interfaces.FileIO;
 import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Screen;
 import org.racenet.framework.interfaces.Input.TouchEvent;
@@ -35,6 +38,11 @@ class GameScreen extends Screen {
 		super(game);
 		glGraphics = ((GLGame)game).getGLGraphics();
 		
+		GLTexture.APP_FOLDER = "racesow";
+		FileIO fileIO = game.getFileIO();
+		fileIO.createDirectory("racesow" + File.separator + "maps");
+		fileIO.createDirectory("racesow" + File.separator + "textures");
+		
 		float camWidth = (float)game.getScreenWidth() / 10;
 		float camHeight = (float)game.getScreenHeight() / 10;
 		
@@ -55,10 +63,9 @@ class GameScreen extends Screen {
 		camera.addHud(fps);
 		camera.addHud(timer);
 		
-		map = new Map((GLGame)game, "map_testing/testing.xml");
+		map = new Map();
+		map.load((GLGame)game, "testing.xml");
 		player = new Player((GLGame)game, map.playerX, map.playerY);
-		
-		
 	}
 
 	public void update(float deltaTime) {

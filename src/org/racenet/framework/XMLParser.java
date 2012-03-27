@@ -20,7 +20,11 @@ public class XMLParser {
 
 	public Document doc = null;
 	
-	public XMLParser(InputStream xml) {
+	public XMLParser() {
+		
+    }
+	
+	public void read(InputStream xml) {
 		
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {
@@ -29,6 +33,7 @@ public class XMLParser {
             InputSource is = new InputSource();
             is.setByteStream(xml);
             this.doc = db.parse(is);
+            xml.close();
  
         } catch (ParserConfigurationException e) {
         	
@@ -42,7 +47,7 @@ public class XMLParser {
         	
             Log.e("XMLParser-Error: ", e.getMessage());
         }
-    }
+	}
 	
 	public String getValue(Element item, String str) {
 		

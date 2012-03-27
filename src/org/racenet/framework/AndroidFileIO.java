@@ -37,5 +37,11 @@ public class AndroidFileIO implements FileIO {
 
 		return new FileOutputStream(externalStoragePath + fileName);
 	}
+	
+	public boolean createDirectory(String path) {
+		
+		File directory = new File(externalStoragePath + path);
+		return directory.mkdirs();
+	}
 
 }

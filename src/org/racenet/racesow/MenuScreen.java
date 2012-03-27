@@ -2,36 +2,37 @@ package org.racenet.racesow;
 
 import java.util.List;
 
-import org.racenet.framework.AndroidGame;
-import org.racenet.framework.AndroidScreen;
-import org.racenet.framework.Assets;
+import javax.microedition.khronos.opengles.GL10;
+
+import org.racenet.framework.Camera2;
+import org.racenet.framework.GLGame;
+import org.racenet.framework.GLGraphics;
+import org.racenet.framework.GLTexture;
+import org.racenet.framework.Mesh;
 import org.racenet.framework.interfaces.Game;
-import org.racenet.framework.interfaces.Graphics;
-import org.racenet.framework.interfaces.Pixmap;
 import org.racenet.framework.interfaces.Input.TouchEvent;
+import org.racenet.framework.interfaces.Screen;
 
-import android.content.Intent;
-import android.graphics.Color;
-
-public class MenuScreen extends AndroidScreen {
-
-	Pixmap button, button2, button3, button4;
+public class MenuScreen extends Screen {
+	
+	Mesh header;
+	Camera2 camera;
+	GLGraphics glGraphics;
 	
 	public MenuScreen(Game game) {
 		
 		super(game);
-		AndroidGame aGame = (AndroidGame)game;
-		Assets assets = Assets.getInstance();
-		Graphics g = game.getGraphics();
-		g.clear(Color.BLACK);
 		
-		Pixmap header = assets.getPixmap("menu_header");
-		header.resizeWidth(aGame.getScreenWidth());
-		g.drawPixmap(header, 0, 0);
+		glGraphics = ((GLGame)game).getGLGraphics();
 		
-		button = assets.getPixmap("play_button");
-		button.resizeWidth(aGame.getScreenWidth() / 10);
-		g.drawPixmap(button, aGame.getScreenWidth() / 10, aGame.getScreenHeight() / 2);
+		float camWidth = (float)game.getScreenWidth();
+		float camHeight = (float)game.getScreenHeight();
+		camera = new Camera2(glGraphics, camWidth, camHeight);
+		
+		GLTexture.APP_FOLDER = "racesow";
+		header = new Mesh((GLGame)game, 0, 0, camWidth, -1, "racesow.jpg", Mesh.FUNC_NONE, -1, -1);
+		header.position.y = camHeight - header.bounds.height;
+		header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
 	}
 	
 	@Override
@@ -42,12 +43,46 @@ public class MenuScreen extends AndroidScreen {
 		for (int i = 0; i < length; i++) {
 			
 			TouchEvent e = touchEvents.get(i);
-			
-			if (touchEventInPixmap(e, button)) {
+			if (e.type == TouchEvent.TOUCH_DOWN) {
 				
-				Intent intent = new Intent((AndroidGame)game, Racesow.class);
-				((AndroidGame)game).startActivity(intent);
+				game.setScreen(new GameScreen(game));
 			}
 		}
+	}
+
+	@Override
+	public void present(float deltaTime) {
+		
+		GL10 gl = glGraphics.getGL();
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		gl.glFrontFace(GL10.GL_CCW);
+		gl.glEnable(GL10.GL_CULL_FACE);
+		gl.glCullFace(GL10.GL_BACK);
+		
+		this.camera.setViewportAndMatrices();
+		
+		gl.glEnable(GL10.GL_TEXTURE_2D);
+		//gl.glEnable(GL10.GL_BLEND);
+		//gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		
+		this.header.draw();
+	}
+
+	@Override
+	public void pause() {
+		
+	}
+
+	@Override
+	public void resume() {
+		
+		this.header.reloadTexture();
+	}
+
+	@Override
+	public void dispose() {
+		
+		this.header.dispose();
 	}
 }

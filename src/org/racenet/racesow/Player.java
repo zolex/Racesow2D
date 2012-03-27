@@ -10,8 +10,6 @@ import org.racenet.framework.GameObject;
 import org.racenet.framework.Mesh;
 import org.racenet.framework.Vector2;
 
-import android.util.Log;
-
 class Player extends AnimatedMesh {
 	
 	public final Vector2 velocity = new Vector2();

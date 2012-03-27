@@ -3,11 +3,13 @@ package org.racenet.racesow;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.interfaces.Screen;
 
+import android.util.Log;
+
 public class Racesow extends GLGame {	
 	
     public Screen getStartScreen() {
     	
-        return new GameScreen(this);
+        return new MenuScreen(this);
     }
     
     public void onBackPressed() {
@@ -24,12 +26,18 @@ public class Racesow extends GLGame {
     			
     		} else {
     			
-    			this.finish();
+    			this.glView.queueEvent(new Runnable() {
+
+                    public void run() {
+                       
+                    	Racesow.this.setScreen(Racesow.this.getStartScreen());
+                    }
+                });
     		}
     	
     	} else {
     		
-    		this.finish();
+    		super.onBackPressed();
     	}
     }
 }

@@ -11,4 +11,6 @@ public interface FileIO {
 	public InputStream readFile(String fileName) throws IOException;
 	
 	public OutputStream writeFile(String fileName) throws IOException;
+	
+	public boolean createDirectory(String path);
 }

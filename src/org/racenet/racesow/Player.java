@@ -1,7 +1,10 @@
 package org.racenet.racesow;
 
 import java.util.List;
+import java.util.Random;
 
+import org.racenet.framework.AndroidAudio;
+import org.racenet.framework.AndroidSound;
 import org.racenet.framework.AnimatedMesh;
 import org.racenet.framework.CollisionDetecctor;
 import org.racenet.framework.Func;
@@ -23,6 +26,12 @@ class Player extends AnimatedMesh {
 	public static final int ANIM_BURN = 3;
 	public static final int ANIM_INVISIBLE = 4;
 	
+	public static final int SOUND_JUMP1 = 0;
+	public static final int SOUND_JUMP2 = 1;
+	public static final int SOUND_WJ1 = 2;
+	public static final int SOUND_WJ2 = 3;
+	public static final int SOUND_DIE = 4;
+	
 	private boolean onFloor = false;
 	private float lastWallJumped = 0;
 	private float distanceOnJump = -1;
@@ -32,12 +41,25 @@ class Player extends AnimatedMesh {
 	private boolean enableAnimation = false;
 	private boolean isDead = false;
 	private float animDuration = 0;
+	private AndroidSound sounds[] = new AndroidSound[5];
+	private Random rGen;
+	private float volume = 0.1f;
 	
 	private int frames = 0;
 	
 	public Player(GLGame game, float x, float y) {
 		
 		super(game, x, y, 3.4f, 6.5f);
+		
+		this.rGen = new Random();
+		
+		AndroidAudio audio = (AndroidAudio)game.getAudio();
+		this.sounds[SOUND_JUMP1] = (AndroidSound)audio.newSound("sounds/player/jump_1.ogg");
+		this.sounds[SOUND_JUMP2] = (AndroidSound)audio.newSound("sounds/player/jump_2.ogg");
+		this.sounds[SOUND_WJ1] = (AndroidSound)audio.newSound("sounds/player/wj_1.ogg");
+		this.sounds[SOUND_WJ2] = (AndroidSound)audio.newSound("sounds/player/wj_2.ogg");
+		this.sounds[SOUND_DIE] = (AndroidSound)audio.newSound("sounds/player/death.ogg");
+		
 		this.loadAnimations();
 		this.setupVertices();
 		
@@ -93,6 +115,11 @@ class Player extends AnimatedMesh {
 		
 		if (this.onFloor) {
 		
+			this.onFloor = false;
+			
+			int jumpSound = this.rGen.nextInt(SOUND_JUMP2 - SOUND_JUMP1 + 1) + SOUND_JUMP1;
+			this.sounds[jumpSound].play(this.volume);
+			
 			if (this.virtualSpeed == 0) {
 				
 				this.virtualSpeed = this.startSpeed;
@@ -104,8 +131,8 @@ class Player extends AnimatedMesh {
 				this.virtualSpeed += boost;
 			}
 			
+			this.position.set(this.position.x, this.position.y + 0.5f);
 			this.velocity.add(0, 20);
-			this.onFloor = false;
 			this.distanceRemembered = false;
 			this.distanceOnJump = -1;
 			
@@ -123,6 +150,10 @@ class Player extends AnimatedMesh {
 				
 					Mesh part = map.getBack(i);
 					if (0 != CollisionDetecctor.rectangleCollision(part.bounds, this.bounds)) {
+						
+						int wjSound = this.rGen.nextInt(SOUND_WJ2 - SOUND_WJ1 + 1) + SOUND_WJ1;
+
+						this.sounds[wjSound].play(this.volume);
 						
 						this.velocity.set(this.velocity.x + 5, 17);
 						this.lastWallJumped = System.nanoTime() / 1000000000.0f;
@@ -252,6 +283,7 @@ class Player extends AnimatedMesh {
 	
 	public void die() {
 		
+		this.sounds[SOUND_DIE].play(this.volume);
 		this.isDead = true;
 	}
 	

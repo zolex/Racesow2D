@@ -10,6 +10,8 @@ import org.racenet.framework.GameObject;
 import org.racenet.framework.Mesh;
 import org.racenet.framework.Vector2;
 
+import android.util.Log;
+
 class Player extends AnimatedMesh {
 	
 	public final Vector2 velocity = new Vector2();
@@ -30,6 +32,8 @@ class Player extends AnimatedMesh {
 	private boolean enableAnimation = false;
 	private boolean isDead = false;
 	private float animDuration = 0;
+	
+	private int frames = 0;
 	
 	public Player(GLGame game, float x, float y) {
 		
@@ -132,6 +136,8 @@ class Player extends AnimatedMesh {
 	}
 	
 	public void move(Vector2 gravity, Map map, float deltaTime) {
+		
+		if (++frames < 3) return; // workaround
 		
 		if (this.enableAnimation) {
 			

@@ -2,7 +2,6 @@ package org.racenet.racesow;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,8 +13,6 @@ import org.racenet.framework.SpatialHashGrid;
 import org.racenet.framework.XMLParser;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import android.util.Log;
 
 public class Map {
 	

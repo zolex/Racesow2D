@@ -12,9 +12,6 @@ import org.racenet.framework.interfaces.Screen;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;

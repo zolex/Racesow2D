@@ -53,6 +53,4 @@ public class AndroidAudio implements Audio {
 			throw new RuntimeException("Could not load sound '" + fileName + "'");
 		}
 	}
-
-	
 }

@@ -132,7 +132,7 @@ class Player extends AnimatedMesh {
 				this.virtualSpeed += boost;
 			}
 			
-			this.position.set(this.position.x, this.position.y + 0.5f);
+			this.position.set(this.position.x, this.position.y + 0.75f);
 			this.velocity.add(0, 20);
 			this.distanceRemembered = false;
 			this.distanceOnJump = -1;

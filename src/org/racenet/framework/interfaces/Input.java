@@ -2,6 +2,8 @@ package org.racenet.framework.interfaces;
 
 import java.util.List;
 
+import android.view.MotionEvent;
+
 public interface Input {
 
 	public static class TouchEvent {
@@ -14,6 +16,7 @@ public interface Input {
 		public int x;
 		public int y;
 		public int pointer;
+		public MotionEvent source;
 	}
 	
 	public List<TouchEvent> getTouchEvents();

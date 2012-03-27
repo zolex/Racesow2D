@@ -5,6 +5,8 @@ import org.racenet.framework.interfaces.Screen;
 
 public class Racesow extends GLGame {	
 	
+	public static boolean LOOPER_PREPARED = false;
+	
     public Screen getStartScreen() {
     	
         return new MenuScreen(this);

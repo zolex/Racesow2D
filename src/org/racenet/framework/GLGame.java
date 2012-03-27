@@ -91,16 +91,21 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 			}
 		}
 		
-		wakeLock.release();
-		glView.onPause();
+		this.wakeLock.release();
+		this.glView.onPause();
 		super.onPause();
 	}
 	
 	public void onResume() {
 		
 		super.onResume();
-		glView.onResume();
-		wakeLock.acquire();
+		this.glView.onResume();
+		this.wakeLock.acquire();
+		
+		if (this.screen != null) {
+			
+			this.screen.resume();
+		}
 	}
 	
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -200,7 +205,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 			this.screen.dispose();
 		}
 		
-		screen.resume();
+		//screen.resume();
 		screen.update(0);
 		this.screen = screen;
 	}

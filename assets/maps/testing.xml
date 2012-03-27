@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <map>
 	<name>Testmap alpha 2</name>
-	<mapper>zolex</mapper>
+	<mapper>soh#zolex</mapper>
 	<player><x>102</x><y>20</y></player>
 	<starttimer><x>110</x></starttimer>
 	<stoptimer><x>890</x></stoptimer>

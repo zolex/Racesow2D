@@ -39,7 +39,7 @@ public class GLTexture {
     	return textureId;
     }
     
-    public boolean load() {
+    private boolean load() {
     	
         GL10 gl = glGraphics.getGL();
         int[] textureIds = new int[1];
@@ -53,10 +53,10 @@ public class GLTexture {
             Bitmap bitmap = BitmapFactory.decodeStream(in);
             gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId);
             GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
-            setFilters(GL10.GL_NEAREST, GL10.GL_NEAREST);            
+            this.setFilters(GL10.GL_NEAREST, GL10.GL_NEAREST);            
             gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
-            width = bitmap.getWidth();
-            height = bitmap.getHeight();
+            this.width = bitmap.getWidth();
+            this.height = bitmap.getHeight();
             bitmap.recycle();
             
         } catch (IOException e) {
@@ -67,10 +67,10 @@ public class GLTexture {
                 Bitmap bitmap = BitmapFactory.decodeStream(in);
                 gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId);
                 GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
-                setFilters(GL10.GL_NEAREST, GL10.GL_NEAREST);            
+                this.setFilters(GL10.GL_NEAREST, GL10.GL_NEAREST);            
                 gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
-                width = bitmap.getWidth();
-                height = bitmap.getHeight();
+                this.width = bitmap.getWidth();
+                this.height = bitmap.getHeight();
                 bitmap.recycle();
                 
             } catch (IOException e2) {
@@ -98,16 +98,16 @@ public class GLTexture {
     
     public void reload() {
     	
-        load();
-        bind();
-        setFilters(minFilter, magFilter);        
+        this.load();
+        this.bind();
+        this.setFilters(minFilter, magFilter);        
         glGraphics.getGL().glBindTexture(GL10.GL_TEXTURE_2D, 0);
     }
     
     public void setFilters(int min, int mag) {
     	
-        minFilter = min;
-        magFilter = mag;
+    	this.minFilter = min;
+    	this.magFilter = mag;
         GL10 gl = glGraphics.getGL();
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, minFilter);
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, magFilter);
@@ -115,8 +115,7 @@ public class GLTexture {
     
     public void bind() {
     	
-        GL10 gl = glGraphics.getGL();
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId);
+    	glGraphics.getGL().glBindTexture(GL10.GL_TEXTURE_2D, textureId);
     }
     
     public void dispose() {

@@ -23,7 +23,7 @@ public class Animation {
 		int length = this.keyFrames.length;
 		for (int i = 0; i < length; i++) {
 			
-			keyFrames[i].load();
+			keyFrames[i].reload();
 		}
 	}
 

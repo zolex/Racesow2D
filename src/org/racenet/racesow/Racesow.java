@@ -1,11 +1,25 @@
 package org.racenet.racesow;
 
+import java.io.File;
+
 import org.racenet.framework.GLGame;
+import org.racenet.framework.interfaces.FileIO;
 import org.racenet.framework.interfaces.Screen;
+
+import android.os.Bundle;
 
 public class Racesow extends GLGame {	
 	
 	public static boolean LOOPER_PREPARED = false;
+	
+	public void onCreate(Bundle savedInstanceState) {
+		
+		super.onCreate(savedInstanceState);
+		
+		FileIO fileIO = this.getFileIO();
+		fileIO.createDirectory("racesow" + File.separator + "maps");
+		fileIO.createDirectory("racesow" + File.separator + "textures");
+	}
 	
     public Screen getStartScreen() {
     	
@@ -37,8 +51,7 @@ public class Racesow extends GLGame {
     	
     	} else {
     		
-    		// quit application
-    		LOOPER_PREPARED = false;
+    		LOOPER_PREPARED = false; // just to be sure...
     		super.onBackPressed();
     	}
     }

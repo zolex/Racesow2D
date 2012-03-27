@@ -39,9 +39,6 @@ class GameScreen extends Screen {
 		glGraphics = ((GLGame)game).getGLGraphics();
 		
 		GLTexture.APP_FOLDER = "racesow";
-		FileIO fileIO = game.getFileIO();
-		fileIO.createDirectory("racesow" + File.separator + "maps");
-		fileIO.createDirectory("racesow" + File.separator + "textures");
 		
 		float camWidth = (float)game.getScreenWidth() / 10;
 		float camHeight = (float)game.getScreenHeight() / 10;

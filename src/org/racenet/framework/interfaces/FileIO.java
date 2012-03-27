@@ -13,4 +13,8 @@ public interface FileIO {
 	public OutputStream writeFile(String fileName) throws IOException;
 	
 	public boolean createDirectory(String path);
+	
+	public String[] listAssets(String dir);
+	
+	public String[] listFiles(String dir);
 }

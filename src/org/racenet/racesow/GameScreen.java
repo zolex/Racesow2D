@@ -33,7 +33,7 @@ class GameScreen extends Screen {
 	int frames = 10;
 	float sumDelta = 0;
 	
-	public GameScreen(Game game) {
+	public GameScreen(Game game, String mapName) {
 			
 		super(game);
 		glGraphics = ((GLGame)game).getGLGraphics();
@@ -61,7 +61,7 @@ class GameScreen extends Screen {
 		camera.addHud(timer);
 		
 		map = new Map();
-		map.load((GLGame)game, "testing.xml");
+		map.load((GLGame)game, mapName);
 		player = new Player((GLGame)game, map.playerX, map.playerY);
 	}
 

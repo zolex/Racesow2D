@@ -3,6 +3,7 @@ package org.racenet.framework;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -43,5 +44,21 @@ public class AndroidFileIO implements FileIO {
 		File directory = new File(externalStoragePath + path);
 		return directory.mkdirs();
 	}
+	
+	public String[] listAssets(String dir) {
+		
+		try {
+			
+			return this.assetManager.list(dir);
+			
+		} catch (IOException e) {
+			
+			return null;
+		}
+	}
 
+	public String[] listFiles(String dir) {
+		
+		return new File(externalStoragePath + dir).list();
+	}
 }

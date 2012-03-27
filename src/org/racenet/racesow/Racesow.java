@@ -44,10 +44,20 @@ public class Racesow extends GLGame {
 
                     public void run() {
                        
-                    	Racesow.this.setScreen(Racesow.this.getStartScreen());
+                    	Racesow.this.setScreen(new MapsScreen(Racesow.this));
                     }
                 });
     		}
+    	
+    	} else if (screenName.endsWith("MapsScreen")) {
+    		
+			this.glView.queueEvent(new Runnable() {
+
+                public void run() {
+                   
+                	Racesow.this.setScreen(Racesow.this.getStartScreen());
+                }
+            });
     	
     	} else {
     		

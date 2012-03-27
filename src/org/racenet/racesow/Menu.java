@@ -146,7 +146,7 @@ public class Menu implements GestureDetector.OnGestureListener {
 		if (this.velocity != 0) {
 			
 			this.moveMenu(-this.velocity  * deltaTime);
-			this.velocity = this.velocity / 1.05f;
+			this.velocity = this.velocity / 1.025f;
 		}
 	}
 	

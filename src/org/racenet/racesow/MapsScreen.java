@@ -1,5 +1,7 @@
 package org.racenet.racesow;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -9,14 +11,17 @@ import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
 import org.racenet.framework.GLTexture;
 import org.racenet.framework.TexturedBlock;
+import org.racenet.framework.XMLParser;
 import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Input.TouchEvent;
 import org.racenet.framework.interfaces.Screen;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import android.util.Log;
 import android.view.GestureDetector;
 
-public class MenuScreen extends Screen {
+public class MapsScreen extends Screen {
 	
 	public TexturedBlock header;
 	Camera2 camera;
@@ -27,7 +32,7 @@ public class MenuScreen extends Screen {
 	float menuVelocity = 0;
 	Menu menu;
 	
-	public MenuScreen(final Game game) {
+	public MapsScreen(final Game game) {
 		
 		super(game);
 		
@@ -40,27 +45,41 @@ public class MenuScreen extends Screen {
 		menu = new Menu((GLGame)game, camWidth, camHeight);
 		gestures = new GestureDetector(menu);
 		
-		menu.addItem("menu/play.png", menu.new Callback() {
+		String[] maps = game.getFileIO().listAssets("maps");
+		for (int i = 0; i < maps.length; i++) {
 			
-			public void handle() {
+			final String mapName = maps[i];
+			if (!mapName.endsWith(".xml")) continue;
+			
+			
+			XMLParser parser = new XMLParser();
+			try {
 				
-				game.setScreen(new MapsScreen(game));
+				parser.read(game.getFileIO().readAsset("maps" + File.separator + mapName));
+				
+			} catch (IOException e) {
+				
+				continue;
 			}
-		});
+			
+			String levelshot = "nolevelshot.png";
+			NodeList mapn = parser.doc.getElementsByTagName("map");
+			if (mapn.getLength() == 1) {
+				
+				Element map = (Element)mapn.item(0);
+				levelshot = parser.getValue(map, "levelshot");
+			}
+			
+			menu.addItem(levelshot, menu.new Callback() {
+				
+				public void handle() {
+					
+					game.setScreen(new GameScreen(game, mapName));
+				}
+			});
+		}
 		
-		menu.addItem("menu/settings.png", menu.new Callback() {
-			
-			public void handle() {
-				
-			}
-		});
 		
-		menu.addItem("menu/scores.png", menu.new Callback() {
-			
-			public void handle() {
-				
-			}
-		});
 		
 		GLTexture.APP_FOLDER = "racesow";
 		header = new TexturedBlock((GLGame)game, 0, 0, camWidth, -1, "racesow.jpg", TexturedBlock.FUNC_NONE, -1, -1);
@@ -73,7 +92,6 @@ public class MenuScreen extends Screen {
 
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 		int length = touchEvents.size();
-		
 		for (int i = 0; i < length; i++) {
 			
 			gestures.onTouchEvent(touchEvents.get(i).source);  

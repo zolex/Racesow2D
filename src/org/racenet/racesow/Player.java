@@ -44,6 +44,7 @@ class Player extends AnimatedMesh {
 	private AndroidSound sounds[] = new AndroidSound[5];
 	private Random rGen;
 	private float volume = 0.1f;
+	private String model = "male";
 	
 	private int frames = 0;
 	
@@ -54,11 +55,11 @@ class Player extends AnimatedMesh {
 		this.rGen = new Random();
 		
 		AndroidAudio audio = (AndroidAudio)game.getAudio();
-		this.sounds[SOUND_JUMP1] = (AndroidSound)audio.newSound("sounds/player/jump_1.ogg");
-		this.sounds[SOUND_JUMP2] = (AndroidSound)audio.newSound("sounds/player/jump_2.ogg");
-		this.sounds[SOUND_WJ1] = (AndroidSound)audio.newSound("sounds/player/wj_1.ogg");
-		this.sounds[SOUND_WJ2] = (AndroidSound)audio.newSound("sounds/player/wj_2.ogg");
-		this.sounds[SOUND_DIE] = (AndroidSound)audio.newSound("sounds/player/death.ogg");
+		this.sounds[SOUND_JUMP1] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/jump_1.ogg");
+		this.sounds[SOUND_JUMP2] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/jump_2.ogg");
+		this.sounds[SOUND_WJ1] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/wj_1.ogg");
+		this.sounds[SOUND_WJ2] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/wj_2.ogg");
+		this.sounds[SOUND_DIE] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/death.ogg");
 		
 		this.loadAnimations();
 		this.setupVertices();
@@ -70,30 +71,30 @@ class Player extends AnimatedMesh {
 		String[][] animations = new String[5][];
 		
 		animations[ANIM_NONE] = new String[] {
-			"player/player.png"
+			"player/" + this.model + "/default.png"
 		};
 		
 		animations[ANIM_JUMP] = new String[] {
-			"player/player_jump_f1.png",
-			"player/player_jump_f2.png",
-			"player/player_jump_f1.png"
+			"player/" + this.model + "/jump_f1.png",
+			"player/" + this.model + "/jump_f2.png",
+			"player/" + this.model + "/jump_f1.png"
 		};
 		
 		animations[ANIM_WALLJUMP] = new String[] {
-			"player/player_walljump_f1.png",
-			"player/player_walljump_f2.png",
-			"player/player_walljump_f1.png"
+			"player/" + this.model + "/walljump_f1.png",
+			"player/" + this.model + "/walljump_f2.png",
+			"player/" + this.model + "/walljump_f1.png"
 		};
 		
 		animations[ANIM_BURN] = new String[] {
-			"player/player_burn_f1.png",
-			"player/player_burn_f2.png",
-			"player/player_burn_f3.png",
-			"player/player_burn_f4.png"
+			"player/" + this.model + "/burn_f1.png",
+			"player/" + this.model + "/burn_f2.png",
+			"player/" + this.model + "/burn_f3.png",
+			"player/" + this.model + "/burn_f4.png"
 		};
 		
 		animations[ANIM_INVISIBLE] = new String[] {
-			"player/transparent.png"
+			"player/" + this.model + "/invisible.png"
 		};
 	
 		this.setAnimations(animations);

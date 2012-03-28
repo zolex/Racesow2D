@@ -92,9 +92,9 @@ public class Map {
 			}
 		}
 		
-		this.groundGrid = new SpatialHashGrid(worldWidth, worldHeight, 20);
-		this.wallGrid = new SpatialHashGrid(worldWidth, worldHeight, 20);
-		this.funcGrid = new SpatialHashGrid(worldWidth, worldHeight, 20);
+		this.groundGrid = new SpatialHashGrid(worldWidth, worldHeight, 30);
+		this.wallGrid = new SpatialHashGrid(worldWidth, worldHeight, 30);
+		this.funcGrid = new SpatialHashGrid(worldWidth, worldHeight, 30);
 		
 		NodeList startTimerN = parser.doc.getElementsByTagName("starttimer");
 		if (startTimerN.getLength() == 1) {
@@ -252,9 +252,9 @@ public class Map {
 		for (int i = 0; i < length; i++) {
 			
 			GameObject part = colliders.get(i);
-			if (o.position.x >= part.position.x && o.position.x <= part.position.x + part.bounds.getWidth()) {
+			if (o.bounds.getPosition().x >= part.bounds.getPosition().x && o.bounds.getPosition().x <= part.bounds.getPosition().x + part.bounds.getWidth()) {
 				
-				float height = part.position.y + part.bounds.getHeight();
+				float height = part.bounds.getPosition().y + part.bounds.getHeight();
 				if (height > tallestHeight) {
 					
 					tallestHeight = height;

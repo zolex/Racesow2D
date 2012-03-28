@@ -1,5 +1,7 @@
 package org.racenet.framework;
 
+import android.util.Log;
+
 /**
  * Represents a polygon defined by at
  * least three points
@@ -46,6 +48,8 @@ public class Polygon {
 				
 				if (this.borders[t].intersect(other.borders[o])) {
 					
+					Log.d("DEBUG", "polygon 1 pos x " + String.valueOf(new Float(this.getPosition().x)) + " y " + String.valueOf(new Float(this.getPosition().y)));
+					Log.d("DEBUG", "polygon 2 pos x " + String.valueOf(new Float(other.getPosition().x)) + " y " + String.valueOf(new Float(other.getPosition().y)));
 					return true;
 				}
 			}
@@ -53,7 +57,6 @@ public class Polygon {
 		
 		return false;
 	}
-	
 	
 	/**
 	 * Get the height of the polygon by determining
@@ -159,6 +162,24 @@ public class Polygon {
 			this.borders[i].p1.y += diffY;
 			this.borders[i].p2.x += diffX;
 			this.borders[i].p2.y += diffY;
+		}
+	}
+	
+	/**
+	 * Set the position by moving all borders
+	 * of the polygon
+	 * 
+	 * @param Vector2 position
+	 */
+	public void addToPosition(float x, float y) {
+		
+		int length = this.borders.length;
+		for (int i = 0; i < length; i++) {
+			
+			this.borders[i].p1.x += x;
+			this.borders[i].p1.y += y;
+			this.borders[i].p2.x += x;
+			this.borders[i].p2.y += y;
 		}
 	}
 }

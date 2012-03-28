@@ -100,7 +100,7 @@ class GameScreen extends Screen {
 		
 		player.move(gravity, map, deltaTime);		
 		
-		camera.setPosition(player.position.x + 20, camera.position.y);		
+		camera.setPosition(player.bounds.getPosition().x + 20, camera.position.y);		
 		
 		// draw UPS
 		//ups.setupText((GLGame)game, "ups " + String.valueOf(new Integer((int)player.virtualSpeed)));

@@ -13,6 +13,8 @@ import org.racenet.framework.GameObject;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 
+import android.util.Log;
+
 class Player extends AnimatedBlock {
 	
 	public final Vector2 velocity = new Vector2();
@@ -107,7 +109,7 @@ class Player extends AnimatedBlock {
 			TexturedBlock ground = map.getGround(this);
 			if (ground != null) {
 				
-				this.distanceOnJump = Math.max(0.1f, this.position.y - (ground.position.y + ground.bounds.getHeight()));
+				this.distanceOnJump = Math.max(0.1f, this.bounds.getPosition().y - (ground.bounds.getPosition().y + ground.bounds.getHeight()));
 				this.distanceRemembered = true;
 			}
 		}
@@ -233,8 +235,7 @@ class Player extends AnimatedBlock {
 			}
 			*/
 			
-			this.position.add(this.velocity.x * deltaTime, this.velocity.y * deltaTime);
-			this.bounds.setPosition(this.position);
+			this.addToPosition(this.velocity.x * deltaTime, this.velocity.y * deltaTime);
 			
 			colliders = map.getPotentialGroundColliders(this);
 			length = colliders.size();
@@ -243,6 +244,9 @@ class Player extends AnimatedBlock {
 				GameObject part = colliders.get(i);
 				if (this.bounds.intersect(part.bounds)) {
 				
+					//Log.d("DEBUG", "vertex 1 pos x " + String.valueOf(this.position.x) + " y " + String.valueOf(this.position.y));
+					//Log.d("DEBUG", "vertex 2 pos x " + String.valueOf(part.position.x) + " y " + String.valueOf(part.position.y));
+					
 					switch (((TexturedBlock)part).func) {
 					
 						case TexturedBlock.FUNC_LAVA:
@@ -282,7 +286,7 @@ class Player extends AnimatedBlock {
 			}
 		}
 		
-		this.velocity.set(this.virtualSpeed / 30, this.velocity.y);
+		//this.velocity.set(this.virtualSpeed / 30, this.velocity.y);
 	}
 	
 	public void die() {
@@ -296,8 +300,6 @@ class Player extends AnimatedBlock {
 		this.isDead = false;
 		this.activeAnimId = ANIM_NONE;
 		this.virtualSpeed = 0;
-		this.velocity.set(0, 0);
-		this.position.set(x, y);
-		this.bounds.setPosition(this.position);
+		this.bounds.setPosition(new Vector2(x, y));
 	}
 }

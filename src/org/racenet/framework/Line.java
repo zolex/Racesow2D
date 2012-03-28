@@ -50,6 +50,8 @@ public class Line {
 					((this.p1.x - this.p2.x) * (other.p1.y - other.p2.y) - (this.p1.y - this.p2.y) *
 					(other.p1.x - other.p2.x));
 		
+		
+		
 		Float fpx = new Float(px);
 		Float fpy = new Float(py);
 		
@@ -77,7 +79,8 @@ public class Line {
 			
 		} else {
 			
-			Log.d("INTERSECT", "x " + String.valueOf(new Float(px)) + " y " + String.valueOf(new Float(py)));
+			Log.d("DEBUG", "------------------------------------------");
+			Log.d("DEBUG", "intersect x " + String.valueOf(fpx) + " y " + String.valueOf(fpy));
 			
 			return true;
 		}

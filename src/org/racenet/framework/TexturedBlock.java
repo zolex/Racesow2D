@@ -89,7 +89,7 @@ public class TexturedBlock extends GameObject {
 		GL10 gl = this.game.getGLGraphics().getGL();
 		
 		gl.glPushMatrix();
-		gl.glTranslatef(this.position.x, this.position.y, 0);
+		gl.glTranslatef(this.bounds.getPosition().x, this.bounds.getPosition().y, 0);
 		this.texture.bind();
 		this.vertices.bind();
 		this.vertices.draw(GL10.GL_TRIANGLES, 0, 6);

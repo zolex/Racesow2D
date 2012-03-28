@@ -14,7 +14,7 @@ public class Polygon {
 	 * The borders of the polygon represented by
 	 * line segments
 	 */
-	public Line[] borders;
+	public Vector2[] points;
 	
 	/**
 	 * Initialize a new polygon using multiple points
@@ -23,39 +23,110 @@ public class Polygon {
 	 */
 	public Polygon(Vector2 ... points) {
 		
-		int length = points.length;
-		this.borders = new Line[length];
-		for (int i = 0; i < length; i++) {
-			
-			this.borders[i] = new Line(points[i], points[i == length - 1 ? 0 : i + 1]);
-		}
+		this.points = points;
 	}
 	
 	/**
-	 * Calculate if the polygon intersects with
-	 * another one by checking the borders
+	 * Calculate if the polygon intersects with another one
 	 * 
 	 * @param Polygon other
 	 * @return boolean
 	 */
 	public boolean intersect(Polygon other) {
 		
-		int tLength = this.borders.length;
-		int oLength = other.borders.length;
-		for (int t = 0; t < tLength; t++) {
-			
-			for (int o = 0; o < oLength; o++) {
-				
-				if (this.borders[t].intersect(other.borders[o])) {
-					
-					Log.d("DEBUG", "polygon 1 pos x " + String.valueOf(new Float(this.getPosition().x)) + " y " + String.valueOf(new Float(this.getPosition().y)));
-					Log.d("DEBUG", "polygon 2 pos x " + String.valueOf(new Float(other.getPosition().x)) + " y " + String.valueOf(new Float(other.getPosition().y)));
-					return true;
-				}
-			}
-		}
+		int edgeCountA = this.points.length;
+	    int edgeCountB = other.points.length;
+	    Vector2 edge;
+	    
+	    // Loop through all the edges of both polygons
+	    for (int edgeIndex = 0; edgeIndex < edgeCountA + edgeCountB; edgeIndex++) {
+	    	
+	        if (edgeIndex < edgeCountA) {
+	        	
+	            edge = this.points[edgeIndex];
+	            
+	        } else {
+	        	
+	            edge = other.points[edgeIndex - edgeCountA];
+	        }
+
+	        // Find the axis perpendicular to the current edge
+	        Vector2 axis = new Vector2(-edge.x, edge.y);
+	        axis.normalize();
+
+	        // Find the projection of the polygon on the current axis
+	        float minA = 0; float minB = 0; float maxA = 0; float maxB = 0;
+	        float[] result;
+	        result = this.project(axis, this);
+	        minA = result[0];
+	        maxA = result[1];
+	        
+	        result = this.project(axis, other);
+	        minB = result[0];
+	        maxB = result[1];
+
+	        // Check if the polygon projections are currentlty intersecting
+	        if (this.intervalDistance(minA, maxA, minB, maxB) > 0) {
+	        
+	        	return false;
+	        }
+	    }
+	    
+	    return true;
+	}
+	
+	/**
+	 * Calculate the distance between [minA, maxA] and [minB, maxB]
+	 * The distance will be negative if the intervals overlap
+	 * 
+	 * @param float minA
+	 * @param float maxA
+	 * @param float minB
+	 * @param float maxB
+	 * @return float
+	 */
+	public float intervalDistance(float minA, float maxA, float minB, float maxB) {
 		
-		return false;
+	    if (minA < minB) {
+	    	
+	        return minB - maxA;
+	        
+	    } else {
+	    	
+	        return minA - maxB;
+	    }
+	}
+	
+	/**
+	 * Calculate the projection of a polygon on an axis
+	 * and returns it as a [min, max] interval
+	 * 
+	 * @param Vector2 axis
+	 * @param Polygon polygon
+	 * @return float[]
+	 */
+	public float[] project(Vector2 axis, Polygon polygon) {
+		
+	    float dotProduct = axis.dotProduct(polygon.points[0]);
+	    float min = dotProduct;
+	    float max = dotProduct;
+	    for (int i = 0; i < polygon.points.length; i++) {
+			
+			dotProduct = polygon.points[i].dotProduct(axis);
+			if (dotProduct < min) {
+				
+				min = dotProduct;
+			    
+			} else if (dotProduct > max) {
+				
+				max = dotProduct;
+			}
+	    }
+	    
+	    float[] result = new float[2];
+	    result[0] = min;
+	    result[1] = max;
+	    return result;
 	}
 	
 	/**
@@ -68,28 +139,11 @@ public class Polygon {
 		
 		float minY = Float.MAX_VALUE;
 		float maxY = Float.MIN_VALUE;
-		int length = this.borders.length;
+		int length = this.points.length;
 		for (int i = 0; i < length; i++) {
 			
-			if (minY > this.borders[i].p1.y) {
-				
-				minY = this.borders[i].p1.y;
-			}
-			
-			if (minY > this.borders[i].p2.y) {
-				
-				minY = this.borders[i].p2.y;
-			}
-			
-			if (maxY < this.borders[i].p1.y) {
-				
-				maxY = this.borders[i].p1.y;
-			}
-			
-			if (maxY < this.borders[i].p2.y) {
-				
-				maxY = this.borders[i].p2.y;
-			}
+			if (this.points[i].y < minY) minY = this.points[i].y;
+			if (this.points[i].y > maxY) maxY = this.points[i].y;
 		}
 		
 		return maxY - minY;
@@ -105,28 +159,11 @@ public class Polygon {
 		
 		float minX = Float.MAX_VALUE;
 		float maxX = Float.MIN_VALUE;
-		int length = this.borders.length;
+		int length = this.points.length;
 		for (int i = 0; i < length; i++) {
 			
-			if (minX > this.borders[i].p1.x) {
-				
-				minX = this.borders[i].p1.x;
-			}
-			
-			if (minX > this.borders[i].p2.x) {
-				
-				minX = this.borders[i].p2.x;
-			}
-			
-			if (maxX < this.borders[i].p1.x) {
-				
-				maxX = this.borders[i].p1.x;
-			}
-			
-			if (maxX < this.borders[i].p2.x) {
-				
-				maxX = this.borders[i].p2.x;
-			}
+			if (this.points[i].x < minX) minX = this.points[i].x;
+			if (this.points[i].x > maxX) maxX = this.points[i].x;
 		}
 		
 		return maxX - minX;
@@ -140,7 +177,7 @@ public class Polygon {
 	 */
 	public Vector2 getPosition() {
 		
-		return this.borders[0].p1;
+		return this.points[0];
 	}
 	
 	/**
@@ -151,17 +188,14 @@ public class Polygon {
 	 */
 	public void setPosition(Vector2 position) {
 		
-		int length = this.borders.length;
-		
 		float diffX = position.x - this.getPosition().x;
 		float diffY = position.y - this.getPosition().y;
 		
+		int length = this.points.length;
 		for (int i = 0; i < length; i++) {
 			
-			this.borders[i].p1.x += diffX;
-			this.borders[i].p1.y += diffY;
-			this.borders[i].p2.x += diffX;
-			this.borders[i].p2.y += diffY;
+			this.points[i].x += diffX;
+			this.points[i].y += diffY;
 		}
 	}
 	
@@ -173,13 +207,11 @@ public class Polygon {
 	 */
 	public void addToPosition(float x, float y) {
 		
-		int length = this.borders.length;
+		int length = this.points.length;
 		for (int i = 0; i < length; i++) {
 			
-			this.borders[i].p1.x += x;
-			this.borders[i].p1.y += y;
-			this.borders[i].p2.x += x;
-			this.borders[i].p2.y += y;
+			this.points[i].x += x;
+			this.points[i].y += y;
 		}
 	}
 }

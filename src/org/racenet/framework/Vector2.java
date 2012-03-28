@@ -62,6 +62,11 @@ public class Vector2 {
 		this.y -= y;
 		return this;
 	}
+	
+	public float dotProduct(Vector2 other) {
+		
+		return this.x * other.x + this.y * other.y;
+	}
 
 	public Vector2 subtract(Vector2 other) {
 		

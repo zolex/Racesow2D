@@ -1,9 +1,24 @@
 package org.racenet.framework;
 
+/**
+ * Represents a polygon defined by at
+ * least three points
+ * 
+ * @author al
+ */
 public class Polygon {
 
+	/**
+	 * The borders of the polygon represented by
+	 * line segments
+	 */
 	public Line[] borders;
 	
+	/**
+	 * Initialize a new polygon using multiple points
+	 * 
+	 * @param Vector2 ... points
+	 */
 	public Polygon(Vector2 ... points) {
 		
 		int length = points.length;
@@ -14,6 +29,13 @@ public class Polygon {
 		}
 	}
 	
+	/**
+	 * Calculate if the polygon intersects with
+	 * another one by checking the borders
+	 * 
+	 * @param Polygon other
+	 * @return boolean
+	 */
 	public boolean intersect(Polygon other) {
 		
 		int tLength = this.borders.length;
@@ -32,6 +54,13 @@ public class Polygon {
 		return false;
 	}
 	
+	
+	/**
+	 * Get the height of the polygon by determining
+	 * the minimal and maximal y coordinates
+	 * 
+	 * @return float
+	 */
 	public float getHeight() {
 		
 		float minY = Float.MAX_VALUE;
@@ -63,6 +92,12 @@ public class Polygon {
 		return maxY - minY;
 	}
 
+	/**
+	 * Get the width of the polygon by determining
+	 * the minimal and maximal x coordinates
+	 * 
+	 * @return float
+	 */
 	public float getWidth() {
 		
 		float minX = Float.MAX_VALUE;
@@ -94,6 +129,12 @@ public class Polygon {
 		return maxX - minX;
 	}
 	
+	/**
+	 * Set the position by moving all borders
+	 * of the polygon
+	 * 
+	 * @param Vector2 position
+	 */
 	public void setPosition(Vector2 position) {
 		
 		int length = this.borders.length;

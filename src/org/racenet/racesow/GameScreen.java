@@ -50,8 +50,8 @@ class GameScreen extends Screen {
 		ups = new CameraText(-25, camHeight / 2 - 3, 1, 1);
 		ups.setupVertices(glGraphics);
 		ups.setupText((GLGame)game, "ups");
-		
-		fps = new CameraText(-5, camHeight / 2 - 3, 1, 1);
+
+		fps = new CameraText(new Vector2(50, 20));
 		fps.setupVertices(glGraphics);
 		fps.setupText((GLGame)game, "fps");
 		
@@ -102,11 +102,9 @@ class GameScreen extends Screen {
 		
 		camera.setPosition(player.bounds.getPosition().x + 20, camera.position.y);		
 		
-		// draw UPS
-		//ups.setupText((GLGame)game, "ups " + String.valueOf(new Integer((int)player.virtualSpeed)));
-		
-		// draw FPS
 		/*
+		ups.setupText((GLGame)game, "ups " + String.valueOf(new Integer((int)player.virtualSpeed)));
+		
 		frames--;
 		sumDelta += deltaTime;
 		if (frames == 0) {
@@ -116,7 +114,7 @@ class GameScreen extends Screen {
 			sumDelta = 0;
 			
 		}
-		
+
 		timer.setupText((GLGame)game, "t " + String.format("%.2f", map.getCurrentTime()));
 		*/
 	}

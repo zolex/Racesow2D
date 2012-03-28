@@ -79,9 +79,6 @@ public class Line {
 			
 		} else {
 			
-			Log.d("DEBUG", "------------------------------------------");
-			Log.d("DEBUG", "intersect x " + String.valueOf(fpx) + " y " + String.valueOf(fpy));
-			
 			return true;
 		}
 	}

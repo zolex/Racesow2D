@@ -286,7 +286,7 @@ class Player extends AnimatedBlock {
 			}
 		}
 		
-		//this.velocity.set(this.virtualSpeed / 30, this.velocity.y);
+		this.velocity.set(this.virtualSpeed / 30, this.velocity.y);
 	}
 	
 	public void die() {

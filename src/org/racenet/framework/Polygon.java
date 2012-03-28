@@ -27,126 +27,61 @@ public class Polygon {
 	}
 	
 	/**
-	 * Calculate if the polygon intersects with another one
+	 * Check if this polygon intersects with another one
 	 * 
 	 * @param Polygon other
 	 * @return boolean
 	 */
-	public boolean intersect(Polygon other) {
-		
-		int edgeCountA = this.points.length;
-	    int edgeCountB = other.points.length;
-	    Vector2 edge;
-	    
-	    // Loop through all the edges of both polygons
-	    for (int edgeIndex = 0; edgeIndex < edgeCountA + edgeCountB; edgeIndex++) {
-	    	
-	        if (edgeIndex < edgeCountA) {
-	        	
-	            edge = this.points[edgeIndex];
-	            
-	        } else {
-	        	
-	            edge = other.points[edgeIndex - edgeCountA];
-	        }
-
-	        // Find the axis perpendicular to the current edge
-	        Vector2 axis = new Vector2(-edge.x, edge.y);
-	        axis.normalize();
-
-	        // Find the projection of the polygon on the current axis
-	        float minA = 0; float minB = 0; float maxA = 0; float maxB = 0;
-	        float[] result;
-	        result = this.project(axis, this);
-	        minA = result[0];
-	        maxA = result[1];
-	        
-	        result = this.project(axis, other);
-	        minB = result[0];
-	        maxB = result[1];
-
-	        // Check if the polygon projections are currentlty intersecting
-	        if (this.intervalDistance(minA, maxA, minB, maxB) > 0) {
-	        
-	        	return false;
-	        }
-	    }
-	    
-	    return true;
-	}
-	
-	/**
-	 * Calculate the distance between [minA, maxA] and [minB, maxB]
-	 * The distance will be negative if the intervals overlap
-	 * 
-	 * @param float minA
-	 * @param float maxA
-	 * @param float minB
-	 * @param float maxB
-	 * @return float
-	 */
-	public float intervalDistance(float minA, float maxA, float minB, float maxB) {
-		
-	    if (minA < minB) {
-	    	
-	        return minB - maxA;
-	        
-	    } else {
-	    	
-	        return minA - maxB;
-	    }
-	}
-	
-	/**
-	 * Calculate the projection of a polygon on an axis
-	 * and returns it as a [min, max] interval
-	 * 
-	 * @param Vector2 axis
-	 * @param Polygon polygon
-	 * @return float[]
-	 */
-	public float[] project(Vector2 axis, Polygon polygon) {
-		
-	    float dotProduct = axis.dotProduct(polygon.points[0]);
-	    float min = dotProduct;
-	    float max = dotProduct;
-	    for (int i = 0; i < polygon.points.length; i++) {
+	public boolean intersect(Polygon other){
+				
+		for (int j = this.points.length - 1, i = 0; i < this.points.length; j = i, i++) {
 			
-			dotProduct = polygon.points[i].dotProduct(axis);
-			if (dotProduct < min) {
+			if (separatedByAxis(new Vector2(-(this.points[i].y - this.points[j].y),
+					this.points[i].x - this.points[j].x), other)) {
 				
-				min = dotProduct;
-			    
-			} else if (dotProduct > max) {
-				
-				max = dotProduct;
+				return false;
 			}
-	    }
-	    
-	    float[] result = new float[2];
-	    result[0] = min;
-	    result[1] = max;
-	    return result;
-	}
-	
-	/**
-	 * Get the height of the polygon by determining
-	 * the minimal and maximal y coordinates
-	 * 
-	 * @return float
-	 */
-	public float getHeight() {
-		
-		float minY = Float.MAX_VALUE;
-		float maxY = Float.MIN_VALUE;
-		int length = this.points.length;
-		for (int i = 0; i < length; i++) {
+		}
+
+		for (int j = other.points.length - 1, i = 0; i < other.points.length; j = i, i++) {
 			
-			if (this.points[i].y < minY) minY = this.points[i].y;
-			if (this.points[i].y > maxY) maxY = this.points[i].y;
+			if (separatedByAxis(new Vector2(-(other.points[i].y - other.points[j].y),
+					other.points[i].x - other.points[j].x), other)) {
+				
+				return false;
+			}
 		}
 		
-		return maxY - minY;
+		return true;
+	}
+	
+	public boolean separatedByAxis(Vector2 axis, Polygon other) {
+		
+		float[] resultThis = this.getInterval(axis);
+		float[] resultOther = other.getInterval(axis);
+		return resultOther[1] - resultThis[0] < 0.0 || resultOther[0] - resultThis[1] > 0.0;
+	}
+	
+	public float[] getInterval(Vector2 axis) {
+		
+		float[] result = new float[2];
+		result[1] = this.points[0].dotProduct(axis);
+		result[0] = this.points[0].dotProduct(axis);
+			
+		for (int i = 1; i < this.points.length; i++) {
+			
+			float d = this.points[i].dotProduct(axis);
+			if (d < result[0]) {
+				
+				result[0] = d;
+				
+			} else if (d > result[1]) {
+				
+				result[1] = d;
+			}
+		}
+		
+		return result;
 	}
 
 	/**
@@ -167,6 +102,20 @@ public class Polygon {
 		}
 		
 		return maxX - minX;
+	}
+
+	public float getHeight() {
+		
+		float minY = Float.MAX_VALUE;
+		float maxY = Float.MIN_VALUE;
+		int length = this.points.length;
+		for (int i = 0; i < length; i++) {
+			
+			if (this.points[i].y < minY) minY = this.points[i].y;
+			if (this.points[i].y > maxY) maxY = this.points[i].y;
+		}
+		
+		return maxY - minY;
 	}
 	
 	/**

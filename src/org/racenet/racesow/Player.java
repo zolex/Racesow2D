@@ -240,14 +240,11 @@ class Player extends AnimatedBlock {
 			colliders = map.getPotentialGroundColliders(this);
 			length = colliders.size();
 			for (int i = 0; i < length; i++) {
-			
-				GameObject part = colliders.get(i);
-				if (this.bounds.intersect(part.bounds)) {
 				
-					//Log.d("DEBUG", "vertex 1 pos x " + String.valueOf(this.position.x) + " y " + String.valueOf(this.position.y));
-					//Log.d("DEBUG", "vertex 2 pos x " + String.valueOf(part.position.x) + " y " + String.valueOf(part.position.y));
-					
-					switch (((TexturedBlock)part).func) {
+				GameObject ground = colliders.get(i);
+				if (ground != null && this.bounds.intersect(ground.bounds)) {
+				
+					switch (((TexturedBlock)ground).func) {
 					
 						case TexturedBlock.FUNC_LAVA:
 							this.activeAnimId = Player.ANIM_BURN;
@@ -259,24 +256,25 @@ class Player extends AnimatedBlock {
 					
 					this.velocity.set(this.velocity.x, 0);
 					this.onFloor = true;
+					break;
 				}
-				
-				/*
-				switch (collision) {
-				
-					case CollisionDetecctor.FROM_LEFT:
-						this.position.set(this.position.x - this.virtualSpeed * this.virtualSpeed / 5000000, this.position.y);
-						this.bounds.setPosition(this.position);
-						this.virtualSpeed = 0;
-						break;
-				
-					case CollisionDetecctor.FROM_TOP:
-						this.velocity.set(this.velocity.x, 0);
-						this.onFloor = true;
-						//break;
-				}
-				*/
 			}
+
+			/*
+			switch (collision) {
+			
+				case CollisionDetecctor.FROM_LEFT:
+					this.position.set(this.position.x - this.virtualSpeed * this.virtualSpeed / 5000000, this.position.y);
+					this.bounds.setPosition(this.position);
+					this.virtualSpeed = 0;
+					break;
+			
+				case CollisionDetecctor.FROM_TOP:
+					this.velocity.set(this.velocity.x, 0);
+					this.onFloor = true;
+					//break;
+			}
+			*/
 			
 		} else {
 			

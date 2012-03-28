@@ -12,6 +12,7 @@ import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
+import org.racenet.framework.Polygon.CollisionInfo;
 
 import android.util.Log;
 
@@ -151,7 +152,8 @@ class Player extends AnimatedBlock {
 				for (int i = 0; i < length; i++) {
 				
 					TexturedBlock part = map.getWall(i);
-					if (this.bounds.intersect(part.bounds)) {
+					CollisionInfo info = this.bounds.intersect(part.bounds);
+					if (info.collided) {
 						
 						int wjSound = this.rGen.nextInt(SOUND_WJ2 - SOUND_WJ1 + 1) + SOUND_WJ1;
 
@@ -198,7 +200,8 @@ class Player extends AnimatedBlock {
 		for (int i = 0; i < length; i++) {
 		
 			GameObject part = colliders.get(i);
-			if (this.bounds.intersect(part.bounds)) {
+			CollisionInfo info = this.bounds.intersect(part.bounds);
+			if (info.collided) {
 			
 				switch (((Func)part).type) {
 				
@@ -242,8 +245,11 @@ class Player extends AnimatedBlock {
 			for (int i = 0; i < length; i++) {
 				
 				GameObject ground = colliders.get(i);
-				if (ground != null && this.bounds.intersect(ground.bounds)) {
+				CollisionInfo info = this.bounds.intersect(ground.bounds);
+				if (info.collided) {
 				
+					Log.d("INTERSECT", "d " + String.valueOf(new Float(info.distance)));
+					
 					switch (((TexturedBlock)ground).func) {
 					
 						case TexturedBlock.FUNC_LAVA:
@@ -254,8 +260,17 @@ class Player extends AnimatedBlock {
 							return; // nothing else to do in this function
 					}
 					
-					this.velocity.set(this.velocity.x, 0);
-					this.onFloor = true;
+					if (info.direction.y > 0) {
+					
+						this.velocity.set(this.velocity.x, 0);
+						this.onFloor = true;
+					
+					} else {
+						
+						this.bounds.setPosition(new Vector2(this.bounds.getPosition().x - this.virtualSpeed * this.virtualSpeed / 5000000, this.bounds.getPosition().y));
+						this.virtualSpeed = 0;
+					}
+					
 					break;
 				}
 			}

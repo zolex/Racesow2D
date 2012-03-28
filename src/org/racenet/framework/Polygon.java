@@ -32,34 +32,69 @@ public class Polygon {
 	 * @param Polygon other
 	 * @return boolean
 	 */
-	public boolean intersect(Polygon other){
+	public CollisionInfo intersect(Polygon other){
 				
+		CollisionInfo info = new CollisionInfo();
+		info.collided = true;
+		
 		for (int j = this.points.length - 1, i = 0; i < this.points.length; j = i, i++) {
 			
-			if (separatedByAxis(new Vector2(-(this.points[i].y - this.points[j].y),
-					this.points[i].x - this.points[j].x), other)) {
+			info = separatedByAxis(new Vector2(-(this.points[i].y - this.points[j].y),
+					this.points[i].x - this.points[j].x), other);
+			
+			if (!info.collided) {
 				
-				return false;
+				return info;
 			}
 		}
 
 		for (int j = other.points.length - 1, i = 0; i < other.points.length; j = i, i++) {
 			
-			if (separatedByAxis(new Vector2(-(other.points[i].y - other.points[j].y),
-					other.points[i].x - other.points[j].x), other)) {
+			info = separatedByAxis(new Vector2(-(other.points[i].y - other.points[j].y),
+					other.points[i].x - other.points[j].x), other);
+			if (!info.collided) {
 				
-				return false;
+				return info;
 			}
 		}
 		
-		return true;
+		return info;
 	}
 	
-	public boolean separatedByAxis(Vector2 axis, Polygon other) {
+	public class CollisionInfo {
+		
+		public boolean collided;
+		public Vector2 direction;
+		public float distance;
+	}
+	
+	public CollisionInfo separatedByAxis(Vector2 axis, Polygon other) {
+		
+		CollisionInfo info = new CollisionInfo();
 		
 		float[] resultThis = this.getInterval(axis);
 		float[] resultOther = other.getInterval(axis);
-		return resultOther[1] - resultThis[0] < 0.0 || resultOther[0] - resultThis[1] > 0.0;
+		
+		float d0 = resultOther[1] - resultThis[0];
+		float d1 = resultOther[0] - resultThis[1];
+		
+		if (d0 < 0.0 || d1 > 0.0) {
+			
+			info.collided = false;
+			return info;
+		}
+		
+		float overlap = d0 < -d1 ? d0 : d1;
+		float axis_length_squared = axis.dotProduct(axis);
+		assert(axis_length_squared > 0.00001);
+		Vector2 sep = new Vector2(axis.x * (overlap / axis_length_squared), axis.y * (overlap / axis_length_squared)); 
+
+		info.distance = sep.dotProduct(sep);
+		info.direction = sep;
+		info.collided = true;
+		
+		return info;
+
 	}
 	
 	public float[] getInterval(Vector2 axis) {

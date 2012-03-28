@@ -130,6 +130,17 @@ public class Polygon {
 	}
 	
 	/**
+	 * TODO: for now just use the first given
+	 * point as the position
+	 * 
+	 * @return Vector2
+	 */
+	public Vector2 getPosition() {
+		
+		return this.borders[0].p1;
+	}
+	
+	/**
 	 * Set the position by moving all borders
 	 * of the polygon
 	 * 
@@ -139,8 +150,8 @@ public class Polygon {
 		
 		int length = this.borders.length;
 		
-		float diffX = position.x - this.borders[0].p1.x;
-		float diffY = position.y - this.borders[0].p1.y;
+		float diffX = position.x - this.getPosition().x;
+		float diffY = position.y - this.getPosition().y;
 		
 		for (int i = 0; i < length; i++) {
 			

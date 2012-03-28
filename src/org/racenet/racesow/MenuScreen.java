@@ -63,9 +63,9 @@ public class MenuScreen extends Screen {
 		});
 		
 		GLTexture.APP_FOLDER = "racesow";
-		header = new TexturedBlock((GLGame)game, 0, 0, camWidth, -1, "racesow.jpg", TexturedBlock.FUNC_NONE, -1, -1);
-		header.position.y = camHeight - header.bounds.height;
-		header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
+		//header = new TexturedBlock((GLGame)game, 0, 0, camWidth, -1, "racesow.jpg", TexturedBlock.FUNC_NONE, -1, -1);
+		//header.position.y = camHeight - header.bounds.getHeight();
+		//header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class MenuScreen extends Screen {
 		gl.glEnable(GL10.GL_BLEND);
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		
-		this.header.draw();
+		//this.header.draw();
 		this.menu.draw();
 	}
 
@@ -110,14 +110,14 @@ public class MenuScreen extends Screen {
 	@Override
 	public void resume() {
 		
-		this.header.reloadTexture();
+		//this.header.reloadTexture();
 		this.menu.reloadTextures();
 	}
 
 	@Override
 	public void dispose() {
 		
-		this.header.dispose();
+		//this.header.dispose();
 		this.menu.dispose();
 	}
 }

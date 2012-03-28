@@ -3,11 +3,11 @@ package org.racenet.framework;
 public class GameObject {
 
 	public final Vector2 position = new Vector2();
-	public final Rectangle bounds;
+	public final Polygon bounds;
 	
-	public GameObject(float x, float y, float width, float height) {
+	public GameObject(Vector2 ... edges) {
 		
-		position.set(x, y);
-		bounds = new Rectangle(x, y, width, height);
+		position.set(edges[0].x, edges[0].y);
+		bounds = new Polygon(edges);
 	}
 }

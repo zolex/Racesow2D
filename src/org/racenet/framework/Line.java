@@ -50,6 +50,8 @@ public class Line {
 			
 		} else {
 			
+			Log.d("INTERSECT", "x " + String.valueOf(new Float(px)) + " y " + String.valueOf(new Float(py)));
+			
 			return true;
 		}
 	}

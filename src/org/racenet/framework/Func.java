@@ -8,9 +8,9 @@ public class Func extends GameObject {
 	
 	public int type = NONE;
 	
-	public Func(short type, float x, float y, float width, float height) {
+	public Func(short type, Vector2 ... edges) {
 		
-		super(x, y, width, height);
+		super(edges);
 		this.type = type;
 	}
 }

@@ -10,9 +10,12 @@ import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.SpatialHashGrid;
+import org.racenet.framework.Vector2;
 import org.racenet.framework.XMLParser;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import android.util.Log;
 
 public class Map {
 	
@@ -98,16 +101,17 @@ public class Map {
 			
 			Element xmlStartTimer = (Element)startTimerN.item(0);
 			float startTimerX = Float.valueOf(parser.getValue(xmlStartTimer, "x")).floatValue();
-			GameObject startTimer = new Func(Func.START_TIMER, startTimerX, 0, 1, worldHeight);
+			//GameObject startTimer = new Func(Func.START_TIMER, startTimerX, 0, 1, worldHeight);
+			GameObject startTimer = new Func(Func.START_TIMER, new Vector2(startTimerX, 0), new Vector2(startTimerX + 1, 0), new Vector2(startTimerX + 1, worldHeight), new Vector2(startTimerX, worldHeight));
 			this.funcGrid.insertStaticObject(startTimer);
 		}
 		
 		NodeList stopTimerN = parser.doc.getElementsByTagName("stoptimer");
 		if (stopTimerN.getLength() == 1) {
 			
-		Element xmlStopTimer = (Element)stopTimerN.item(0);
-		float stopTimerX = Float.valueOf(parser.getValue(xmlStopTimer, "x")).floatValue();
-			GameObject stopTimer = new Func(Func.STOP_TIMER, stopTimerX, 0, 1, worldHeight);
+			Element xmlStopTimer = (Element)stopTimerN.item(0);
+			float stopTimerX = Float.valueOf(parser.getValue(xmlStopTimer, "x")).floatValue();
+			GameObject stopTimer = new Func(Func.START_TIMER, new Vector2(stopTimerX, 0), new Vector2(stopTimerX + 1, 0), new Vector2(stopTimerX + 1, worldHeight), new Vector2(stopTimerX, worldHeight));
 			this.funcGrid.insertStaticObject(stopTimer);
 		}
 		
@@ -145,17 +149,22 @@ public class Map {
 				texSY = 0;
 			}
 			
+			float x = Float.valueOf(parser.getValue(xmlblock, "x")).floatValue();
+			float y = Float.valueOf(parser.getValue(xmlblock, "y")).floatValue();
+			float width = Float.valueOf(parser.getValue(xmlblock, "width")).floatValue();
+			float height = Float.valueOf(parser.getValue(xmlblock, "height")).floatValue();
+			
 			TexturedBlock block = new TexturedBlock(game,
-				Float.valueOf(parser.getValue(xmlblock, "x")).floatValue(),
-				Float.valueOf(parser.getValue(xmlblock, "y")).floatValue(),
-				Float.valueOf(parser.getValue(xmlblock, "width")).floatValue(),
-				Float.valueOf(parser.getValue(xmlblock, "height")).floatValue(),
 				parser.getValue(xmlblock, "texture"),
 				func,
 				texSX,
-				texSY
+				texSY,
+				new Vector2(x,y),
+				new Vector2(x + width, y),
+				new Vector2(x + width, y + height),
+				new Vector2(x, y + height)
 			);
-			
+
 			String level = parser.getValue(xmlblock, "level");
 			if (level.equals("ground")) {
 				
@@ -243,9 +252,9 @@ public class Map {
 		for (int i = 0; i < length; i++) {
 			
 			GameObject part = colliders.get(i);
-			if (o.position.x >= part.position.x && o.position.x <= part.position.x + part.bounds.width) {
+			if (o.position.x >= part.position.x && o.position.x <= part.position.x + part.bounds.getWidth()) {
 				
-				float height = part.position.y + part.bounds.height;
+				float height = part.position.y + part.bounds.getHeight();
 				if (height > tallestHeight) {
 					
 					tallestHeight = height;

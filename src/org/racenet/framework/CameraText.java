@@ -15,11 +15,11 @@ public class CameraText extends GameObject {
 	public float cameraX;
 	public float cameraY;
 	
-	public CameraText(float x, float y, float width, float height) {
+	public CameraText(Vector2 ... edges) {
 		
-		super(0, 0, width, height);
-		this.cameraX = x;
-		this.cameraY = y;
+		super(edges);
+		this.cameraX = edges[0].x;
+		this.cameraY = edges[0].y;
 	}
 	
 	public void setupVertices(GLGraphics glGraphics) {

@@ -79,10 +79,10 @@ public class SpatialHashGrid {
     
     public int[] getCellIds(GameObject obj) {
     	
-        int x1 = (int)FloatMath.floor(obj.bounds.lowerLeft.x / cellSize);
-        int y1 = (int)FloatMath.floor(obj.bounds.lowerLeft.y / cellSize);
-        int x2 = (int)FloatMath.floor((obj.bounds.lowerLeft.x + obj.bounds.width) / cellSize);
-        int y2 = (int)FloatMath.floor((obj.bounds.lowerLeft.y + obj.bounds.height) / cellSize);
+        int x1 = (int)FloatMath.floor(obj.bounds.borders[0].p1.x / cellSize);
+        int y1 = (int)FloatMath.floor(obj.bounds.borders[0].p1.y / cellSize);
+        int x2 = (int)FloatMath.floor((obj.bounds.borders[0].p1.x + obj.bounds.getWidth()) / cellSize);
+        int y2 = (int)FloatMath.floor((obj.bounds.borders[0].p1.y + obj.bounds.getHeight()) / cellSize);
         
         int i = 0;            
         for (int xn = x1; xn <= x2; xn++) {

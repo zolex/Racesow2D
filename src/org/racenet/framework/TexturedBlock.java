@@ -15,9 +15,9 @@ public class TexturedBlock extends GameObject {
 	public short func = FUNC_NONE;
 
 
-	public TexturedBlock(GLGame game, float x, float y, float width, float height, String texture, short func, float texScaleWidth, float texScaleHeight) {
+	public TexturedBlock(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, Vector2 ... edges) {
 		
-		super(x, y, width, height);
+		super(edges);
 		this.game = game;
 		this.setupTexture(texture, texScaleWidth, texScaleHeight);
 		this.setupVertices();
@@ -55,6 +55,7 @@ public class TexturedBlock extends GameObject {
 	private void setupVertices() {
 		
 		float[] vertices;
+		/*
 		if (texScaleWidth == -1 && texScaleHeight == -1 && this.bounds.height == -1)  {
 			
 			this.bounds.height = this.bounds.width / (this.texture.width / this.texture.height);
@@ -66,13 +67,16 @@ public class TexturedBlock extends GameObject {
 					0,					this.bounds.height,	0, 0 };
 			
 		} else {
-			
+		*/
+			float height = this.bounds.getHeight();
+			float width = this.bounds.getWidth();
+		
 			vertices = new float[] {
-					0,					0,	  				0, this.bounds.height / (this.texture.height * this.texScaleHeight),
-					this.bounds.width,	0,					this.bounds.width / (this.texture.width * this.texScaleWidth), this.bounds.height / (this.texture.height * this.texScaleHeight),
-					this.bounds.width,	this.bounds.height,	this.bounds.width / (this.texture.width * this.texScaleWidth), 0,
-					0,					this.bounds.height,	0, 0 };
-		}
+					0,		0,		0, height / (this.texture.height * this.texScaleHeight),
+					width,	0,		width / (this.texture.width * this.texScaleWidth), height / (this.texture.height * this.texScaleHeight),
+					width,	height,	width / (this.texture.width * this.texScaleWidth), 0,
+					0,		height,	0, 0 };
+		//}
 		
 		
 		this.vertices = new GLVertices(this.game.getGLGraphics(), 4, 6 , false, true);

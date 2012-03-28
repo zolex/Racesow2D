@@ -41,6 +41,7 @@ public class Menu implements GestureDetector.OnGestureListener {
 	
 	public void addItem(String texture, Callback callback) {
 		
+		/*
 		TexturedBlock item = new TexturedBlock(this.game, 0, 0, this.viewWidth / 3, -1, texture, TexturedBlock.FUNC_NONE, -1, -1);
 		item.position.y = this.viewHeight / 2 - item.bounds.height / 2 - this.viewHeight / 5;
 		
@@ -55,6 +56,7 @@ public class Menu implements GestureDetector.OnGestureListener {
 		
 		this.items.add(item);
 		this.callbacks.add(callback);
+		*/
 	}
 	
 	public boolean onDown(MotionEvent event) {
@@ -100,8 +102,8 @@ public class Menu implements GestureDetector.OnGestureListener {
 		for (int i = 0; i < length; i++) {
 			
 			TexturedBlock item = this.items.get(i);
-			if (x > item.position.x && x < item.position.x + item.bounds.width &&
-				y > item.position.y && y < item.position.y + item.bounds.height) {
+			if (x > item.position.x && x < item.position.x + item.bounds.getWidth() &&
+				y > item.position.y && y < item.position.y + item.bounds.getHeight()) {
 				
 				this.callbacks.get(i).handle();
 				break;
@@ -114,8 +116,8 @@ public class Menu implements GestureDetector.OnGestureListener {
 		TexturedBlock first = this.items.get(0);
 		TexturedBlock last = this.items.get(this.items.size() - 1);
 		
-		if ((first.position.x > this.viewWidth / 2 - first.bounds.width / 2 && distance < 0) ||
-			(last.position.x < this.viewWidth / 2 - last.bounds.width / 2 && distance > 0)) {
+		if ((first.position.x > this.viewWidth / 2 - first.bounds.getWidth() / 2 && distance < 0) ||
+			(last.position.x < this.viewWidth / 2 - last.bounds.getWidth() / 2 && distance > 0)) {
 			
 			return false;
 		

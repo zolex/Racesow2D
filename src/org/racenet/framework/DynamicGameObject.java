@@ -5,8 +5,8 @@ public class DynamicGameObject extends GameObject {
 	public final Vector2 velocity = new Vector2();
 	public final Vector2 accel = new Vector2();
 	
-	public DynamicGameObject(float x, float y, float width, float height) {
+	public DynamicGameObject(Vector2 ... edges) {
 		
-		super(x, y, width, height);
+		super(edges);
 	}
 }

@@ -48,7 +48,7 @@ class Player extends AnimatedBlock {
 	
 	public Player(GLGame game, float x, float y) {
 		
-		super(game, x, y, 3.4f, 6.5f);
+		super(game, new Vector2(x,y), new Vector2(x + 3.4f, y), new Vector2(x + 3.4f, y + 6.5f), new Vector2(x, y + 6.5f));
 		
 		this.rGen = new Random();
 		
@@ -107,7 +107,7 @@ class Player extends AnimatedBlock {
 			TexturedBlock ground = map.getGround(this);
 			if (ground != null) {
 				
-				this.distanceOnJump = Math.max(0.1f, this.position.y - (ground.position.y + ground.bounds.height));
+				this.distanceOnJump = Math.max(0.1f, this.position.y - (ground.position.y + ground.bounds.getHeight()));
 				this.distanceRemembered = true;
 			}
 		}
@@ -130,7 +130,8 @@ class Player extends AnimatedBlock {
 				this.virtualSpeed += boost;
 			}
 			
-			this.position.set(this.position.x, this.position.y + 0.75f);
+			//this.position.set(this.position.x, this.position.y + 0.75f);
+			//this.bounds.setPosition(this.position);
 			this.velocity.add(0, 20);
 			this.distanceRemembered = false;
 			this.distanceOnJump = -1;
@@ -148,7 +149,7 @@ class Player extends AnimatedBlock {
 				for (int i = 0; i < length; i++) {
 				
 					TexturedBlock part = map.getWall(i);
-					if (0 != CollisionDetecctor.rectangleCollision(part.bounds, this.bounds)) {
+					if (this.bounds.intersect(part.bounds)) {
 						
 						int wjSound = this.rGen.nextInt(SOUND_WJ2 - SOUND_WJ1 + 1) + SOUND_WJ1;
 
@@ -195,7 +196,7 @@ class Player extends AnimatedBlock {
 		for (int i = 0; i < length; i++) {
 		
 			GameObject part = colliders.get(i);
-			if (0 != CollisionDetecctor.rectangleCollision(part.bounds, this.bounds)) {
+			if (this.bounds.intersect(part.bounds)) {
 			
 				switch (((Func)part).type) {
 				
@@ -233,15 +234,14 @@ class Player extends AnimatedBlock {
 			*/
 			
 			this.position.add(this.velocity.x * deltaTime, this.velocity.y * deltaTime);
-			this.bounds.lowerLeft.set(this.position);
+			this.bounds.setPosition(this.position);
 			
 			colliders = map.getPotentialGroundColliders(this);
 			length = colliders.size();
 			for (int i = 0; i < length; i++) {
 			
 				GameObject part = colliders.get(i);
-				int collision = CollisionDetecctor.rectangleCollision(part.bounds, this.bounds);
-				if (collision != 0) {
+				if (this.bounds.intersect(part.bounds)) {
 				
 					switch (((TexturedBlock)part).func) {
 					
@@ -252,21 +252,26 @@ class Player extends AnimatedBlock {
 							this.die();
 							return; // nothing else to do in this function
 					}
+					
+					this.velocity.set(this.velocity.x, 0);
+					this.onFloor = true;
 				}
 				
+				/*
 				switch (collision) {
 				
 					case CollisionDetecctor.FROM_LEFT:
 						this.position.set(this.position.x - this.virtualSpeed * this.virtualSpeed / 5000000, this.position.y);
-						this.bounds.lowerLeft.set(this.position);
+						this.bounds.setPosition(this.position);
 						this.virtualSpeed = 0;
 						break;
 				
 					case CollisionDetecctor.FROM_TOP:
 						this.velocity.set(this.velocity.x, 0);
 						this.onFloor = true;
-						break;
+						//break;
 				}
+				*/
 			}
 			
 		} else {
@@ -293,5 +298,6 @@ class Player extends AnimatedBlock {
 		this.virtualSpeed = 0;
 		this.velocity.set(0, 0);
 		this.position.set(x, y);
+		this.bounds.setPosition(this.position);
 	}
 }

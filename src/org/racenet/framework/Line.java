@@ -70,7 +70,7 @@ public class Line {
 		float l2b = other.p1.y < other.p2.y ? other.p1.y : other.p2.y;
 		float l2t = other.p1.y > other.p2.y ? other.p1.y : other.p2.y;
 		
-		// see of the intersection point is within the lines
+		// see if the intersection point is within the lines
 		if (px < l1l || px > l1r || px < l2l || px > l2r || py < l1b || py > l1t || py < l2b || py > l2t) {
 			
 			return false;

@@ -23,7 +23,7 @@ public class Racesow extends GLGame {
 	
     public Screen getStartScreen() {
     	
-        return new GameScreen(this, "testing.xml");
+        return new MenuScreen(this);
     }
     
     public void onBackPressed() {

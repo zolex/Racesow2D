@@ -55,19 +55,29 @@ public class TexturedBlock extends GameObject {
 	private void setupVertices() {
 		
 		float[] vertices;
-		/*
-		if (texScaleWidth == -1 && texScaleHeight == -1 && this.bounds.height == -1)  {
+		
+		// create the height according to the texture aspect ratio if only the width is given by two points
+		if (texScaleWidth == -1 && texScaleHeight == -1 && this.bounds.points.length == 2)  {
 			
-			this.bounds.height = this.bounds.width / (this.texture.width / this.texture.height);
+			float width = this.bounds.getWidth();
+			float height = width / (this.texture.width / this.texture.height);
+			
+			this.bounds = new Polygon(
+				this.bounds.points[0],
+				this.bounds.points[1],
+				new Vector2(this.bounds.points[1].x, this.bounds.points[1].y + height),
+				new Vector2(this.bounds.points[0].x, this.bounds.points[0].y + height)
+			);
 			
 			vertices = new float[] {
-					0,					0,	  				0, 1,
-					this.bounds.width,	0,					1, 1,
-					this.bounds.width,	this.bounds.height,	1, 0,
-					0,					this.bounds.height,	0, 0 };
-			
+					0,		0,	  	0, 1,
+					width,	0,		1, 1,
+					width,	height,	1, 0,
+					0,		height,	0, 0 };
+		
+		// default prodecure
 		} else {
-		*/
+
 			float height = this.bounds.getHeight();
 			float width = this.bounds.getWidth();
 		
@@ -76,7 +86,7 @@ public class TexturedBlock extends GameObject {
 					width,	0,		width / (this.texture.width * this.texScaleWidth), height / (this.texture.height * this.texScaleHeight),
 					width,	height,	width / (this.texture.width * this.texScaleWidth), 0,
 					0,		height,	0, 0 };
-		//}
+		}
 		
 		
 		this.vertices = new GLVertices(this.game.getGLGraphics(), 4, 6 , false, true);

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.racenet.framework.GLGame;
 import org.racenet.framework.TexturedBlock;
+import org.racenet.framework.Vector2;
 
 import android.os.Looper;
 import android.util.Log;
@@ -41,22 +42,19 @@ public class Menu implements GestureDetector.OnGestureListener {
 	
 	public void addItem(String texture, Callback callback) {
 		
-		/*
-		TexturedBlock item = new TexturedBlock(this.game, 0, 0, this.viewWidth / 3, -1, texture, TexturedBlock.FUNC_NONE, -1, -1);
-		item.position.y = this.viewHeight / 2 - item.bounds.height / 2 - this.viewHeight / 5;
+		TexturedBlock item = new TexturedBlock(this.game, texture, TexturedBlock.FUNC_NONE, -1, -1, new Vector2(0, 0), new Vector2(this.viewWidth / 3, 0));
 		
 		float posX = 0;
 		int length = this.items.size();
 		for (int i = 0; i < length; i++) {
 			
-			posX += this.items.get(i).bounds.width + this.spaceWidth;
+			posX += this.items.get(i).bounds.getWidth() + this.spaceWidth;
 		}
 		
-		item.position.x = posX;
+		item.setPosition(new Vector2(posX, this.viewHeight / 2 - item.bounds.getHeight() / 2 - this.viewHeight / 5));
 		
 		this.items.add(item);
 		this.callbacks.add(callback);
-		*/
 	}
 	
 	public boolean onDown(MotionEvent event) {

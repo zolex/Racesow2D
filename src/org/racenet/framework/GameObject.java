@@ -2,7 +2,7 @@ package org.racenet.framework;
 
 public class GameObject {
 
-	public final Polygon bounds;
+	public Polygon bounds;
 	
 	public GameObject(Vector2 ... edges) {
 		

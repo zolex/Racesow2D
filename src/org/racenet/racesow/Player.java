@@ -207,12 +207,10 @@ class Player extends AnimatedBlock {
 				
 					case Func.START_TIMER:
 						map.startTimer();
-						//Log.d("TIMER", "STARTTIMER");
 						break;
 						
 					case Func.STOP_TIMER:
 						map.stopTimer();
-						//Log.d("TIMER", "STOPTIMER");
 						break;
 				}
 			}
@@ -248,8 +246,6 @@ class Player extends AnimatedBlock {
 				CollisionInfo info = this.bounds.intersect(ground.bounds);
 				if (info.collided) {
 				
-					Log.d("INTERSECT", "d " + String.valueOf(new Float(info.distance)));
-					
 					switch (((TexturedBlock)ground).func) {
 					
 						case TexturedBlock.FUNC_LAVA:
@@ -257,17 +253,20 @@ class Player extends AnimatedBlock {
 							this.enableAnimation = true;
 							this.animDuration = 0.4f;							
 							this.die();
-							return; // nothing else to do in this function
+							return;
 					}
 					
+					// ground
 					if (info.direction.y > 0) {
 					
 						this.velocity.set(this.velocity.x, 0);
 						this.onFloor = true;
 					
+					// wall
 					} else {
 						
-						this.bounds.setPosition(new Vector2(this.bounds.getPosition().x - this.virtualSpeed * this.virtualSpeed / 5000000, this.bounds.getPosition().y));
+						float resetX = this.bounds.getPosition().x - this.virtualSpeed * this.virtualSpeed / 5000000;
+						this.bounds.setPosition(new Vector2(resetX, this.bounds.getPosition().y));
 						this.virtualSpeed = 0;
 					}
 					

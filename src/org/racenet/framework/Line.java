@@ -35,8 +35,6 @@ public class Line {
 					((this.p1.x - this.p2.x) * (other.p1.y - other.p2.y) - (this.p1.y - this.p2.y) *
 					(other.p1.x - other.p2.x));
 		
-		Log.d("INTERSECT", "x " + String.valueOf(new Float(px)) + " y " + String.valueOf(new Float(py)));
-		
 		Float fpx = new Float(px);
 		Float fpy = new Float(py);
 		

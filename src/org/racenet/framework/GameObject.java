@@ -10,4 +10,9 @@ public class GameObject extends Polygon {
 		
 		super(edges);
 	}
+	
+	public void setFunc(short func) {
+		
+		this.func = func;
+	}
 }

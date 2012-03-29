@@ -249,7 +249,7 @@ class Player extends AnimatedBlock {
 				
 					switch (ground.func) {
 					
-						case TexturedBlock.FUNC_LAVA:
+						case GameObject.FUNC_LAVA:
 							this.activeAnimId = Player.ANIM_BURN;
 							this.enableAnimation = true;
 							this.animDuration = 0.4f;							

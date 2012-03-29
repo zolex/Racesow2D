@@ -16,11 +16,6 @@ public class TexturedShape extends GameObject {
 		super(vertices);
 	}
 	
-	public void setFunc(short func) {
-		
-		this.func = func;
-	}
-	
 	public void setupTexture(String fileName, float scaleWidth, float scaleHeight) {
 		
 		this.texture = new GLTexture(this.game, fileName);

@@ -253,8 +253,6 @@ class Player extends AnimatedBlock {
 							return;
 					}
 					
-					Log.d("COLLISION", String.valueOf(new Float(info.direction.angle())));
-					
 					// ground
 					if (info.direction.angle() == 90) {
 					

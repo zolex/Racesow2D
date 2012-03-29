@@ -7,7 +7,6 @@ public class TexturedShape extends GameObject {
 	public GLTexture texture = null;
 	float texScaleWidth = 0.05f;
 	float texScaleHeight = 0.05f;
-	public short func = FUNC_NONE;
 	
 	public TexturedShape(Vector2 ... vertices) {
 		

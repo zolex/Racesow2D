@@ -2,7 +2,7 @@
 <map>
 	<name>Testmap alpha 2</name>
 	<mapper>soh#zolex</mapper>
-	<levelshot>testing/gridshot.png</levelshot>
+	<levelshot>testing/rampshot.png</levelshot>
 	<player><x>50</x><y>12</y></player>
 	<starttimer><x>60</x></starttimer>
 	<stoptimer><x>4900</x></stoptimer>

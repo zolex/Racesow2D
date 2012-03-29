@@ -45,7 +45,7 @@ public class CameraText extends GameObject {
 		
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		gl.glLoadIdentity();
-		gl.glTranslatef(this.bounds.getPosition().x, this.bounds.getPosition().y, 0);
+		gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
 		string.bind();
 		vertices.bind();
 		vertices.draw(GL10.GL_TRIANGLES, 0, 6);

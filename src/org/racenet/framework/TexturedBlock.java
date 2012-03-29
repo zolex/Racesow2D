@@ -18,17 +18,18 @@ public class TexturedBlock extends TexturedShape {
 		float[] vertices;
 		
 		// create the height according to the texture aspect ratio if only the width is given by two points
-		if (texScaleWidth == -1 && texScaleHeight == -1 && this.bounds.points.length == 2)  {
+		if (texScaleWidth == -1 && texScaleHeight == -1 && this.points.length == 2)  {
 			
-			float width = this.bounds.getWidth();
+			float width = this.getWidth();
 			float height = width / (this.texture.width / this.texture.height);
 			
-			this.bounds = new Polygon(
-				this.bounds.points[0],
-				this.bounds.points[1],
-				new Vector2(this.bounds.points[1].x, this.bounds.points[1].y + height),
-				new Vector2(this.bounds.points[0].x, this.bounds.points[0].y + height)
-			);
+			Vector2 newPoints[] = new Vector2[4];
+			newPoints[0] = this.points[0];
+			newPoints[1] = this.points[1];
+			newPoints[2] = new Vector2(this.points[1].x, this.points[1].y + height);
+			newPoints[3] = new Vector2(this.points[0].x, this.points[0].y + height);
+			
+			this.points = newPoints;
 			
 			vertices = new float[] {
 					0,		0,	  	0, 1,
@@ -39,8 +40,8 @@ public class TexturedBlock extends TexturedShape {
 		// default prodecure
 		} else {
 
-			float height = this.bounds.getHeight();
-			float width = this.bounds.getWidth();
+			float height = this.getHeight();
+			float width = this.getWidth();
 		
 			vertices = new float[] {
 					0,		0,		0, height / (this.texture.height * this.texScaleHeight),
@@ -60,7 +61,7 @@ public class TexturedBlock extends TexturedShape {
 		GL10 gl = this.game.getGLGraphics().getGL();
 		
 		gl.glPushMatrix();
-		gl.glTranslatef(this.bounds.getPosition().x, this.bounds.getPosition().y, 0);
+		gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
 		this.texture.bind();
 		this.vertices.bind();
 		this.vertices.draw(GL10.GL_TRIANGLES, 0, 6);

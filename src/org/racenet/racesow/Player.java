@@ -111,7 +111,7 @@ class Player extends AnimatedBlock {
 			TexturedShape ground = map.getGround(this);
 			if (ground != null) {
 				
-				this.distanceOnJump = Math.max(0.1f, this.bounds.getPosition().y - (ground.bounds.getPosition().y + ground.bounds.getHeight()));
+				this.distanceOnJump = Math.max(0.1f, this.getPosition().y - (ground.getPosition().y + ground.getHeight()));
 				this.distanceRemembered = true;
 			}
 		}
@@ -135,7 +135,7 @@ class Player extends AnimatedBlock {
 			}
 			
 			//this.position.set(this.position.x, this.position.y + 0.75f);
-			//this.bounds.setPosition(this.position);
+			//this.setPosition(this.position);
 			this.velocity.add(0, 20);
 			this.distanceRemembered = false;
 			this.distanceOnJump = -1;
@@ -153,7 +153,7 @@ class Player extends AnimatedBlock {
 				for (int i = 0; i < length; i++) {
 				
 					TexturedShape part = map.getWall(i);
-					CollisionInfo info = this.bounds.intersect(part.bounds);
+					CollisionInfo info = this.intersect(part);
 					if (info.collided) {
 						
 						int wjSound = this.rGen.nextInt(SOUND_WJ2 - SOUND_WJ1 + 1) + SOUND_WJ1;
@@ -201,7 +201,7 @@ class Player extends AnimatedBlock {
 		for (int i = 0; i < length; i++) {
 		
 			GameObject part = colliders.get(i);
-			CollisionInfo info = this.bounds.intersect(part.bounds);
+			CollisionInfo info = this.intersect(part);
 			if (info.collided) {
 			
 				switch (((Func)part).type) {
@@ -244,7 +244,7 @@ class Player extends AnimatedBlock {
 			for (int i = 0; i < length; i++) {
 				
 				GameObject ground = colliders.get(i);
-				CollisionInfo info = this.bounds.intersect(ground.bounds);
+				CollisionInfo info = this.intersect(ground);
 				if (info.collided) {
 				
 					switch (ground.func) {
@@ -274,8 +274,8 @@ class Player extends AnimatedBlock {
 					// wall
 					} else if (info.direction.angle() == 270) {
 						
-						float resetX = this.bounds.getPosition().x - this.virtualSpeed * this.virtualSpeed / 5000000;
-						this.bounds.setPosition(new Vector2(resetX, this.bounds.getPosition().y));
+						float resetX = this.getPosition().x - this.virtualSpeed * this.virtualSpeed / 5000000;
+						this.setPosition(new Vector2(resetX, this.getPosition().y));
 						this.virtualSpeed = 0;
 					}
 
@@ -289,7 +289,7 @@ class Player extends AnimatedBlock {
 			
 				case CollisionDetecctor.FROM_LEFT:
 					this.position.set(this.position.x - this.virtualSpeed * this.virtualSpeed / 5000000, this.position.y);
-					this.bounds.setPosition(this.position);
+					this.setPosition(this.position);
 					this.virtualSpeed = 0;
 					break;
 			
@@ -322,6 +322,6 @@ class Player extends AnimatedBlock {
 		this.isDead = false;
 		this.activeAnimId = ANIM_NONE;
 		this.virtualSpeed = 0;
-		this.bounds.setPosition(new Vector2(x, y));
+		this.setPosition(new Vector2(x, y));
 	}
 }

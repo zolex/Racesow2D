@@ -42,8 +42,8 @@ public class AnimatedBlock extends GameObject {
 	
 	protected void setupVertices() {
 		
-		float width = this.bounds.getWidth();
-		float height = this.bounds.getHeight();
+		float width = this.getWidth();
+		float height = this.getHeight();
 		GLTexture firstFrame = this.anims[0].getKeyFrame(0); // TODO: choose proper frame
 		this.vertices = new GLVertices(this.game.getGLGraphics(), 4, 6 , false, true);
 		this.vertices.setVertices(new float[] {
@@ -59,7 +59,7 @@ public class AnimatedBlock extends GameObject {
 		GL10 gl = this.game.getGLGraphics().getGL();
 		
 		gl.glPushMatrix();
-		gl.glTranslatef(this.bounds.getPosition().x, this.bounds.getPosition().y, 0);
+		gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
 		this.anims[this.activeAnimId].getKeyFrame(animTime).bind();
 		this.vertices.bind();
 		this.vertices.draw(GL10.GL_TRIANGLES, 0, 6);

@@ -18,9 +18,9 @@ public class TexturedTriangle extends TexturedShape {
 		float[] vertices;
 		
 		vertices = new float[] {
-				this.bounds.points[0].x, this.bounds.points[0].y,	0, 1,
-				this.bounds.points[1].x, this.bounds.points[1].y,	1, 1,
-				this.bounds.points[2].x, this.bounds.points[2].y,	1, 0 };
+				this.points[0].x, this.points[0].y,	0, 1,
+				this.points[1].x, this.points[1].y,	1, 1,
+				this.points[2].x, this.points[2].y,	1, 0 };
 		
 		
 		this.vertices = new GLVertices(this.game.getGLGraphics(), 3, 0 , false, true);

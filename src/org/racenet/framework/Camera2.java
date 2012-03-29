@@ -37,7 +37,7 @@ public class Camera2 {
 		int length = hudItems.size();
 		for (int i = 0; i < length; i++) {
 			
-			hudItems.get(i).bounds.addToPosition(velocity.x * deltaTime, velocity.y * deltaTime);
+			hudItems.get(i).addToPosition(velocity.x * deltaTime, velocity.y * deltaTime);
 		}
     }
 
@@ -50,7 +50,7 @@ public class Camera2 {
 			
 			CameraText item = hudItems.get(i);
 			
-			item.bounds.setPosition(new Vector2(x - item.cameraX, y + item.cameraY));
+			item.setPosition(new Vector2(x - item.cameraX, y + item.cameraY));
 		}
 	}
     
@@ -62,7 +62,7 @@ public class Camera2 {
 		for (int i = 0; i < length; i++) {
 			
 			CameraText item = hudItems.get(i);
-			item.bounds.setPosition(new Vector2(item.cameraX * factor, item.cameraY * factor));
+			item.setPosition(new Vector2(item.cameraX * factor, item.cameraY * factor));
 		}
 	}
 	

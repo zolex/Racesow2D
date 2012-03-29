@@ -4,15 +4,14 @@ public class GameObject extends Polygon {
 
 	public static final short FUNC_NONE = 0;
 	public static final short FUNC_LAVA = 1;
-	public short func = FUNC_NONE;
+	public static final short FUNC_START_TIMER = 2;
+	public static final short FUNC_STOP_TIMER = 3;
+	
+	public short func;
 	
 	public GameObject(Vector2 ... edges) {
 		
 		super(edges);
-	}
-	
-	public void setFunc(short func) {
-		
-		this.func = func;
+		this.func = FUNC_NONE;
 	}
 }

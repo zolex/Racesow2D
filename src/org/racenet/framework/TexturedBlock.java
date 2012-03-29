@@ -10,7 +10,7 @@ public class TexturedBlock extends TexturedShape {
 		this.game = game;
 		this.setupTexture(texture, texScaleWidth, texScaleHeight);
 		this.setupVertices();
-		this.setFunc(func);
+		this.func = func;
 	}
 	
 	private void setupVertices() {

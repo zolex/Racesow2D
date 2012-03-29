@@ -7,7 +7,6 @@ import org.racenet.framework.AndroidAudio;
 import org.racenet.framework.AndroidSound;
 import org.racenet.framework.AnimatedBlock;
 import org.racenet.framework.CollisionDetecctor;
-import org.racenet.framework.Func;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.TexturedBlock;
@@ -204,13 +203,13 @@ class Player extends AnimatedBlock {
 			CollisionInfo info = this.intersect(part);
 			if (info.collided) {
 			
-				switch (((Func)part).type) {
+				switch (part.func) {
 				
-					case Func.START_TIMER:
+					case GameObject.FUNC_START_TIMER:
 						map.startTimer();
 						break;
 						
-					case Func.STOP_TIMER:
+					case GameObject.FUNC_STOP_TIMER:
 						map.stopTimer();
 						break;
 				}

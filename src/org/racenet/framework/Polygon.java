@@ -1,7 +1,5 @@
 package org.racenet.framework;
 
-import android.util.Log;
-
 /**
  * Represents a polygon defined by at
  * least three points

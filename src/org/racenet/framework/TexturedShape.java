@@ -1,7 +1,5 @@
 package org.racenet.framework;
 
-import javax.microedition.khronos.opengles.GL10;
-
 public class TexturedShape extends GameObject {
 	
 	GLGame game = null;

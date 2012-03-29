@@ -19,7 +19,6 @@ import org.racenet.framework.interfaces.Screen;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import android.util.Log;
 import android.view.GestureDetector;
 
 public class MapsScreen extends Screen {

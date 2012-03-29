@@ -1,6 +1,5 @@
 package org.racenet.racesow;
 
-import java.io.File;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -11,12 +10,9 @@ import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
 import org.racenet.framework.GLTexture;
 import org.racenet.framework.Vector2;
-import org.racenet.framework.interfaces.FileIO;
 import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Screen;
 import org.racenet.framework.interfaces.Input.TouchEvent;
-
-import android.util.Log;
 
 class GameScreen extends Screen {
 		

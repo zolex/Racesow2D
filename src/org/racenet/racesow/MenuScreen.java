@@ -14,7 +14,6 @@ import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Input.TouchEvent;
 import org.racenet.framework.interfaces.Screen;
 
-import android.util.Log;
 import android.view.GestureDetector;
 
 public class MenuScreen extends Screen {

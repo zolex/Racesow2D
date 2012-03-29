@@ -338,8 +338,8 @@ public class Map {
 	
 	public TexturedShape getGround(GameObject o) {
 		
-		int tallestPart = 0;
-		float tallestHeight = 0;
+		int highestPart = 0;
+		float maxHeight = 0;
 		
 		List<GameObject> colliders = groundGrid.getPotentialColliders(o);
 		int length = colliders.size();
@@ -350,15 +350,15 @@ public class Map {
 			if (o.getPosition().x >= part.getPosition().x && o.getPosition().x <= part.getPosition().x + part.width) {
 				
 				float height = part.getPosition().y + part.height;
-				if (height > tallestHeight) {
+				if (height > maxHeight) {
 					
-					tallestHeight = height;
-					tallestPart = i;
+					maxHeight = height;
+					highestPart = i;
 				}
 			}
 		}
 		
-		return (TexturedShape)colliders.get(tallestPart);
+		return (TexturedShape)colliders.get(highestPart);
 	}
 	
 	public List<GameObject> getPotentialGroundColliders(GameObject o) {

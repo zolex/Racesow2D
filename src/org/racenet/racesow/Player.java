@@ -8,10 +8,8 @@ import org.racenet.framework.AndroidSound;
 import org.racenet.framework.AnimatedBlock;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
-import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.TexturedShape;
 import org.racenet.framework.Vector2;
-import org.racenet.framework.Polygon.CollisionInfo;
 
 import android.util.Log;
 

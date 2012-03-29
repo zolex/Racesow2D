@@ -48,10 +48,10 @@ public class Menu implements GestureDetector.OnGestureListener {
 		int length = this.items.size();
 		for (int i = 0; i < length; i++) {
 			
-			posX += this.items.get(i).getWidth() + this.spaceWidth;
+			posX += this.items.get(i).width + this.spaceWidth;
 		}
 		
-		item.setPosition(new Vector2(posX, this.viewHeight / 2 - item.getHeight() / 2 - this.viewHeight / 5));
+		item.setPosition(new Vector2(posX, this.viewHeight / 2 - item.height / 2 - this.viewHeight / 5));
 		
 		this.items.add(item);
 		this.callbacks.add(callback);
@@ -100,8 +100,8 @@ public class Menu implements GestureDetector.OnGestureListener {
 		for (int i = 0; i < length; i++) {
 			
 			TexturedBlock item = this.items.get(i);
-			if (x > item.getPosition().x && x < item.getPosition().x + item.getWidth() &&
-				y > item.getPosition().y && y < item.getPosition().y + item.getHeight()) {
+			if (x > item.getPosition().x && x < item.getPosition().x + item.width &&
+				y > item.getPosition().y && y < item.getPosition().y + item.height) {
 				
 				this.callbacks.get(i).handle();
 				break;
@@ -114,8 +114,8 @@ public class Menu implements GestureDetector.OnGestureListener {
 		TexturedBlock first = this.items.get(0);
 		TexturedBlock last = this.items.get(this.items.size() - 1);
 		
-		if ((first.getPosition().x > this.viewWidth / 2 - first.getWidth() / 2 && distance < 0) ||
-			(last.getPosition().x < this.viewWidth / 2 - last.getWidth() / 2 && distance > 0)) {
+		if ((first.getPosition().x > this.viewWidth / 2 - first.width / 2 && distance < 0) ||
+			(last.getPosition().x < this.viewWidth / 2 - last.width / 2 && distance > 0)) {
 			
 			return false;
 		

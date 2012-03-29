@@ -347,9 +347,9 @@ public class Map {
 		for (int i = 0; i < length; i++) {
 			
 			GameObject part = colliders.get(i);
-			if (o.getPosition().x >= part.getPosition().x && o.getPosition().x <= part.getPosition().x + part.getWidth()) {
+			if (o.getPosition().x >= part.getPosition().x && o.getPosition().x <= part.getPosition().x + part.width) {
 				
-				float height = part.getPosition().y + part.getHeight();
+				float height = part.getPosition().y + part.height;
 				if (height > tallestHeight) {
 					
 					tallestHeight = height;

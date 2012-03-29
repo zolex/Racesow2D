@@ -42,15 +42,13 @@ public class AnimatedBlock extends GameObject {
 	
 	protected void setupVertices() {
 		
-		float width = this.getWidth();
-		float height = this.getHeight();
 		GLTexture firstFrame = this.anims[0].getKeyFrame(0); // TODO: choose proper frame
 		this.vertices = new GLVertices(this.game.getGLGraphics(), 4, 6 , false, true);
 		this.vertices.setVertices(new float[] {
-				0,		0,	  	0, height / (firstFrame.height * this.texScaleHeight),
-				width,	0,		width / (firstFrame.width * this.texScaleWidth), height / (firstFrame.height * this.texScaleHeight),
-				width,	height,	width / (firstFrame.width * this.texScaleWidth), 0,
-				0,		height,	0, 0 }, 0, 16);
+				0,			0,	  			0, this.height / (firstFrame.height * this.texScaleHeight),
+				this.width,	0,				this.width / (firstFrame.width * this.texScaleWidth), this.height / (firstFrame.height * this.texScaleHeight),
+				this.width,	this.height,	this.width / (firstFrame.width * this.texScaleWidth), 0,
+				0,			this.height,	0, 0 }, 0, 16);
 		this.vertices.setIndices(new short[] {0, 1, 2, 0, 2, 3}, 0, 6);
 	}
 	

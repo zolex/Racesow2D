@@ -82,8 +82,8 @@ public class SpatialHashGrid {
     	Vector2 position = obj.getPosition();
         int x1 = (int)FloatMath.floor(position.x / cellSize);
         int y1 = (int)FloatMath.floor(position.y / cellSize);
-        int x2 = (int)FloatMath.floor((position.x + obj.getWidth()) / cellSize);
-        int y2 = (int)FloatMath.floor((position.y + obj.getHeight()) / cellSize);
+        int x2 = (int)FloatMath.floor((position.x + obj.width) / cellSize);
+        int y2 = (int)FloatMath.floor((position.y + obj.height) / cellSize);
         
         int i = 0;            
         for (int xn = x1; xn <= x2; xn++) {

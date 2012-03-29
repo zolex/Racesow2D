@@ -20,34 +20,30 @@ public class TexturedBlock extends TexturedShape {
 		// create the height according to the texture aspect ratio if only the width is given by two points
 		if (texScaleWidth == -1 && texScaleHeight == -1 && this.points.length == 2)  {
 			
-			float width = this.getWidth();
-			float height = width / (this.texture.width / this.texture.height);
+			this.height = this.width / (this.texture.width / this.texture.height);
 			
 			Vector2 newPoints[] = new Vector2[4];
 			newPoints[0] = this.points[0];
 			newPoints[1] = this.points[1];
-			newPoints[2] = new Vector2(this.points[1].x, this.points[1].y + height);
-			newPoints[3] = new Vector2(this.points[0].x, this.points[0].y + height);
+			newPoints[2] = new Vector2(this.points[1].x, this.points[1].y + this.height);
+			newPoints[3] = new Vector2(this.points[0].x, this.points[0].y + this.height);
 			
 			this.points = newPoints;
 			
 			vertices = new float[] {
-					0,		0,	  	0, 1,
-					width,	0,		1, 1,
-					width,	height,	1, 0,
-					0,		height,	0, 0 };
+					0,			0,	  			0, 1,
+					this.width,	0,				1, 1,
+					this.width,	this.height,	1, 0,
+					0,			this.height,	0, 0 };
 		
 		// default prodecure
 		} else {
 
-			float height = this.getHeight();
-			float width = this.getWidth();
-		
 			vertices = new float[] {
-					0,		0,		0, height / (this.texture.height * this.texScaleHeight),
-					width,	0,		width / (this.texture.width * this.texScaleWidth), height / (this.texture.height * this.texScaleHeight),
-					width,	height,	width / (this.texture.width * this.texScaleWidth), 0,
-					0,		height,	0, 0 };
+					0,			0,				0, this.height / (this.texture.height * this.texScaleHeight),
+					this.width,	0,				this.width / (this.texture.width * this.texScaleWidth), height / (this.texture.height * this.texScaleHeight),
+					this.width,	this.height,	this.width / (this.texture.width * this.texScaleWidth), 0,
+					0,			this.height,	0, 0 };
 		}
 		
 		

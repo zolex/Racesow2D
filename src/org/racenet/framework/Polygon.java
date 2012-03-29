@@ -15,6 +15,18 @@ public class Polygon {
 	 * line segments
 	 */
 	public Vector2[] points;
+	public float width, height;
+	
+	/**
+	 * Structure which holds information about a collision
+	 *
+	 */
+	public class CollisionInfo {
+		
+		public boolean collided;
+		public Vector2 direction;
+		public float distance;
+	}
 	
 	/**
 	 * Initialize a new polygon using multiple points
@@ -24,6 +36,8 @@ public class Polygon {
 	public Polygon(Vector2 ... points) {
 		
 		this.points = points;
+		this.calcWidth();
+		this.calcHeight();
 	}
 	
 	/**
@@ -61,13 +75,13 @@ public class Polygon {
 		return info;
 	}
 	
-	public class CollisionInfo {
-		
-		public boolean collided;
-		public Vector2 direction;
-		public float distance;
-	}
-	
+	/**
+	 * Check if a polygon is separated by an axis
+	 * 
+	 * @param Vector2 axis
+	 * @param Polygon other
+	 * @return CollisionInfo
+	 */
 	public CollisionInfo separatedByAxis(Vector2 axis, Polygon other) {
 		
 		CollisionInfo info = new CollisionInfo();
@@ -97,6 +111,12 @@ public class Polygon {
 
 	}
 	
+	/**
+	 * Get the interval of the polygon projected on an axis
+	 * 
+	 * @param Vector2 axis
+	 * @return float[minimum, maximum]
+	 */
 	public float[] getInterval(Vector2 axis) {
 		
 		float[] result = new float[2];
@@ -120,12 +140,12 @@ public class Polygon {
 	}
 
 	/**
-	 * Get the width of the polygon by determining
+	 * Calculate the width of the polygon by determining
 	 * the minimal and maximal x coordinates
 	 * 
 	 * @return float
 	 */
-	public float getWidth() {
+	public void calcWidth() {
 		
 		float minX = Float.MAX_VALUE;
 		float maxX = Float.MIN_VALUE;
@@ -136,10 +156,16 @@ public class Polygon {
 			if (this.points[i].x > maxX) maxX = this.points[i].x;
 		}
 		
-		return maxX - minX;
+		this.width = maxX - minX;
 	}
 
-	public float getHeight() {
+	/**
+	 * Calculate the height of the polygon by determining
+	 * the minimal and maximal x coordinates
+	 * 
+	 * @return float
+	 */
+	public void calcHeight() {
 		
 		float minY = Float.MAX_VALUE;
 		float maxY = Float.MIN_VALUE;
@@ -150,7 +176,7 @@ public class Polygon {
 			if (this.points[i].y > maxY) maxY = this.points[i].y;
 		}
 		
-		return maxY - minY;
+		this.height = maxY - minY;
 	}
 	
 	/**

@@ -109,7 +109,7 @@ class Player extends AnimatedBlock {
 			TexturedShape ground = map.getGround(this);
 			if (ground != null) {
 				
-				this.distanceOnJump = Math.max(0.1f, this.getPosition().y - (ground.getPosition().y + ground.getHeight()));
+				this.distanceOnJump = Math.max(0.1f, this.getPosition().y - (ground.getPosition().y + ground.height));
 				this.distanceRemembered = true;
 			}
 		}

@@ -9,9 +9,9 @@ public class GameObject extends Polygon {
 	
 	public short func;
 	
-	public GameObject(Vector2 ... edges) {
+	public GameObject(Vector2 ... vertices) {
 		
-		super(edges);
+		super(vertices);
 		this.func = FUNC_NONE;
 	}
 }

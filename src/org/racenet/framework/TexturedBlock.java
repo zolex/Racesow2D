@@ -4,31 +4,27 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class TexturedBlock extends TexturedShape {
 
-	public TexturedBlock(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, Vector2 ... edges) {
+	public TexturedBlock(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, Vector2 ... vertices) {
 		
-		super(edges);
-		this.game = game;
-		this.setupTexture(texture, texScaleWidth, texScaleHeight);
-		this.setupVertices();
-		this.func = func;
+		super(game, texture, func, texScaleWidth, texScaleHeight, vertices);
 	}
 	
-	private void setupVertices() {
+	protected void setupVertices() {
 		
 		float[] vertices;
 		
 		// create the height according to the texture aspect ratio if only the width is given by two points
-		if (texScaleWidth == -1 && texScaleHeight == -1 && this.points.length == 2)  {
+		if (texScaleWidth == -1 && texScaleHeight == -1 && this.vertices.length == 2)  {
 			
 			this.height = this.width / (this.texture.width / this.texture.height);
 			
 			Vector2 newPoints[] = new Vector2[4];
-			newPoints[0] = this.points[0];
-			newPoints[1] = this.points[1];
-			newPoints[2] = new Vector2(this.points[1].x, this.points[1].y + this.height);
-			newPoints[3] = new Vector2(this.points[0].x, this.points[0].y + this.height);
+			newPoints[0] = this.vertices[0];
+			newPoints[1] = this.vertices[1];
+			newPoints[2] = new Vector2(this.vertices[1].x, this.vertices[1].y + this.height);
+			newPoints[3] = new Vector2(this.vertices[0].x, this.vertices[0].y + this.height);
 			
-			this.points = newPoints;
+			this.vertices = newPoints;
 			
 			vertices = new float[] {
 					0,			0,	  			0, 1,
@@ -47,9 +43,9 @@ public class TexturedBlock extends TexturedShape {
 		}
 		
 		
-		this.vertices = new GLVertices(this.game.getGLGraphics(), 4, 6 , false, true);
-		this.vertices.setVertices(vertices, 0, 16);
-		this.vertices.setIndices(new short[] {0, 1, 2, 0, 2, 3}, 0, 6);
+		this.glVertices = new GLVertices(this.game.getGLGraphics(), 4, 6 , false, true);
+		this.glVertices.setVertices(vertices, 0, 16);
+		this.glVertices.setIndices(new short[] {0, 1, 2, 0, 2, 3}, 0, 6);
 	}
 	
 	public void draw() {
@@ -59,9 +55,9 @@ public class TexturedBlock extends TexturedShape {
 		gl.glPushMatrix();
 		gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
 		this.texture.bind();
-		this.vertices.bind();
-		this.vertices.draw(GL10.GL_TRIANGLES, 0, 6);
-		this.vertices.unbind();
+		this.glVertices.bind();
+		this.glVertices.draw(GL10.GL_TRIANGLES, 0, 6);
+		this.glVertices.unbind();
 		gl.glPopMatrix();
 	}
 }

@@ -12,7 +12,7 @@ public class Polygon {
 	 * The borders of the polygon represented by
 	 * line segments
 	 */
-	public Vector2[] points;
+	public Vector2[] vertices;
 	public float width, height;
 	
 	/**
@@ -31,9 +31,9 @@ public class Polygon {
 	 * 
 	 * @param Vector2 ... points
 	 */
-	public Polygon(Vector2 ... points) {
+	public Polygon(Vector2 ... vertices) {
 		
-		this.points = points;
+		this.vertices = vertices;
 		this.calcWidth();
 		this.calcHeight();
 	}
@@ -49,10 +49,10 @@ public class Polygon {
 		CollisionInfo info = new CollisionInfo();
 		info.collided = true;
 		
-		for (int j = this.points.length - 1, i = 0; i < this.points.length; j = i, i++) {
+		for (int j = this.vertices.length - 1, i = 0; i < this.vertices.length; j = i, i++) {
 			
-			info = separatedByAxis(new Vector2(-(this.points[i].y - this.points[j].y),
-					this.points[i].x - this.points[j].x), other);
+			info = separatedByAxis(new Vector2(-(this.vertices[i].y - this.vertices[j].y),
+					this.vertices[i].x - this.vertices[j].x), other);
 			
 			if (!info.collided) {
 				
@@ -60,10 +60,10 @@ public class Polygon {
 			}
 		}
 
-		for (int j = other.points.length - 1, i = 0; i < other.points.length; j = i, i++) {
+		for (int j = other.vertices.length - 1, i = 0; i < other.vertices.length; j = i, i++) {
 			
-			info = separatedByAxis(new Vector2(-(other.points[i].y - other.points[j].y),
-					other.points[i].x - other.points[j].x), other);
+			info = separatedByAxis(new Vector2(-(other.vertices[i].y - other.vertices[j].y),
+					other.vertices[i].x - other.vertices[j].x), other);
 			if (!info.collided) {
 				
 				return info;
@@ -118,12 +118,12 @@ public class Polygon {
 	public float[] getInterval(Vector2 axis) {
 		
 		float[] result = new float[2];
-		result[1] = this.points[0].dotProduct(axis);
-		result[0] = this.points[0].dotProduct(axis);
+		result[1] = this.vertices[0].dotProduct(axis);
+		result[0] = this.vertices[0].dotProduct(axis);
 			
-		for (int i = 1; i < this.points.length; i++) {
+		for (int i = 1; i < this.vertices.length; i++) {
 			
-			float d = this.points[i].dotProduct(axis);
+			float d = this.vertices[i].dotProduct(axis);
 			if (d < result[0]) {
 				
 				result[0] = d;
@@ -147,11 +147,11 @@ public class Polygon {
 		
 		float minX = Float.MAX_VALUE;
 		float maxX = Float.MIN_VALUE;
-		int length = this.points.length;
+		int length = this.vertices.length;
 		for (int i = 0; i < length; i++) {
 			
-			if (this.points[i].x < minX) minX = this.points[i].x;
-			if (this.points[i].x > maxX) maxX = this.points[i].x;
+			if (this.vertices[i].x < minX) minX = this.vertices[i].x;
+			if (this.vertices[i].x > maxX) maxX = this.vertices[i].x;
 		}
 		
 		this.width = maxX - minX;
@@ -167,11 +167,11 @@ public class Polygon {
 		
 		float minY = Float.MAX_VALUE;
 		float maxY = Float.MIN_VALUE;
-		int length = this.points.length;
+		int length = this.vertices.length;
 		for (int i = 0; i < length; i++) {
 			
-			if (this.points[i].y < minY) minY = this.points[i].y;
-			if (this.points[i].y > maxY) maxY = this.points[i].y;
+			if (this.vertices[i].y < minY) minY = this.vertices[i].y;
+			if (this.vertices[i].y > maxY) maxY = this.vertices[i].y;
 		}
 		
 		this.height = maxY - minY;
@@ -185,7 +185,7 @@ public class Polygon {
 	 */
 	public Vector2 getPosition() {
 		
-		return this.points[0];
+		return this.vertices[0];
 	}
 	
 	/**
@@ -199,11 +199,11 @@ public class Polygon {
 		float diffX = position.x - this.getPosition().x;
 		float diffY = position.y - this.getPosition().y;
 		
-		int length = this.points.length;
+		int length = this.vertices.length;
 		for (int i = 0; i < length; i++) {
 			
-			this.points[i].x += diffX;
-			this.points[i].y += diffY;
+			this.vertices[i].x += diffX;
+			this.vertices[i].y += diffY;
 		}
 	}
 	
@@ -215,11 +215,11 @@ public class Polygon {
 	 */
 	public void addToPosition(float x, float y) {
 		
-		int length = this.points.length;
+		int length = this.vertices.length;
 		for (int i = 0; i < length; i++) {
 			
-			this.points[i].x += x;
-			this.points[i].y += y;
+			this.vertices[i].x += x;
+			this.vertices[i].y += y;
 		}
 	}
 }

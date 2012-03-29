@@ -1,16 +1,20 @@
 package org.racenet.framework;
 
-public class TexturedShape extends GameObject {
+public abstract class TexturedShape extends GameObject {
 	
 	GLGame game = null;
-	public GLVertices vertices = null;
+	public GLVertices glVertices = null;
 	public GLTexture texture = null;
 	float texScaleWidth = 0.05f;
 	float texScaleHeight = 0.05f;
 	
-	public TexturedShape(Vector2 ... vertices) {
+	public TexturedShape(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, Vector2 ... vertices) {
 		
 		super(vertices);
+		this.game = game;
+		this.setupTexture(texture, texScaleWidth, texScaleHeight);
+		this.setupVertices();
+		this.func = func;
 	}
 	
 	public void setupTexture(String fileName, float scaleWidth, float scaleHeight) {
@@ -36,7 +40,6 @@ public class TexturedShape extends GameObject {
 		}
 	}
 	
-	public void draw() {
-		
-	}
+	public abstract void draw();
+	protected abstract void setupVertices();
 }

@@ -2,18 +2,7 @@ package org.racenet.framework;
 
 import javax.microedition.khronos.opengles.GL10;
 
-public class TexturedBlock extends GameObject {
-
-	public static final short FUNC_NONE = 0;
-	public static final short FUNC_LAVA = 1;
-	
-	GLGame game = null;
-	public GLVertices vertices = null;
-	public GLTexture texture = null;
-	float texScaleWidth = 0.05f;
-	float texScaleHeight = 0.05f;
-	public short func = FUNC_NONE;
-
+public class TexturedBlock extends TexturedShape {
 
 	public TexturedBlock(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, Vector2 ... edges) {
 		
@@ -22,34 +11,6 @@ public class TexturedBlock extends GameObject {
 		this.setupTexture(texture, texScaleWidth, texScaleHeight);
 		this.setupVertices();
 		this.setFunc(func);
-	}
-	
-	public void setFunc(short func) {
-		
-		this.func = func;
-	}
-	
-	public void setupTexture(String fileName, float scaleWidth, float scaleHeight) {
-		
-		this.texture = new GLTexture(this.game, fileName);
-		this.texScaleWidth = scaleWidth == 0 ? 0.05f : scaleWidth;
-		this.texScaleHeight = scaleHeight == 0 ? 0.05f : scaleHeight;
-	}
-	
-	public void reloadTexture() {
-		
-		if (this.texture != null) {
-			
-			this.texture.reload();
-		}
-	}
-	
-	public void dispose() {
-		
-		if (this.texture != null) {
-			
-			this.texture.dispose();
-		}
 	}
 	
 	private void setupVertices() {

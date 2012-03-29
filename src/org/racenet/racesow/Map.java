@@ -10,6 +10,8 @@ import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.SpatialHashGrid;
+import org.racenet.framework.TexturedShape;
+import org.racenet.framework.TexturedTriangle;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.XMLParser;
 import org.w3c.dom.Element;
@@ -19,8 +21,8 @@ import android.util.Log;
 
 public class Map {
 	
-	private List<TexturedBlock> ground = new ArrayList<TexturedBlock>();
-	private List<TexturedBlock> walls = new ArrayList<TexturedBlock>();
+	private List<TexturedShape> ground = new ArrayList<TexturedShape>();
+	private List<TexturedShape> walls = new ArrayList<TexturedShape>();
 	private SpatialHashGrid groundGrid;
 	private SpatialHashGrid wallGrid;
 	private SpatialHashGrid funcGrid;
@@ -175,6 +177,98 @@ public class Map {
 				this.addWall(block);
 			}
 		}
+
+		NodeList triangles = parser.doc.getElementsByTagName("tri");
+		int numTriangles = triangles.getLength();
+		for (int i = 0; i < numTriangles; i++) {
+			
+			Element xmlblock = (Element)triangles.item(i);
+			
+			short func;
+			try {
+				
+				func = Short.valueOf(parser.getValue(xmlblock, "func"));
+				
+			} catch (NumberFormatException e) {
+				
+				func = 0;
+			}
+			
+			float texSX;
+			try {
+				
+				texSX = Float.valueOf(parser.getValue(xmlblock, "texsx")).floatValue();
+						
+			} catch (NumberFormatException e) {
+				
+				texSX = 0;
+			}
+			
+			float texSY;
+			try {
+				
+				texSY = Float.valueOf(parser.getValue(xmlblock, "texsy")).floatValue();
+						
+			} catch (NumberFormatException e) {
+				
+				texSY = 0;
+			}
+			
+			float v1x = 0;
+			float v1y = 0;
+			float v2x = 0;
+			float v2y = 0;
+			float v3x = 0;
+			float v3y = 0;
+			
+			NodeList v1n = xmlblock.getElementsByTagName("v1");
+			if (v1n.getLength() == 1) {
+				
+				v1x = Float.valueOf(parser.getValue((Element)v1n.item(0), "x")).floatValue();
+				v1y = Float.valueOf(parser.getValue((Element)v1n.item(0), "y")).floatValue();
+			}
+			
+			NodeList v2n = xmlblock.getElementsByTagName("v2");
+			if (v2n.getLength() == 1) {
+				
+				v2x = Float.valueOf(parser.getValue((Element)v2n.item(0), "x")).floatValue();
+				v2y = Float.valueOf(parser.getValue((Element)v2n.item(0), "y")).floatValue();
+			}
+			
+			NodeList v3n = xmlblock.getElementsByTagName("v3");
+			if (v3n.getLength() == 1) {
+				
+				v3x = Float.valueOf(parser.getValue((Element)v3n.item(0), "x")).floatValue();
+				v3y = Float.valueOf(parser.getValue((Element)v3n.item(0), "y")).floatValue();
+			}
+			
+			Log.d("TRIANGLE", "v1x " + String.valueOf(new Float(v1x)) + 
+					" v1y " + String.valueOf(new Float(v1y)) +
+					" v2x " + String.valueOf(new Float(v2x)) +
+					" v2y " + String.valueOf(new Float(v2y)) +
+					" v3x " + String.valueOf(new Float(v3x)) + 
+					" v3y " + String.valueOf(new Float(v3y)));
+			
+			TexturedTriangle block = new TexturedTriangle(game,
+				parser.getValue(xmlblock, "texture"),
+				func,
+				texSX,
+				texSY,
+				new Vector2(v1x, v1y),
+				new Vector2(v2x, v2y),
+				new Vector2(v3x, v3y)
+			);
+		
+			String level = parser.getValue(xmlblock, "level");
+			if (level.equals("ground")) {
+				
+				this.addGround(block);
+				
+			} else if (level.equals("wall")) {
+				
+				this.addWall(block);
+			}
+		}
 		
 		return true;
 	}
@@ -209,13 +303,13 @@ public class Map {
 		}
 	}
 	
-	public void addGround(TexturedBlock block) {
+	public void addGround(TexturedShape block) {
 		
 		this.ground.add(block);
 		this.groundGrid.insertStaticObject(block);
 	}
 	
-	public TexturedBlock getGround(int i) {
+	public TexturedShape getGround(int i) {
 		
 		return this.ground.get(i);
 	}
@@ -225,13 +319,13 @@ public class Map {
 		return this.ground.size();
 	}
 	
-	public void addWall(TexturedBlock block) {
+	public void addWall(TexturedShape block) {
 		
 		this.walls.add(block);
 		this.wallGrid.insertStaticObject(block);
 	}
 	
-	public TexturedBlock getWall(int i) {
+	public TexturedShape getWall(int i) {
 		
 		return this.walls.get(i);
 	}
@@ -241,7 +335,7 @@ public class Map {
 		return this.walls.size();
 	}
 	
-	public TexturedBlock getGround(GameObject o) {
+	public TexturedShape getGround(GameObject o) {
 		
 		int tallestPart = 0;
 		float tallestHeight = 0;
@@ -263,7 +357,7 @@ public class Map {
 			}
 		}
 		
-		return (TexturedBlock)colliders.get(tallestPart);
+		return (TexturedShape)colliders.get(tallestPart);
 	}
 	
 	public List<GameObject> getPotentialGroundColliders(GameObject o) {

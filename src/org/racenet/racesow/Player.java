@@ -11,6 +11,7 @@ import org.racenet.framework.Func;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.TexturedBlock;
+import org.racenet.framework.TexturedShape;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.Polygon.CollisionInfo;
 
@@ -107,7 +108,7 @@ class Player extends AnimatedBlock {
 		
 		if (!this.distanceRemembered && this.velocity.y < 0) {
 			
-			TexturedBlock ground = map.getGround(this);
+			TexturedShape ground = map.getGround(this);
 			if (ground != null) {
 				
 				this.distanceOnJump = Math.max(0.1f, this.bounds.getPosition().y - (ground.bounds.getPosition().y + ground.bounds.getHeight()));
@@ -151,7 +152,7 @@ class Player extends AnimatedBlock {
 				int length = colliders.size();
 				for (int i = 0; i < length; i++) {
 				
-					TexturedBlock part = map.getWall(i);
+					TexturedShape part = map.getWall(i);
 					CollisionInfo info = this.bounds.intersect(part.bounds);
 					if (info.collided) {
 						
@@ -246,7 +247,7 @@ class Player extends AnimatedBlock {
 				CollisionInfo info = this.bounds.intersect(ground.bounds);
 				if (info.collided) {
 				
-					switch (((TexturedBlock)ground).func) {
+					switch (ground.func) {
 					
 						case TexturedBlock.FUNC_LAVA:
 							this.activeAnimId = Player.ANIM_BURN;
@@ -256,19 +257,28 @@ class Player extends AnimatedBlock {
 							return;
 					}
 					
+					Log.d("COLLISION", String.valueOf(new Float(info.direction.angle())));
+					
 					// ground
-					if (info.direction.y > 0) {
+					if (info.direction.angle() == 90) {
 					
 						this.velocity.set(this.velocity.x, 0);
 						this.onFloor = true;
 					
+					// ramp up
+					} else if (info.direction.angle() == 0 || info.direction.angle() == 180) {
+						
+						this.velocity.set(this.velocity.x, 0);
+						this.onFloor = true;
+						
 					// wall
-					} else {
+					} else if (info.direction.angle() == 270) {
 						
 						float resetX = this.bounds.getPosition().x - this.virtualSpeed * this.virtualSpeed / 5000000;
 						this.bounds.setPosition(new Vector2(resetX, this.bounds.getPosition().y));
 						this.virtualSpeed = 0;
 					}
+
 					
 					break;
 				}

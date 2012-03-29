@@ -60,4 +60,9 @@ public class TexturedBlock extends TexturedShape {
 		this.glVertices.unbind();
 		gl.glPopMatrix();
 	}
+	
+	public float getHeightAt(float x) {
+		
+		return this.height;
+	}
 }

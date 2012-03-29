@@ -107,7 +107,8 @@ class Player extends AnimatedBlock {
 			TexturedShape ground = map.getGround(this);
 			if (ground != null) {
 				
-				this.distanceOnJump = Math.max(0.1f, this.getPosition().y - (ground.getPosition().y + ground.height));
+				this.distanceOnJump = Math.max(0.32f,
+						this.getPosition().y - (ground.getPosition().y + ground.getHeightAt(this.getPosition().x)));
 				this.distanceRemembered = true;
 			}
 		}
@@ -126,12 +127,11 @@ class Player extends AnimatedBlock {
 			
 			if (this.distanceOnJump > 0) {
 				
-				float boost = (5000 / (this.virtualSpeed / 2) / this.distanceOnJump);
+				float boost = (30000 / (this.virtualSpeed / 2) / this.distanceOnJump);
 				this.virtualSpeed += boost;
 			}
 			
-			//this.position.set(this.position.x, this.position.y + 0.75f);
-			//this.setPosition(this.position);
+			this.setPosition(new Vector2(this.getPosition().x, this.getPosition().y + 0.25f));
 			this.velocity.add(0, 20);
 			this.distanceRemembered = false;
 			this.distanceOnJump = -1;
@@ -142,13 +142,13 @@ class Player extends AnimatedBlock {
 		
 		} else {
 			
-			if (eventTime == 0 && System.nanoTime() / 1000000000.0f > this.lastWallJumped + 2) {
+			if (eventTime == 0 && System.nanoTime() / 1000000000.0f > this.lastWallJumped + 1.25f) {
 				
 				List<GameObject> colliders = map.getPotentialWallColliders(this);
 				int length = colliders.size();
 				for (int i = 0; i < length; i++) {
 				
-					TexturedShape part = map.getWall(i);
+					GameObject part = colliders.get(i);
 					CollisionInfo info = this.intersect(part);
 					if (info.collided) {
 						
@@ -167,7 +167,7 @@ class Player extends AnimatedBlock {
 		}
 	}
 	
-	public void move(Vector2 gravity, Map map, float deltaTime) {
+	public void move(Vector2 gravity, Map map, float deltaTime, boolean pressingJump) {
 		
 		if (++frames < 3) return; // workaround
 		
@@ -262,8 +262,17 @@ class Player extends AnimatedBlock {
 					// ramp up
 					} else if (info.direction.angle() == 0 || info.direction.angle() == 180) {
 						
-						this.velocity.set(this.velocity.x, 0);
-						this.onFloor = true;
+						float m = (ground.vertices[2].y - ground.vertices[0].y) / (ground.vertices[2].x - ground.vertices[0].x);
+						if (pressingJump && m >= 0.5) {
+							
+							
+							this.velocity.set(this.velocity.x, this.velocity.x * m);
+							
+						} else {
+						
+							this.velocity.set(this.velocity.x, 0);
+							this.onFloor = true;
+						}
 						
 					// wall
 					} else if (info.direction.angle() == 270) {
@@ -302,7 +311,7 @@ class Player extends AnimatedBlock {
 			}
 		}
 		
-		this.velocity.set(this.virtualSpeed / 30, this.velocity.y);
+		this.velocity.set(this.virtualSpeed / 23, this.velocity.y);
 	}
 	
 	public void die() {

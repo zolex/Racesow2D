@@ -41,25 +41,22 @@ class GameScreen extends Screen {
 		float camWidth = (float)game.getScreenWidth() / 10;
 		float camHeight = (float)game.getScreenHeight() / 10;
 		
-		/*
-		ups = new CameraText(-25, camHeight / 2 - 3, 1, 1);
-		ups = new CameraText(-25, camHeight / 2 - 3, 1, 1);
+		ups = new CameraText(new Vector2(camWidth / 2 - 15, camHeight / 2 - 5));
 		ups.setupVertices(glGraphics);
 		ups.setupText((GLGame)game, "ups");
 
-		fps = new CameraText(new Vector2(50, 20));
+		fps = new CameraText(new Vector2(camWidth / 2 - 25, camHeight / 2 - 5));
 		fps.setupVertices(glGraphics);
 		fps.setupText((GLGame)game, "fps");
 		
-		timer = new CameraText(15, camHeight / 2 - 3, 1, 1);
+		timer = new CameraText(new Vector2(camWidth / 2 - 35, camHeight / 2 - 5));
 		timer.setupVertices(glGraphics);
 		timer.setupText((GLGame)game, "t 0.00");
-		*/
 		
 		camera = new Camera2(glGraphics, camWidth, camHeight);
-		//camera.addHud(ups);
-		//camera.addHud(fps);
-		//camera.addHud(timer);
+		camera.addHud(ups);
+		camera.addHud(fps);
+		camera.addHud(timer);
 		
 		map = new Map();
 		map.load((GLGame)game, mapName);
@@ -85,20 +82,21 @@ class GameScreen extends Screen {
 			} else if (e.type == TouchEvent.TOUCH_UP) {
 				
 				touchedDown = false;
+				touchedDownTime = 0;
 			}
 		}
 		
 		if (touchedDown) {
 			
-			player.jump(map,touchedDownTime);
+			player.jump(map, touchedDownTime);
 			touchedDownTime += deltaTime;
 		}
 		
-		player.move(gravity, map, deltaTime);		
+		player.move(gravity, map, deltaTime, touchedDown);		
 		
 		camera.setPosition(player.getPosition().x + 20, camera.position.y);		
 		
-		/*
+		
 		ups.setupText((GLGame)game, "ups " + String.valueOf(new Integer((int)player.virtualSpeed)));
 		
 		frames--;
@@ -112,7 +110,6 @@ class GameScreen extends Screen {
 		}
 
 		timer.setupText((GLGame)game, "t " + String.format("%.2f", map.getCurrentTime()));
-		*/
 	}
 
 	public void present(float deltaTime) {
@@ -133,9 +130,9 @@ class GameScreen extends Screen {
 		map.draw();
 		player.draw();
 		
-		//ups.draw(gl);
-		//fps.draw(gl);
-		//timer.draw(gl);
+		ups.draw(gl);
+		fps.draw(gl);
+		timer.draw(gl);
 	}
 
 	public void pause() {

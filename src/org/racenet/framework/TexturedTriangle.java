@@ -10,17 +10,26 @@ public class TexturedTriangle extends TexturedShape {
 	}
 
 	protected void setupVertices() {
+
+		float[] glVertices;
+		if (this.vertices[1].x == this.vertices[2].x) {
 		
-		float[] vertices;
-		
-		vertices = new float[] {
-				this.vertices[0].x, this.vertices[0].y,	0, 1,
-				this.vertices[1].x, this.vertices[1].y,	1, 1,
-				this.vertices[2].x, this.vertices[2].y,	1, 0 };
+			glVertices = new float[] {
+				this.vertices[0].x, this.vertices[0].y,	0, this.height / (this.texture.height * this.texScaleHeight),
+				this.vertices[1].x, this.vertices[1].y,	this.width / (this.texture.width * this.texScaleWidth), height / (this.texture.height * this.texScaleHeight),
+				this.vertices[2].x, this.vertices[2].y,	this.width / (this.texture.width * this.texScaleWidth), 0 };
+			
+		} else {
+			
+			glVertices = new float[] {
+					this.vertices[0].x, this.vertices[0].y,	this.width / (this.texture.width * this.texScaleWidth), 0,
+					this.vertices[1].x, this.vertices[1].y,	this.width / (this.texture.width * this.texScaleWidth), height / (this.texture.height * this.texScaleHeight),
+					this.vertices[2].x, this.vertices[2].y,	0, this.height / (this.texture.height * this.texScaleHeight) };
+		}
 		
 		
 		this.glVertices = new GLVertices(this.game.getGLGraphics(), 3, 0 , false, true);
-		this.glVertices.setVertices(vertices, 0, 12);
+		this.glVertices.setVertices(glVertices, 0, 12);
 	}
 	
 	public void draw() {
@@ -34,5 +43,16 @@ public class TexturedTriangle extends TexturedShape {
 		this.glVertices.draw(GL10.GL_TRIANGLES, 0, 3);
 		this.glVertices.unbind();
 		gl.glPopMatrix();
+	}
+	
+	public float getHeightAt(float x) {
+		
+		// ramp up
+		if (this.vertices[1].x == this.vertices[2].x) {
+			
+			return (this.vertices[2].y - this.vertices[0].y) / (this.vertices[2].x - this.vertices[0].x) * (x - this.vertices[0].x);
+		}
+		
+		return this.height;
 	}
 }

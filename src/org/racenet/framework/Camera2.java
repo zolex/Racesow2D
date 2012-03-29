@@ -50,7 +50,7 @@ public class Camera2 {
 			
 			CameraText item = hudItems.get(i);
 			
-			item.setPosition(new Vector2(x - item.cameraX, y + item.cameraY));
+			item.setPosition(new Vector2(x + item.cameraX, y + item.cameraY));
 		}
 	}
     

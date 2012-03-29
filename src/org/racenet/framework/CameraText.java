@@ -25,10 +25,10 @@ public class CameraText extends GameObject {
 	public void setupVertices(GLGraphics glGraphics) {
 		
 		vertices = new GLVertices(glGraphics, 4, 6 , false, true);
-		vertices.setVertices(new float[] {	-12, -2, 0, 1,
-											 12, -2, 1, 1,
-											 12,  2, 1,  0,
-											-12,  2, 0,  0 }, 0, 16);
+		vertices.setVertices(new float[] {	 0,  0, 0, 1,
+											 8, 0, 1, 1,
+											 8, 2, 1, 0,
+											 0,  2, 0, 0 }, 0, 16);
 		vertices.setIndices(new short[] {0, 1, 2, 2, 3, 0}, 0, 6);
 	}
 	
@@ -43,13 +43,12 @@ public class CameraText extends GameObject {
 	
 	public void draw(GL10 gl) {
 		
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glLoadIdentity();
+		gl.glPushMatrix();
 		gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
 		string.bind();
 		vertices.bind();
 		vertices.draw(GL10.GL_TRIANGLES, 0, 6);
 		vertices.unbind();
-		gl.glDisable(GL10.GL_TEXTURE_2D);
+		gl.glPopMatrix();
 	}
 }

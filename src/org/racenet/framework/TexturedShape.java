@@ -42,4 +42,5 @@ public abstract class TexturedShape extends GameObject {
 	
 	public abstract void draw();
 	protected abstract void setupVertices();
+	public abstract float getHeightAt(float x);
 }

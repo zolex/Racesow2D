@@ -340,15 +340,21 @@ public class Map {
 	
 	public void update(Vector2 position) {
 		
-		this.background.setPosition(new Vector2(
-			position.x / this.backgroundSpeed,
-			this.background.getPosition().y
-		));
+		if (this.background != null) {
+			
+			this.background.setPosition(new Vector2(
+				position.x / this.backgroundSpeed,
+				this.background.getPosition().y
+			));
+		}
 		
-		this.sky.setPosition(new Vector2(
-			position.x - this.sky.width / 2,
-			position.y - this.sky.height / 2 + this.skyPosition
-		));
+		if (this.sky != null) {
+
+			this.sky.setPosition(new Vector2(
+				position.x - this.sky.width / 2,
+				position.y - this.sky.height / 2 + this.skyPosition
+			));
+		}
 	}
 	
 	public void reloadTextures() {
@@ -457,8 +463,15 @@ public class Map {
 	
 	public void draw() {
 		
-		this.sky.draw();
-		this.background.draw();
+		if (this.sky != null) {
+		
+			this.sky.draw();
+		}
+		
+		if (this.background != null) {
+			
+			this.background.draw();
+		}
 		
 		int length = this.numWalls();
 		for (int i = 0; i < length; i++) {

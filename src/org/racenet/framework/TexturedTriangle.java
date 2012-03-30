@@ -36,13 +36,21 @@ public class TexturedTriangle extends TexturedShape {
 		
 		GL10 gl = this.game.getGLGraphics().getGL();
 		
-		//gl.glPushMatrix();
-		//gl.glTranslatef(this.bounds.getPosition().x, this.bounds.getPosition().y, 0);
 		this.texture.bind();
 		this.glVertices.bind();
 		this.glVertices.draw(GL10.GL_TRIANGLES, 0, 3);
 		this.glVertices.unbind();
-		//gl.glPopMatrix();
+	}
+	
+	public void drawOutline() {
+		
+		GL10 gl = this.game.getGLGraphics().getGL();
+		
+		//gl.glDisable(GL10.GL_TEXTURE_2D);
+		this.glVertices.bind();
+		this.glVertices.draw(GL10.GL_LINE_LOOP, 0, 3);
+		this.glVertices.unbind();
+		//gl.glEnable(GL10.GL_TEXTURE_2D);
 	}
 	
 	public float getHeightAt(float x) {

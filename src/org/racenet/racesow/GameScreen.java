@@ -58,7 +58,7 @@ class GameScreen extends Screen {
 		camera.addHud(fps);
 		camera.addHud(timer);
 		
-		map = new Map(camWidth, camHeight);
+		map = new Map(glGraphics.getGL(), camWidth, camHeight);
 		map.load((GLGame)game, mapName);
 		player = new Player((GLGame)game, map.playerX, map.playerY + 10);
 		

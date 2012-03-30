@@ -61,6 +61,20 @@ public class TexturedBlock extends TexturedShape {
 		gl.glPopMatrix();
 	}
 	
+	public void drawOutline() {
+		
+		GL10 gl = this.game.getGLGraphics().getGL();
+		
+		gl.glPushMatrix();
+		//gl.glDisable(GL10.GL_TEXTURE_2D);
+		gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
+		this.glVertices.bind();
+		this.glVertices.draw(GL10.GL_LINE_LOOP, 0, 6);
+		this.glVertices.unbind();
+		//gl.glEnable(GL10.GL_TEXTURE_2D);
+		gl.glPopMatrix();
+	}
+	
 	public float getHeightAt(float x) {
 		
 		return this.height;

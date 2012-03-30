@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.microedition.khronos.opengles.GL10;
+
 import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
@@ -37,11 +39,13 @@ public class Map {
 	private float startTime = 0;
 	private float stopTime = 0;
 	private float camWidth, camHeight;
+	private GL10 gl;
 	
-	public Map(float camWidth, float camHeight) {
+	public Map(GL10 gl, float camWidth, float camHeight) {
 		
 		this.camWidth = camWidth;
 		this.camHeight = camHeight;
+		this.gl = gl;
 	}
 	
 	public boolean load(GLGame game, String fileName) {
@@ -473,7 +477,27 @@ public class Map {
 			this.background.draw();
 		}
 		
-		int length = this.numWalls();
+		gl.glLineWidth(10);
+		gl.glDisable(GL10.GL_TEXTURE_2D);
+		gl.glColor4f(0, 0, 0, 1);
+		
+		int length = this.numGround();
+		for (int i = 0; i < length; i++) {
+			
+			this.getGround(i).drawOutline();
+		}
+		
+		length = this.numWalls();
+		for (int i = 0; i < length; i++) {
+			
+			this.getWall(i).drawOutline();
+		}
+		
+		
+		gl.glColor4f(1, 1, 1, 1);
+		gl.glEnable(GL10.GL_TEXTURE_2D);
+		
+		length = this.numWalls();
 		for (int i = 0; i < length; i++) {
 			
 			this.getWall(i).draw();

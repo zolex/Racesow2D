@@ -20,8 +20,8 @@ public abstract class TexturedShape extends GameObject {
 	public void setupTexture(String fileName, float scaleWidth, float scaleHeight) {
 		
 		this.texture = new GLTexture(this.game, fileName);
-		this.texScaleWidth = scaleWidth == 0 ? 0.05f : scaleWidth;
-		this.texScaleHeight = scaleHeight == 0 ? 0.05f : scaleHeight;
+		this.texScaleWidth = scaleWidth == 0 ? 0.1f : scaleWidth;
+		this.texScaleHeight = scaleHeight == 0 ? 0.1f : scaleHeight;
 	}
 	
 	public void reloadTexture() {

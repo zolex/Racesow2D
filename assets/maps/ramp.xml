@@ -6,6 +6,15 @@
 	<player><x>50</x><y>12</y></player>
 	<starttimer><x>60</x></starttimer>
 	<stoptimer><x>4900</x></stoptimer>
+	<sky>
+		<texture>testing/purple-sky.jpg</texture>
+		<position>5</position>
+	</sky>
+	<background>
+		<texture>testing/skyline.png</texture>
+		<position>10</position>
+		<speed>1.75</speed>
+	</background>
 	<block>
 		<level>ground</level>
 		<x>0</x>
@@ -37,8 +46,8 @@
 		<height>5</height>
 		<texture>testing/lava.jpg</texture>
 		<func>1</func>
-		<texsx>0.025</texsx>
-		<texsy>0.025</texsy>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
 	</block>
 	<block>
 		<level>wall</level>
@@ -47,6 +56,8 @@
 		<width>35</width>
 		<height>20</height>
 		<texture>testing/wood.png</texture>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
 	</block>
 	<block>
 		<level>ground</level>
@@ -102,6 +113,8 @@
 		<width>50</width>
 		<height>20</height>
 		<texture>testing/wood.png</texture>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
 	</block>
 	<block>
 		<level>ground</level>
@@ -111,8 +124,8 @@
 		<height>5</height>
 		<texture>testing/lava.jpg</texture>
 		<func>1</func>
-		<texsx>0.025</texsx>
-		<texsy>0.025</texsy>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
 	</block>
 	<block>
 		<level>ground</level>
@@ -137,8 +150,8 @@
 		<height>5</height>
 		<texture>testing/lava.jpg</texture>
 		<func>1</func>
-		<texsx>0.025</texsx>
-		<texsy>0.025</texsy>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
 	</block>
 	<block>
 		<level>ground</level>
@@ -163,8 +176,8 @@
 		<height>5</height>
 		<texture>testing/lava.jpg</texture>
 		<func>1</func>
-		<texsx>0.025</texsx>
-		<texsy>0.025</texsy>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
 	</block>
 	<block>
 		<level>ground</level>
@@ -182,8 +195,8 @@
 		<height>5</height>
 		<texture>testing/lava.jpg</texture>
 		<func>1</func>
-		<texsx>0.025</texsx>
-		<texsy>0.025</texsy>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
 	</block>
 	<block>
 		<level>ground</level>
@@ -208,8 +221,8 @@
 		<height>5</height>
 		<texture>testing/lava.jpg</texture>
 		<func>1</func>
-		<texsx>0.025</texsx>
-		<texsy>0.025</texsy>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
 	</block>
 	<block>
 		<level>wall</level>
@@ -218,6 +231,8 @@
 		<width>230</width>
 		<height>30</height>
 		<texture>testing/wood.png</texture>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
 	</block>
 	<block>
 		<level>ground</level>

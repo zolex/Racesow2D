@@ -252,7 +252,7 @@ class Player extends AnimatedBlock {
 							this.die();
 							return;
 					}
-					
+
 					// ground, ramp down
 					if (info.direction.angle() == 90) {
 					
@@ -285,7 +285,7 @@ class Player extends AnimatedBlock {
 						// really a front wall
 						} else {
 						
-							float resetX = this.getPosition().x - this.virtualSpeed * this.virtualSpeed / 5000000;
+							float resetX = this.getPosition().x - info.distance / 2000;
 							this.setPosition(new Vector2(resetX, this.getPosition().y));
 							this.virtualSpeed = 0;
 						}

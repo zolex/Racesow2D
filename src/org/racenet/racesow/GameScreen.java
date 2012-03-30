@@ -41,15 +41,15 @@ class GameScreen extends Screen {
 		float camWidth = (float)game.getScreenWidth() / 10;
 		float camHeight = (float)game.getScreenHeight() / 10;
 		
-		ups = new CameraText(new Vector2(camWidth / 2 - 15, camHeight / 2 - 5));
+		ups = new CameraText(new Vector2(camWidth / 2 - 15, camHeight / 2 - 3));
 		ups.setupVertices(glGraphics);
 		ups.setupText((GLGame)game, "ups");
 
-		fps = new CameraText(new Vector2(camWidth / 2 - 25, camHeight / 2 - 5));
+		fps = new CameraText(new Vector2(camWidth / 2 - 25, camHeight / 2 - 3));
 		fps.setupVertices(glGraphics);
 		fps.setupText((GLGame)game, "fps");
 		
-		timer = new CameraText(new Vector2(camWidth / 2 - 35, camHeight / 2 - 5));
+		timer = new CameraText(new Vector2(camWidth / 2 - 35, camHeight / 2 - 3));
 		timer.setupVertices(glGraphics);
 		timer.setupText((GLGame)game, "t 0.00");
 		
@@ -58,7 +58,7 @@ class GameScreen extends Screen {
 		camera.addHud(fps);
 		camera.addHud(timer);
 		
-		map = new Map();
+		map = new Map(camWidth, camHeight);
 		map.load((GLGame)game, mapName);
 		player = new Player((GLGame)game, map.playerX, map.playerY + 10);
 		
@@ -96,6 +96,7 @@ class GameScreen extends Screen {
 		
 		camera.setPosition(player.getPosition().x + 20, camera.position.y);		
 		
+		map.update(camera.position);
 		
 		ups.setupText((GLGame)game, "ups " + String.valueOf(new Integer((int)player.virtualSpeed)));
 		

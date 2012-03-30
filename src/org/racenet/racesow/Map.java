@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.TexturedBlock;
@@ -22,6 +23,10 @@ public class Map {
 	
 	private List<TexturedShape> ground = new ArrayList<TexturedShape>();
 	private List<TexturedShape> walls = new ArrayList<TexturedShape>();
+	private TexturedBlock sky;
+	private float skyPosition;
+	private TexturedBlock background;
+	private float backgroundSpeed = 2;
 	private SpatialHashGrid groundGrid;
 	private SpatialHashGrid wallGrid;
 	private SpatialHashGrid funcGrid;
@@ -31,9 +36,12 @@ public class Map {
 	private boolean raceFinished = false;
 	private float startTime = 0;
 	private float stopTime = 0;
+	private float camWidth, camHeight;
 	
-	public Map() {
+	public Map(float camWidth, float camHeight) {
 		
+		this.camWidth = camWidth;
+		this.camHeight = camHeight;
 	}
 	
 	public boolean load(GLGame game, String fileName) {
@@ -116,6 +124,62 @@ public class Map {
 			GameObject stopTimer = new GameObject(new Vector2(stopTimerX, 0), new Vector2(stopTimerX + 1, 0), new Vector2(stopTimerX + 1, worldHeight), new Vector2(stopTimerX, worldHeight));
 			stopTimer.func = GameObject.FUNC_STOP_TIMER;
 			this.funcGrid.insertStaticObject(stopTimer);
+		}
+		
+		NodeList skyN = parser.doc.getElementsByTagName("sky");
+		if (skyN.getLength() == 1) {
+			
+			try {
+				
+				this.skyPosition = Float.valueOf(parser.getValue((Element)skyN.item(0), "position")).floatValue();
+				
+			} catch (NumberFormatException e) {
+				
+				this.skyPosition = 0;
+			}
+			
+			this.sky = new TexturedBlock(game,
+					parser.getValue((Element)skyN.item(0), "texture"),
+					GameObject.FUNC_NONE,
+					-1,
+					-1,
+					new Vector2(0,skyPosition),
+					new Vector2(this.camWidth, skyPosition)
+					);
+		}
+		
+		NodeList backgroundN = parser.doc.getElementsByTagName("background");
+		if (backgroundN.getLength() == 1) {
+			
+			try {
+				
+				this.backgroundSpeed = Float.valueOf(parser.getValue((Element)backgroundN.item(0), "speed")).floatValue();
+				
+			} catch (NumberFormatException e) {
+				
+				this.backgroundSpeed = 2;
+			}
+			
+			float backgroundPosition;
+			try {
+				
+				backgroundPosition = Float.valueOf(parser.getValue((Element)backgroundN.item(0), "position")).floatValue();
+			
+			} catch (NumberFormatException e) {
+				
+				backgroundPosition = 0;
+			}
+			
+			this.background = new TexturedBlock(game,
+					parser.getValue((Element)backgroundN.item(0), "texture"),
+					GameObject.FUNC_NONE,
+					0.25f,
+					0.25f,
+					new Vector2(backgroundPosition, 0),
+					new Vector2(worldWidth, 0),
+					new Vector2(worldWidth, worldHeight + backgroundPosition),
+					new Vector2(backgroundPosition, worldHeight + backgroundPosition)
+				);
 		}
 		
 		for (int i = 0; i < numblockes; i++) {
@@ -274,7 +338,22 @@ public class Map {
 		return true;
 	}
 	
+	public void update(Vector2 position) {
+		
+		this.background.setPosition(new Vector2(
+			position.x / this.backgroundSpeed,
+			this.background.getPosition().y
+		));
+		
+		this.sky.setPosition(new Vector2(
+			position.x - this.sky.width / 2,
+			position.y - this.sky.height / 2 + this.skyPosition
+		));
+	}
+	
 	public void reloadTextures() {
+		
+		this.sky.reloadTexture();
 		
 		int length = this.ground.size();
 		for (int i = 0; i < length; i++) {
@@ -377,6 +456,9 @@ public class Map {
 	}
 	
 	public void draw() {
+		
+		this.sky.draw();
+		this.background.draw();
 		
 		int length = this.numWalls();
 		for (int i = 0; i < length; i++) {

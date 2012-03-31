@@ -2,6 +2,8 @@ package org.racenet.framework;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.util.Log;
+
 public class TexturedTriangle extends TexturedShape {
 
 	public TexturedTriangle(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, Vector2 ... vertices) {
@@ -53,7 +55,7 @@ public class TexturedTriangle extends TexturedShape {
 		//gl.glEnable(GL10.GL_TEXTURE_2D);
 	}
 	
-	public float getHeightAt(float x) {
+	public float getHeightAt(float x, boolean fake) {
 		
 		// ramp up
 		if (this.vertices[1].x == this.vertices[2].x) {
@@ -61,6 +63,12 @@ public class TexturedTriangle extends TexturedShape {
 			return (this.vertices[2].y - this.vertices[0].y) / (this.vertices[2].x - this.vertices[0].x) * (x - this.vertices[0].x);
 		}
 		
+		// ramp down
+		if (!fake && this.vertices[0].x == this.vertices[1].x) {
+			
+			return (this.vertices[0].y - this.vertices[2].y) / (this.vertices[0].x - this.vertices[2].x) * (x - this.vertices[2].x) - this.height;
+		}
+
 		return this.height;
 	}
 }

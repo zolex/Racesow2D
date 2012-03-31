@@ -125,9 +125,15 @@ class GameScreen extends Screen {
 		
 		player.move(gravity, deltaTime, jumpPressed);
 		
-		camera.setPosition(player.getPosition().x + 20, camera.position.y);		
+		float camY = camera.position.y;
+		if (player.getPosition().y + 8 > camera.frustumHeight) {
+			
+			camY = player.getPosition().y - camera.frustumHeight / 2 + 8;
+		}
 		
-		map.update(camera.position);
+		camera.setPosition(player.getPosition().x + 20, camY);		
+		
+		map.update(camera.position, deltaTime);
 		
 		ups.setupText((GLGame)game, "ups " + String.valueOf(new Integer((int)player.virtualSpeed)));
 		

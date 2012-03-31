@@ -23,10 +23,13 @@ import android.util.Log;
 
 public class Map {
 	
+	private static final short MAX_DECALS = 32;
 	private List<TexturedShape> ground = new ArrayList<TexturedShape>();
 	private List<TexturedShape> walls = new ArrayList<TexturedShape>();
 	public List<TexturedShape> items = new ArrayList<TexturedShape>();
 	public List<TexturedShape> pickedUpItems = new ArrayList<TexturedShape>();
+	public TexturedShape[] decals = new TexturedShape[MAX_DECALS];
+	public float[] decalTime = new float[MAX_DECALS];
 	private TexturedBlock sky;
 	private float skyPosition;
 	private TexturedBlock background;
@@ -48,6 +51,11 @@ public class Map {
 		this.camWidth = camWidth;
 		this.camHeight = camHeight;
 		this.gl = gl;
+		
+		for (int i = 0; i < MAX_DECALS; i++) {
+			
+			this.decalTime[i] = -1;
+		}
 	}
 	
 	public boolean load(GLGame game, String fileName) {
@@ -369,13 +377,13 @@ public class Map {
 		return true;
 	}
 	
-	public void update(Vector2 position) {
+	public void update(Vector2 position, float deltaTime) {
 		
 		if (this.background != null) {
 			
 			this.background.setPosition(new Vector2(
 				position.x / this.backgroundSpeed,
-				this.background.getPosition().y
+				(position.y - this.camHeight / 2) / 1.5f
 			));
 		}
 		
@@ -385,6 +393,22 @@ public class Map {
 				position.x - this.sky.width / 2,
 				position.y - this.sky.height / 2 + this.skyPosition
 			));
+		}
+		
+		for (int i = 0; i < MAX_DECALS; i++) {
+			
+			if (this.decalTime[i] > 0) {
+				
+				this.decalTime[i] -= deltaTime;
+				if (this.decalTime[i] < 0) {
+					
+					if (this.decals[i] != null) {
+						
+						this.decals[i].dispose();
+						this.decals[i] = null;
+					}
+				}
+			}
 		}
 	}
 	
@@ -430,6 +454,19 @@ public class Map {
 		
 		this.walls.add(block);
 		this.wallGrid.insertStaticObject(block);
+	}
+	
+	public void addDecal(TexturedShape decal, float time) {
+		
+		for (int i = 0; i < MAX_DECALS; i++) {
+			
+			if (this.decals[i] == null) {
+				
+				this.decals[i] = decal;
+				this.decalTime[i] = time;
+				break;
+			}
+		}
 	}
 	
 	public TexturedShape getGround(GameObject o) {
@@ -520,6 +557,14 @@ public class Map {
 		for (int i = 0; i < length; i++) {
 			
 			this.items.get(i).draw();
+		}
+		
+		for (int i = 0; i < MAX_DECALS; i++) {
+			
+			if (this.decals[i] != null) {
+			
+				this.decals[i].draw();
+			}
 		}
 	}
 	

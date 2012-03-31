@@ -21,25 +21,26 @@ class Player extends AnimatedBlock {
 	public final Vector2 velocity = new Vector2();
 	public final Vector2 accel = new Vector2();
 	
-	public static final int ANIM_RUN = 0;
-	public static final int ANIM_JUMP = 1;
-	public static final int ANIM_WALLJUMP = 2;
-	public static final int ANIM_BURN = 3;
-	public static final int ANIM_INVISIBLE = 4;
-	public static final int ANIM_ROCKET_RUN = 5;
-	public static final int ANIM_ROCKET_JUMP = 6;
-	public static final int ANIM_ROCKET_WALLJUMP = 7;
-	public static final int ANIM_PLASMA_RUN = 8;
-	public static final int ANIM_PLASMA_JUMP = 9;
-	public static final int ANIM_PLASMA_WALLJUMP = 10;
+	public static final short ANIM_RUN = 0;
+	public static final short ANIM_JUMP = 1;
+	public static final short ANIM_WALLJUMP = 2;
+	public static final short ANIM_BURN = 3;
+	public static final short ANIM_INVISIBLE = 4;
+	public static final short ANIM_ROCKET_RUN = 5;
+	public static final short ANIM_ROCKET_JUMP = 6;
+	public static final short ANIM_ROCKET_WALLJUMP = 7;
+	public static final short ANIM_PLASMA_RUN = 8;
+	public static final short ANIM_PLASMA_JUMP = 9;
+	public static final short ANIM_PLASMA_WALLJUMP = 10;
 	
-	public static final int SOUND_JUMP1 = 0;
-	public static final int SOUND_JUMP2 = 1;
-	public static final int SOUND_WJ1 = 2;
-	public static final int SOUND_WJ2 = 3;
-	public static final int SOUND_DIE = 4;
-	public static final int SOUND_PICKUP = 5;
-	private AndroidSound sounds[] = new AndroidSound[6];
+	public static final short SOUND_JUMP1 = 0;
+	public static final short SOUND_JUMP2 = 1;
+	public static final short SOUND_WJ1 = 2;
+	public static final short SOUND_WJ2 = 3;
+	public static final short SOUND_DIE = 4;
+	public static final short SOUND_PICKUP = 5;
+	public static final short SOUND_ROCKET = 6;
+	private AndroidSound sounds[] = new AndroidSound[7];
 	
 	private static final float FIRERATE_ROCKET = 1.75f;
 	private static final float FIRERATE_PLASMA = 0.01f;
@@ -60,7 +61,6 @@ class Player extends AnimatedBlock {
 	private float volume = 0.1f;
 	private String model = "male";
 	private Map map;
-	private int defaultAnim = ANIM_RUN;
 	
 	private int frames = 0;
 	
@@ -79,6 +79,7 @@ class Player extends AnimatedBlock {
 		this.sounds[SOUND_WJ2] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/wj_2.ogg");
 		this.sounds[SOUND_DIE] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/death.ogg");
 		this.sounds[SOUND_PICKUP] = (AndroidSound)audio.newSound("sounds/weapon_pickup.ogg");
+		this.sounds[SOUND_ROCKET] = (AndroidSound)audio.newSound("sounds/rocket_explosion.ogg");
 		
 		this.loadAnimations();
 		this.setupVertices();
@@ -161,7 +162,7 @@ class Player extends AnimatedBlock {
 			if (ground != null) {
 				
 				this.distanceOnJump = Math.max(0.32f,
-						this.getPosition().y - (ground.getPosition().y + ground.getHeightAt(this.getPosition().x)));
+						this.getPosition().y - (ground.getPosition().y + ground.getHeightAt(this.getPosition().x, true)));
 				this.distanceRemembered = true;
 			}
 		}
@@ -269,17 +270,70 @@ class Player extends AnimatedBlock {
 		switch (this.attachedItem.func) {
 		
 			case GameObject.ITEM_ROCKET:
+				boolean hitWall = false;
 				if (currentTime >= this.lastShot + FIRERATE_ROCKET) {
 					
-					Log.d("DEBUG", "shoot rocket");
-					this.lastShot = currentTime;
+					List<GameObject> colliders = this.map.getPotentialWallColliders(this);
+					int length = colliders.size();
+					for (int i = 0; i < length; i++) {
+					
+						GameObject part = colliders.get(i);
+						CollisionInfo info = this.intersect(part);
+						if (info.collided) {
+					
+							hitWall = true;
+							float impactX = this.getPosition().x;
+							float impactY = this.getPosition().y;
+							this.velocity.add(35, 20);
+							
+							this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
+							map.addDecal(new TexturedBlock(
+								this.game,
+								"decals/rocket_hit.png",
+								GameObject.FUNC_NONE,
+								-1,
+								-1,
+								new Vector2(impactX - 3, impactY),
+								new Vector2(impactX + 5, impactY)
+							), 0.25f);
+							
+							this.lastShot = currentTime;
+							break;
+						}
+					}
+					
+					if (!hitWall) {
+						
+						TexturedShape ground = map.getGround(this);
+						if (ground != null) {
+							
+							float impactY = ground.getPosition().y + ground.getHeightAt(this.getPosition().x, false) - 4;
+							float distance = this.getPosition().y - impactY;
+							
+							this.addToPosition(0, 1);
+							this.velocity.add(0, 100 / distance);
+							this.onFloor = false;
+							
+							this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
+							map.addDecal(new TexturedBlock(
+								this.game,
+								"decals/rocket_hit.png",
+								GameObject.FUNC_NONE,
+								-1,
+								-1,
+								new Vector2(this.getPosition().x - 3, impactY),
+								new Vector2(this.getPosition().x + 5, impactY)
+							), 0.25f);
+						}
+						
+						this.lastShot = currentTime;
+					}
 				}
 				break;
 				
 			case GameObject.ITEM_PLASMA:
 				if (currentTime >= this.lastShot + FIRERATE_PLASMA) {
 					
-					Log.d("DEBUG", "shoot plasma");
 					this.lastShot = currentTime;
 				}
 				break;
@@ -365,12 +419,12 @@ class Player extends AnimatedBlock {
 				
 					case GameObject.ITEM_ROCKET:
 						texture = "items/rocket.png";
-						this.defaultAnim = ANIM_ROCKET_RUN;
+						this.activeAnimId = ANIM_ROCKET_RUN;
 						break;
 					
 					case GameObject.ITEM_PLASMA:
 						texture = "items/plasma.png";
-						this.defaultAnim = ANIM_PLASMA_RUN;
+						this.activeAnimId = ANIM_PLASMA_RUN;
 						break;
 				}
 				

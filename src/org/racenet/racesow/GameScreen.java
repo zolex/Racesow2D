@@ -45,8 +45,8 @@ class GameScreen extends Screen {
 		
 		GLTexture.APP_FOLDER = "racesow";
 		
-		float camWidth = (float)game.getScreenWidth() / 10;
-		float camHeight = (float)game.getScreenHeight() / 10;
+		float camWidth =  80;
+		float camHeight = 80 * (float)game.getScreenHeight() / (float)game.getScreenWidth();
 		
 		batcher = new SpriteBatcher(glGraphics, 96);
 		GLTexture texture = new GLTexture((GLGame)game, "font.png");
@@ -79,7 +79,7 @@ class GameScreen extends Screen {
 			
 			if (e.type == TouchEvent.TOUCH_DOWN) {
 				
-				if (e.x / camera.frustumWidth > 5) {
+				if (e.x / (float)game.getScreenWidth() > 0.5f) {
 					
 					if (!this.jumpPressed) {
 						
@@ -133,12 +133,8 @@ class GameScreen extends Screen {
 		}
 		
 		camera.setPosition(player.getPosition().x + 20, camY);		
-		
-
 		map.update(camera.position, deltaTime);
 
-		ups.text = "ups " + String.valueOf(new Integer((int)player.virtualSpeed));
-		
 		frames--;
 		sumDelta += deltaTime;
 		if (frames == 0) {
@@ -149,6 +145,7 @@ class GameScreen extends Screen {
 			
 		}
 
+		ups.text = "ups " + String.valueOf(new Integer((int)player.virtualSpeed));
 		timer.text = "t " + String.format("%.2f", map.getCurrentTime());
 	}
 

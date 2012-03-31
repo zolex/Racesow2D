@@ -35,9 +35,6 @@ public class BitmapFont {
 		for (int i = 0; i < lenght; i++) {
 			
 			int c = text.charAt(i) - ' ' - 1;
-			
-			Log.d("DEBUG", "c = " + String.valueOf(new Integer(c)));
-			
 			if (c < 0 || c > glyphs.length - 1) {
 				
 				continue;

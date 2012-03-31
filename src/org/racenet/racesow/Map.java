@@ -520,6 +520,7 @@ public class Map {
 			this.background.draw();
 		}
 		
+		/*
 		gl.glLineWidth(10);
 		gl.glDisable(GL10.GL_TEXTURE_2D);
 		gl.glColor4f(0.2f, 0.2f, 0.2f, 1);
@@ -535,12 +536,12 @@ public class Map {
 			
 			this.walls.get(i).drawOutline();
 		}
-		
+		*/
 		
 		gl.glColor4f(1, 1, 1, 1);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
-		length = this.walls.size();
+		int length = this.walls.size();
 		for (int i = 0; i < length; i++) {
 			
 			this.walls.get(i).draw();

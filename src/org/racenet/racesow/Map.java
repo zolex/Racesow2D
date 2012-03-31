@@ -45,6 +45,7 @@ public class Map {
 	private float stopTime = 0;
 	private float camWidth, camHeight;
 	private GL10 gl;
+	public boolean drawOutlines = true;
 	
 	public Map(GL10 gl, float camWidth, float camHeight) {
 		
@@ -520,28 +521,33 @@ public class Map {
 			this.background.draw();
 		}
 		
-		/*
-		gl.glLineWidth(10);
-		gl.glDisable(GL10.GL_TEXTURE_2D);
-		gl.glColor4f(0.2f, 0.2f, 0.2f, 1);
-		
-		int length = this.ground.size();
-		for (int i = 0; i < length; i++) {
+		int length;
+		if (this.drawOutlines) {
 			
-			this.ground.get(i).drawOutline();
+			gl.glLineWidth(10);
+			gl.glDisable(GL10.GL_TEXTURE_2D);
+			gl.glColor4f(0.2f, 0.2f, 0.2f, 1);
+			
+			length = this.ground.size();
+			for (int i = 0; i < length; i++) {
+				
+				this.ground.get(i).drawOutline();
+			}
+			
+			length = this.walls.size();
+			for (int i = 0; i < length; i++) {
+				
+				this.walls.get(i).drawOutline();
+			}
+			
+			gl.glColor4f(1, 1, 1, 1);
 		}
 		
-		length = this.walls.size();
-		for (int i = 0; i < length; i++) {
-			
-			this.walls.get(i).drawOutline();
-		}
-		*/
 		
-		gl.glColor4f(1, 1, 1, 1);
+		
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
-		int length = this.walls.size();
+		length = this.walls.size();
 		for (int i = 0; i < length; i++) {
 			
 			this.walls.get(i).draw();

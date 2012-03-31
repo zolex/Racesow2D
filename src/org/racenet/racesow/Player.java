@@ -11,10 +11,7 @@ import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.TexturedShape;
-import org.racenet.framework.TexturedTriangle;
 import org.racenet.framework.Vector2;
-
-import android.util.Log;
 
 class Player extends AnimatedBlock {
 	

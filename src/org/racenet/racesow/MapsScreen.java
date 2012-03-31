@@ -27,8 +27,6 @@ public class MapsScreen extends Screen {
 	Camera2 camera;
 	GLGraphics glGraphics;
 	GestureDetector gestures;
-	float camWidth;
-	float camHeight;
 	float menuVelocity = 0;
 	Menu menu;
 	
@@ -38,12 +36,9 @@ public class MapsScreen extends Screen {
 		
 		glGraphics = ((GLGame)game).getGLGraphics();
 		
-		camWidth = (float)game.getScreenWidth();
-		camHeight = (float)game.getScreenHeight();
-		camera = new Camera2(glGraphics, camWidth, camHeight);
-		
-		menu = new Menu((GLGame)game, camWidth, camHeight);
-		gestures = new GestureDetector(menu);
+		this.camera = new Camera2(glGraphics, (float)game.getScreenWidth(), (float)game.getScreenHeight());
+		this.menu = new Menu((GLGame)this.game, this.camera.frustumWidth, this.camera.frustumHeight);
+		this.gestures = new GestureDetector(this.menu);
 		
 		String[] maps = game.getFileIO().listAssets("maps");
 		for (int i = 0; i < maps.length; i++) {
@@ -74,7 +69,7 @@ public class MapsScreen extends Screen {
 				
 				public void handle() {
 					
-					game.setScreen(new GameScreen(game, mapName));
+					game.setScreen(new LoadingScreen(game, mapName));
 				}
 			});
 		}
@@ -87,9 +82,11 @@ public class MapsScreen extends Screen {
 			
 			texture = "racesow_small.jpg";
 		}
-		header = new TexturedBlock((GLGame)game, texture, TexturedBlock.FUNC_NONE, -1, -1, new Vector2(0, 0), new Vector2(camWidth, 0));
-		header.setPosition(new Vector2(0, camHeight - header.height));
-		header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
+		
+		this.header = new TexturedBlock((GLGame)game, texture, TexturedBlock.FUNC_NONE, -1, -1,
+				new Vector2(0, 0), new Vector2(this.camera.frustumWidth, 0));
+		this.header.setPosition(new Vector2(0, this.camera.frustumHeight - this.header.height));
+		this.header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
 	}
 
 	@Override

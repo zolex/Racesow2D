@@ -22,8 +22,6 @@ public class MenuScreen extends Screen {
 	Camera2 camera;
 	GLGraphics glGraphics;
 	GestureDetector gestures;
-	float camWidth;
-	float camHeight;
 	float menuVelocity = 0;
 	Menu menu;
 	
@@ -33,11 +31,9 @@ public class MenuScreen extends Screen {
 		
 		glGraphics = ((GLGame)game).getGLGraphics();
 		
-		camWidth = (float)game.getScreenWidth();
-		camHeight = (float)game.getScreenHeight();
-		camera = new Camera2(glGraphics, camWidth, camHeight);
+		camera = new Camera2(glGraphics, (float)game.getScreenWidth(), (float)game.getScreenHeight());
 		
-		menu = new Menu((GLGame)game, camWidth, camHeight);
+		menu = new Menu((GLGame)game, camera.frustumWidth, camera.frustumHeight);
 		gestures = new GestureDetector(menu);
 		
 		menu.addItem("menu/play.png", menu.new Callback() {
@@ -68,8 +64,10 @@ public class MenuScreen extends Screen {
 			
 			texture = "racesow_small.jpg";
 		}
-		header = new TexturedBlock((GLGame)game, texture, TexturedBlock.FUNC_NONE, -1, -1, new Vector2(0, 0), new Vector2(camWidth, 0));
-		header.setPosition(new Vector2(0, camHeight - header.height));
+		
+		header = new TexturedBlock((GLGame)game, texture, TexturedBlock.FUNC_NONE, -1, -1,
+				new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
+		header.setPosition(new Vector2(0, camera.frustumHeight - header.height));
 		header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
 	}
 

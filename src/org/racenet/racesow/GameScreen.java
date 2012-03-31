@@ -41,15 +41,15 @@ class GameScreen extends Screen {
 		float camWidth = (float)game.getScreenWidth() / 10;
 		float camHeight = (float)game.getScreenHeight() / 10;
 		
-		ups = new CameraText(new Vector2(camWidth / 2 - 15, camHeight / 2 - 3));
+		ups = new CameraText(glGraphics.getGL(), new Vector2(camWidth / 2 - 15, camHeight / 2 - 3));
 		ups.setupVertices(glGraphics);
 		ups.setupText((GLGame)game, "ups");
 
-		fps = new CameraText(new Vector2(camWidth / 2 - 25, camHeight / 2 - 3));
+		fps = new CameraText(glGraphics.getGL(), new Vector2(camWidth / 2 - 25, camHeight / 2 - 3));
 		fps.setupVertices(glGraphics);
 		fps.setupText((GLGame)game, "fps");
 		
-		timer = new CameraText(new Vector2(camWidth / 2 - 35, camHeight / 2 - 3));
+		timer = new CameraText(glGraphics.getGL(), new Vector2(camWidth / 2 - 35, camHeight / 2 - 3));
 		timer.setupVertices(glGraphics);
 		timer.setupText((GLGame)game, "t 0.00");
 		
@@ -60,13 +60,11 @@ class GameScreen extends Screen {
 		
 		map = new Map(glGraphics.getGL(), camWidth, camHeight);
 		map.load((GLGame)game, mapName);
-		player = new Player((GLGame)game, map.playerX, map.playerY + 10);
+		player = new Player((GLGame)game, camera, map.playerX, map.playerY + 10);
 		
 	}
 
 	public void update(float deltaTime) {
-		
-		camera.updatePosition(deltaTime);
 		
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 		int len = touchEvents.size();
@@ -131,9 +129,7 @@ class GameScreen extends Screen {
 		map.draw();
 		player.draw();
 		
-		ups.draw(gl);
-		fps.draw(gl);
-		timer.draw(gl);
+		camera.drawHud();
 	}
 
 	public void pause() {

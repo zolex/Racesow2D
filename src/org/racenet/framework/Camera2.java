@@ -8,12 +8,11 @@ import javax.microedition.khronos.opengles.GL10;
 public class Camera2 {
 	
     public final Vector2 position;
-    public final Vector2 velocity;
     public float zoom;
     public final float frustumWidth;
     public final float frustumHeight;
     final GLGraphics glGraphics;
-    protected List<CameraText> hudItems = new ArrayList<CameraText>();
+    protected List<HudItem> hudItems = new ArrayList<HudItem>();
     
     public Camera2(GLGraphics glGraphics, float frustumWidth, float frustumHeight) {
     	
@@ -21,24 +20,7 @@ public class Camera2 {
         this.frustumWidth = frustumWidth;
         this.frustumHeight = frustumHeight;
         this.position = new Vector2(frustumWidth / 2, frustumHeight / 2);
-        this.velocity = new Vector2();
         this.zoom = 1.0f;
-    }
-    
-    public void updatePosition(float deltaTime) {
-    	
-    	if (velocity.x == 0 && velocity.y == 0) {
-    		
-    		return;
-    	}
-    	
-		position.add(velocity.x * deltaTime, velocity.y * deltaTime);
-		
-		int length = hudItems.size();
-		for (int i = 0; i < length; i++) {
-			
-			hudItems.get(i).addToPosition(velocity.x * deltaTime, velocity.y * deltaTime);
-		}
     }
 
 	public void setPosition(float x, float y) {
@@ -48,7 +30,7 @@ public class Camera2 {
 		int length = hudItems.size();
 		for (int i = 0; i < length; i++) {
 			
-			CameraText item = hudItems.get(i);
+			HudItem item = hudItems.get(i);
 			
 			item.setPosition(new Vector2(x + item.cameraX, y + item.cameraY));
 		}
@@ -61,14 +43,19 @@ public class Camera2 {
 		int length = hudItems.size();
 		for (int i = 0; i < length; i++) {
 			
-			CameraText item = hudItems.get(i);
+			HudItem item = hudItems.get(i);
 			item.setPosition(new Vector2(item.cameraX * factor, item.cameraY * factor));
 		}
 	}
 	
-    public void addHud(CameraText item) {
+	public void addHud(HudItem item) {
+		
+		hudItems.add(item);
+	}
+	
+    public void removeHud(HudItem item) {
     	
-    	hudItems.add(item);
+    	hudItems.remove(item);
     }
     
     public void setViewportAndMatrices() {
@@ -86,10 +73,12 @@ public class Camera2 {
         gl.glLoadIdentity();
     }
     
-    public void touchToWorld(Vector2 touch) {
+    public void drawHud() {
     	
-        touch.x = (touch.x / (float) glGraphics.getWidth()) * frustumWidth * zoom;
-        touch.y = (1 - touch.y / (float) glGraphics.getHeight()) * frustumHeight * zoom;
-        touch.add(position).subtract(frustumWidth * zoom / 2, frustumHeight * zoom / 2);
+    	int length = hudItems.size();
+		for (int i = 0; i < length; i++) {
+			
+			hudItems.get(i).draw();
+		}
     }
 }

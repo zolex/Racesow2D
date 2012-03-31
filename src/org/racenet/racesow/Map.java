@@ -25,6 +25,8 @@ public class Map {
 	
 	private List<TexturedShape> ground = new ArrayList<TexturedShape>();
 	private List<TexturedShape> walls = new ArrayList<TexturedShape>();
+	public List<TexturedShape> items = new ArrayList<TexturedShape>();
+	public List<TexturedShape> pickedUpItems = new ArrayList<TexturedShape>();
 	private TexturedBlock sky;
 	private float skyPosition;
 	private TexturedBlock background;
@@ -83,15 +85,14 @@ public class Map {
 			}
 		}
 		
-		NodeList blockes = parser.doc.getElementsByTagName("block");
-		
 		float worldWidth = 0;
 		float worldHeight = 0;
 		
-		int numblockes = blockes.getLength();
-		for (int i = 0; i < numblockes; i++) {
+		NodeList blocks = parser.doc.getElementsByTagName("block");
+		int numblocks = blocks.getLength();
+		for (int i = 0; i < numblocks; i++) {
 			
-			Element block = (Element)blockes.item(i);
+			Element block = (Element)blocks.item(i);
 			float blockMaxX = Float.valueOf(parser.getValue(block, "x")).floatValue() + Float.valueOf(parser.getValue(block, "width")).floatValue();
 			if (worldWidth < blockMaxX) {
 				
@@ -108,6 +109,32 @@ public class Map {
 		this.groundGrid = new SpatialHashGrid(worldWidth, worldHeight, 30);
 		this.wallGrid = new SpatialHashGrid(worldWidth, worldHeight, 30);
 		this.funcGrid = new SpatialHashGrid(worldWidth, worldHeight, 30);
+		
+		NodeList items = parser.doc.getElementsByTagName("item");
+		int numItems = items.getLength();
+		for (int i = 0; i < numItems; i++) {
+			
+			Element xmlItem = (Element)items.item(i);
+			float itemX = Float.valueOf(parser.getValue(xmlItem, "x")).floatValue();
+			float itemY = Float.valueOf(parser.getValue(xmlItem, "y")).floatValue();
+			//Integer.valueOf(parser.getValue(xmlItem, "ammo"));
+			
+			String type = parser.getValue(xmlItem, "type");
+			short func = GameObject.FUNC_NONE;
+			if (type.equals("rocket")) func = GameObject.ITEM_ROCKET; 
+			else if (type.equals("plasma")) func = GameObject.ITEM_PLASMA; 
+			
+			TexturedBlock item = new TexturedBlock(game,
+				"items/" + type + ".png",
+				func,
+				-1,
+				-1,
+				new Vector2(itemX, itemY),
+				new Vector2(itemX + 3, itemY + 3)
+			);
+
+			this.items.add(item);
+		}
 		
 		NodeList startTimerN = parser.doc.getElementsByTagName("starttimer");
 		if (startTimerN.getLength() == 1) {
@@ -186,9 +213,9 @@ public class Map {
 				);
 		}
 		
-		for (int i = 0; i < numblockes; i++) {
+		for (int i = 0; i < numblocks; i++) {
 			
-			Element xmlblock = (Element)blockes.item(i);
+			Element xmlblock = (Element)blocks.item(i);
 			
 			short func;
 			try {
@@ -399,30 +426,10 @@ public class Map {
 		this.groundGrid.insertStaticObject(block);
 	}
 	
-	public TexturedShape getGround(int i) {
-		
-		return this.ground.get(i);
-	}
-	
-	public int numGround() {
-		
-		return this.ground.size();
-	}
-	
 	public void addWall(TexturedShape block) {
 		
 		this.walls.add(block);
 		this.wallGrid.insertStaticObject(block);
-	}
-	
-	public TexturedShape getWall(int i) {
-		
-		return this.walls.get(i);
-	}
-	
-	public int numWalls() {
-		
-		return this.walls.size();
 	}
 	
 	public TexturedShape getGround(GameObject o) {
@@ -479,34 +486,40 @@ public class Map {
 		
 		gl.glLineWidth(10);
 		gl.glDisable(GL10.GL_TEXTURE_2D);
-		gl.glColor4f(0, 0, 0, 1);
+		gl.glColor4f(0.2f, 0.2f, 0.2f, 1);
 		
-		int length = this.numGround();
+		int length = this.ground.size();
 		for (int i = 0; i < length; i++) {
 			
-			this.getGround(i).drawOutline();
+			this.ground.get(i).drawOutline();
 		}
 		
-		length = this.numWalls();
+		length = this.walls.size();
 		for (int i = 0; i < length; i++) {
 			
-			this.getWall(i).drawOutline();
+			this.walls.get(i).drawOutline();
 		}
 		
 		
 		gl.glColor4f(1, 1, 1, 1);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
-		length = this.numWalls();
+		length = this.walls.size();
 		for (int i = 0; i < length; i++) {
 			
-			this.getWall(i).draw();
+			this.walls.get(i).draw();
 		}
 		
-		length = this.numGround();
+		length = this.ground.size();
 		for (int i = 0; i < length; i++) {
 			
-			this.getGround(i).draw();
+			this.ground.get(i).draw();
+		}
+		
+		length = this.items.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.items.get(i).draw();
 		}
 	}
 	
@@ -517,6 +530,15 @@ public class Map {
 		this.raceStarted = false;
 		this.raceFinished= false;
 		player.reset(this.playerX, this.playerY);
+		
+		int length = this.pickedUpItems.size();
+		for (int i = 0; i < length; i++) {
+			
+			TexturedShape item = this.pickedUpItems.get(i);
+			this.items.add(item);
+		}
+		
+		this.pickedUpItems.clear();
 	}
 	
 	public boolean inRace() {

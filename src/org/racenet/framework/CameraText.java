@@ -8,18 +8,18 @@ import org.racenet.framework.GLString;
 import org.racenet.framework.GLVertices;
 import org.racenet.framework.GameObject;
 
-public class CameraText extends GameObject {
+public class CameraText extends HudItem {
 	
 	public GLVertices vertices;
 	public GLString string;
 	public float cameraX;
 	public float cameraY;
+	private GL10 gl;
 	
-	public CameraText(Vector2 ... edges) {
+	public CameraText(GL10 gl, Vector2 ... vertices) {
 		
-		super(edges);
-		this.cameraX = edges[0].x;
-		this.cameraY = edges[0].y;
+		super(vertices);
+		this.gl = gl;
 	}
 	
 	public void setupVertices(GLGraphics glGraphics) {
@@ -41,14 +41,14 @@ public class CameraText extends GameObject {
 		string = new GLString(game, text, 512, 128, 6, 112);
 	}
 	
-	public void draw(GL10 gl) {
+	public void draw() {
 		
-		gl.glPushMatrix();
-		gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
+		this.gl.glPushMatrix();
+		this.gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
 		string.bind();
 		vertices.bind();
 		vertices.draw(GL10.GL_TRIANGLES, 0, 6);
 		vertices.unbind();
-		gl.glPopMatrix();
+		this.gl.glPopMatrix();
 	}
 }

@@ -1,5 +1,7 @@
 package org.racenet.framework;
 
+import android.util.Log;
+
 /**
  * Represents a polygon defined by at
  * least three points
@@ -145,8 +147,8 @@ public class Polygon {
 	 */
 	public void calcWidth() {
 		
-		float minX = Float.MAX_VALUE;
-		float maxX = Float.MIN_VALUE;
+		float minX = 320000000;
+		float maxX = -320000000;
 		int length = this.vertices.length;
 		for (int i = 0; i < length; i++) {
 			
@@ -165,8 +167,8 @@ public class Polygon {
 	 */
 	public void calcHeight() {
 		
-		float minY = Float.MAX_VALUE;
-		float maxY = Float.MIN_VALUE;
+		float minY = 320000000;
+		float maxY = -320000000;
 		int length = this.vertices.length;
 		for (int i = 0; i < length; i++) {
 			

@@ -15,6 +15,16 @@
 		<position>10</position>
 		<speed>1.75</speed>
 	</background>
+	<item>
+		<type>rocket</type>
+		<x>70</x>
+		<y>10.1</y>
+	</item>
+	<item>
+		<type>plasma</type>
+		<x>160</x>
+		<y>20.1</y>
+	</item>
 	<block>
 		<level>ground</level>
 		<x>0</x>

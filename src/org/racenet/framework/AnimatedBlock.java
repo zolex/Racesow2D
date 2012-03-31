@@ -4,7 +4,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class AnimatedBlock extends GameObject {
 
-	GLGame game = null;
+	protected GLGame game = null;
 	public float animTime = 0;
 	public GLVertices vertices = null;
 	public Animation anims[];

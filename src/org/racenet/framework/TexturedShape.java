@@ -1,6 +1,6 @@
 package org.racenet.framework;
 
-public abstract class TexturedShape extends GameObject {
+public abstract class TexturedShape extends HudItem {
 	
 	GLGame game = null;
 	public GLVertices glVertices = null;

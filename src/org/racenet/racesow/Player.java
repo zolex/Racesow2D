@@ -6,8 +6,10 @@ import java.util.Random;
 import org.racenet.framework.AndroidAudio;
 import org.racenet.framework.AndroidSound;
 import org.racenet.framework.AnimatedBlock;
+import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
+import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.TexturedShape;
 import org.racenet.framework.TexturedTriangle;
 import org.racenet.framework.Vector2;
@@ -30,6 +32,8 @@ class Player extends AnimatedBlock {
 	public static final int SOUND_WJ1 = 2;
 	public static final int SOUND_WJ2 = 3;
 	public static final int SOUND_DIE = 4;
+	public static final int SOUND_PICKUP = 5;
+	private AndroidSound sounds[] = new AndroidSound[6];
 	
 	private boolean onFloor = false;
 	private float lastWallJumped = 0;
@@ -40,18 +44,20 @@ class Player extends AnimatedBlock {
 	private boolean enableAnimation = false;
 	private boolean isDead = false;
 	private float animDuration = 0;
-	private AndroidSound sounds[] = new AndroidSound[5];
+	private TexturedBlock attachedItem;
+	private Camera2 camera;
 	private Random rGen;
 	private float volume = 0.1f;
 	private String model = "male";
 	
 	private int frames = 0;
 	
-	public Player(GLGame game, float x, float y) {
+	public Player(GLGame game, Camera2 camera, float x, float y) {
 		
 		super(game, new Vector2(x,y), new Vector2(x + 3.4f, y), new Vector2(x + 3.4f, y + 6.5f), new Vector2(x, y + 6.5f));
 		
 		this.rGen = new Random();
+		this.camera = camera;
 		
 		AndroidAudio audio = (AndroidAudio)game.getAudio();
 		this.sounds[SOUND_JUMP1] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/jump_1.ogg");
@@ -59,6 +65,7 @@ class Player extends AnimatedBlock {
 		this.sounds[SOUND_WJ1] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/wj_1.ogg");
 		this.sounds[SOUND_WJ2] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/wj_2.ogg");
 		this.sounds[SOUND_DIE] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/death.ogg");
+		this.sounds[SOUND_PICKUP] = (AndroidSound)audio.newSound("sounds/weapon_pickup.ogg");
 		
 		this.loadAnimations();
 		this.setupVertices();
@@ -213,6 +220,52 @@ class Player extends AnimatedBlock {
 			}
 		}
 		
+		length = map.items.size();
+		for (int i = 0; i < length; i++) {
+			
+			TexturedShape item = map.items.get(i);
+			float playerX = this.getPosition().x;
+			float itemX = item.getPosition().x;
+			if (playerX >= itemX && playerX <= itemX + item.width) {
+				
+				
+				
+				String texture = "";
+				switch (item.func) {
+				
+					case GameObject.ITEM_ROCKET:
+						texture = "items/rocket.png";
+						break;
+					
+					case GameObject.ITEM_PLASMA:
+						texture = "items/plasma.png";
+						break;
+				}
+				
+				TexturedBlock hudItem = new TexturedBlock(
+					this.game,
+					texture,
+					item.func,
+					-1,
+					-1,
+					new Vector2(-(this.camera.frustumWidth / 2) + 1, -(this.camera.frustumHeight / 2) + 1),
+					new Vector2(-(this.camera.frustumWidth / 2) + 10, -(this.camera.frustumHeight / 2) + 10)
+				);
+				
+				camera.addHud(hudItem);
+				map.items.remove(item);
+				map.pickedUpItems.add(item);
+				if (this.attachedItem != null) {
+					
+					this.camera.removeHud(this.attachedItem);
+				}
+				
+				this.attachedItem = hudItem;
+				this.sounds[SOUND_PICKUP].play(this.volume);
+				break;
+			}
+		}
+		
 		if (!this.onFloor) {
 			
 			/*
@@ -320,5 +373,11 @@ class Player extends AnimatedBlock {
 		this.activeAnimId = ANIM_NONE;
 		this.virtualSpeed = 0;
 		this.setPosition(new Vector2(x, y));
+		
+		if (this.attachedItem != null) {
+			
+			this.camera.removeHud(this.attachedItem);
+			this.attachedItem = null;
+		}
 	}
 }

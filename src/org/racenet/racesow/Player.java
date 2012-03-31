@@ -311,9 +311,12 @@ class Player extends AnimatedBlock {
 							float impactY = ground.getPosition().y + ground.getHeightAt(this.getPosition().x, false) - 4;
 							float distance = this.getPosition().y - impactY;
 							
-							this.addToPosition(0, 1);
-							this.velocity.add(0, 100 / distance);
-							this.onFloor = false;
+							if (ground.func == GameObject.FUNC_NONE) {
+								
+								this.addToPosition(0, 1);
+								this.velocity.add(0, 100 / distance);
+								this.onFloor = false;
+							}
 							
 							this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
 							map.addDecal(new TexturedBlock(

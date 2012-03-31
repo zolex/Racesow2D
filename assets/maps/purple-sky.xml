@@ -7,7 +7,7 @@
 	<starttimer><x>60</x></starttimer>
 	<stoptimer><x>4900</x></stoptimer>
 	<sky>
-		<texture>purple-sky/sky.jpg</texture>
+		<texture>purple-sky/sky.png</texture>
 		<position>5</position>
 	</sky>
 	<background>

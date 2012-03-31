@@ -82,7 +82,12 @@ public class MapsScreen extends Screen {
 		
 		
 		GLTexture.APP_FOLDER = "racesow";
-		header = new TexturedBlock((GLGame)game, "racesow.jpg", TexturedBlock.FUNC_NONE, -1, -1, new Vector2(0, 0), new Vector2(camWidth, 0));
+		String texture = "racesow.jpg";
+		if ((float)game.getScreenWidth() < 600) {
+			
+			texture = "racesow_small.jpg";
+		}
+		header = new TexturedBlock((GLGame)game, texture, TexturedBlock.FUNC_NONE, -1, -1, new Vector2(0, 0), new Vector2(camWidth, 0));
 		header.setPosition(new Vector2(0, camHeight - header.height));
 		header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
 	}

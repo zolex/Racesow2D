@@ -4,11 +4,13 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import org.racenet.framework.BitmapFont;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.CameraText;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
 import org.racenet.framework.GLTexture;
+import org.racenet.framework.SpriteBatcher;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Screen;
@@ -30,6 +32,7 @@ class GameScreen extends Screen {
 	float jumpPressedTime = 0;
 	boolean shootPressed = false;
 	float shootPressedTime = 0;
+	SpriteBatcher batcher;
 	
 	int fpsInterval = 5;
 	int frames = 10;
@@ -45,22 +48,19 @@ class GameScreen extends Screen {
 		float camWidth = (float)game.getScreenWidth() / 10;
 		float camHeight = (float)game.getScreenHeight() / 10;
 		
-		ups = new CameraText(glGraphics.getGL(), new Vector2(camWidth / 2 - 15, camHeight / 2 - 3));
-		ups.setupVertices(glGraphics);
-		ups.setupText((GLGame)game, "ups");
-
-		fps = new CameraText(glGraphics.getGL(), new Vector2(camWidth / 2 - 25, camHeight / 2 - 3));
-		fps.setupVertices(glGraphics);
-		fps.setupText((GLGame)game, "fps");
+		batcher = new SpriteBatcher(glGraphics, 96);
+		GLTexture texture = new GLTexture((GLGame)game, "font.png");
+		BitmapFont font = new BitmapFont(texture, 0, 0, 17, 30, 50);
 		
-		timer = new CameraText(glGraphics.getGL(), new Vector2(camWidth / 2 - 35, camHeight / 2 - 3));
-		timer.setupVertices(glGraphics);
-		timer.setupText((GLGame)game, "t 0.00");
+		fps = new CameraText(batcher, font, glGraphics.getGL(), camWidth / 2 - 10, camHeight / 2 - 3);
+		ups = new CameraText(batcher, font, glGraphics.getGL(), camWidth / 2 - 25, camHeight / 2 - 3);
+		timer = new CameraText(batcher, font, glGraphics.getGL(), camWidth / 2 - 40, camHeight / 2 - 3);
 		
 		camera = new Camera2(glGraphics, camWidth, camHeight);
-		camera.addHud(ups);
 		camera.addHud(fps);
+		camera.addHud(ups);
 		camera.addHud(timer);
+
 		
 		map = new Map(glGraphics.getGL(), camWidth, camHeight);
 		map.load((GLGame)game, mapName);
@@ -133,21 +133,22 @@ class GameScreen extends Screen {
 		
 		camera.setPosition(player.getPosition().x + 20, camY);		
 		
+
 		map.update(camera.position, deltaTime);
-		
-		ups.setupText((GLGame)game, "ups " + String.valueOf(new Integer((int)player.virtualSpeed)));
+
+		ups.text = "ups " + String.valueOf(new Integer((int)player.virtualSpeed));
 		
 		frames--;
 		sumDelta += deltaTime;
 		if (frames == 0) {
 		
-			fps.setupText((GLGame)game, "fps " + String.valueOf(new Integer((int)(fpsInterval / sumDelta))));
+			fps.text = "fps " + String.valueOf(new Integer((int)(fpsInterval / sumDelta)));
 			frames = fpsInterval;
 			sumDelta = 0;
 			
 		}
 
-		timer.setupText((GLGame)game, "t " + String.format("%.2f", map.getCurrentTime()));
+		timer.text = "t " + String.format("%.2f", map.getCurrentTime());
 	}
 
 	public void present(float deltaTime) {
@@ -172,7 +173,6 @@ class GameScreen extends Screen {
 		
 			camera.drawHud();
 		}
-		
 	}
 
 	public void pause() {

@@ -81,4 +81,11 @@ public class Camera2 {
 			hudItems.get(i).draw();
 		}
     }
+    
+    public void touchToWorld(Vector2 touch) {
+    	
+    	touch.x = (touch.x / (float) glGraphics.getWidth()) * frustumWidth * zoom;
+    	touch.y = (1 - touch.y / (float) glGraphics.getHeight()) * frustumHeight * zoom;
+    	touch.add(position).subtract(frustumWidth * zoom / 2, frustumHeight * zoom / 2);
+    }
 }

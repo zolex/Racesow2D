@@ -14,6 +14,8 @@ import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Screen;
 import org.racenet.framework.interfaces.Input.TouchEvent;
 
+import android.util.Log;
+
 class GameScreen extends Screen {
 		
 	public Player player;
@@ -24,8 +26,10 @@ class GameScreen extends Screen {
 	Camera2 camera;
 	GLGraphics glGraphics;
 	
-	boolean touchedDown = false;
-	float touchedDownTime = 0;
+	boolean jumpPressed = false;
+	float jumpPressedTime = 0;
+	boolean shootPressed = false;
+	float shootPressedTime = 0;
 	
 	int fpsInterval = 5;
 	int frames = 10;
@@ -60,7 +64,7 @@ class GameScreen extends Screen {
 		
 		map = new Map(glGraphics.getGL(), camWidth, camHeight);
 		map.load((GLGame)game, mapName);
-		player = new Player((GLGame)game, camera, map.playerX, map.playerY + 10);
+		player = new Player((GLGame)game, map, camera, map.playerX, map.playerY);
 		
 	}
 
@@ -74,23 +78,52 @@ class GameScreen extends Screen {
 			
 			if (e.type == TouchEvent.TOUCH_DOWN) {
 				
-				touchedDown = true;
-				touchedDownTime = 0;
-			
+				if (e.x / camera.frustumWidth > 5) {
+					
+					if (!this.jumpPressed) {
+						
+						this.jumpPressed = true;
+						this.jumpPressedTime = 0;
+					}
+					
+				} else {
+					
+					if (!this.shootPressed) {
+						
+						this.shootPressed = true;
+						this.shootPressedTime = 0;
+					}
+				}
+				
+
 			} else if (e.type == TouchEvent.TOUCH_UP) {
 				
-				touchedDown = false;
-				touchedDownTime = 0;
+				if (e.x / camera.frustumWidth > 5) {
+					
+					this.jumpPressed = false;
+					this.jumpPressedTime = 0;
+					
+				} else {
+					
+					this.shootPressed = false;
+					this.shootPressedTime = 0;
+				}
 			}
 		}
 		
-		if (touchedDown) {
+		if (this.jumpPressed) {
 			
-			player.jump(map, touchedDownTime);
-			touchedDownTime += deltaTime;
+			player.jump(this.jumpPressedTime);
+			jumpPressedTime += deltaTime;
 		}
 		
-		player.move(gravity, map, deltaTime, touchedDown);		
+		if (this.shootPressed) {
+			
+			player.shoot(this.shootPressedTime);
+			shootPressedTime += deltaTime;
+		}
+		
+		player.move(gravity, deltaTime, jumpPressed);
 		
 		camera.setPosition(player.getPosition().x + 20, camera.position.y);		
 		

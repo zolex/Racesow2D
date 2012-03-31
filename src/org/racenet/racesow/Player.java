@@ -49,15 +49,17 @@ class Player extends AnimatedBlock {
 	private Random rGen;
 	private float volume = 0.1f;
 	private String model = "male";
+	private Map map;
 	
 	private int frames = 0;
 	
-	public Player(GLGame game, Camera2 camera, float x, float y) {
+	public Player(GLGame game, Map map, Camera2 camera, float x, float y) {
 		
 		super(game, new Vector2(x,y), new Vector2(x + 3.4f, y), new Vector2(x + 3.4f, y + 6.5f), new Vector2(x, y + 6.5f));
 		
 		this.rGen = new Random();
 		this.camera = camera;
+		this.map = map;
 		
 		AndroidAudio audio = (AndroidAudio)game.getAudio();
 		this.sounds[SOUND_JUMP1] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/jump_1.ogg");
@@ -106,13 +108,13 @@ class Player extends AnimatedBlock {
 		this.setAnimations(animations);
 	}
 	
-	public void jump(Map map, float eventTime) {
+	public void jump(float jumpPressedTime) {
 		
 		if (this.isDead) return;
 		
 		if (!this.distanceRemembered && this.velocity.y < 0) {
 			
-			TexturedShape ground = map.getGround(this);
+			TexturedShape ground = this.map.getGround(this);
 			if (ground != null) {
 				
 				this.distanceOnJump = Math.max(0.32f,
@@ -149,9 +151,9 @@ class Player extends AnimatedBlock {
 		
 		} else {
 			
-			if (eventTime == 0 && System.nanoTime() / 1000000000.0f > this.lastWallJumped + 1.5f) {
+			if (jumpPressedTime == 0 && System.nanoTime() / 1000000000.0f > this.lastWallJumped + 1.5f) {
 				
-				List<GameObject> colliders = map.getPotentialWallColliders(this);
+				List<GameObject> colliders = this.map.getPotentialWallColliders(this);
 				int length = colliders.size();
 				for (int i = 0; i < length; i++) {
 				
@@ -174,7 +176,12 @@ class Player extends AnimatedBlock {
 		}
 	}
 	
-	public void move(Vector2 gravity, Map map, float deltaTime, boolean pressingJump) {
+	public void shoot(float shootPressedTime) {
+		
+		
+	}
+	
+	public void move(Vector2 gravity, float deltaTime, boolean pressingJump) {
 		
 		if (++frames < 3) return; // workaround
 		
@@ -199,7 +206,7 @@ class Player extends AnimatedBlock {
 		
 		if (this.isDead) return;
 		
-		List<GameObject> colliders = map.getPotentialFuncColliders(this);
+		List<GameObject> colliders = this.map.getPotentialFuncColliders(this);
 		int length = colliders.size();
 		for (int i = 0; i < length; i++) {
 		
@@ -210,20 +217,20 @@ class Player extends AnimatedBlock {
 				switch (part.func) {
 				
 					case GameObject.FUNC_START_TIMER:
-						map.startTimer();
+						this.map.startTimer();
 						break;
 						
 					case GameObject.FUNC_STOP_TIMER:
-						map.stopTimer();
+						this.map.stopTimer();
 						break;
 				}
 			}
 		}
 		
-		length = map.items.size();
+		length = this.map.items.size();
 		for (int i = 0; i < length; i++) {
 			
-			TexturedShape item = map.items.get(i);
+			TexturedShape item = this.map.items.get(i);
 			float playerX = this.getPosition().x;
 			float itemX = item.getPosition().x;
 			if (playerX >= itemX && playerX <= itemX + item.width) {
@@ -253,8 +260,8 @@ class Player extends AnimatedBlock {
 				);
 				
 				camera.addHud(hudItem);
-				map.items.remove(item);
-				map.pickedUpItems.add(item);
+				this.map.items.remove(item);
+				this.map.pickedUpItems.add(item);
 				if (this.attachedItem != null) {
 					
 					this.camera.removeHud(this.attachedItem);
@@ -288,7 +295,7 @@ class Player extends AnimatedBlock {
 			
 			this.addToPosition(this.velocity.x * deltaTime, this.velocity.y * deltaTime);
 			
-			colliders = map.getPotentialGroundColliders(this);
+			colliders = this.map.getPotentialGroundColliders(this);
 			length = colliders.size();
 			for (int i = 0; i < length; i++) {
 				

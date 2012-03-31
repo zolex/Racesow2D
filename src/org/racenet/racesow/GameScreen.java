@@ -99,7 +99,7 @@ class GameScreen extends Screen {
 
 			} else if (e.type == TouchEvent.TOUCH_UP) {
 				
-				if (e.x / camera.frustumWidth > 5) {
+				if (e.x / (float)game.getScreenWidth() > 0.5f) {
 					
 					this.jumpPressed = false;
 					this.jumpPressedTime = 0;

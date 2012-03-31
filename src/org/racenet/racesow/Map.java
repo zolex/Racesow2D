@@ -36,7 +36,7 @@ public class Map {
 	private float backgroundSpeed = 2;
 	private SpatialHashGrid groundGrid;
 	private SpatialHashGrid wallGrid;
-	private SpatialHashGrid funcGrid;
+	private List<GameObject> funcs = new ArrayList<GameObject>();
 	public float playerX = 0;
 	public float playerY = 0;
 	private boolean raceStarted = false;
@@ -116,7 +116,6 @@ public class Map {
 		
 		this.groundGrid = new SpatialHashGrid(worldWidth, worldHeight, 30);
 		this.wallGrid = new SpatialHashGrid(worldWidth, worldHeight, 30);
-		this.funcGrid = new SpatialHashGrid(worldWidth, worldHeight, 30);
 		
 		NodeList items = parser.doc.getElementsByTagName("item");
 		int numItems = items.getLength();
@@ -152,7 +151,7 @@ public class Map {
 			//GameObject startTimer = new Func(Func.START_TIMER, startTimerX, 0, 1, worldHeight);
 			GameObject startTimer = new GameObject(new Vector2(startTimerX, 0), new Vector2(startTimerX + 1, 0), new Vector2(startTimerX + 1, worldHeight), new Vector2(startTimerX, worldHeight));
 			startTimer.func = GameObject.FUNC_START_TIMER;
-			this.funcGrid.insertStaticObject(startTimer);
+			this.funcs.add(startTimer);
 		}
 		
 		NodeList stopTimerN = parser.doc.getElementsByTagName("stoptimer");
@@ -162,7 +161,7 @@ public class Map {
 			float stopTimerX = Float.valueOf(parser.getValue(xmlStopTimer, "x")).floatValue();
 			GameObject stopTimer = new GameObject(new Vector2(stopTimerX, 0), new Vector2(stopTimerX + 1, 0), new Vector2(stopTimerX + 1, worldHeight), new Vector2(stopTimerX, worldHeight));
 			stopTimer.func = GameObject.FUNC_STOP_TIMER;
-			this.funcGrid.insertStaticObject(stopTimer);
+			this.funcs.add(stopTimer);
 		}
 		
 		NodeList skyN = parser.doc.getElementsByTagName("sky");
@@ -506,7 +505,7 @@ public class Map {
 	
 	public List<GameObject> getPotentialFuncColliders(GameObject o) {
 		
-		return this.funcGrid.getPotentialColliders(o);
+		return this.funcs;
 	}
 	
 	public void draw() {

@@ -264,7 +264,7 @@ class Player extends AnimatedBlock {
 	
 	public void shoot(float shootPressedTime) {
 		
-		if (this.attachedItem == null) return;
+		if (this.attachedItem == null || this.isDead) return;
 		
 		float currentTime = System.nanoTime() / 1000000000.0f;
 		switch (this.attachedItem.func) {
@@ -284,7 +284,8 @@ class Player extends AnimatedBlock {
 							hitWall = true;
 							float impactX = this.getPosition().x;
 							float impactY = this.getPosition().y;
-							this.velocity.add(35, 20);
+							this.velocity.set(this.velocity.x, this.velocity.y < 0 ? 30 : this.velocity.y + 20);
+							this.virtualSpeed += 200;
 							
 							this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
 							map.addDecal(new TexturedBlock(

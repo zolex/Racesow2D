@@ -76,7 +76,7 @@ public class MenuScreen extends Screen {
 		
 		for (int i = 0; i < length; i++) {
 			
-			gestures.onTouchEvent(touchEvents.get(i).source);  
+			gestures.onTouchEvent(touchEvents.get(i).source); // FIXME: may cause IndexOutOfBoundsException
 		}
 		
 		this.menu.update(deltaTime);

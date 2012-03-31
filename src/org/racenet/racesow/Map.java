@@ -23,13 +23,14 @@ import android.util.Log;
 
 public class Map {
 	
-	private static final short MAX_DECALS = 32;
+	private GL10 gl;
 	private List<TexturedShape> ground = new ArrayList<TexturedShape>();
 	private List<TexturedShape> walls = new ArrayList<TexturedShape>();
 	public List<TexturedShape> items = new ArrayList<TexturedShape>();
 	public List<TexturedShape> pickedUpItems = new ArrayList<TexturedShape>();
-	public TexturedShape[] decals = new TexturedShape[MAX_DECALS];
-	public float[] decalTime = new float[MAX_DECALS];
+	private TexturedShape[] decals = new TexturedShape[MAX_DECALS];
+	private static final short MAX_DECALS = 32;
+	private float[] decalTime = new float[MAX_DECALS];
 	private TexturedBlock sky;
 	private float skyPosition;
 	private TexturedBlock background;
@@ -43,15 +44,13 @@ public class Map {
 	private boolean raceFinished = false;
 	private float startTime = 0;
 	private float stopTime = 0;
-	private float camWidth, camHeight;
-	private GL10 gl;
-	public boolean drawOutlines = true;
+	private boolean drawOutlines = false;
+	private Camera2 camera;
 	
-	public Map(GL10 gl, float camWidth, float camHeight) {
+	public Map(GL10 gl, Camera2 camera) {
 		
-		this.camWidth = camWidth;
-		this.camHeight = camHeight;
 		this.gl = gl;
+		this.camera = camera;
 		
 		for (int i = 0; i < MAX_DECALS; i++) {
 			
@@ -183,7 +182,7 @@ public class Map {
 					-1,
 					-1,
 					new Vector2(0,skyPosition),
-					new Vector2(this.camWidth, skyPosition)
+					new Vector2(this.camera.frustumWidth, skyPosition)
 					);
 		}
 		
@@ -377,21 +376,21 @@ public class Map {
 		return true;
 	}
 	
-	public void update(Vector2 position, float deltaTime) {
+	public void update(float deltaTime) {
 		
 		if (this.background != null) {
 			
 			this.background.setPosition(new Vector2(
-				position.x / this.backgroundSpeed,
-				(position.y - this.camHeight / 2) / 1.5f
+				this.camera.position.x / this.backgroundSpeed,
+				(this.camera.position.y - this.camera.frustumHeight / 2) / 1.5f
 			));
 		}
 		
 		if (this.sky != null) {
 
 			this.sky.setPosition(new Vector2(
-				position.x - this.sky.width / 2,
-				position.y - this.sky.height / 2 + this.skyPosition
+				this.camera.position.x - this.sky.width / 2,
+				this.camera.position.y - this.sky.height / 2 + this.skyPosition
 			));
 		}
 		
@@ -574,14 +573,14 @@ public class Map {
 		}
 	}
 	
-	public void restartRace(Player player, Camera2 camera) {
+	public void restartRace(Player player) {
 		
 		this.startTime = 0;
 		this.stopTime = 0;
 		this.raceStarted = false;
 		this.raceFinished= false;
 		player.reset(this.playerX, this.playerY);
-		camera.setPosition(player.getPosition().x + 20, camera.frustumHeight / 2);
+		camera.setPosition(player.getPosition().x + 20, this.camera.frustumHeight / 2);
 		
 		int length = this.pickedUpItems.size();
 		for (int i = 0; i < length; i++) {

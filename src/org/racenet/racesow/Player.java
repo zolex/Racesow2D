@@ -40,10 +40,11 @@ class Player extends AnimatedBlock {
 	public static final short SOUND_DIE = 4;
 	public static final short SOUND_PICKUP = 5;
 	public static final short SOUND_ROCKET = 6;
-	private AndroidSound sounds[] = new AndroidSound[7];
+	public static final short SOUND_PLASMA = 7;
+	private AndroidSound sounds[] = new AndroidSound[8];
 	
 	private static final float FIRERATE_ROCKET = 1.75f;
-	private static final float FIRERATE_PLASMA = 0.01f;
+	private static final float FIRERATE_PLASMA = 0.04f;
 	private float lastShot = 0;
 	
 	private boolean onFloor = false;
@@ -80,6 +81,7 @@ class Player extends AnimatedBlock {
 		this.sounds[SOUND_DIE] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/death.ogg");
 		this.sounds[SOUND_PICKUP] = (AndroidSound)audio.newSound("sounds/weapon_pickup.ogg");
 		this.sounds[SOUND_ROCKET] = (AndroidSound)audio.newSound("sounds/rocket_explosion.ogg");
+		this.sounds[SOUND_PLASMA] = (AndroidSound)audio.newSound("sounds/plasmagun.ogg");
 		
 		this.loadAnimations();
 		this.setupVertices();
@@ -337,6 +339,35 @@ class Player extends AnimatedBlock {
 				
 			case GameObject.ITEM_PLASMA:
 				if (currentTime >= this.lastShot + FIRERATE_PLASMA) {
+					
+					List<GameObject> colliders = this.map.getPotentialWallColliders(this);
+					int length = colliders.size();
+					for (int i = 0; i < length; i++) {
+					
+						GameObject part = colliders.get(i);
+						CollisionInfo info = this.intersect(part);
+						if (info.collided) {
+					
+							float impactX = this.getPosition().x;
+							float impactY = this.getPosition().y;
+							this.velocity.add(0, 2.5f);
+							this.virtualSpeed += 15;
+							
+							this.sounds[SOUND_PLASMA].play(this.volume * 1.2f);
+							map.addDecal(new TexturedBlock(
+								this.game,
+								"decals/plasma_hit.png",
+								GameObject.FUNC_NONE,
+								-1,
+								-1,
+								new Vector2(impactX - 1, impactY),
+								new Vector2(impactX + 2, impactY)
+							), 0.25f);
+							
+							this.lastShot = currentTime;
+							break;
+						}
+					}
 					
 					this.lastShot = currentTime;
 				}

@@ -63,7 +63,7 @@ class GameScreen extends Screen {
 		camera.addHud(timer);
 
 		
-		map = new Map(glGraphics.getGL(), camWidth, camHeight);
+		map = new Map(glGraphics.getGL(), camera);
 		map.load((GLGame)game, mapName);
 		player = new Player((GLGame)game, map, camera, map.playerX, map.playerY);
 		
@@ -133,7 +133,7 @@ class GameScreen extends Screen {
 		}
 		
 		camera.setPosition(player.getPosition().x + 20, camY);		
-		map.update(camera.position, deltaTime);
+		map.update(deltaTime);
 
 		frames--;
 		sumDelta += deltaTime;

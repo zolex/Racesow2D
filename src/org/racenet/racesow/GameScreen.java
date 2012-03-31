@@ -162,7 +162,11 @@ class GameScreen extends Screen {
 		map.draw();
 		player.draw();
 		
-		camera.drawHud();
+		synchronized(player) {
+		
+			camera.drawHud();
+		}
+		
 	}
 
 	public void pause() {

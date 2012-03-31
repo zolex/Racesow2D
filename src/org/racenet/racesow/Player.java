@@ -389,8 +389,11 @@ class Player extends AnimatedBlock {
 				this.map.pickedUpItems.add(item);
 				if (this.attachedItem != null) {
 					
-					this.camera.removeHud(this.attachedItem);
-					this.attachedItem.texture.dispose();
+					synchronized (this) {
+						
+						this.camera.removeHud(this.attachedItem);
+						this.attachedItem.texture.dispose();
+					}
 				}
 				
 				this.lastShot = 0;
@@ -510,9 +513,12 @@ class Player extends AnimatedBlock {
 		
 		if (this.attachedItem != null) {
 			
-			this.camera.removeHud(this.attachedItem);
-			this.attachedItem.texture.dispose();
-			this.attachedItem = null;
+			synchronized (this) {
+				
+				this.camera.removeHud(this.attachedItem);
+				this.attachedItem.texture.dispose();
+				this.attachedItem = null;
+			}
 		}
 	}
 }

@@ -21,11 +21,17 @@ class Player extends AnimatedBlock {
 	public final Vector2 velocity = new Vector2();
 	public final Vector2 accel = new Vector2();
 	
-	public static final int ANIM_NONE = 0;
+	public static final int ANIM_RUN = 0;
 	public static final int ANIM_JUMP = 1;
 	public static final int ANIM_WALLJUMP = 2;
 	public static final int ANIM_BURN = 3;
 	public static final int ANIM_INVISIBLE = 4;
+	public static final int ANIM_ROCKET_RUN = 5;
+	public static final int ANIM_ROCKET_JUMP = 6;
+	public static final int ANIM_ROCKET_WALLJUMP = 7;
+	public static final int ANIM_PLASMA_RUN = 8;
+	public static final int ANIM_PLASMA_JUMP = 9;
+	public static final int ANIM_PLASMA_WALLJUMP = 10;
 	
 	public static final int SOUND_JUMP1 = 0;
 	public static final int SOUND_JUMP2 = 1;
@@ -54,6 +60,7 @@ class Player extends AnimatedBlock {
 	private float volume = 0.1f;
 	private String model = "male";
 	private Map map;
+	private int defaultAnim = ANIM_RUN;
 	
 	private int frames = 0;
 	
@@ -80,9 +87,9 @@ class Player extends AnimatedBlock {
 	
 	public void loadAnimations() {
 		
-		String[][] animations = new String[5][];
+		String[][] animations = new String[11][];
 		
-		animations[ANIM_NONE] = new String[] {
+		animations[ANIM_RUN] = new String[] {
 			"player/" + this.model + "/default.png"
 		};
 		
@@ -90,6 +97,38 @@ class Player extends AnimatedBlock {
 			"player/" + this.model + "/jump_f1.png",
 			"player/" + this.model + "/jump_f2.png",
 			"player/" + this.model + "/jump_f1.png"
+		};
+		
+		animations[ANIM_ROCKET_RUN] = new String[] {
+			"player/" + this.model + "/rocket_run.png"
+		};
+		
+		animations[ANIM_ROCKET_JUMP] = new String[] {
+			"player/" + this.model + "/rocket_jump_f1.png",
+			"player/" + this.model + "/rocket_jump_f2.png",
+			"player/" + this.model + "/rocket_jump_f1.png"
+		};
+		
+		animations[ANIM_ROCKET_WALLJUMP] = new String[] {
+			"player/" + this.model + "/rocket_walljump_f1.png",
+			"player/" + this.model + "/rocket_walljump_f2.png",
+			"player/" + this.model + "/rocket_walljump_f1.png"
+		};
+		
+		animations[ANIM_PLASMA_RUN] = new String[] {
+			"player/" + this.model + "/plasma_run.png"
+		};
+		
+		animations[ANIM_PLASMA_JUMP] = new String[] {
+			"player/" + this.model + "/plasma_jump_f1.png",
+			"player/" + this.model + "/plasma_jump_f2.png",
+			"player/" + this.model + "/plasma_jump_f1.png"
+		};
+		
+		animations[ANIM_PLASMA_WALLJUMP] = new String[] {
+			"player/" + this.model + "/plasma_walljump_f1.png",
+			"player/" + this.model + "/plasma_walljump_f2.png",
+			"player/" + this.model + "/plasma_walljump_f1.png"
 		};
 		
 		animations[ANIM_WALLJUMP] = new String[] {
@@ -149,7 +188,29 @@ class Player extends AnimatedBlock {
 			this.distanceRemembered = false;
 			this.distanceOnJump = -1;
 			
-			this.activeAnimId = Player.ANIM_JUMP;
+			
+			if (this.attachedItem != null) {
+				
+				switch (this.attachedItem.func) {
+				
+					case GameObject.ITEM_ROCKET:
+						this.activeAnimId = Player.ANIM_ROCKET_JUMP;
+						break;
+					
+					case GameObject.ITEM_PLASMA:
+						this.activeAnimId = Player.ANIM_PLASMA_JUMP;
+						break;
+						
+					default:
+						this.activeAnimId = Player.ANIM_JUMP;
+						break;
+				}
+				
+			} else {
+			
+				this.activeAnimId = Player.ANIM_JUMP;
+			}
+			
 			this.enableAnimation = true;
 			this.animDuration = 0.3f;
 		
@@ -171,7 +232,27 @@ class Player extends AnimatedBlock {
 						
 						this.velocity.set(this.velocity.x + 5, 17);
 						this.lastWallJumped = System.nanoTime() / 1000000000.0f;
-						this.activeAnimId = Player.ANIM_WALLJUMP;
+						if (this.attachedItem != null) {
+							
+							switch (this.attachedItem.func) {
+							
+								case GameObject.ITEM_ROCKET:
+									this.activeAnimId = Player.ANIM_ROCKET_WALLJUMP;
+									break;
+								
+								case GameObject.ITEM_PLASMA:
+									this.activeAnimId = Player.ANIM_PLASMA_WALLJUMP;
+									break;
+									
+								default:
+									this.activeAnimId = Player.ANIM_WALLJUMP;
+									break;
+							}
+							
+						} else {
+						
+							this.activeAnimId = Player.ANIM_WALLJUMP;
+						}
 						this.enableAnimation = true;
 						this.animDuration = 0.3f;
 					}
@@ -223,7 +304,27 @@ class Player extends AnimatedBlock {
 				
 				} else {
 				
-					this.activeAnimId = Player.ANIM_NONE;
+					if (this.attachedItem != null) {
+						
+						switch (this.attachedItem.func) {
+						
+							case GameObject.ITEM_ROCKET:
+								this.activeAnimId = Player.ANIM_ROCKET_RUN;
+								break;
+							
+							case GameObject.ITEM_PLASMA:
+								this.activeAnimId = Player.ANIM_PLASMA_RUN;
+								break;
+								
+							default:
+								this.activeAnimId = Player.ANIM_RUN;
+								break;
+						}
+						
+					} else {
+					
+						this.activeAnimId = Player.ANIM_RUN;
+					}
 				}
 			}
 		}
@@ -264,10 +365,12 @@ class Player extends AnimatedBlock {
 				
 					case GameObject.ITEM_ROCKET:
 						texture = "items/rocket.png";
+						this.defaultAnim = ANIM_ROCKET_RUN;
 						break;
 					
 					case GameObject.ITEM_PLASMA:
 						texture = "items/plasma.png";
+						this.defaultAnim = ANIM_PLASMA_RUN;
 						break;
 				}
 				
@@ -401,7 +504,7 @@ class Player extends AnimatedBlock {
 	public void reset(float x, float y) {
 		
 		this.isDead = false;
-		this.activeAnimId = ANIM_NONE;
+		this.activeAnimId = ANIM_RUN;
 		this.virtualSpeed = 0;
 		this.setPosition(new Vector2(x, y));
 		

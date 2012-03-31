@@ -349,7 +349,7 @@ class Player extends AnimatedBlock {
 						if (info.collided) {
 					
 							float impactX = this.getPosition().x;
-							float impactY = this.getPosition().y;
+							float impactY = this.getPosition().y - 2;
 							this.velocity.add(0, 2.5f);
 							this.virtualSpeed += 15;
 							
@@ -599,6 +599,7 @@ class Player extends AnimatedBlock {
 		this.activeAnimId = ANIM_RUN;
 		this.virtualSpeed = 0;
 		this.setPosition(new Vector2(x, y));
+		this.velocity.set(0, 0);
 		
 		if (this.attachedItem != null) {
 			

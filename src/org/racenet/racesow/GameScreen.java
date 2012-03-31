@@ -57,6 +57,7 @@ class GameScreen extends Screen {
 		timer = new CameraText(batcher, font, glGraphics.getGL(), camWidth / 2 - 40, camHeight / 2 - 3);
 		
 		camera = new Camera2(glGraphics, camWidth, camHeight);
+		camera.position.set(0, camHeight / 2);
 		camera.addHud(fps);
 		camera.addHud(ups);
 		camera.addHud(timer);
@@ -125,7 +126,7 @@ class GameScreen extends Screen {
 		
 		player.move(gravity, deltaTime, jumpPressed);
 		
-		float camY = camera.position.y;
+		float camY = camera.frustumHeight / 2;
 		if (player.getPosition().y + 8 > camera.frustumHeight) {
 			
 			camY = player.getPosition().y - camera.frustumHeight / 2 + 8;

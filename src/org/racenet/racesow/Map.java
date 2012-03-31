@@ -567,13 +567,14 @@ public class Map {
 		}
 	}
 	
-	public void restartRace(Player player) {
+	public void restartRace(Player player, Camera2 camera) {
 		
 		this.startTime = 0;
 		this.stopTime = 0;
 		this.raceStarted = false;
 		this.raceFinished= false;
 		player.reset(this.playerX, this.playerY);
+		camera.setPosition(player.getPosition().x + 20, camera.frustumHeight / 2);
 		
 		int length = this.pickedUpItems.size();
 		for (int i = 0; i < length; i++) {

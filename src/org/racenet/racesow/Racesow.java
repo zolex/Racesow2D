@@ -36,7 +36,7 @@ public class Racesow extends GLGame {
     		GameScreen gameScreen = (GameScreen)screen;
     		if (gameScreen.map.inRace() || gameScreen.map.raceFinished()) {
     		
-    			gameScreen.map.restartRace(gameScreen.player);
+    			gameScreen.map.restartRace(gameScreen.player, gameScreen.camera);
     			
     		} else {
     			

@@ -586,6 +586,7 @@ class Player extends AnimatedBlock {
 	
 	public void die() {
 		
+		this.virtualSpeed = 0;
 		this.sounds[SOUND_DIE].play(this.volume);
 		this.isDead = true;
 	}

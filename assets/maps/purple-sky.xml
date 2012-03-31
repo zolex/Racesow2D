@@ -366,10 +366,10 @@
 	</block>
 	<block>
 		<level>ground</level>
-		<x>2600</x>
+		<x>2610</x>
 		<y>0</y>
-		<width>20</width>
-		<height>30</height>
+		<width>10</width>
+		<height>40</height>
 		<texture>purple-sky/stone.png</texture>
 	</block>
 </map>

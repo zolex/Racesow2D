@@ -259,8 +259,6 @@ class Player extends AnimatedBlock {
 			float itemX = item.getPosition().x;
 			if (playerX >= itemX && playerX <= itemX + item.width) {
 				
-				
-				
 				String texture = "";
 				switch (item.func) {
 				
@@ -289,6 +287,7 @@ class Player extends AnimatedBlock {
 				if (this.attachedItem != null) {
 					
 					this.camera.removeHud(this.attachedItem);
+					this.attachedItem.texture.dispose();
 				}
 				
 				this.lastShot = 0;
@@ -409,6 +408,7 @@ class Player extends AnimatedBlock {
 		if (this.attachedItem != null) {
 			
 			this.camera.removeHud(this.attachedItem);
+			this.attachedItem.texture.dispose();
 			this.attachedItem = null;
 		}
 	}

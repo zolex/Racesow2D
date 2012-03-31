@@ -35,6 +35,10 @@ class Player extends AnimatedBlock {
 	public static final int SOUND_PICKUP = 5;
 	private AndroidSound sounds[] = new AndroidSound[6];
 	
+	private static final float FIRERATE_ROCKET = 1.75f;
+	private static final float FIRERATE_PLASMA = 0.01f;
+	private float lastShot = 0;
+	
 	private boolean onFloor = false;
 	private float lastWallJumped = 0;
 	private float distanceOnJump = -1;
@@ -178,7 +182,27 @@ class Player extends AnimatedBlock {
 	
 	public void shoot(float shootPressedTime) {
 		
+		if (this.attachedItem == null) return;
 		
+		float currentTime = System.nanoTime() / 1000000000.0f;
+		switch (this.attachedItem.func) {
+		
+			case GameObject.ITEM_ROCKET:
+				if (currentTime >= this.lastShot + FIRERATE_ROCKET) {
+					
+					Log.d("DEBUG", "shoot rocket");
+					this.lastShot = currentTime;
+				}
+				break;
+				
+			case GameObject.ITEM_PLASMA:
+				if (currentTime >= this.lastShot + FIRERATE_PLASMA) {
+					
+					Log.d("DEBUG", "shoot plasma");
+					this.lastShot = currentTime;
+				}
+				break;
+		}
 	}
 	
 	public void move(Vector2 gravity, float deltaTime, boolean pressingJump) {
@@ -267,6 +291,7 @@ class Player extends AnimatedBlock {
 					this.camera.removeHud(this.attachedItem);
 				}
 				
+				this.lastShot = 0;
 				this.attachedItem = hudItem;
 				this.sounds[SOUND_PICKUP].play(this.volume);
 				break;

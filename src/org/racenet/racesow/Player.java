@@ -32,6 +32,7 @@ class Player extends AnimatedBlock {
 	public static final short ANIM_PLASMA_RUN = 8;
 	public static final short ANIM_PLASMA_JUMP = 9;
 	public static final short ANIM_PLASMA_WALLJUMP = 10;
+	public static final short ANIM_DROWN = 11;
 	
 	public static final short SOUND_JUMP1 = 0;
 	public static final short SOUND_JUMP2 = 1;
@@ -90,7 +91,7 @@ class Player extends AnimatedBlock {
 	
 	public void loadAnimations() {
 		
-		String[][] animations = new String[11][];
+		String[][] animations = new String[12][];
 		
 		animations[ANIM_RUN] = new String[] {
 			"player/" + this.model + "/default.png"
@@ -145,6 +146,13 @@ class Player extends AnimatedBlock {
 			"player/" + this.model + "/burn_f2.png",
 			"player/" + this.model + "/burn_f3.png",
 			"player/" + this.model + "/burn_f4.png"
+		};
+		
+		animations[ANIM_DROWN] = new String[] {
+			"player/" + this.model + "/drown_f1.png",
+			"player/" + this.model + "/drown_f2.png",
+			"player/" + this.model + "/drown_f3.png",
+			"player/" + this.model + "/drown_f4.png"
 		};
 		
 		animations[ANIM_INVISIBLE] = new String[] {
@@ -349,7 +357,7 @@ class Player extends AnimatedBlock {
 						if (info.collided) {
 					
 							float impactX = this.getPosition().x;
-							float impactY = this.getPosition().y - 2;
+							float impactY = this.getPosition().y + 1;
 							this.velocity.add(0, 2.5f);
 							this.virtualSpeed += 15;
 							
@@ -387,7 +395,7 @@ class Player extends AnimatedBlock {
 				this.enableAnimation = false;
 				this.animTime = 0;
 				
-				if (this.activeAnimId == Player.ANIM_BURN) {
+				if (this.activeAnimId == Player.ANIM_BURN || this.activeAnimId == Player.ANIM_DROWN) {
 					
 					this.activeAnimId = Player.ANIM_INVISIBLE;
 				
@@ -528,6 +536,13 @@ class Player extends AnimatedBlock {
 					
 						case GameObject.FUNC_LAVA:
 							this.activeAnimId = Player.ANIM_BURN;
+							this.enableAnimation = true;
+							this.animDuration = 0.4f;						
+							this.die();
+							return;
+							
+						case GameObject.FUNC_WATER:
+							this.activeAnimId = Player.ANIM_DROWN;
 							this.enableAnimation = true;
 							this.animDuration = 0.4f;						
 							this.die();

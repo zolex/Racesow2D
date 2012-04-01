@@ -6,6 +6,7 @@ public class GameObject extends Polygon {
 	public static final short FUNC_LAVA = 1;
 	public static final short FUNC_START_TIMER = 2;
 	public static final short FUNC_STOP_TIMER = 3;
+	public static final short FUNC_WATER = 4;
 	
 	public static final short ITEM_NONE = 100;
 	public static final short ITEM_ROCKET = 101;

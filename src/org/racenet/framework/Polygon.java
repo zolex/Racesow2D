@@ -10,6 +10,11 @@ import android.util.Log;
  */
 public class Polygon {
 
+	public static final short TOP = 0;
+	public static final short LEFT = 1;
+	public static final short RAMPUP = 2;
+	public static final short RAMPDOWN = 3;
+	
 	/**
 	 * The borders of the polygon represented by
 	 * line segments
@@ -24,7 +29,7 @@ public class Polygon {
 	public class CollisionInfo {
 		
 		public boolean collided;
-		public Vector2 direction;
+		public short type;
 		public float distance;
 	}
 	
@@ -43,102 +48,101 @@ public class Polygon {
 	/**
 	 * Check if this polygon intersects with another one
 	 * 
+	 * NOTE: This is a very simplified collision detection.
+	 * "this" is always the player, an axis aligned rectangle.
+	 * "other" my be a rectangular triangle or an axis aligned rectangle
+	 * 
 	 * @param Polygon other
 	 * @return boolean
 	 */
 	public CollisionInfo intersect(Polygon other){
 				
 		CollisionInfo info = new CollisionInfo();
-		info.collided = true;
+		info.collided = false;
 		
-		for (int j = this.vertices.length - 1, i = 0; i < this.vertices.length; j = i, i++) {
+		float thisX = this.getPosition().x;
+		float thisY = this.getPosition().y;
+		
+		float otherX = other.getPosition().x;
+		float otherY = other.getPosition().y;
+		
+		if (other.vertices.length == 4) {
 			
-			info = separatedByAxis(new Vector2(-(this.vertices[i].y - this.vertices[j].y),
-					this.vertices[i].x - this.vertices[j].x), other);
+			float otherHeight = other.getHeightAt(thisX);
 			
-			if (!info.collided) {
+			// rectangle from left
+			if (thisX + this.width > otherX && thisX <= otherX + other.width &&
+				thisY <= otherY + otherHeight &&
+				thisY + this.height < otherY + otherHeight) {
 				
+				info.collided = true;
+				info.type = LEFT;
+				info.distance = thisX + this.width - otherX;
 				return info;
 			}
-		}
-
-		for (int j = other.vertices.length - 1, i = 0; i < other.vertices.length; j = i, i++) {
 			
-			info = separatedByAxis(new Vector2(-(other.vertices[i].y - other.vertices[j].y),
-					other.vertices[i].x - other.vertices[j].x), other);
-			if (!info.collided) {
+			// rectangle from top
+			if (thisX + this.width > otherX && thisX <= otherX + other.width &&
+				thisY <= otherY + otherHeight) {
 				
+				info.collided = true;
+				info.type = TOP;
+				info.distance = thisY - (otherY + other.height) + 0.1f;
 				return info;
+			}
+			
+		} else if (other.vertices.length == 3) {
+		
+			// ramp up
+			if (other.vertices[1].x == other.vertices[2].x) {
+				
+				float otherHeight = other.getHeightAt(thisX);
+				if (thisX + this.width > otherX && thisX < otherX + other.width && thisY <= otherY + otherHeight) {
+					
+					info.collided = true;
+					info.distance = 0;
+					info.type = RAMPUP;
+					return info;
+				}
+			}
+			
+			// ramp down
+			if (other.vertices[0].x == other.vertices[1].x) {
+				
+				float otherHeight = other.getHeightAt(thisX);
+				if (thisX + this.width > otherX && thisX < otherX + other.width && thisY <= otherY + otherHeight) {
+
+					info.collided = true;
+					info.distance = 0;
+					info.type = RAMPDOWN;
+					return info;
+				}
 			}
 		}
 		
 		return info;
 	}
 	
-	/**
-	 * Check if a polygon is separated by an axis
-	 * 
-	 * @param Vector2 axis
-	 * @param Polygon other
-	 * @return CollisionInfo
-	 */
-	public CollisionInfo separatedByAxis(Vector2 axis, Polygon other) {
+	public float getHeightAt(float x) {
 		
-		CollisionInfo info = new CollisionInfo();
+		if (this.vertices.length == 3) {
 		
-		float[] resultThis = this.getInterval(axis);
-		float[] resultOther = other.getInterval(axis);
-		
-		float d0 = resultOther[1] - resultThis[0];
-		float d1 = resultOther[0] - resultThis[1];
-		
-		if (d0 < 0.0 || d1 > 0.0) {
-			
-			info.collided = false;
-			return info;
-		}
-		
-		float overlap = d0 < -d1 ? d0 : d1;
-		float axis_length_squared = axis.dotProduct(axis);
-		assert(axis_length_squared > 0.00001);
-		Vector2 sep = new Vector2(axis.x * (overlap / axis_length_squared), axis.y * (overlap / axis_length_squared)); 
-
-		info.distance = sep.dotProduct(sep);
-		info.direction = sep;
-		info.collided = true;
-		
-		return info;
-
-	}
-	
-	/**
-	 * Get the interval of the polygon projected on an axis
-	 * 
-	 * @param Vector2 axis
-	 * @return float[minimum, maximum]
-	 */
-	public float[] getInterval(Vector2 axis) {
-		
-		float[] result = new float[2];
-		result[1] = this.vertices[0].dotProduct(axis);
-		result[0] = this.vertices[0].dotProduct(axis);
-			
-		for (int i = 1; i < this.vertices.length; i++) {
-			
-			float d = this.vertices[i].dotProduct(axis);
-			if (d < result[0]) {
+			// ramp up
+			if (this.vertices[1].x == this.vertices[2].x) {
 				
-				result[0] = d;
+				return (this.vertices[2].y - this.vertices[0].y) / (this.vertices[2].x - this.vertices[0].x) * (x - this.vertices[0].x);
+			}
+			
+			// ramp down
+			if (this.vertices[0].x == this.vertices[1].x) {
 				
-			} else if (d > result[1]) {
-				
-				result[1] = d;
+				return (this.vertices[0].y - this.vertices[2].y) / (this.vertices[0].x - this.vertices[2].x) * (x - this.vertices[2].x) - this.height;
 			}
 		}
 		
-		return result;
+		return this.height;
 	}
-
+	
 	/**
 	 * Calculate the width of the polygon by determining
 	 * the minimal and maximal x coordinates

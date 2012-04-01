@@ -9,9 +9,12 @@ import org.racenet.framework.AnimatedBlock;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
+import org.racenet.framework.Polygon;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.TexturedShape;
 import org.racenet.framework.Vector2;
+
+import android.util.Log;
 
 class Player extends AnimatedBlock {
 	
@@ -161,7 +164,7 @@ class Player extends AnimatedBlock {
 			if (ground != null) {
 				
 				this.distanceOnJump = Math.max(0.32f,
-						this.getPosition().y - (ground.getPosition().y + ground.getHeightAt(this.getPosition().x, true)));
+						this.getPosition().y - (ground.getPosition().y + ground.getHeightAt(this.getPosition().x)));
 				this.distanceRemembered = true;
 			}
 		}
@@ -307,7 +310,7 @@ class Player extends AnimatedBlock {
 						TexturedShape ground = map.getGround(this);
 						if (ground != null) {
 							
-							float impactY = ground.getPosition().y + ground.getHeightAt(this.getPosition().x, false) - 4;
+							float impactY = ground.getPosition().y + ground.getHeightAt(this.getPosition().x) - 4;
 							float distance = this.getPosition().y - impactY;
 							
 							if (ground.func == GameObject.FUNC_NONE) {
@@ -529,16 +532,24 @@ class Player extends AnimatedBlock {
 							return;
 					}
 
-					// ground, ramp down
-					if (info.direction.angle() == 90) {
+					// ground
+					if (info.type == Polygon.TOP) {
 					
-						this.setPosition(new Vector2(this.getPosition().x, this.getPosition().y + 0.25f));
+						this.setPosition(new Vector2(this.getPosition().x, this.getPosition().y - info.distance));
 						this.velocity.set(this.velocity.x, 0);
 						this.onFloor = true;
 					
+					// wall
+					} else if (info.type == Polygon.LEFT) {
+					
+						this.setPosition(new Vector2(this.getPosition().x - info.distance, this.getPosition().y));
+						this.velocity.set(0, this.velocity.y);
+						this.virtualSpeed = 0;
+					
 					// ramp up
-					} else if (info.direction.angle() == 0 || info.direction.angle() == 180) {
+					} else if (info.type == Polygon.RAMPUP) {
 						
+						this.setPosition(new Vector2(this.getPosition().x, this.getPosition().y - info.distance));
 						if (pressingJump && this.virtualSpeed >= 900) {
 							
 							float m = (ground.vertices[2].y - ground.vertices[0].y) / (ground.vertices[2].x - ground.vertices[0].x);
@@ -550,25 +561,18 @@ class Player extends AnimatedBlock {
 							this.onFloor = true;
 						}
 						
-					// front wall (and sometimes end of a ramp down)
-					} else if (info.direction.angle() == 270) {
+					// ramp down
+					} else if (info.type == Polygon.RAMPDOWN) {
 						
-						// fix for getting stuck at end of ramp down
-						if (ground.getClass().getName().endsWith("Triangle")) {
-							
-							this.setPosition(new Vector2(this.getPosition().x, this.getPosition().y + 0.25f));
-							
-						// really a front wall
-						} else {
+						float m = (ground.vertices[0].y - ground.vertices[2].y) / (ground.vertices[0].x - ground.vertices[2].x);
 						
-							float resetX = this.getPosition().x - info.distance / 2000;
-							this.setPosition(new Vector2(resetX, this.getPosition().y));
-							this.virtualSpeed = 0;
-						}
+						Log.d("DEBUG", "m " + String.valueOf(new Float(m)));
+						
+						this.velocity.set(this.velocity.x, 0);
+						this.virtualSpeed += (-m + 1) * (-m + 1) * (-m + 1) * 128;
+						this.onFloor = true;
 					}
 
-					
-					
 					break;
 				}
 			}

@@ -74,9 +74,4 @@ public class TexturedBlock extends TexturedShape {
 		//gl.glEnable(GL10.GL_TEXTURE_2D);
 		gl.glPopMatrix();
 	}
-	
-	public float getHeightAt(float x, boolean fake) {
-		
-		return this.height;
-	}
 }

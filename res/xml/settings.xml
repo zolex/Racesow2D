@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+        
+xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference android:title="Sound" android:summary="Enable ingame sound" android:key="sound" android:summaryOn="Sound enabled" android:summaryOff="Sound disabled" android:enabled="true" android:defaultValue="true"/>
+    <CheckBoxPreference android:key="celshading" android:title="Toon-Shading" android:summary="Show comic outlines for the world" android:enabled="true" android:defaultValue="false"/>
+</PreferenceScreen>

@@ -14,6 +14,8 @@ import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Input.TouchEvent;
 import org.racenet.framework.interfaces.Screen;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.view.GestureDetector;
 
 public class MenuScreen extends Screen {
@@ -48,6 +50,8 @@ public class MenuScreen extends Screen {
 			
 			public void handle() {
 				
+				Intent i = new Intent((Activity)game, Settings.class);
+			    ((Activity)game).startActivity(i);
 			}
 		});
 		

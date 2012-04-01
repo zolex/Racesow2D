@@ -17,10 +17,23 @@ public class CameraText extends HudItem {
 		this.font = font;
 	}
 
+	@Override
 	public void draw() {
 		
 		this.gl.glColor4f(0, 1, 0, 1);
 		this.font.draw(batcher, this.text, 0.075f, 0.06f, this.getPosition().x, this.getPosition().y);
 		this.gl.glColor4f(1, 1, 1, 1);
+	}
+
+	@Override
+	public void reloadTexture() {
+		
+		this.font.texture.reload();
+	}
+	
+	@Override
+	public void dispose() {
+		
+		this.font.texture.dispose();
 	}
 }

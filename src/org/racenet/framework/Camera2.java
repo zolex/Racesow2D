@@ -88,4 +88,22 @@ public class Camera2 {
     	touch.y = (1 - touch.y / (float) glGraphics.getHeight()) * frustumHeight * zoom;
     	touch.add(position).subtract(frustumWidth * zoom / 2, frustumHeight * zoom / 2);
     }
+    
+    public void reloadTextures() {
+    	
+    	int length = this.hudItems.size();
+    	for (int i = 0; i < length; i++) {
+    		
+    		this.hudItems.get(i).reloadTexture();
+    	}
+    }
+    
+    public void dispose() {
+    	
+    	int length = this.hudItems.size();
+    	for (int i = 0; i < length; i++) {
+    		
+    		this.hudItems.get(i).dispose();
+    	}
+    }
 }

@@ -414,8 +414,23 @@ public class Map {
 	public void reloadTextures() {
 		
 		this.sky.reloadTexture();
+		this.background.reloadTexture();
 		
-		int length = this.ground.size();
+		int length;
+		
+		length = this.items.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.items.get(i).reloadTexture();
+		}
+		
+		length = this.pickedUpItems.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.pickedUpItems.get(i).reloadTexture();
+		}
+		
+		length = this.ground.size();
 		for (int i = 0; i < length; i++) {
 			
 			this.ground.get(i).reloadTexture();

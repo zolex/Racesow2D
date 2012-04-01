@@ -173,12 +173,14 @@ class GameScreen extends Screen {
 
 	public void resume() {
 
+		this.camera.reloadTextures();
 		this.map.reloadTextures();
 		this.player.reloadTextures();
 	}
 
 	public void dispose() {
 
+		this.camera.dispose();
 		this.map.dispose();
 		this.player.dispose();
 	}

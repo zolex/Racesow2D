@@ -13,4 +13,6 @@ public abstract class HudItem extends GameObject {
 	}
 	
 	public abstract void draw();
+	public abstract void reloadTexture();
+	public abstract void dispose();
 }

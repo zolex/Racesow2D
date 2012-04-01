@@ -121,9 +121,9 @@ class GameScreen extends Screen {
 		this.player.move(this.gravity, deltaTime, this.jumpPressed);
 		
 		float camY = this.camera.frustumHeight / 2;
-		if (this.player.getPosition().y + 8 > this.camera.frustumHeight) {
+		if (this.player.getPosition().y + 12 > this.camera.frustumHeight) {
 			
-			camY = this.player.getPosition().y - this.camera.frustumHeight / 2 + 8;
+			camY = this.player.getPosition().y - this.camera.frustumHeight / 2 + 12;
 		}
 		
 		this.camera.setPosition(this.player.getPosition().x + 20, camY);		

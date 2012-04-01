@@ -15,12 +15,11 @@ import android.os.Environment;
 public class AndroidFileIO implements FileIO {
 
 	private AssetManager assetManager;
-	private String externalStoragePath;
+	public static String externalStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
 	
 	public AndroidFileIO(AssetManager am) {
 		
 		assetManager = am;
-		externalStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
 	}
 	
 	public InputStream readAsset(String fileName) throws IOException {

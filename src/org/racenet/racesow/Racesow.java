@@ -2,7 +2,9 @@ package org.racenet.racesow;
 
 import java.io.File;
 
+import org.racenet.framework.AndroidFileIO;
 import org.racenet.framework.GLGame;
+import org.racenet.framework.Unzipper;
 import org.racenet.framework.interfaces.FileIO;
 import org.racenet.framework.interfaces.Screen;
 
@@ -16,9 +18,11 @@ public class Racesow extends GLGame {
 		
 		super.onCreate(savedInstanceState);
 		
-		FileIO fileIO = this.getFileIO();
-		fileIO.createDirectory("racesow" + File.separator + "maps");
-		fileIO.createDirectory("racesow" + File.separator + "textures");
+		//String racesowPath = AndroidFileIO.externalStoragePath + "racesow" + File.separator;
+		//String zipFile = racesowPath + "downloads" + File.separator + "map_forest.zip";
+		
+		//Unzipper uz = new Unzipper(zipFile, racesowPath);
+		//uz.unzip();
 	}
 	
     public Screen getStartScreen() {

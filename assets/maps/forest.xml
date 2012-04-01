@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<map>
+	<name>Forest</name>
+	<mapper>soh#zolex</mapper>
+	<levelshot>forest/levelshot.png</levelshot>
+	<player><x>50</x><y>12</y></player>
+	<starttimer><x>60</x></starttimer>
+	<stoptimer><x>2980</x></stoptimer>
+	<sky>
+		<texture>forest/sky.png</texture>
+		<position>5</position>
+	</sky>
+	<background>
+		<texture>forest/trees.png</texture>
+		<position>30</position>
+		<speed>1.75</speed>
+	</background>
+	<block>
+		<level>ground</level>
+		<x>0</x>
+		<y>0</y>
+		<width>3000</width>
+		<height>10</height>
+		<texture>forest/floor.png</texture>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>2990</x>
+		<y>10</y>
+		<width>10</width>
+		<height>30</height>
+		<texture>purple-sky/stone.png</texture>
+	</block>
+</map>

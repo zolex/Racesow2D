@@ -177,7 +177,7 @@
 		<level>ground</level>
 		<x>1350</x>
 		<y>0</y>
-		<width>500</width>
+		<width>1000</width>
 		<height>10</height>
 		<texture>forest/water.png</texture>
 		<func>4</func>
@@ -200,9 +200,25 @@
 	</block>
 	<block>
 		<level>wall</level>
+		<x>1405</x>
+		<y>10</y>
+		<width>2.5</width>
+		<height>5</height>
+		<texture>forest/wall.png</texture>
+	</block>
+	<block>
+		<level>wall</level>
 		<x>1425</x>
 		<y>20</y>
 		<width>40</width>
+		<height>15</height>
+		<texture>forest/wall.png</texture>
+	</block>
+	<block>
+		<level>wall</level>
+		<x>1445</x>
+		<y>10</y>
+		<width>2.5</width>
 		<height>15</height>
 		<texture>forest/wall.png</texture>
 	</block>
@@ -216,10 +232,34 @@
 	</block>
 	<block>
 		<level>wall</level>
+		<x>1485</x>
+		<y>10</y>
+		<width>2.5</width>
+		<height>15</height>
+		<texture>forest/wall.png</texture>
+	</block>
+	<block>
+		<level>wall</level>
 		<x>1505</x>
 		<y>30</y>
 		<width>40</width>
 		<height>15</height>
 		<texture>forest/wall.png</texture>
+	</block>
+	<block>
+		<level>wall</level>
+		<x>1525</x>
+		<y>10</y>
+		<width>2.5</width>
+		<height>20</height>
+		<texture>forest/wall.png</texture>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>1700</x>
+		<y>30</y>
+		<width>200</width>
+		<height>10</height>
+		<texture>forest/floor.png</texture>
 	</block>
 </map>

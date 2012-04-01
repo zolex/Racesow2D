@@ -70,14 +70,24 @@ public class Polygon {
 			
 			float otherHeight = other.getHeightAt(thisX);
 			
-			// rectangle from left
-			if (thisX + this.width > otherX && thisX <= otherX + other.width &&
-				thisY <= otherY + otherHeight &&
-				thisY + this.height < otherY + otherHeight) {
+			if (thisX + this.width > otherX && thisX < otherX + other.width &&
+				thisY > otherY && thisY < otherY + otherHeight) {
+				
+				float distanceX = thisX + this.width - otherX;
+				float distanceY = otherY + other.height - thisY;
+				
+				if (distanceX < distanceY && other.height > this.height) {
+					
+					info.type = LEFT;
+					info.distance = distanceX;
+					
+				} else {
+					
+					info.type = TOP;
+					info.distance = distanceY;
+				}
 				
 				info.collided = true;
-				info.type = LEFT;
-				info.distance = thisX + this.width - otherX;
 				return info;
 			}
 			
@@ -87,7 +97,7 @@ public class Polygon {
 				
 				info.collided = true;
 				info.type = TOP;
-				info.distance = thisY - (otherY + other.height) + 0.1f;
+				info.distance = thisY - (otherY + other.height);
 				return info;
 			}
 			

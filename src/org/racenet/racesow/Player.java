@@ -420,6 +420,8 @@ class Player extends AnimatedBlock {
 		
 		if (this.isDead) return;
 		
+		Vector2 lastPosition = this.getPosition();
+		
 		List<GameObject> colliders = this.map.getPotentialFuncColliders(this);
 		int length = colliders.size();
 		for (int i = 0; i < length; i++) {
@@ -508,7 +510,7 @@ class Player extends AnimatedBlock {
 			if (straightUp && this.velocity.y <= 0) {
 				
 				straightUp = false;
-				this.velocity.set(10, 1);
+				this.virtualSpeed += 30;
 			}
 			*/
 			
@@ -535,7 +537,7 @@ class Player extends AnimatedBlock {
 					// ground
 					if (info.type == Polygon.TOP) {
 					
-						this.setPosition(new Vector2(this.getPosition().x, this.getPosition().y - info.distance));
+						this.setPosition(new Vector2(this.getPosition().x, this.getPosition().y + info.distance));
 						this.velocity.set(this.velocity.x, 0);
 						this.onFloor = true;
 					

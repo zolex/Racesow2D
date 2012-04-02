@@ -27,8 +27,7 @@ public class Camera2 {
 		
 		this.position.set(x, y);
 		
-		int length = hudItems.size();
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < hudItems.size(); i++) {
 			
 			HudItem item = hudItems.get(i);
 			
@@ -40,8 +39,7 @@ public class Camera2 {
 		
 		this.zoom = factor;
 		
-		int length = hudItems.size();
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < hudItems.size(); i++) {
 			
 			HudItem item = hudItems.get(i);
 			item.setPosition(new Vector2(item.cameraX * factor, item.cameraY * factor));
@@ -75,8 +73,7 @@ public class Camera2 {
     
     public void drawHud() {
     	
-    	int length = hudItems.size();
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < hudItems.size(); i++) {
 			
 			hudItems.get(i).draw();
 		}
@@ -91,8 +88,7 @@ public class Camera2 {
     
     public void reloadTextures() {
     	
-    	int length = this.hudItems.size();
-    	for (int i = 0; i < length; i++) {
+    	for (int i = 0; i < hudItems.size(); i++) {
     		
     		this.hudItems.get(i).reloadTexture();
     	}
@@ -100,8 +96,7 @@ public class Camera2 {
     
     public void dispose() {
     	
-    	int length = this.hudItems.size();
-    	for (int i = 0; i < length; i++) {
+    	for (int i = 0; i < hudItems.size(); i++) {
     		
     		this.hudItems.get(i).dispose();
     	}

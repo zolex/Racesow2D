@@ -3,7 +3,6 @@ package org.racenet.racesow;
 import org.racenet.racesow.R;
 
 import android.app.AlertDialog;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,8 +11,6 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 
 public class Settings extends PreferenceActivity {
-	
-	private NotificationManager manager;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {

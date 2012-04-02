@@ -333,7 +333,9 @@ class Player extends AnimatedBlock {
 							this.virtualSpeed += 200;
 							
 							this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
-							map.addDecal(this.rocketPool.newObject(), 0.25f);
+							TexturedBlock decal = this.rocketPool.newObject();
+							decal.setPosition(new Vector2(impactX, impactY));
+							map.addDecal(decal, 0.25f);
 							
 							this.lastShot = currentTime;
 							break;
@@ -356,7 +358,9 @@ class Player extends AnimatedBlock {
 							}
 							
 							this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
-							map.addDecal(this.rocketPool.newObject(), 0.25f);
+							TexturedBlock decal = this.rocketPool.newObject();
+							decal.setPosition(new Vector2(this.getPosition().x, impactY));
+							map.addDecal(decal, 0.25f);
 						}
 						
 						this.lastShot = currentTime;

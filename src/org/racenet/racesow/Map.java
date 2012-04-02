@@ -532,6 +532,11 @@ public class Map {
 	
 	public void draw() {
 		
+		float fromX = this.camera.position.x - this.camera.frustumWidth / 2;
+		float toX = this.camera.position.x + this.camera.frustumWidth / 2;
+		float fromY = this.camera.position.y - this.camera.frustumHeight / 2;
+		float toY = this.camera.position.y + this.camera.frustumHeight / 2;
+		
 		if (this.sky != null) {
 		
 			this.sky.draw();
@@ -552,13 +557,27 @@ public class Map {
 			length = this.ground.size();
 			for (int i = 0; i < length; i++) {
 				
-				this.ground.get(i).drawOutline();
+				TexturedShape shape = this.ground.get(i);
+				Vector2 shapePos = shape.getPosition();
+				if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
+					(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
+					(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
+					
+					shape.drawOutline();
+				}
 			}
 			
 			length = this.walls.size();
 			for (int i = 0; i < length; i++) {
 				
-				this.walls.get(i).drawOutline();
+				TexturedShape shape = this.walls.get(i);
+				Vector2 shapePos = shape.getPosition();
+				if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
+					(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
+					(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
+					
+					shape.drawOutline();
+				}
 			}
 			
 			gl.glColor4f(1, 1, 1, 1);
@@ -571,13 +590,27 @@ public class Map {
 		length = this.walls.size();
 		for (int i = 0; i < length; i++) {
 			
-			this.walls.get(i).draw();
+			TexturedShape shape = this.walls.get(i);
+			Vector2 shapePos = shape.getPosition();
+			if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
+				(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
+				(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
+				
+				shape.draw();
+			}
 		}
 		
 		length = this.ground.size();
 		for (int i = 0; i < length; i++) {
 			
-			this.ground.get(i).draw();
+			TexturedShape shape = this.ground.get(i);
+			Vector2 shapePos = shape.getPosition();
+			if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
+				(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
+				(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
+				
+				shape.draw();
+			}
 		}
 		
 		length = this.items.size();

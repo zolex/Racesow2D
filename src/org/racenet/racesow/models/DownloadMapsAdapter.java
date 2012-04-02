@@ -52,10 +52,17 @@ public class DownloadMapsAdapter implements ListAdapter {
 		MapItem item = (MapItem)getItem(arg0);
 		LinearLayout layout =  (LinearLayout)View.inflate(context, R.layout.mapitem, null);
 		TextView name = (TextView)layout.findViewById(R.id.name);
-		name.setText(item.name);
 		TextView skill = (TextView)layout.findViewById(R.id.skill);
-		skill.setText("(" + item.skill + ")");
+		TextView author = (TextView)layout.findViewById(R.id.author);
 		TextView status = (TextView)layout.findViewById(R.id.status);
+		
+		name.setText(item.name);
+		skill.setText("(" + item.skill + ")");
+		
+		if (!item.author.equals("")) {
+		
+			author.setText("by " + item.author);
+		}
 		
 		if (item.installed) {
 		

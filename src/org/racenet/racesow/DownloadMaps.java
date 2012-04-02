@@ -99,6 +99,7 @@ public class DownloadMaps extends ListActivity {
 			    			mapItem.name = parser.getValue(map, "name");
 			    			mapItem.skill = parser.getValue(map, "skill");
 			    			mapItem.download = parser.getValue(map, "download");
+			    			mapItem.author = parser.getValue(map, "author");
 			    			mapItem.filename = parser.getValue(map, "filename");
 			    			File test = new File(racesowPath + "maps" + File.separator + mapItem.filename);
 			    			mapItem.installed = test.isFile();

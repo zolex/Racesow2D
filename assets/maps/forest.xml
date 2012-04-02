@@ -256,9 +256,9 @@
 	</block>
 	<block>
 		<level>ground</level>
-		<x>1700</x>
+		<x>1825</x>
 		<y>30</y>
-		<width>200</width>
+		<width>225</width>
 		<height>10</height>
 		<texture>forest/floor.png</texture>
 	</block>

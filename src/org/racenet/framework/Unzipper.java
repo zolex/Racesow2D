@@ -8,47 +8,51 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import android.util.Log;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 
 public class Unzipper {
 	
-	String zipFile;
-	String destination;
-	
-	public Unzipper(String zipFile, String destination) {
-		
-		this.zipFile = zipFile;
-		this.destination = destination;
-	}
-	
-	 private void checkDir(String dir) { 
+	 private static void checkDir(String dir) { 
 		 
-		 File f = new File(this.destination + dir); 
+		 File f = new File(dir); 
 		 if (!f.isDirectory()) { 
 			 
 			 f.mkdirs(); 
 		 } 
 	 } 
 	
-	public boolean unzip() {
+	public static boolean unzip(String zipFile, String destination, Handler progress) {
 		
-		this.checkDir(this.destination);
+		checkDir(destination);
 		
 		FileInputStream fin;
 		try {
 			
 			fin = new FileInputStream(zipFile);
-			ZipInputStream zin = new ZipInputStream(fin);
+			int totalBytes = fin.available();
+			int bytesRead = 0;
+			ZipInputStream zin = new ZipInputStream(fin);			
 			ZipEntry ze = null; 
 			while ((ze = zin.getNextEntry()) != null) {
 				
+				bytesRead = totalBytes - fin.available();
+				int percent = (int)((float)bytesRead / (float)totalBytes * 100);
+				Message msg = new Message();
+			    Bundle b = new Bundle();
+			    b.putInt("code", 1);
+			    b.putInt("percent", percent);
+			    msg.setData(b);
+		        progress.sendMessage(msg);
+				
 				if(ze.isDirectory()) { 
 					
-					 this.checkDir(ze.getName()); 
-				 
+					checkDir(destination + ze.getName()); 
+					 
 				} else { 
 
-					FileOutputStream fout = new FileOutputStream(this.destination + ze.getName()); 
+					FileOutputStream fout = new FileOutputStream(destination + ze.getName()); 
 					for (int c = zin.read(); c != -1; c = zin.read()) { 
 						
 						fout.write(c); 
@@ -59,16 +63,33 @@ public class Unzipper {
 				} 
 			} 
 			
+			Message msg = new Message();
+		    Bundle b = new Bundle();
+		    b.putInt("code", 1);
+		    b.putInt("percent", 100);
+		    msg.setData(b);
+	        progress.sendMessage(msg);
+			
 			zin.close();
 			
 		} catch (FileNotFoundException e) {
 			
-			Log.d("DEBUG", "unzip error: " + e.getMessage());
+			Message msg = new Message();
+		    Bundle b = new Bundle();
+		    b.putInt("code", 2);
+		    b.putString("message", "Please try again.");
+		    msg.setData(b);
+	        progress.sendMessage(msg);
 			return false;
 			
 		} catch (IOException e) {
 			
-			Log.d("DEBUG", "unzip error: " + e.getMessage());
+			Message msg = new Message();
+		    Bundle b = new Bundle();
+		    b.putInt("code", 2);
+		    b.putString("message", "Please try again.");
+		    msg.setData(b);
+	        progress.sendMessage(msg);
 			return false;
 		}
 		

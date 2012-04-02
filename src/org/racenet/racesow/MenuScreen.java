@@ -59,6 +59,8 @@ public class MenuScreen extends Screen {
 			
 			public void handle() {
 				
+				Intent i = new Intent((Activity)game, DownloadMaps.class);
+			    ((Activity)game).startActivity(i);
 			}
 		});
 		

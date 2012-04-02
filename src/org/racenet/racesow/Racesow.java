@@ -18,11 +18,12 @@ public class Racesow extends GLGame {
 		
 		super.onCreate(savedInstanceState);
 		
-		//String racesowPath = AndroidFileIO.externalStoragePath + "racesow" + File.separator;
-		//String zipFile = racesowPath + "downloads" + File.separator + "map_forest.zip";
+		/*
+		String racesowPath = AndroidFileIO.externalStoragePath + "racesow" + File.separator;
+		String zipFile = racesowPath + "downloads" + File.separator + "map_forest.zip";
 		
-		//Unzipper uz = new Unzipper(zipFile, racesowPath);
-		//uz.unzip();
+		Unzipper.unzip(zipFile, racesowPath);
+		*/
 	}
 	
     public Screen getStartScreen() {

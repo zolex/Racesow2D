@@ -74,6 +74,42 @@ public class MapsScreen extends Screen {
 			});
 		}
 		
+		String[] externalMaps = game.getFileIO().listFiles("racesow" + File.separator + "maps");
+		if (externalMaps != null) {
+			for (int i = 0; i < externalMaps.length; i++) {
+				
+				final String mapName = externalMaps[i];
+				if (!mapName.endsWith(".xml")) continue;
+				
+				
+				XMLParser parser = new XMLParser();
+				try {
+					
+					parser.read(game.getFileIO().readFile("racesow" + File.separator + "maps" + File.separator + mapName));
+					
+				} catch (IOException e) {
+					
+					continue;
+				}
+				
+				String levelshot = "nolevelshot.png";
+				NodeList mapn = parser.doc.getElementsByTagName("map");
+				if (mapn.getLength() == 1) {
+					
+					Element map = (Element)mapn.item(0);
+					levelshot = parser.getValue(map, "levelshot");
+				}
+				
+				menu.addItem(levelshot, menu.new Callback() {
+					
+					public void handle() {
+						
+						game.setScreen(new LoadingScreen(game, mapName));
+					}
+				});
+			}
+		}
+		
 		
 		
 		GLTexture.APP_FOLDER = "racesow";

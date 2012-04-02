@@ -1,8 +1,7 @@
-package org.racenet.racesow;
+package org.racenet.racesow.models;
 
 import java.util.List;
 
-import org.racenet.racesow.models.MapItem;
 
 import android.content.Context;
 import android.database.DataSetObserver;

@@ -9,7 +9,11 @@ import java.util.List;
 
 import org.racenet.framework.AndroidFileIO;
 import org.racenet.framework.XMLParser;
+import org.racenet.racesow.models.DownloadMapsAdapter;
 import org.racenet.racesow.models.MapItem;
+import org.racenet.racesow.threads.DownloadThread;
+import org.racenet.racesow.threads.RefreshMapsThread;
+import org.racenet.racesow.threads.UnzipThread;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 

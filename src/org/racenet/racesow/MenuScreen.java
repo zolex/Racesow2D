@@ -55,7 +55,7 @@ public class MenuScreen extends Screen {
 			}
 		});
 		
-		menu.addItem("menu/scores.png", menu.new Callback() {
+		menu.addItem("menu/download.png", menu.new Callback() {
 			
 			public void handle() {
 				

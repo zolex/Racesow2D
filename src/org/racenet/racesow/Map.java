@@ -29,7 +29,7 @@ public class Map {
 	public List<TexturedShape> items = new ArrayList<TexturedShape>();
 	public List<TexturedShape> pickedUpItems = new ArrayList<TexturedShape>();
 	private TexturedShape[] decals = new TexturedShape[MAX_DECALS];
-	private static final short MAX_DECALS = 32;
+	private static final short MAX_DECALS = 64;
 	private float[] decalTime = new float[MAX_DECALS];
 	private TexturedBlock sky;
 	private float skyPosition;
@@ -403,7 +403,6 @@ public class Map {
 					
 					if (this.decals[i] != null) {
 						
-						this.decals[i].dispose();
 						this.decals[i] = null;
 					}
 				}
@@ -455,6 +454,14 @@ public class Map {
 		for (int i = 0; i < length; i++) {
 			
 			this.walls.get(i).dispose();
+		}
+		
+		for (int i = 0; i < MAX_DECALS; i++) {
+			
+			if (this.decals[i] != null) {
+						
+				this.decals[i].dispose();
+			}
 		}
 	}
 	

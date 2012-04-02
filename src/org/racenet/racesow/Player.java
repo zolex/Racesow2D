@@ -7,6 +7,8 @@ import org.racenet.framework.AndroidAudio;
 import org.racenet.framework.AndroidSound;
 import org.racenet.framework.AnimatedBlock;
 import org.racenet.framework.Camera2;
+import org.racenet.framework.FifoPool;
+import org.racenet.framework.FifoPool.PoolObjectFactory;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.Polygon;
@@ -63,10 +65,12 @@ class Player extends AnimatedBlock {
 	private float volume = 0.1f;
 	private String model = "male";
 	private Map map;
+	private FifoPool<TexturedBlock> plasmaPool;
+	private FifoPool<TexturedBlock> rocketPool;
 	
 	private int frames = 0;
 	
-	public Player(GLGame game, Map map, Camera2 camera, float x, float y) {
+	public <T> Player(final GLGame game, Map map, Camera2 camera, float x, float y) {
 		
 		super(game, new Vector2(x,y), new Vector2(x + 3.4f, y), new Vector2(x + 3.4f, y + 6.5f), new Vector2(x, y + 6.5f));
 		
@@ -87,6 +91,37 @@ class Player extends AnimatedBlock {
 		this.loadAnimations();
 		this.setupVertices();
 		
+		this.plasmaPool = new FifoPool<TexturedBlock>(new PoolObjectFactory<TexturedBlock>() {
+			
+			public TexturedBlock createObject() {
+				
+				return new TexturedBlock(
+						game,
+						"decals/plasma_hit.png",
+						GameObject.FUNC_NONE,
+						-1,
+						-1,
+						new Vector2(-1, 0),
+						new Vector2(2, 0)
+						);
+			}
+		}, 10);
+		
+		this.rocketPool = new FifoPool<TexturedBlock>(new PoolObjectFactory<TexturedBlock>() {
+	        	
+            public TexturedBlock createObject() {
+            	
+            	return new TexturedBlock(
+        				game,
+        				"decals/rocket_hit.png",
+        				GameObject.FUNC_NONE,
+        				-1,
+        				-1,
+        				new Vector2(-3, 0),
+        				new Vector2(5, 0)
+        			);
+            }
+        }, 1);
 	}
 	
 	public void loadAnimations() {
@@ -298,15 +333,7 @@ class Player extends AnimatedBlock {
 							this.virtualSpeed += 200;
 							
 							this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
-							map.addDecal(new TexturedBlock(
-								this.game,
-								"decals/rocket_hit.png",
-								GameObject.FUNC_NONE,
-								-1,
-								-1,
-								new Vector2(impactX - 3, impactY),
-								new Vector2(impactX + 5, impactY)
-							), 0.25f);
+							map.addDecal(this.rocketPool.newObject(), 0.25f);
 							
 							this.lastShot = currentTime;
 							break;
@@ -329,15 +356,7 @@ class Player extends AnimatedBlock {
 							}
 							
 							this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
-							map.addDecal(new TexturedBlock(
-								this.game,
-								"decals/rocket_hit.png",
-								GameObject.FUNC_NONE,
-								-1,
-								-1,
-								new Vector2(this.getPosition().x - 3, impactY),
-								new Vector2(this.getPosition().x + 5, impactY)
-							), 0.25f);
+							map.addDecal(this.rocketPool.newObject(), 0.25f);
 						}
 						
 						this.lastShot = currentTime;
@@ -362,15 +381,9 @@ class Player extends AnimatedBlock {
 							this.virtualSpeed += 15;
 							
 							this.sounds[SOUND_PLASMA].play(this.volume * 1.2f);
-							map.addDecal(new TexturedBlock(
-								this.game,
-								"decals/plasma_hit.png",
-								GameObject.FUNC_NONE,
-								-1,
-								-1,
-								new Vector2(impactX - 1, impactY),
-								new Vector2(impactX + 2, impactY)
-							), 0.25f);
+							TexturedBlock decal = (TexturedBlock)this.plasmaPool.newObject();
+							decal.setPosition(new Vector2(impactX, impactY));
+							map.addDecal(decal, 0.25f);
 							
 							this.lastShot = currentTime;
 							break;
@@ -427,8 +440,6 @@ class Player extends AnimatedBlock {
 		}
 		
 		if (this.isDead) return;
-		
-		Vector2 lastPosition = this.getPosition();
 		
 		List<GameObject> colliders = this.map.getPotentialFuncColliders(this);
 		int length = colliders.size();

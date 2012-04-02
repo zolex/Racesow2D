@@ -26,17 +26,24 @@ public class SubmitScoreThread extends Thread {
 	private float time;
 	private String map;
 	private String player;
+	private short tries;
 	
 	public SubmitScoreThread(String map, String player, float time) {
 		
 		this.time = time;
 		this.map = map;
 		this.player = player;
+		this.tries = 0;
 	}
 	
 	@Override
     public void run() {         
 
+		this.submitScores();
+    }
+	
+	private void submitScores() {
+		
 		HttpClient client = new DefaultHttpClient();				
 	    HttpPost post = new HttpPost("http://racesow2d.warsow-race.net/submit.php");
 	    
@@ -52,8 +59,11 @@ public class SubmitScoreThread extends Thread {
 	        
 	    } catch (ClientProtocolException e) {
 	    	
+	    	if (this.tries++ < 10) this.submitScores();
+	    	
 	    } catch (IOException e) {
     		
+	    	if (this.tries++ < 10) this.submitScores();
 	    }
-    }
+	}
 }

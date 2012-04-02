@@ -20,6 +20,8 @@ import org.racenet.racesow.threads.SubmitScoreThread;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 public class Map {
@@ -48,6 +50,7 @@ public class Map {
 	private boolean drawOutlines = false;
 	private Camera2 camera;
 	public String fileName;
+	private GLGame game;
 	
 	public Map(GL10 gl, Camera2 camera) {
 		
@@ -63,6 +66,7 @@ public class Map {
 	public boolean load(GLGame game, String fileName) {
 		
 		this.fileName = fileName;
+		this.game = game;
 		XMLParser parser = new XMLParser();
 		try {
 			
@@ -672,7 +676,8 @@ public class Map {
 		this.raceStarted = false;
 		this.stopTime = System.nanoTime() / 1000000000.0f;
 		
-		SubmitScoreThread t = new SubmitScoreThread(this.fileName, "player", this.getCurrentTime());
+		SharedPreferences prefs = this.game.getSharedPreferences("racesow", Context.MODE_PRIVATE);
+		SubmitScoreThread t = new SubmitScoreThread(this.fileName, prefs.getString("name", "player"), this.getCurrentTime());
 		t.start();
 	}
 	

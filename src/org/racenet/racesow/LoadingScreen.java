@@ -68,10 +68,11 @@ class LoadingScreen extends Screen {
 		gl.glEnable(GL10.GL_BLEND);
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		
+		this.header.draw();
 		this.loading.draw(this.batcher, "LOADING", 0.1f, 0.1f, -10, this.camera.frustumHeight / 2);
 		
-		// right after drawing the loading screen
-		// load map and player and pass it to the GameScreen
+		// right after drawing the loading screen load
+		// the map and player and pass it to the GameScreen
 		Map map = new Map(glGraphics.getGL(), this.camera);
 		map.load((GLGame)game, this.mapName);
 		Player player = new Player((GLGame)game, map, this.camera, map.playerX, map.playerY);

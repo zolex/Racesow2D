@@ -4,6 +4,8 @@ public class MapItem {
 
 	public int id;
 	public String name;
-	public String author;
-	public String file;
+	public String skill;
+	public String download;
+	public String filename;
+	public boolean installed;
 }

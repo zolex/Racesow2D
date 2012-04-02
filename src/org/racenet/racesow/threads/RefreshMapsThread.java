@@ -33,7 +33,7 @@ public class RefreshMapsThread extends Thread {
     public void run() {         
 
 		HttpClient client = new DefaultHttpClient();				
-	    HttpGet get = new HttpGet("http://www.warsow-race.net/tools/maplist.xml");
+	    HttpGet get = new HttpGet("http://racesow2d.warsow-race.net/maplist.php");
 	    
 	    Message msg = new Message();
 	    Bundle b = new Bundle();

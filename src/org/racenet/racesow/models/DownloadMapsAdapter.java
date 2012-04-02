@@ -2,14 +2,17 @@ package org.racenet.racesow.models;
 
 import java.util.List;
 
+import org.racenet.racesow.R;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.text.Html;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
@@ -46,15 +49,37 @@ public class DownloadMapsAdapter implements ListAdapter {
 
 	public View getView(int arg0, View arg1, ViewGroup arg2) {
 		
-		AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, 64);
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(lp);
-        textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-        textView.setPadding(64, 0, 0, 0);
-        textView.setText(((MapItem)getItem(arg0)).name);
-        textView.setTextSize(32);
+		MapItem item = (MapItem)getItem(arg0);
+		LinearLayout layout =  (LinearLayout)View.inflate(context, R.layout.mapitem, null);
+		TextView name = (TextView)layout.findViewById(R.id.name);
+		name.setText(item.name);
+		TextView skill = (TextView)layout.findViewById(R.id.skill);
+		skill.setText("(" + item.skill + ")");
+		TextView status = (TextView)layout.findViewById(R.id.status);
+		
+		if (item.installed) {
+		
+			status.setText("installed");
+			
+		} else {
+		
+			status.setText("download now!");
+		}
+		
+		if (item.skill.equals("hard")) {
+			
+			skill.setTextColor(Color.RED);
+			
+		} else if (item.skill.equals("medium")) {
+			
+			skill.setTextColor(Color.YELLOW);
+			
+		} else if (item.skill.equals("easy")) {
+			
+			skill.setTextColor(Color.GREEN);
+		}
 
-        return textView;
+        return layout;
 	}
 
 	public int getViewTypeCount() {

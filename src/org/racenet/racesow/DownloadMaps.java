@@ -31,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class DownloadMaps extends ListActivity {
@@ -48,6 +49,8 @@ public class DownloadMaps extends ListActivity {
     }
 
     public void refreshMapList() {
+    	
+    	final String racesowPath = AndroidFileIO.externalStoragePath + "racesow" + File.separator;
     	
     	final ProgressDialog pd = new ProgressDialog(DownloadMaps.this);
 		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -94,8 +97,11 @@ public class DownloadMaps extends ListActivity {
 			    			MapItem mapItem = new MapItem();
 			    			mapItem.id = Integer.parseInt(parser.getValue(map, "id"));
 			    			mapItem.name = parser.getValue(map, "name");
-			    			mapItem.author = parser.getValue(map, "author");
-			    			mapItem.file = parser.getValue(map, "file");
+			    			mapItem.skill = parser.getValue(map, "skill");
+			    			mapItem.download = parser.getValue(map, "download");
+			    			mapItem.filename = parser.getValue(map, "filename");
+			    			File test = new File(racesowPath + "maps" + File.separator + mapItem.filename);
+			    			mapItem.installed = test.isFile();
 			    			mapList.add(mapItem);
 			    		}
 			    		
@@ -121,104 +127,118 @@ public class DownloadMaps extends ListActivity {
 		
         getListView().setOnItemClickListener(new OnItemClickListener() {
 
-			public void onItemClick(AdapterView<?> parent, View view, final int pos, long id) {
+			public void onItemClick(AdapterView<?> parent, final View view, final int pos, long id) {
 				
 				final String mapName =  ((MapItem)mAdapter.getItem(pos)).name;
-				new AlertDialog.Builder(DownloadMaps.this)
-		            .setMessage("Download map '" + mapName + "'?")
-		            .setPositiveButton("Yes", new OnClickListener() {
+				boolean installed = ((MapItem)mAdapter.getItem(pos)).installed;
 				
-						public void onClick(DialogInterface arg0, int arg1) {
-							
-							final ProgressDialog pd2 = new ProgressDialog(DownloadMaps.this);
-							pd2.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-							pd2.setMessage("Downloading map '" + mapName + "'");
-							pd2.setCancelable(false);
-							pd2.show();
-							
-							final String source = ((MapItem)mAdapter.getItem(pos)).file;
-							final String racesowPath = AndroidFileIO.externalStoragePath + "racesow" + File.separator;
-							final String zipPath = racesowPath + "downloads" + File.separator;
-							
-							DownloadThread t = new DownloadThread(source, zipPath, new Handler() {
-						    	
-							    	@Override
-							        public void handleMessage(Message msg) {
-							    		
-							    		Bundle b = msg.getData();
-							    		int code = b.getInt("code");
-							    		switch (code) {
-							    		
-							    			case 1:
-							    				int percent = b.getInt("percent");
-									    		pd2.setProgress(percent);
-									    		if (percent >= 100) {
-									    			
-									    			pd2.dismiss();
-									    			
-									    			final ProgressDialog pd3 = new ProgressDialog(DownloadMaps.this);
-													pd3.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-													pd3.setMessage("Extracting files...");
-													pd3.setCancelable(false);
-													pd3.show();
-									    			
-									    			int slashIndex = source.lastIndexOf('/');
-									    			String zipFile = zipPath + source.substring(slashIndex + 1);
-									    			
-									    			final UnzipThread t2 = new UnzipThread(zipFile, racesowPath,  new Handler() {
-												    	
-												    	@Override
-												        public void handleMessage(Message msg) {
-												    		
-												    		Bundle b = msg.getData();
-												    		int code = b.getInt("code");
-												    		switch (code) {
-												    		
-												    			case 1:
-												    				int percent = msg.getData().getInt("percent");
-														    		pd3.setProgress(percent);
-														    		if (percent >= 100) {
-														    			
-														    			new AlertDialog.Builder(DownloadMaps.this)
-																            .setMessage("You can now choose the map '"+ mapName +"' from your maplist.")
+				if (installed) {
+					
+					new AlertDialog.Builder(DownloadMaps.this)
+			            .setMessage("The map '" + mapName +"' is already installed.")
+			            .setNeutralButton("OK", null)
+			            .show();
+					
+				} else {
+				
+					new AlertDialog.Builder(DownloadMaps.this)
+			            .setMessage("Download map '" + mapName + "'?")
+			            .setPositiveButton("Yes", new OnClickListener() {
+					
+							public void onClick(DialogInterface arg0, int arg1) {
+								
+								final ProgressDialog pd2 = new ProgressDialog(DownloadMaps.this);
+								pd2.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+								pd2.setMessage("Downloading map '" + mapName + "'");
+								pd2.setCancelable(false);
+								pd2.show();
+								
+								final String source = ((MapItem)mAdapter.getItem(pos)).download;
+								final String zipPath = racesowPath + "downloads" + File.separator;
+								
+								DownloadThread t = new DownloadThread(source, zipPath, new Handler() {
+							    	
+								    	@Override
+								        public void handleMessage(Message msg) {
+								    		
+								    		Bundle b = msg.getData();
+								    		int code = b.getInt("code");
+								    		switch (code) {
+								    		
+								    			case 1:
+								    				int percent = b.getInt("percent");
+										    		pd2.setProgress(percent);
+										    		if (percent >= 100) {
+										    			
+										    			pd2.dismiss();
+										    			
+										    			final ProgressDialog pd3 = new ProgressDialog(DownloadMaps.this);
+														pd3.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+														pd3.setMessage("Extracting files...");
+														pd3.setCancelable(false);
+														pd3.show();
+										    			
+										    			int slashIndex = source.lastIndexOf('/');
+										    			String zipFile = zipPath + source.substring(slashIndex + 1);
+										    			
+										    			final UnzipThread t2 = new UnzipThread(zipFile, racesowPath,  new Handler() {
+													    	
+													    	@Override
+													        public void handleMessage(Message msg) {
+													    		
+													    		Bundle b = msg.getData();
+													    		int code = b.getInt("code");
+													    		switch (code) {
+													    		
+													    			case 1:
+													    				int percent = msg.getData().getInt("percent");
+															    		pd3.setProgress(percent);
+															    		if (percent >= 100) {
+															    			
+															    			new AlertDialog.Builder(DownloadMaps.this)
+																	            .setMessage("You can now choose the map '"+ mapName +"' from your maplist.")
+																	            .setNeutralButton("OK", null)
+																	            .show();
+															    			pd3.dismiss();
+															    			
+															    			TextView status = (TextView)view.findViewById(R.id.status);
+															    			status.setText("installed");
+															    		}
+															    		break;
+															    		
+													    			case 2:
+													    				pd3.dismiss();
+													    				new AlertDialog.Builder(DownloadMaps.this)
+																            .setMessage("Unzip error: " + b.getString("message"))
 																            .setNeutralButton("OK", null)
 																            .show();
-														    			pd3.dismiss();
-														    		}
-														    		break;
-														    		
-												    			case 2:
-												    				pd3.dismiss();
-												    				new AlertDialog.Builder(DownloadMaps.this)
-															            .setMessage("Unzip error: " + b.getString("message"))
-															            .setNeutralButton("OK", null)
-															            .show();
-												    				break;
-												    		}
-												    		
-												    	}
-									    			});
-									    			
-									    			t2.start();
-									    		}
-							    				break;
-							    				
-							    			case 2:
-							    				pd2.dismiss();
-							    				new AlertDialog.Builder(DownloadMaps.this)
-										            .setMessage("Download error: " + b.getString("message"))
-										            .setNeutralButton("OK", null)
-										            .show();
-							    				break;
-							    		}
-							    	}
-							});
-							
-							t.start();
-						}
-					})
-					.setNegativeButton("No", null)
-		            .show();
+													    				break;
+													    		}
+													    		
+													    	}
+										    			});
+										    			
+										    			t2.start();
+										    		}
+								    				break;
+								    				
+								    			case 2:
+								    				pd2.dismiss();
+								    				new AlertDialog.Builder(DownloadMaps.this)
+											            .setMessage("Download error: " + b.getString("message"))
+											            .setNeutralButton("OK", null)
+											            .show();
+								    				break;
+								    		}
+								    	}
+								});
+								
+								t.start();
+							}
+						})
+						.setNegativeButton("No", null)
+			            .show();
+				}
 			}
 		});
     }

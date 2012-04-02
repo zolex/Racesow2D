@@ -55,15 +55,6 @@ public class MenuScreen extends Screen {
 			}
 		});
 		
-		menu.addItem("menu/download.png", menu.new Callback() {
-			
-			public void handle() {
-				
-				Intent i = new Intent((Activity)game, DownloadMaps.class);
-			    ((Activity)game).startActivity(i);
-			}
-		});
-		
 		GLTexture.APP_FOLDER = "racesow";
 		String texture = "racesow.jpg";
 		if ((float)game.getScreenWidth() < 600) {

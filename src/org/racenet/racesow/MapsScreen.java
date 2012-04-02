@@ -16,9 +16,12 @@ import org.racenet.framework.XMLParser;
 import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Input.TouchEvent;
 import org.racenet.framework.interfaces.Screen;
+import org.racenet.racesow.Menu.Callback;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.view.GestureDetector;
 
 public class MapsScreen extends Screen {
@@ -37,6 +40,30 @@ public class MapsScreen extends Screen {
 		glGraphics = ((GLGame)game).getGLGraphics();
 		
 		this.camera = new Camera2(glGraphics, (float)game.getScreenWidth(), (float)game.getScreenHeight());
+		
+		this.refreshMapList();
+		
+		
+		GLTexture.APP_FOLDER = "racesow";
+		String texture = "racesow.jpg";
+		if ((float)game.getScreenWidth() < 600) {
+			
+			texture = "racesow_small.jpg";
+		}
+		
+		this.header = new TexturedBlock((GLGame)game, texture, TexturedBlock.FUNC_NONE, -1, -1,
+				new Vector2(0, 0), new Vector2(this.camera.frustumWidth, 0));
+		this.header.setPosition(new Vector2(0, this.camera.frustumHeight - this.header.height));
+		this.header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
+	}
+	
+	public void refreshMapList() {
+		
+		if (this.menu != null)  {
+		
+			this.menu.dispose();
+		}
+		
 		this.menu = new Menu((GLGame)this.game, this.camera.frustumWidth, this.camera.frustumHeight);
 		this.gestures = new GestureDetector(this.menu);
 		
@@ -110,19 +137,14 @@ public class MapsScreen extends Screen {
 			}
 		}
 		
-		
-		
-		GLTexture.APP_FOLDER = "racesow";
-		String texture = "racesow.jpg";
-		if ((float)game.getScreenWidth() < 600) {
+		menu.addItem("menu/download.png", menu.new Callback() {
 			
-			texture = "racesow_small.jpg";
-		}
-		
-		this.header = new TexturedBlock((GLGame)game, texture, TexturedBlock.FUNC_NONE, -1, -1,
-				new Vector2(0, 0), new Vector2(this.camera.frustumWidth, 0));
-		this.header.setPosition(new Vector2(0, this.camera.frustumHeight - this.header.height));
-		this.header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
+			public void handle() {
+				
+				Intent i = new Intent((Activity)game, DownloadMaps.class);
+			    ((Activity)game).startActivity(i);
+			}
+		});
 	}
 
 	@Override
@@ -168,6 +190,7 @@ public class MapsScreen extends Screen {
 		
 		this.header.reloadTexture();
 		this.menu.reloadTextures();
+		this.refreshMapList();
 	}
 
 	@Override

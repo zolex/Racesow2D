@@ -51,7 +51,7 @@ public class DownloadMaps extends ListActivity {
     	
     	final ProgressDialog pd = new ProgressDialog(DownloadMaps.this);
 		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		pd.setMessage("Refreshing available maps");
+		pd.setMessage("Obtaining available maps...");
 		pd.setCancelable(false);
 		pd.show();
         
@@ -65,8 +65,14 @@ public class DownloadMaps extends ListActivity {
 	    			case 0:
 	    				
 	    				new AlertDialog.Builder(DownloadMaps.this)
-				            .setMessage("Internal error: " + msg.getData().getString("exception"))
-				            .setNeutralButton("OK", null)
+				            .setMessage("Could not obtain the available maps.\nCheck your network connection and try again.")
+				            .setNeutralButton("OK", new OnClickListener() {
+								
+								public void onClick(DialogInterface arg0, int arg1) {
+									
+									finish();
+								}
+							})
 				            .show();
 	    				break;
 	    				

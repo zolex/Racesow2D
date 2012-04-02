@@ -140,7 +140,7 @@ class GameScreen extends Screen {
 		}
 
 		this.ups.text = "ups " + String.valueOf(new Integer((int)player.virtualSpeed));
-		this.timer.text = "t " + String.format("%.2f", map.getCurrentTime());
+		this.timer.text = "t " + String.format("%.4f", map.getCurrentTime());
 	}
 
 	public void present(float deltaTime) {

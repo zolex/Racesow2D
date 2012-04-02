@@ -16,6 +16,7 @@ import org.racenet.framework.TexturedShape;
 import org.racenet.framework.TexturedTriangle;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.XMLParser;
+import org.racenet.racesow.threads.SubmitScoreThread;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -46,6 +47,7 @@ public class Map {
 	private float stopTime = 0;
 	private boolean drawOutlines = false;
 	private Camera2 camera;
+	public String fileName;
 	
 	public Map(GL10 gl, Camera2 camera) {
 		
@@ -60,6 +62,7 @@ public class Map {
 	
 	public boolean load(GLGame game, String fileName) {
 		
+		this.fileName = fileName;
 		XMLParser parser = new XMLParser();
 		try {
 			
@@ -583,8 +586,6 @@ public class Map {
 			gl.glColor4f(1, 1, 1, 1);
 		}
 		
-		
-		
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
 		length = this.walls.size();
@@ -665,9 +666,14 @@ public class Map {
 	
 	public void stopTimer() {
 		
+		if (this.raceFinished) return;
+		
 		this.raceFinished = true;
 		this.raceStarted = false;
 		this.stopTime = System.nanoTime() / 1000000000.0f;
+		
+		SubmitScoreThread t = new SubmitScoreThread(this.fileName, "player", this.getCurrentTime());
+		t.start();
 	}
 	
 	public float getCurrentTime() {

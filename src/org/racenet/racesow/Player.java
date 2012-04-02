@@ -67,13 +67,15 @@ class Player extends AnimatedBlock {
 	private Map map;
 	private FifoPool<TexturedBlock> plasmaPool;
 	private FifoPool<TexturedBlock> rocketPool;
+	private boolean soundEnabled;
 	
 	private int frames = 0;
 	
-	public <T> Player(final GLGame game, Map map, Camera2 camera, float x, float y) {
+	public <T> Player(final GLGame game, Map map, Camera2 camera, float x, float y, boolean soundEnabled) {
 		
 		super(game, new Vector2(x,y), new Vector2(x + 3.4f, y), new Vector2(x + 3.4f, y + 6.5f), new Vector2(x, y + 6.5f));
 		
+		this.soundEnabled = soundEnabled;
 		this.rGen = new Random();
 		this.camera = camera;
 		this.map = map;
@@ -216,8 +218,11 @@ class Player extends AnimatedBlock {
 		
 			this.onFloor = false;
 			
-			int jumpSound = this.rGen.nextInt(SOUND_JUMP2 - SOUND_JUMP1 + 1) + SOUND_JUMP1;
-			this.sounds[jumpSound].play(this.volume);
+			if (this.soundEnabled) {
+				
+				int jumpSound = this.rGen.nextInt(SOUND_JUMP2 - SOUND_JUMP1 + 1) + SOUND_JUMP1;
+				this.sounds[jumpSound].play(this.volume);
+			}
 			
 			if (this.virtualSpeed == 0) {
 				
@@ -272,9 +277,11 @@ class Player extends AnimatedBlock {
 					CollisionInfo info = this.intersect(part);
 					if (info.collided) {
 						
-						int wjSound = this.rGen.nextInt(SOUND_WJ2 - SOUND_WJ1 + 1) + SOUND_WJ1;
-
-						this.sounds[wjSound].play(this.volume);
+						if (this.soundEnabled) {
+						
+							int wjSound = this.rGen.nextInt(SOUND_WJ2 - SOUND_WJ1 + 1) + SOUND_WJ1;
+							this.sounds[wjSound].play(this.volume);
+						}
 						
 						this.velocity.set(this.velocity.x + 5, 17);
 						this.lastWallJumped = System.nanoTime() / 1000000000.0f;
@@ -332,7 +339,11 @@ class Player extends AnimatedBlock {
 							this.velocity.set(this.velocity.x, this.velocity.y < 0 ? 30 : this.velocity.y + 20);
 							this.virtualSpeed += 200;
 							
-							this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
+							if (this.soundEnabled) {
+							
+								this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
+							}
+							
 							TexturedBlock decal = this.rocketPool.newObject();
 							decal.setPosition(new Vector2(impactX, impactY));
 							map.addDecal(decal, 0.25f);
@@ -357,7 +368,11 @@ class Player extends AnimatedBlock {
 								this.onFloor = false;
 							}
 							
-							this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
+							if (this.soundEnabled) {
+							
+								this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
+							}
+							
 							TexturedBlock decal = this.rocketPool.newObject();
 							decal.setPosition(new Vector2(this.getPosition().x, impactY));
 							map.addDecal(decal, 0.25f);
@@ -384,7 +399,11 @@ class Player extends AnimatedBlock {
 							this.velocity.add(0, 2.5f);
 							this.virtualSpeed += 15;
 							
-							this.sounds[SOUND_PLASMA].play(this.volume * 1.2f);
+							if (this.soundEnabled) {
+							
+								this.sounds[SOUND_PLASMA].play(this.volume * 1.2f);
+							}
+							
 							TexturedBlock decal = (TexturedBlock)this.plasmaPool.newObject();
 							decal.setPosition(new Vector2(impactX, impactY));
 							map.addDecal(decal, 0.25f);
@@ -512,7 +531,11 @@ class Player extends AnimatedBlock {
 				
 				this.lastShot = 0;
 				this.attachedItem = hudItem;
-				this.sounds[SOUND_PICKUP].play(this.volume);
+				
+				if (this.soundEnabled) {
+				
+					this.sounds[SOUND_PICKUP].play(this.volume);
+				}
 				break;
 			}
 		}
@@ -623,7 +646,11 @@ class Player extends AnimatedBlock {
 	public void die() {
 		
 		this.virtualSpeed = 0;
-		this.sounds[SOUND_DIE].play(this.volume);
+		if (this.soundEnabled) {
+		
+			this.sounds[SOUND_DIE].play(this.volume);
+		}
+		
 		this.isDead = true;
 	}
 	

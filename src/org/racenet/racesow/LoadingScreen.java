@@ -13,6 +13,10 @@ import org.racenet.framework.Vector2;
 import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Screen;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+
 class LoadingScreen extends Screen {
 
 	public Camera2 camera;
@@ -71,11 +75,13 @@ class LoadingScreen extends Screen {
 		this.header.draw();
 		this.loading.draw(this.batcher, "LOADING", 0.1f, 0.1f, -10, this.camera.frustumHeight / 2);
 		
+		SharedPreferences prefs = ((Activity)this.game).getSharedPreferences("racesow", Context.MODE_PRIVATE);
+		
 		// right after drawing the loading screen load
 		// the map and player and pass it to the GameScreen
-		Map map = new Map(glGraphics.getGL(), this.camera);
+		Map map = new Map(glGraphics.getGL(), this.camera, prefs.getBoolean("celshading", false));
 		map.load((GLGame)game, this.mapName);
-		Player player = new Player((GLGame)game, map, this.camera, map.playerX, map.playerY);
+		Player player = new Player((GLGame)game, map, this.camera, map.playerX, map.playerY, prefs.getBoolean("sound", true));
 		
 		game.setScreen(new GameScreen(this.game, this.camera, map, player));
 	}

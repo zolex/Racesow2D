@@ -52,10 +52,11 @@ public class Map {
 	public String fileName;
 	private GLGame game;
 	
-	public Map(GL10 gl, Camera2 camera) {
+	public Map(GL10 gl, Camera2 camera, boolean drawOutlines) {
 		
 		this.gl = gl;
 		this.camera = camera;
+		this.drawOutlines = drawOutlines;
 		
 		for (int i = 0; i < MAX_DECALS; i++) {
 			

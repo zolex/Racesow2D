@@ -8,6 +8,13 @@ import org.racenet.framework.Unzipper;
 import org.racenet.framework.interfaces.FileIO;
 import org.racenet.framework.interfaces.Screen;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 public class Racesow extends GLGame {	
@@ -19,6 +26,22 @@ public class Racesow extends GLGame {
 		super.onCreate(savedInstanceState);
 
 		this.getFileIO().createDirectory("racesow" + File.separator + "downloads");
+		
+		SharedPreferences prefs = getSharedPreferences("racesow", Context.MODE_PRIVATE);
+		if (prefs.getString("name", "").equals("")) {
+			
+			new AlertDialog.Builder(this)
+		        .setMessage("Please set a nickname for the highscores")
+		        .setPositiveButton("OK", new OnClickListener() {
+					
+					public void onClick(DialogInterface arg0, int arg1) {
+						
+						Intent i = new Intent((Activity)Racesow.this, Settings.class);
+					    ((Activity)Racesow.this).startActivity(i);
+					}
+				})
+		        .show();
+		}
 	}
 	
     public Screen getStartScreen() {

@@ -666,6 +666,7 @@ public class Map {
 	public void startTimer() {
 		
 		this.raceStarted = true;
+		this.raceFinished = false;
 		this.startTime = System.nanoTime() / 1000000000.0f;
 	}
 	

@@ -33,13 +33,12 @@ public class Settings extends PreferenceActivity {
 
 				} else if (pref.getKey().equals("celshading")) {
 					
+					prefs.edit().putBoolean("celshading", value.toString().equals("true") ? true : false).commit();
 					if (value.toString().equals("true")) {
 						new AlertDialog.Builder(Settings.this)
 	        		        .setMessage("Toon-Shading reduces the perfomance.")
 	        		        .setNeutralButton("OK", null)
 	        		        .show();
-						
-						prefs.edit().putBoolean("celshading", value.toString().equals("true") ? true : false).commit();
 					}
 					
 				} else if (pref.getKey().equals("name")) {

@@ -1,6 +1,8 @@
 package org.racenet.racesow.models;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -8,7 +10,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 
 public final class Database extends SQLiteOpenHelper {
 
@@ -52,7 +53,7 @@ public final class Database extends SQLiteOpenHelper {
 	        db.insert("settings", null, values);
         }
         
-        db.execSQL("CREATE TABLE races(map TEXT, time REAL, created_at TEXT)");
+        db.execSQL("CREATE TABLE races(id INTEGER, map TEXT, time REAL, created_at TEXT, PRIMARY KEY(id))");
     }
 
 	@Override
@@ -88,6 +89,10 @@ public final class Database extends SQLiteOpenHelper {
     	values.put("map", map);
     	values.put("time", time);
     	
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+    	Date date = new Date();
+    	values.put("created_at", dateFormat.format(date));
+    	
     	SQLiteDatabase database = getWritableDatabase();
     	database.insert("races", "", values);
     	database.close();
@@ -112,6 +117,33 @@ public final class Database extends SQLiteOpenHelper {
 	    c.close();
 	    database.close();
 	    return value;
+	}
+	
+	public List<ScoreItem> getScores(String map) {
+		
+		SQLiteDatabase database = getReadableDatabase();
+	    Cursor c = database.query("races", new String[]{"id, time, created_at"},
+	        "map = '"+ map + "'", null, null, null, "time ASC");
+	    List<ScoreItem> scores = new ArrayList<ScoreItem>();
+	    int position = 1;
+	    if (c.getCount() > 0) {
+	    	
+	    	c.moveToFirst();
+		    while(!c.isAfterLast()) {
+		    	
+		    	ScoreItem item = new ScoreItem();
+		    	item.id = c.getInt(0);
+		    	item.position = position++;
+		    	item.time = c.getFloat(1);
+		    	item.created_at = c.getString(2);
+		    	scores.add(item);
+		    	c.moveToNext();
+		    }
+	    }
+	    
+	    c.close();
+	    database.close();
+	    return scores;
 	}
 }
 

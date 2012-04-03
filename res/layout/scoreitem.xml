@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="40dp" >
+
+    <TextView
+        android:id="@+id/pos"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:paddingLeft="5dp"
+        android:gravity="center"
+        android:textSize="20dp" >
+    </TextView>
+    
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:paddingLeft="10dp"
+        android:gravity="center"
+        android:textSize="20dp" >
+    </TextView>
+    
+    <TextView
+        android:id="@+id/created_at"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingLeft="10dp"
+        android:gravity="center|right"
+        android:textSize="20dp" >
+    </TextView>
+
+</LinearLayout>

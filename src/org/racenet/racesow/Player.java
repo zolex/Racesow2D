@@ -7,6 +7,7 @@ import org.racenet.framework.AndroidAudio;
 import org.racenet.framework.AndroidSound;
 import org.racenet.framework.AnimatedBlock;
 import org.racenet.framework.Camera2;
+import org.racenet.framework.CameraText;
 import org.racenet.framework.FifoPool;
 import org.racenet.framework.FifoPool.PoolObjectFactory;
 import org.racenet.framework.GLGame;
@@ -68,6 +69,9 @@ class Player extends AnimatedBlock {
 	private FifoPool<TexturedBlock> plasmaPool;
 	private FifoPool<TexturedBlock> rocketPool;
 	private boolean soundEnabled;
+	private GameScreen gameScreen;
+	CameraText restartMessage;
+	CameraText finishMessage;
 	
 	private int frames = 0;
 	
@@ -124,6 +128,11 @@ class Player extends AnimatedBlock {
         			);
             }
         }, 1);
+	}
+	
+	public void setGameScreen(GameScreen gameScreen) {
+		
+		this.gameScreen = gameScreen;
 	}
 	
 	public void loadAnimations() {
@@ -479,7 +488,7 @@ class Player extends AnimatedBlock {
 						break;
 						
 					case GameObject.FUNC_STOP_TIMER:
-						this.map.stopTimer();
+						this.finishRace();
 						break;
 				}
 			}
@@ -652,10 +661,45 @@ class Player extends AnimatedBlock {
 		}
 		
 		this.isDead = true;
+		
+		this.showRestartMessage();
+	}
+	
+	public void showRestartMessage() {
+		
+		this.restartMessage = this.gameScreen.createCameraText(-30, -0);
+		this.restartMessage.text = "Press back to restart";
+		this.restartMessage.red = 1;
+		this.restartMessage.green = 0;
+		this.restartMessage.blue = 0;
+		this.restartMessage.scale = 0.15f;
+		this.restartMessage.space = 0.1f;
+		this.camera.addHud(this.restartMessage);
+	}
+	
+	public void showFinishMessage() {
+		
+		this.finishMessage = this.gameScreen.createCameraText(-27, 5);
+		this.finishMessage.text = "Your time: " + String.format("%.4f", this.map.getCurrentTime());
+		this.finishMessage.red = 0;
+		this.finishMessage.green = 0;
+		this.finishMessage.blue = 1;
+		this.finishMessage.scale = 0.15f;
+		this.finishMessage.space = 0.1f;
+		this.camera.addHud(this.finishMessage);
+	}
+	
+	public void finishRace() {
+		
+		if (!this.map.inRace()) return;
+		
+		this.map.stopTimer();
+		this.showFinishMessage();
+		this.showRestartMessage();
 	}
 	
 	public void reset(float x, float y) {
-		
+				
 		this.isDead = false;
 		this.activeAnimId = ANIM_RUN;
 		this.virtualSpeed = 0;
@@ -669,6 +713,24 @@ class Player extends AnimatedBlock {
 				this.camera.removeHud(this.attachedItem);
 				this.attachedItem.texture.dispose();
 				this.attachedItem = null;
+			}
+		}
+		
+		if (this.restartMessage != null) {
+			
+			synchronized (this) {
+			
+				this.camera.removeHud(this.restartMessage);
+				this.restartMessage.dispose();
+			}
+		}
+		
+		if (this.finishMessage != null) {
+			
+			synchronized (this) {
+				
+				this.camera.removeHud(this.finishMessage);
+				this.finishMessage.dispose();
 			}
 		}
 	}

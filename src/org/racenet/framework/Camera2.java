@@ -48,12 +48,15 @@ public class Camera2 {
 	
 	public void addHud(HudItem item) {
 		
-		hudItems.add(item);
+		this.hudItems.add(item);
 	}
 	
     public void removeHud(HudItem item) {
     	
-    	hudItems.remove(item);
+    	if (this.hudItems.contains(item)) {
+    		
+    		this.hudItems.remove(item);
+    	}
     }
     
     public void setViewportAndMatrices() {

@@ -31,6 +31,7 @@ class GameScreen extends Screen {
 	boolean shootPressed = false;
 	float shootPressedTime = 0;
 	SpriteBatcher batcher;
+	BitmapFont font;
 	
 	int fpsInterval = 5;
 	int frames = 10;
@@ -43,24 +44,27 @@ class GameScreen extends Screen {
 		this.camera = camera;
 		this.map = map;
 		this.player = player;
+		this.player.setGameScreen(this);
 		
 		GLTexture.APP_FOLDER = "racesow";
 		
 		this.batcher = new SpriteBatcher(this.glGraphics, 96);
 		GLTexture texture = new GLTexture((GLGame)game, "font.png");
-		BitmapFont font = new BitmapFont(texture, 0, 0, 17, 30, 50);
+		this.font = new BitmapFont(texture, 0, 0, 17, 30, 50);
 		
-		this.fps = new CameraText(this.batcher, font, this.glGraphics.getGL(),
-			this.camera.frustumWidth / 2 - 10, this.camera.frustumHeight / 2 - 3);
+		this.fps = this.createCameraText(this.camera.frustumWidth / 2 - 10, this.camera.frustumHeight / 2 - 3);
 		this.camera.addHud(this.fps);
 		
-		this.ups = new CameraText(this.batcher, font, this.glGraphics.getGL(),
-			this.camera.frustumWidth / 2 - 25, this.camera.frustumHeight / 2 - 3);
+		this.ups = this.createCameraText(this.camera.frustumWidth / 2 - 25, this.camera.frustumHeight / 2 - 3);
 		this.camera.addHud(this.ups);
 		
-		this.timer = new CameraText(this.batcher, font, this.glGraphics.getGL(),
-			this.camera.frustumWidth / 2 - 40, this.camera.frustumHeight / 2 - 3);
+		this.timer = this.createCameraText(this.camera.frustumWidth / 2 - 40, this.camera.frustumHeight / 2 - 3);
 		this.camera.addHud(this.timer);
+	}
+	
+	public CameraText createCameraText(float cameraX, float cameraY) {
+		
+		return new CameraText(this.batcher, this.font, this.glGraphics.getGL(), cameraX, cameraY);
 	}
 
 	public void update(float deltaTime) {

@@ -126,8 +126,17 @@ public abstract class GLGame extends Activity implements Game, Renderer {
         }
     }   
     
+    public void setGameState(GLGameState state) {
+    	
+    	synchronized (stateChanged) {
+    	
+    		this.state = state;
+    		stateChanged.notifyAll();
+    	}
+    }
+    
     @Override 
-    public void onPause() {   
+    public void onPause() {
     	
         synchronized(stateChanged) {
         	

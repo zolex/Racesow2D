@@ -10,11 +10,15 @@ import org.racenet.framework.CameraText;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
 import org.racenet.framework.GLTexture;
+import org.racenet.framework.GameObject;
 import org.racenet.framework.SpriteBatcher;
+import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Screen;
 import org.racenet.framework.interfaces.Input.TouchEvent;
+
+import android.util.Log;
 
 class GameScreen extends Screen {
 		
@@ -36,6 +40,13 @@ class GameScreen extends Screen {
 	int fpsInterval = 5;
 	int frames = 10;
 	float sumDelta = 0;
+	public GameState state = GameState.Running;
+	
+	public enum GameState {
+		
+		Running,
+		Paused
+	}
 	
 	public GameScreen(Game game, Camera2 camera, Map map, Player player) {
 			
@@ -60,6 +71,13 @@ class GameScreen extends Screen {
 		
 		this.timer = this.createCameraText(this.camera.frustumWidth / 2 - 40, this.camera.frustumHeight / 2 - 3);
 		this.camera.addHud(this.timer);
+		
+		TexturedBlock pause = new TexturedBlock(
+			(GLGame)this.game,
+			"hud/pause.png", GameObject.FUNC_NONE, -1, -1,
+			new Vector2(-this.camera.frustumWidth / 2 + 1 , this.camera.frustumHeight / 2 - 6),
+			new Vector2(-this.camera.frustumWidth / 2 + 6, 0));
+		this.camera.addHud(pause);
 	}
 	
 	public CameraText createCameraText(float cameraX, float cameraY) {
@@ -77,7 +95,19 @@ class GameScreen extends Screen {
 			
 			if (e.type == TouchEvent.TOUCH_DOWN) {
 				
-				if (e.x / (float)game.getScreenWidth() > 0.5f) {
+				if (this.state == GameState.Paused) {
+					
+					this.state = GameState.Running;
+				}
+				
+				if (e.y / (float)game.getScreenHeight() < 0.1f && e.x / (float)game.getScreenWidth() < 0.1f) {
+				
+					if (this.state == GameState.Running) {
+						
+						this.state = GameState.Paused;					
+					}
+					
+				} else if (e.x / (float)game.getScreenWidth() > 0.5f) {
 					
 					if (!this.jumpPressed) {
 						
@@ -108,6 +138,11 @@ class GameScreen extends Screen {
 					this.shootPressedTime = 0;
 				}
 			}
+		}
+		
+		if (this.state == GameState.Paused) {
+			
+			return;
 		}
 		
 		if (this.jumpPressed) {

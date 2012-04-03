@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.racenet.framework.GLGame;
 import org.racenet.framework.interfaces.Screen;
+import org.racenet.racesow.GameScreen.GameState;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -57,6 +58,7 @@ public class Racesow extends GLGame {
     		GameScreen gameScreen = (GameScreen)screen;
     		if (gameScreen.map.inRace() || gameScreen.map.raceFinished()) {
     		
+    			gameScreen.state = GameState.Running;
     			gameScreen.map.restartRace(gameScreen.player);
     			
     		} else {

@@ -22,6 +22,7 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Handler;
@@ -74,12 +75,13 @@ public class DownloadMaps extends ListActivity {
 	    			case 0:
 	    				
 	    				new AlertDialog.Builder(DownloadMaps.this)
-				            .setMessage("Could not obtain the available maps.\nCheck your network connection and try again.")
+				            .setMessage("Could not obtain the list of available maps.\nCheck your network connection and try again.")
 				            .setNeutralButton("OK", new OnClickListener() {
 								
 								public void onClick(DialogInterface arg0, int arg1) {
 									
 									finish();
+									overridePendingTransition(0, 0);
 								}
 							})
 				            .show();
@@ -157,13 +159,12 @@ public class DownloadMaps extends ListActivity {
 								final ProgressDialog pd2 = new ProgressDialog(DownloadMaps.this);
 								pd2.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 								pd2.setMessage("Downloading map '" + mapName + "'");
-								pd2.setCancelable(false);
-								pd2.show();
+								pd2.setCancelable(true);
 								
 								final String source = ((MapItem)mAdapter.getItem(pos)).download;
 								final String zipPath = racesowPath + "downloads" + File.separator;
 								
-								DownloadThread t = new DownloadThread(source, zipPath, new Handler() {
+								final DownloadThread t = new DownloadThread(source, zipPath, new Handler() {
 							    	
 								    	@Override
 								        public void handleMessage(Message msg) {
@@ -186,7 +187,7 @@ public class DownloadMaps extends ListActivity {
 														pd3.show();
 										    			
 										    			int slashIndex = source.lastIndexOf('/');
-										    			String zipFile = zipPath + source.substring(slashIndex + 1);
+										    			final String zipFile = zipPath + source.substring(slashIndex + 1);
 										    			
 										    			final UnzipThread t2 = new UnzipThread(zipFile, racesowPath,  new Handler() {
 													    	
@@ -210,6 +211,9 @@ public class DownloadMaps extends ListActivity {
 															    			
 															    			TextView status = (TextView)view.findViewById(R.id.status);
 															    			status.setText("installed");
+															    			
+															    			File file = new File(zipFile);
+															    			file.delete();
 															    		}
 															    		break;
 															    		
@@ -239,6 +243,20 @@ public class DownloadMaps extends ListActivity {
 								    		}
 								    	}
 								});
+								
+								pd2.setOnCancelListener(new OnCancelListener() {
+									
+									public void onCancel(DialogInterface arg0) {
+										
+										t.stopDownload();
+										new AlertDialog.Builder(DownloadMaps.this)
+								            .setMessage("Download aborted")
+								            .setNeutralButton("OK", null)
+								            .show();
+									}
+								});
+								
+								pd2.show();
 								
 								t.start();
 							}

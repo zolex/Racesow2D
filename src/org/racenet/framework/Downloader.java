@@ -16,7 +16,14 @@ import android.os.Message;
  
 public class Downloader {
  
-	public static void download(String source, String destination, Handler progress) {
+	private boolean cancelDownload = false;
+	
+	public void cancelDownload() {
+		
+		this.cancelDownload = true;
+	}
+	
+	public void download(String source, String destination, Handler progress) {
 		
 		try {
 			
@@ -35,7 +42,7 @@ public class Downloader {
 			ByteArrayBuffer baf = new ByteArrayBuffer(50);
 			int current = 0;
 			int updateInterval = 0;
-			while ((current = bis.read()) != -1) {
+			while (!this.cancelDownload && (current = bis.read()) != -1) {
 				
 				bytesRead += current;
 				if (updateInterval++ == 4096) {
@@ -55,17 +62,25 @@ public class Downloader {
 				
 				baf.append((byte) current);
 			}
-
-			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(baf.toByteArray());
-			fos.close();
 			
-			Message msg = new Message();
-		    Bundle b = new Bundle();
-		    b.putInt("code", 1);
-		    b.putInt("percent", 100);
-		    msg.setData(b);
-	        progress.sendMessage(msg);
+			if (this.cancelDownload) {
+				
+				this.cancelDownload = false;
+				baf.clear();
+				
+			} else {
+
+				FileOutputStream fos = new FileOutputStream(file);
+				fos.write(baf.toByteArray());
+				fos.close();
+				
+				Message msg = new Message();
+			    Bundle b = new Bundle();
+			    b.putInt("code", 1);
+			    b.putInt("percent", 100);
+			    msg.setData(b);
+		        progress.sendMessage(msg);
+			}
 
 		} catch (IOException e) {
 			

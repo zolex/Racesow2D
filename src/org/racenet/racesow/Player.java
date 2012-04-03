@@ -16,7 +16,10 @@ import org.racenet.framework.Polygon;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.TexturedShape;
 import org.racenet.framework.Vector2;
+import org.racenet.racesow.threads.InternalScoresThread;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 class Player extends AnimatedBlock {
@@ -71,7 +74,9 @@ class Player extends AnimatedBlock {
 	private boolean soundEnabled;
 	private GameScreen gameScreen;
 	CameraText restartMessage;
+	CameraText timeMessage;
 	CameraText finishMessage;
+	CameraText recordMessage;
 	
 	private int frames = 0;
 	
@@ -677,13 +682,37 @@ class Player extends AnimatedBlock {
 		this.camera.addHud(this.restartMessage);
 	}
 	
-	public void showFinishMessage() {
+	public void showTimeMessage() {
 		
-		this.finishMessage = this.gameScreen.createCameraText(-27, 5);
-		this.finishMessage.text = "Your time: " + String.format("%.4f", this.map.getCurrentTime());
-		this.finishMessage.red = 0;
-		this.finishMessage.green = 0;
-		this.finishMessage.blue = 1;
+		this.timeMessage = this.gameScreen.createCameraText(-27, 5);
+		this.timeMessage.text = "Your time: " + String.format("%.4f", this.map.getCurrentTime());
+		this.timeMessage.red = 0;
+		this.timeMessage.green = 0;
+		this.timeMessage.blue = 1;
+		this.timeMessage.scale = 0.15f;
+		this.timeMessage.space = 0.1f;
+		this.camera.addHud(this.timeMessage);
+	}
+	
+	public void showtRecordMessage() {
+		
+		this.recordMessage = this.gameScreen.createCameraText(-27, 10);
+		this.recordMessage.text = "New personal record!";
+		this.recordMessage.red = 0;
+		this.recordMessage.green = 1;
+		this.recordMessage.blue = 0;
+		this.recordMessage.scale = 0.15f;
+		this.recordMessage.space = 0.1f;
+		this.camera.addHud(this.recordMessage);
+	}
+	
+	public void showtFinishMessage() {
+		
+		this.finishMessage= this.gameScreen.createCameraText(-20, 10);
+		this.finishMessage.text = "Race finished!";
+		this.finishMessage.red = 1;
+		this.finishMessage.green = 1;
+		this.finishMessage.blue = 0;
 		this.finishMessage.scale = 0.15f;
 		this.finishMessage.space = 0.1f;
 		this.camera.addHud(this.finishMessage);
@@ -694,8 +723,30 @@ class Player extends AnimatedBlock {
 		if (!this.map.inRace()) return;
 		
 		this.map.stopTimer();
-		this.showFinishMessage();
-		this.showRestartMessage();
+		
+		InternalScoresThread t = new InternalScoresThread(
+			this.game.getApplicationContext(),
+			this.map.fileName, this.map.getCurrentTime(),
+			new Handler() {
+		    	
+		    	@Override
+		        public void handleMessage(Message msg) {
+		    		
+		    		if (msg.getData().getBoolean("record")) {
+		    			
+		    			Player.this.showtRecordMessage();
+		    		
+		    		} else {
+		    			
+		    			Player.this.showtFinishMessage();
+		    		}
+		    		
+		    		Player.this.showTimeMessage();
+		    		Player.this.showRestartMessage();
+		    	}
+		});
+		
+		t.start();
 	}
 	
 	public void reset(float x, float y) {
@@ -725,12 +776,30 @@ class Player extends AnimatedBlock {
 			}
 		}
 		
+		if (this.timeMessage != null) {
+			
+			synchronized (this) {
+				
+				this.camera.removeHud(this.timeMessage);
+				this.timeMessage.dispose();
+			}
+		}
+		
 		if (this.finishMessage != null) {
 			
 			synchronized (this) {
 				
 				this.camera.removeHud(this.finishMessage);
 				this.finishMessage.dispose();
+			}
+		}
+		
+		if (this.recordMessage != null) {
+			
+			synchronized (this) {
+				
+				this.camera.removeHud(this.recordMessage);
+				this.recordMessage.dispose();
 			}
 		}
 	}

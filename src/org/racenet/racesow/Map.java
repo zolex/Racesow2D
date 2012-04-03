@@ -16,12 +16,16 @@ import org.racenet.framework.TexturedShape;
 import org.racenet.framework.TexturedTriangle;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.XMLParser;
+import org.racenet.racesow.models.Database;
+import org.racenet.racesow.threads.InternalScoresThread;
 import org.racenet.racesow.threads.SubmitScoreThread;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 public class Map {

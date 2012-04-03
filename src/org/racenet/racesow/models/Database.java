@@ -51,6 +51,8 @@ public final class Database extends SQLiteOpenHelper {
 	        
 	        db.insert("settings", null, values);
         }
+        
+        db.execSQL("CREATE TABLE races(map TEXT, time REAL, created_at TEXT)");
     }
 
 	@Override
@@ -75,6 +77,38 @@ public final class Database extends SQLiteOpenHelper {
 	        "key = '"+ key + "'", null, null, null, null);
 	    c.moveToFirst();
 	    String value = c.getString(0);
+	    c.close();
+	    database.close();
+	    return value;
+	}
+	
+	public void addRace(String map, float time) {
+		
+		ContentValues values = new ContentValues();
+    	values.put("map", map);
+    	values.put("time", time);
+    	
+    	SQLiteDatabase database = getWritableDatabase();
+    	database.insert("races", "", values);
+    	database.close();
+	}
+	
+	public float getBestTime(String map) {
+		
+		SQLiteDatabase database = getReadableDatabase();
+	    Cursor c = database.query("races", new String[]{"time"},
+	        "map = '"+ map + "'", null, null, null, "time ASC");
+	    float value;
+	    if (c.getCount() == 0) {
+	    	
+	    	value = 0;
+	    	
+	    } else {
+	    	
+	    	c.moveToFirst();
+		    value = c.getFloat(0);
+	    }
+	    
 	    c.close();
 	    database.close();
 	    return value;

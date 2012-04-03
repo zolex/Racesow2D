@@ -43,7 +43,7 @@ public class DownloadMaps extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         
     	super.onCreate(savedInstanceState);
-    	setContentView(R.layout.downloadmaps);
+    	setContentView(R.layout.listview);
         
         this.refreshMapList();
     }

@@ -4,12 +4,20 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#000000" >
-
+
+    <org.racenet.framework.AspectRatioImageView android:layout_centerHorizontal="true"
+	    android:src="@drawable/racesow"
+	    android:id="@+id/banner"
+	    android:layout_alignParentTop="true"
+	    android:layout_height="wrap_content"
+	    android:layout_width="fill_parent"
+	    android:adjustViewBounds="true" />
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
+        android:layout_below="@id/banner"
         android:background="#000000"
         android:cacheColorHint="#000000"
         android:fadeScrollbars="true"

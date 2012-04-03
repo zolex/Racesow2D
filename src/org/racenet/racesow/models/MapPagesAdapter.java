@@ -97,17 +97,25 @@ public class MapPagesAdapter extends PagerAdapter {
 	}
 	
 	@Override
-	public CharSequence getPageTitle (int position) {
-		
-		return "TEST";
-	}
-	
-	@Override
 	public Object instantiateItem(ViewGroup container, int position) {
 
 		RelativeLayout layout = (RelativeLayout)View.inflate(context, R.layout.mapscores, null);
 		ListView list = (ListView)layout.findViewById(R.id.list);
 		TextView name = (TextView)layout.findViewById(R.id.title);
+		
+		if (position < this.getCount() - 1) {
+		
+			TextView next = (TextView)layout.findViewById(R.id.next);
+			next.setText("→");
+		}
+		
+		if (position > 0) {
+		
+			TextView prev = (TextView)layout.findViewById(R.id.prev);
+			prev.setText("←");
+		}
+		
+		
 		name.setText(this.maps.get(position).name);
 		LocalScoresAdapter adapter = new LocalScoresAdapter(context, this.maps.get(position).filename);
 		list.setAdapter(adapter);

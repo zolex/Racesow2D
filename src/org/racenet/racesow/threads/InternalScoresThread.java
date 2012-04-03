@@ -12,14 +12,16 @@ public class InternalScoresThread extends Thread {
 
 	private Handler handler;
 	private String map;
+	private String player;
 	private float time;
 	private Context context;
 	
-	public InternalScoresThread(Context context, String map, float time, Handler handler) {
+	public InternalScoresThread(Context context, String map, String player, float time, Handler handler) {
 		
 		this.context = context;
 		this.handler = handler;
 		this.map = map;
+		this.player = player;
 		this.time = time;
 	}
 	
@@ -28,7 +30,7 @@ public class InternalScoresThread extends Thread {
 
 	    Database db = Database.getInstance(this.context);
 	    float bestTime = db.getBestTime(this.map);
-	    db.addRace(this.map, this.time);
+	    db.addRace(this.map, this.player, this.time);
 	    
 	    Message msg = new Message();
 	    Bundle b = new Bundle();

@@ -18,6 +18,8 @@ import org.racenet.framework.TexturedShape;
 import org.racenet.framework.Vector2;
 import org.racenet.racesow.threads.InternalScoresThread;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -724,9 +726,13 @@ class Player extends AnimatedBlock {
 		
 		this.map.stopTimer();
 		
+		SharedPreferences prefs = this.game.getSharedPreferences("racesow", Context.MODE_PRIVATE);
+		
 		InternalScoresThread t = new InternalScoresThread(
 			this.game.getApplicationContext(),
-			this.map.fileName, this.map.getCurrentTime(),
+			this.map.fileName,
+			prefs.getString("name", "player"),
+			this.map.getCurrentTime(),
 			new Handler() {
 		    	
 		    	@Override

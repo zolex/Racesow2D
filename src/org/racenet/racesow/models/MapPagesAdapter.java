@@ -115,7 +115,6 @@ public class MapPagesAdapter extends PagerAdapter {
 			prev.setText("←");
 		}
 		
-		
 		name.setText(this.maps.get(position).name);
 		LocalScoresAdapter adapter = new LocalScoresAdapter(context, this.maps.get(position).filename);
 		list.setAdapter(adapter);

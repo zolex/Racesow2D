@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public final class Database extends SQLiteOpenHelper {
 
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "org.racenet.racesow.db";
 
     private static Database __instance;
@@ -57,8 +57,12 @@ public final class Database extends SQLiteOpenHelper {
     }
 
 	@Override
-	public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		
+		if (oldVersion < 4 && newVersion >= 4) {
+			
+			db.execSQL("ALTER TABLE races ADD player TEXT");
+		}
 	}
 	
 	public void set(String key, String value) {
@@ -83,11 +87,12 @@ public final class Database extends SQLiteOpenHelper {
 	    return value;
 	}
 	
-	public void addRace(String map, float time) {
+	public void addRace(String map, String player, float time) {
 		
 		ContentValues values = new ContentValues();
     	values.put("map", map);
     	values.put("time", time);
+    	values.put("player", player);
     	
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
     	Date date = new Date();
@@ -122,7 +127,7 @@ public final class Database extends SQLiteOpenHelper {
 	public List<ScoreItem> getScores(String map) {
 		
 		SQLiteDatabase database = getReadableDatabase();
-	    Cursor c = database.query("races", new String[]{"id, time, created_at"},
+	    Cursor c = database.query("races", new String[]{"id, player, time, created_at"},
 	        "map = '"+ map + "'", null, null, null, "time ASC");
 	    List<ScoreItem> scores = new ArrayList<ScoreItem>();
 	    int position = 1;
@@ -134,8 +139,9 @@ public final class Database extends SQLiteOpenHelper {
 		    	ScoreItem item = new ScoreItem();
 		    	item.id = c.getInt(0);
 		    	item.position = position++;
-		    	item.time = c.getFloat(1);
-		    	item.created_at = c.getString(2);
+		    	item.player = c.getString(1);
+		    	item.time = c.getFloat(2);
+		    	item.created_at = c.getString(3);
 		    	scores.add(item);
 		    	c.moveToNext();
 		    }

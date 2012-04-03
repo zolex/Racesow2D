@@ -54,9 +54,11 @@ public class LocalScoresAdapter implements ListAdapter {
 		LinearLayout layout = (LinearLayout)View.inflate(context, R.layout.scoreitem, null);
 		TextView position = (TextView)layout.findViewById(R.id.pos);
 		TextView time = (TextView)layout.findViewById(R.id.time);
+		TextView player = (TextView)layout.findViewById(R.id.player);
 		TextView createdAt = (TextView)layout.findViewById(R.id.created_at);
 		
 		ScoreItem item = (ScoreItem)getItem(pos);
+		player.setText(item.player);
 		position.setText(String.valueOf(new Integer(item.position)) + ".");
 		time.setText(String.format("%.4f", item.time));
 		createdAt.setText(item.created_at);
@@ -89,11 +91,11 @@ public class LocalScoresAdapter implements ListAdapter {
 
 	public boolean areAllItemsEnabled() {
 
-		return true;
+		return false;
 	}
 
 	public boolean isEnabled(int arg0) {
 
-		return true;
+		return false;
 	}
 }

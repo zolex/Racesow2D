@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -19,7 +18,7 @@ import org.racenet.framework.XMLParser;
 import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Input.TouchEvent;
 import org.racenet.framework.interfaces.Screen;
-import org.racenet.racesow.Menu.Callback;
+import org.racenet.helpers.MapComperator;
 import org.racenet.racesow.models.MapItem;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -143,13 +142,7 @@ public class MapsScreen extends Screen {
 			}
 		}
 		
-		Collections.sort(mapList, new Comparator(){
-			 
-            public int compare(Object o1, Object o2) {
-
-               return ((MapItem)o1).name.compareToIgnoreCase(((MapItem)o2).name);
-            }
-        });
+		Collections.sort(mapList, new MapComperator());
 		
 		int length = mapList.size();
 		for (int i = 0; i < length; i++) {

@@ -1,11 +1,9 @@
 package org.racenet.racesow;
 
 import org.racenet.framework.AndroidFileIO;
-import org.racenet.racesow.models.LocalScoresAdapter;
 import org.racenet.racesow.models.LocalMapPagesAdapter;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.PowerManager;

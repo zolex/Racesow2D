@@ -1,7 +1,5 @@
 package org.racenet.framework;
 
-import android.util.Log;
-
 public class BitmapFont {
 
 	public GLTexture texture;

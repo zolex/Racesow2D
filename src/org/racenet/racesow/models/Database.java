@@ -53,7 +53,7 @@ public final class Database extends SQLiteOpenHelper {
 	        db.insert("settings", null, values);
         }
         
-        db.execSQL("CREATE TABLE races(id INTEGER, map TEXT, time REAL, created_at TEXT, PRIMARY KEY(id))");
+        db.execSQL("CREATE TABLE races(id INTEGER, map TEXT, player TEXT, time REAL, created_at TEXT, PRIMARY KEY(id))");
     }
 
 	@Override

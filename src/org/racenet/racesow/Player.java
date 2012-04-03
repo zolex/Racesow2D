@@ -16,6 +16,7 @@ import org.racenet.framework.Polygon;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.TexturedShape;
 import org.racenet.framework.Vector2;
+import org.racenet.racesow.GameScreen.GameState;
 import org.racenet.racesow.threads.InternalScoresThread;
 
 import android.content.Context;
@@ -79,6 +80,10 @@ class Player extends AnimatedBlock {
 	CameraText timeMessage;
 	CameraText finishMessage;
 	CameraText recordMessage;
+	GameObject tutorialActive;
+	CameraText tutorialMessage1;
+	CameraText tutorialMessage2;
+	CameraText tutorialMessage3;
 	
 	private int frames = 0;
 	
@@ -215,9 +220,52 @@ class Player extends AnimatedBlock {
 		this.setAnimations(animations);
 	}
 	
+	public void updateTutorial(String event) {
+		
+		if (this.tutorialActive != null) {
+			
+			if (!event.equals(this.tutorialActive.event)) return;
+			
+			this.tutorialActive = null;
+			((GameScreen)this.game.getCurrentScreen()).state = GameState.Running;
+			
+			if (this.tutorialMessage1 != null) {
+				
+				synchronized (this) {
+					
+					this.camera.removeHud(this.tutorialMessage1);
+					this.tutorialMessage1 = null;
+				}
+			}
+			
+			if (this.tutorialMessage2 != null) {
+				
+				synchronized (this) {
+					
+					this.camera.removeHud(this.tutorialMessage2);
+					this.tutorialMessage2 = null;
+				}
+			}
+			
+			if (this.tutorialMessage3 != null) {
+				
+				synchronized (this) {
+				
+					this.camera.removeHud(this.tutorialMessage3);
+					this.tutorialMessage3 = null;
+				}
+			}
+		}
+	}
+	
 	public void jump(float jumpPressedTime) {
 		
 		if (this.isDead) return;
+		
+		if (jumpPressedTime == 0) {
+		
+			this.updateTutorial("jump");
+		}
 		
 		if (!this.distanceRemembered && this.velocity.y < 0) {
 			
@@ -497,6 +545,10 @@ class Player extends AnimatedBlock {
 					case GameObject.FUNC_STOP_TIMER:
 						this.finishRace();
 						break;
+						
+					case GameObject.FUNC_TUTORIAL_JUMP:
+						this.showTutorialMessage(part);
+						break;
 				}
 			}
 		}
@@ -557,6 +609,8 @@ class Player extends AnimatedBlock {
 		}
 		
 		if (!this.onFloor) {
+			
+			//Log.d("DEBUG", "x = " + this.getPosition().x);
 			
 			/*
 			boolean straightUp = false;
@@ -720,6 +774,42 @@ class Player extends AnimatedBlock {
 		this.camera.addHud(this.finishMessage);
 	}
 	
+	public void showTutorialMessage(GameObject tutorial) {
+		
+		if (tutorial.finished || this.tutorialActive != null) return;
+		
+		this.tutorialActive = tutorial;
+		tutorial.finished = true;
+		((GameScreen)this.game.getCurrentScreen()).state = GameState.Paused;
+		
+		this.tutorialMessage1= this.gameScreen.createCameraText(-20, 10);
+		this.tutorialMessage1.text = tutorial.info1;
+		this.tutorialMessage1.red = 0;
+		this.tutorialMessage1.green = 1;
+		this.tutorialMessage1.blue = 0;
+		this.tutorialMessage1.scale = 0.1f;
+		this.tutorialMessage1.space = 0.075f;
+		this.camera.addHud(this.tutorialMessage1);
+		
+		this.tutorialMessage2 = this.gameScreen.createCameraText(-20, 6);
+		this.tutorialMessage2.text = tutorial.info2;
+		this.tutorialMessage2.red = 0;
+		this.tutorialMessage2.green = 1;
+		this.tutorialMessage2.blue = 0;
+		this.tutorialMessage2.scale = 0.1f;
+		this.tutorialMessage2.space = 0.075f;
+		this.camera.addHud(this.tutorialMessage2);
+		
+		this.tutorialMessage3 = this.gameScreen.createCameraText(-20, 2);
+		this.tutorialMessage3.text = tutorial.info3;
+		this.tutorialMessage3.red = 0;
+		this.tutorialMessage3.green = 1;
+		this.tutorialMessage3.blue = 0;
+		this.tutorialMessage3.scale = 0.1f;
+		this.tutorialMessage3.space = 0.075f;
+		this.camera.addHud(this.tutorialMessage3);
+	}
+	
 	public void finishRace() {
 		
 		if (!this.map.inRace()) return;
@@ -757,6 +847,8 @@ class Player extends AnimatedBlock {
 	
 	public void reset(float x, float y) {
 				
+		this.updateTutorial("");
+		
 		this.isDead = false;
 		this.activeAnimId = ANIM_RUN;
 		this.virtualSpeed = 0;

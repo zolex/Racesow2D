@@ -381,6 +381,22 @@ public class Map {
 			}
 		}
 		
+		NodeList tutorials = parser.doc.getElementsByTagName("turorial");
+		int numTutorials = tutorials.getLength();
+		for (int i = 0; i < numTutorials; i++) {
+			
+			Element xmlTutorial = (Element)tutorials.item(i);
+			float tutorialX = Float.parseFloat(parser.getValue(xmlTutorial, "x"));
+			
+			GameObject tutorial = new GameObject(new Vector2(tutorialX, 0), new Vector2(tutorialX + 1, 0), new Vector2(tutorialX + 1, worldHeight), new Vector2(tutorialX, worldHeight));
+			tutorial.func = Short.parseShort(parser.getValue(xmlTutorial, "func"));
+			tutorial.info1 = parser.getValue(xmlTutorial, "info1");
+			tutorial.info2 = parser.getValue(xmlTutorial, "info2");
+			tutorial.info3 = parser.getValue(xmlTutorial, "info3");
+			tutorial.event = parser.getValue(xmlTutorial, "event");
+			this.funcs.add(tutorial);
+		}
+		
 		return true;
 	}
 	
@@ -646,6 +662,12 @@ public class Map {
 			
 			TexturedShape item = this.pickedUpItems.get(i);
 			this.items.add(item);
+		}
+		
+		length = this.funcs.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.funcs.get(i).finished = false;
 		}
 		
 		this.pickedUpItems.clear();

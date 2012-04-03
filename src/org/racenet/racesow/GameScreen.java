@@ -95,19 +95,20 @@ class GameScreen extends Screen {
 			
 			if (e.type == TouchEvent.TOUCH_DOWN) {
 				
-				if (this.state == GameState.Paused) {
-					
-					this.state = GameState.Running;
-				}
-				
 				if (e.y / (float)game.getScreenHeight() < 0.1f && e.x / (float)game.getScreenWidth() < 0.1f) {
 				
 					if (this.state == GameState.Running) {
 						
-						this.state = GameState.Paused;					
-					}
+						this.state = GameState.Paused;		
+						
+					} else if (this.state == GameState.Paused) {
+						
+						this.state = GameState.Running;
+						
+					} 
+				}
 					
-				} else if (e.x / (float)game.getScreenWidth() > 0.5f) {
+				if (e.x / (float)game.getScreenWidth() > 0.5f) {
 					
 					if (!this.jumpPressed) {
 						
@@ -123,9 +124,13 @@ class GameScreen extends Screen {
 						this.shootPressedTime = 0;
 					}
 				}
-				
 
 			} else if (e.type == TouchEvent.TOUCH_UP) {
+				
+				if (this.state == GameState.Paused) {
+					
+					this.player.updateTutorial("release");
+				}
 				
 				if (e.x / (float)game.getScreenWidth() > 0.5f) {
 					
@@ -139,12 +144,6 @@ class GameScreen extends Screen {
 				}
 			}
 		}
-		
-		if (this.state == GameState.Paused) {
-			
-			return;
-		}
-		
 		if (this.jumpPressed) {
 			
 			this.player.jump(this.jumpPressedTime);
@@ -155,6 +154,11 @@ class GameScreen extends Screen {
 			
 			this.player.shoot(this.shootPressedTime);
 			this.shootPressedTime += deltaTime;
+		}
+		
+		if (this.state == GameState.Paused) {
+			
+			return;
 		}
 		
 		this.player.move(this.gravity, deltaTime, this.jumpPressed);

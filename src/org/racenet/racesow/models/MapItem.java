@@ -9,4 +9,5 @@ public class MapItem {
 	public String download;
 	public String filename;
 	public boolean installed;
+	public String levelshot;
 }

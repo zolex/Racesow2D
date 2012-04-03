@@ -2,6 +2,9 @@ package org.racenet.racesow;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -17,6 +20,7 @@ import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Input.TouchEvent;
 import org.racenet.framework.interfaces.Screen;
 import org.racenet.racesow.Menu.Callback;
+import org.racenet.racesow.models.MapItem;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -67,6 +71,8 @@ public class MapsScreen extends Screen {
 		this.menu = new Menu((GLGame)this.game, this.camera.frustumWidth, this.camera.frustumHeight);
 		this.gestures = new GestureDetector(this.menu);
 		
+		List<MapItem> mapList = new ArrayList<MapItem>();
+		
 		String[] maps = game.getFileIO().listAssets("maps");
 		for (int i = 0; i < maps.length; i++) {
 			
@@ -84,21 +90,21 @@ public class MapsScreen extends Screen {
 				continue;
 			}
 			
+			String name = "";
 			String levelshot = "nolevelshot.png";
 			NodeList mapn = parser.doc.getElementsByTagName("map");
 			if (mapn.getLength() == 1) {
 				
 				Element map = (Element)mapn.item(0);
+				name = parser.getValue(map, "name");
 				levelshot = parser.getValue(map, "levelshot");
 			}
 			
-			menu.addItem(levelshot, menu.new Callback() {
-				
-				public void handle() {
-					
-					game.setScreen(new LoadingScreen(game, mapName));
-				}
-			});
+			MapItem item = new MapItem();
+			item.name = name;
+			item.filename = mapName;
+			item.levelshot = levelshot;
+			mapList.add(item);
 		}
 		
 		String[] externalMaps = game.getFileIO().listFiles("racesow" + File.separator + "maps");
@@ -119,22 +125,43 @@ public class MapsScreen extends Screen {
 					continue;
 				}
 				
+				String name = "";
 				String levelshot = "nolevelshot.png";
 				NodeList mapn = parser.doc.getElementsByTagName("map");
 				if (mapn.getLength() == 1) {
 					
 					Element map = (Element)mapn.item(0);
+					name = parser.getValue(map, "name");
 					levelshot = parser.getValue(map, "levelshot");
 				}
 				
-				menu.addItem(levelshot, menu.new Callback() {
-					
-					public void handle() {
-						
-						game.setScreen(new LoadingScreen(game, mapName));
-					}
-				});
+				MapItem item = new MapItem();
+				item.name = name;
+				item.filename = mapName;
+				item.levelshot = levelshot;
+				mapList.add(item);
 			}
+		}
+		
+		Collections.sort(mapList, new Comparator(){
+			 
+            public int compare(Object o1, Object o2) {
+
+               return ((MapItem)o1).name.compareToIgnoreCase(((MapItem)o2).name);
+            }
+        });
+		
+		int length = mapList.size();
+		for (int i = 0; i < length; i++) {
+			
+			final MapItem item = mapList.get(i);
+			menu.addItem(item.levelshot, menu.new Callback() {
+				
+				public void handle() {
+					
+					game.setScreen(new LoadingScreen(game, item.filename));
+				}
+			});
 		}
 		
 		menu.addItem("menu/download.png", menu.new Callback() {

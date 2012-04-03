@@ -3,6 +3,8 @@ package org.racenet.racesow.models;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.racenet.framework.XMLParser;
@@ -27,7 +29,7 @@ public class MapPagesAdapter extends PagerAdapter {
 	public MapPagesAdapter(Context context, FileIO fileIO) {
 		
 		this.context = context;
-		
+
 		String[] maps = fileIO.listAssets("maps");
 		for (int i = 0; i < maps.length; i++) {
 			
@@ -84,6 +86,14 @@ public class MapPagesAdapter extends PagerAdapter {
 				}
 			}
 		}
+		
+		Collections.sort(this.maps, new Comparator(){
+			 
+            public int compare(Object o1, Object o2) {
+
+               return ((MapItem)o1).name.compareToIgnoreCase(((MapItem)o2).name);
+            }
+        });
 	}
 	
 	@Override

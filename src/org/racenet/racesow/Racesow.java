@@ -37,6 +37,7 @@ public class Racesow extends GLGame {
 					public void onClick(DialogInterface arg0, int arg1) {
 						
 						Intent i = new Intent((Activity)Racesow.this, Settings.class);
+						i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 					    ((Activity)Racesow.this).startActivity(i);
 					}
 				})

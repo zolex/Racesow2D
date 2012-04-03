@@ -51,6 +51,7 @@ public class MenuScreen extends Screen {
 			public void handle() {
 				
 				Intent i = new Intent((Activity)game, Settings.class);
+				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 			    ((Activity)game).startActivity(i);
 			}
 		});

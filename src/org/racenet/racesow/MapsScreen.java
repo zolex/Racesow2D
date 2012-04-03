@@ -142,6 +142,7 @@ public class MapsScreen extends Screen {
 			public void handle() {
 				
 				Intent i = new Intent((Activity)game, DownloadMaps.class);
+				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 			    ((Activity)game).startActivity(i);
 			}
 		});

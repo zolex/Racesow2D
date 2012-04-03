@@ -6,11 +6,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 
 public class Settings extends PreferenceActivity {
+	
+	WakeLock wakeLock;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +22,10 @@ public class Settings extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
         setContentView(R.layout.listview);
+        
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+    	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
+    	this.wakeLock.acquire();
         
         OnPreferenceChangeListener listener = new OnPreferenceChangeListener() {
 			
@@ -51,5 +59,23 @@ public class Settings extends PreferenceActivity {
 		findPreference("name").setOnPreferenceChangeListener(listener);
 		findPreference("sound").setOnPreferenceChangeListener(listener);
 		findPreference("celshading").setOnPreferenceChangeListener(listener);
+    }
+    
+    public void onResume() {
+    	
+    	super.onResume();
+    	this.wakeLock.acquire();
+    }
+    
+    public void onDestroy() {
+    	
+    	super.onDestroy();
+    	this.wakeLock.release();
+    }
+    
+    public void onBackPressed() {
+    	
+    	this.finish();
+    	this.overridePendingTransition(0, 0);
     }
 }

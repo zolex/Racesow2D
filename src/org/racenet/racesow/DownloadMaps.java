@@ -20,11 +20,14 @@ import org.w3c.dom.NodeList;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,13 +41,16 @@ public class DownloadMaps extends ListActivity {
 
 	private static int MENU_ITEM_REFRESH = 0;
 	DownloadMapsAdapter mAdapter;
-    
+	WakeLock wakeLock;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.listview);
-        
+    	PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+    	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
+    	this.wakeLock.acquire();
         this.refreshMapList();
     }
 
@@ -244,6 +250,18 @@ public class DownloadMaps extends ListActivity {
 		});
     }
     
+    public void onResume() {
+    	
+    	super.onResume();
+    	this.wakeLock.acquire();
+    }
+    
+    public void onDestroy() {
+    	
+    	super.onDestroy();
+    	this.wakeLock.release();
+    }
+    
     public void onStart() {
     	
     	super.onStart();
@@ -278,4 +296,10 @@ public class DownloadMaps extends ListActivity {
 	    
 		return true;
 	}
+	
+	public void onBackPressed() {
+    	
+    	this.finish();
+    	this.overridePendingTransition(0, 0);
+    }
 }

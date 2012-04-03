@@ -34,7 +34,7 @@ public class BitmapFont {
 		int lenght = text.length();
 		for (int i = 0; i < lenght; i++) {
 			
-			int c = text.charAt(i) - ' ' - 1;
+			int c = text.charAt(i) - ' ';
 			if (c < 0 || c > glyphs.length - 1) {
 				
 				continue;

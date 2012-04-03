@@ -2,7 +2,7 @@ package org.racenet.racesow;
 
 import org.racenet.framework.AndroidFileIO;
 import org.racenet.racesow.models.LocalScoresAdapter;
-import org.racenet.racesow.models.MapPagesAdapter;
+import org.racenet.racesow.models.LocalMapPagesAdapter;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -28,7 +28,7 @@ public class LocalScores extends Activity {
     	AndroidFileIO fileIO = new AndroidFileIO(getAssets());
         setContentView(R.layout.viewpager);
         viewPager = (ViewPager)findViewById(R.id.pager);
-    	viewPager.setAdapter(new MapPagesAdapter(getApplicationContext(), fileIO));
+    	viewPager.setAdapter(new LocalMapPagesAdapter(getApplicationContext(), fileIO));
     }
     
     public void onResume() {

@@ -62,6 +62,16 @@ public class MenuScreen extends Screen {
 				
 				Intent i = new Intent((Activity)game, LocalScores.class);
 				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				((Activity)game).startActivity(i);
+			}
+		});
+		
+		menu.addItem("menu/online_scores.png", menu.new Callback() {
+			
+			public void handle() {
+				
+				Intent i = new Intent((Activity)game, OnlineScores.class);
+				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 			    ((Activity)game).startActivity(i);
 			}
 		});

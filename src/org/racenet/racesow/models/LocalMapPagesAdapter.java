@@ -21,12 +21,12 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class MapPagesAdapter extends PagerAdapter {
+public class LocalMapPagesAdapter extends PagerAdapter {
 
 	Context context;
 	List<MapItem> maps = new ArrayList<MapItem>();
 	
-	public MapPagesAdapter(Context context, FileIO fileIO) {
+	public LocalMapPagesAdapter(Context context, FileIO fileIO) {
 		
 		this.context = context;
 

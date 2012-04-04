@@ -789,6 +789,7 @@ class Player extends AnimatedBlock {
 		// when on the ground...
 		} else {
 		
+			this.velocity.set(this.velocity.x, 0);
 			// ... lose some speed
 			if (this.virtualSpeed > 0) {
 				

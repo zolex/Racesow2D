@@ -34,7 +34,7 @@ public class LocalMapPagesAdapter extends PagerAdapter {
 		for (int i = 0; i < maps.length; i++) {
 			
 			final String mapName = maps[i];
-			if (!mapName.endsWith(".xml")) continue;
+			if (!mapName.endsWith(".xml") | mapName.equals("tutorial.xml")) continue;
 			
 			XMLParser parser = new XMLParser();
 			try {

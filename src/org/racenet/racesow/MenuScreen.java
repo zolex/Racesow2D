@@ -57,16 +57,6 @@ public class MenuScreen extends Screen {
 			}
 		});
 		
-		menu.addItem("menu/settings.png", menu.new Callback() {
-			
-			public void handle() {
-				
-				Intent i = new Intent((Activity)game, Settings.class);
-				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-				((Activity)game).startActivity(i);
-			}
-		});
-		
 		menu.addItem("menu/local_scores.png", menu.new Callback() {
 			
 			public void handle() {
@@ -82,6 +72,27 @@ public class MenuScreen extends Screen {
 			public void handle() {
 				
 				Intent i = new Intent((Activity)game, OnlineScores.class);
+				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				((Activity)game).startActivity(i);
+			}
+		});
+		
+		menu.addItem("menu/settings.png", menu.new Callback() {
+			
+			public void handle() {
+				
+				Intent i = new Intent((Activity)game, Settings.class);
+				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				((Activity)game).startActivity(i);
+			}
+		});
+		
+		
+		menu.addItem("menu/credits.png", menu.new Callback() {
+			
+			public void handle() {
+				
+				Intent i = new Intent((Activity)game, Credits.class);
 				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 			    ((Activity)game).startActivity(i);
 			}

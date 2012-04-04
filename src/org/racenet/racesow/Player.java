@@ -1034,4 +1034,15 @@ class Player extends AnimatedBlock {
 			}
 		}
 	}
+	
+	public void dispose() {
+		
+		super.dispose();
+		
+		int length = this.sounds.length;
+		for (int i = 0; i < length; i++) {
+			
+			this.sounds[i].dispose();
+		}
+	}
 }

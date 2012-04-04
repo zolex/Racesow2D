@@ -345,7 +345,7 @@ class Player extends AnimatedBlock {
 			// the distance when initially pressed jump
 			if (this.distanceOnJump > 0) {
 				
-				float boost = (30000 / (this.virtualSpeed / 2) / this.distanceOnJump);
+				float boost = (60000 / Math.max(this.virtualSpeed, this.startSpeed) / this.distanceOnJump);
 				this.virtualSpeed += boost;
 			}
 			
@@ -707,9 +707,23 @@ class Player extends AnimatedBlock {
 		// when player is in the air
 		if (!this.onFloor) {
 			
+			// if you're jumping straight up... *1
+			boolean straightUp = false;
+			if (this.virtualSpeed == 0 && this.velocity.y > 0 ) {
+				
+				straightUp = true;
+			}
+			
 			// apply gravity
 			this.velocity.add(gravity.x * deltaTime, gravity.y * deltaTime);
 
+			// *1 ... and fall down, apply some speed to
+			// allow jumping on walls if you're in front of them
+			if (straightUp && this.velocity.y <= 0) {
+				
+				this.virtualSpeed += 10;
+			}
+			
 			// move the player
 			this.addToPosition(this.velocity.x * deltaTime, this.velocity.y * deltaTime);
 			

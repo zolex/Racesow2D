@@ -6,110 +6,119 @@
 	<player><x>40</x><y>10</y></player>
 	<starttimer><x>50</x></starttimer>
 	<stoptimer><x>2590</x></stoptimer>
-	<turorial>
+	<tutorial>
 	    <x>40</x>
-	    <info1>Press and hold jump.</info1>
+	    <info1>Read the follwing statements</info1>
+	    <info2>and act as they determine: Touch</info2>
+	    <info3>the right side of the screen.</info3>
+	    <event>jump</event>
+	</tutorial>
+	<tutorial>
+	    <x>40</x>
+	    <info1>The jump key is on the</info1>
+	    <info2>right side of the screen.</info2>
+	    <info3>Touch jump to continue</info3>
+	    <event>jump</event>
+	</tutorial>
+	<tutorial>
+	    <x>40</x>
+	    <info1>The shoot key is on the</info1>
+	    <info2>left side of the screen.</info2>
+	    <info3>Touch shoot to continue</info3>
+	    <event>shoot</event>
+	</tutorial>
+	<tutorial>
+	    <x>40</x>
+	    <info1>Touch and hold jump.</info1>
 	    <info2>You will continue jumping</info2>
 	    <info3>as long as you hold jump</info3>
-	    <func>5</func>
 	    <event>jump</event>
-	</turorial>
-	<turorial>
+	</tutorial>
+	<tutorial>
 	    <x>151</x>
 	    <info1>Release jump</info1>
 	    <info2> </info2>
 	    <info3> </info3>
-	    <func>5</func>
 	    <event>release</event>
-	</turorial>
-	<turorial>
+	</tutorial>
+	<tutorial>
 	    <x>170</x>
-	    <info1>Press jump right before</info1>
+	    <info1>Touch jump right before</info1>
 	    <info2>you touch the ground</info2>
 	    <info3>to gain more speed</info3>
-	    <func>5</func>
 	    <event>jump</event>
-	</turorial>
-	<turorial>
+	</tutorial>
+	<tutorial>
 	    <x>260</x>
-	    <info1>Press jump in front of a</info1>
+	    <info1>Touch jump in front of a</info1>
 	    <info2>wall to perform a walljump</info2>
 	    <info3> </info3>
-	    <func>5</func>
 	    <event>jump</event>
-	</turorial>
-	<turorial>
+	</tutorial>
+	<tutorial>
 	    <x>340</x>
 	    <info1>You will gain speed</info1>
 	    <info2>when jumping downhill</info2>
 	    <info3> </info3>
-	    <func>5</func>
 	    <event>jump</event>
-	</turorial>
-	<turorial>
+	</tutorial>
+	<tutorial>
 	    <x>440</x>
-	    <info1>Press and hold jump to</info1>
+	    <info1>Touch and hold jump to</info1>
 	    <info2>run up stariways</info2>
 	    <info3> </info3>
-	    <func>5</func>
 	    <event>jump</event>
-	</turorial>
-	<turorial>
+	</tutorial>
+	<tutorial>
 	    <x>650</x>
-	    <info1>Press and hold jump to</info1>
+	    <info1>Touch and hold jump to</info1>
 	    <info2>slide up ramps</info2>
 	    <info3> </info3>
-	    <func>5</func>
 	    <event>jump</event>
-	</turorial>
-	<turorial>
+	</tutorial>
+	<tutorial>
 	    <x>825</x>
 	    <info1>To perform a rocket-jump</info1>
-	    <info2>press shoot and jump at the</info2>
-	    <info3>same time when on the ground</info3>
-	    <func>5</func>
+	    <info2>hold jump and touch shoot</info2>
+	    <info3>when you are on the ground</info3>
 	    <event>jump</event>
-	</turorial>
-	<turorial>
+	</tutorial>
+	<tutorial>
 	    <x>1180</x>
-	    <info1>Press and hold jump</info1>
+	    <info1>Touch and hold jump</info1>
 	    <info2>to slide the ramp up</info2>
 	    <info3> </info3>
-	    <func>5</func>
 	    <event>jump</event>
-	</turorial>
-	<turorial>
+	</tutorial>
+	<tutorial>
 	    <x>1235</x>
-	    <info1>Press shoot while</info1>
+	    <info1>Touch shoot while</info1>
 	    <info2>keeping jump pressed</info2>
 	    <info3> </info3>
-	    <func>5</func>
 	    <event>shoot</event>
-	</turorial>
-	<turorial>
+	</tutorial>
+	<tutorial>
 	    <x>1505</x>
 	    <info1>You got the Plasma Gun.</info1>
 	    <info2>keep on jumping to</info2>
 	    <info3>the next wall</info3>
-	    <func>5</func>
 	    <event>jump</event>
-	</turorial>
-	<turorial>
+	</tutorial>
+	<tutorial>
 	    <x>1560</x>
-	    <info1>Press and hold shoot to</info1>
-	    <info2>perform a plasma-slide</info2>
-	    <info3>on the wall. release in between.</info3>
-	    <func>5</func>
+	    <info1>Touch and hold shoot to</info1>
+	    <info2>perform a plasma-slide on</info2>
+	    <info3>the wall. release in between.</info3>
 	    <event>shoot</event>
-	</turorial>
-	<turorial>
+	</tutorial>
+	<tutorial>
 	    <x>2120</x>
 	    <info1>Gratulations! You finished</info1>
-	    <info2>the tutorial. Press back twice</info2>
+	    <info2>the tutorial. Touch back twice</info2>
 	    <info3>to return to the menu.</info3>
 	    <func>5</func>
 	    <event>shoot</event>
-	</turorial>
+	</tutorial>
 	<sky>
 		<texture>purple-sky/sky.png</texture>
 		<position>5</position>

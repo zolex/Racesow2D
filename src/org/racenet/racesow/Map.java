@@ -417,7 +417,7 @@ public class Map {
 		}
 		
 		// parse tutorials from the map
-		NodeList tutorials = parser.doc.getElementsByTagName("turorial");
+		NodeList tutorials = parser.doc.getElementsByTagName("tutorial");
 		int numTutorials = tutorials.getLength();
 		for (int i = 0; i < numTutorials; i++) {
 			
@@ -425,7 +425,7 @@ public class Map {
 			float tutorialX = Float.parseFloat(parser.getValue(xmlTutorial, "x"));
 			
 			GameObject tutorial = new GameObject(new Vector2(tutorialX, 0), new Vector2(tutorialX + 1, 0), new Vector2(tutorialX + 1, worldHeight), new Vector2(tutorialX, worldHeight));
-			tutorial.func = Short.parseShort(parser.getValue(xmlTutorial, "func"));
+			tutorial.func = GameObject.FUNC_TUTORIAL;
 			tutorial.info1 = parser.getValue(xmlTutorial, "info1");
 			tutorial.info2 = parser.getValue(xmlTutorial, "info2");
 			tutorial.info3 = parser.getValue(xmlTutorial, "info3");

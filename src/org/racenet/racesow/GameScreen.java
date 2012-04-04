@@ -68,6 +68,7 @@ class GameScreen extends Screen {
 		this.font = new BitmapFont(texture, 0, 0, 17, 30, 50);
 		
 		this.fps = this.createCameraText(this.camera.frustumWidth / 2 - 10, this.camera.frustumHeight / 2 - 3);
+		this.fps.text = "fps";
 		this.camera.addHud(this.fps);
 		
 		this.ups = this.createCameraText(this.camera.frustumWidth / 2 - 25, this.camera.frustumHeight / 2 - 3);

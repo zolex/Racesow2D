@@ -106,7 +106,7 @@
 	    <x>2120</x>
 	    <info1>Gratulations! You finished</info1>
 	    <info2>the tutorial. Press back twice</info2>
-	    <info3>to return tu the menu.</info3>
+	    <info3>to return to the menu.</info3>
 	    <func>5</func>
 	    <event>shoot</event>
 	</turorial>

@@ -27,6 +27,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.GestureDetector;
 
+/**
+ * Display a list of available maps to play
+ * 
+ * @author soh#zolex
+ *
+ */
 public class MapsScreen extends Screen {
 	
 	public TexturedBlock header;
@@ -36,6 +42,11 @@ public class MapsScreen extends Screen {
 	float menuVelocity = 0;
 	Menu menu;
 	
+	/**
+	 * Constructor. Initialize camera and header graphics
+	 * 
+	 * @param Game game
+	 */
 	public MapsScreen(final Game game) {
 		
 		super(game);
@@ -60,8 +71,12 @@ public class MapsScreen extends Screen {
 		this.header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
 	}
 	
+	/**
+	 * Show a slideable list of maps
+	 */
 	public void refreshMapList() {
 		
+		// get rid of the textures before loading them again
 		if (this.menu != null)  {
 		
 			this.menu.dispose();
@@ -72,6 +87,7 @@ public class MapsScreen extends Screen {
 		
 		List<MapItem> mapList = new ArrayList<MapItem>();
 		
+		// load the available maps from the assets
 		String[] maps = game.getFileIO().listAssets("maps");
 		for (int i = 0; i < maps.length; i++) {
 			
@@ -106,6 +122,7 @@ public class MapsScreen extends Screen {
 			mapList.add(item);
 		}
 		
+		// lod the available maps from the sd-card
 		String[] externalMaps = game.getFileIO().listFiles("racesow" + File.separator + "maps");
 		if (externalMaps != null) {
 			for (int i = 0; i < externalMaps.length; i++) {
@@ -142,8 +159,10 @@ public class MapsScreen extends Screen {
 			}
 		}
 		
+		// order maps by name
 		Collections.sort(mapList, new MapComperator());
 		
+		// add all maps to the menu
 		int length = mapList.size();
 		for (int i = 0; i < length; i++) {
 			
@@ -157,6 +176,7 @@ public class MapsScreen extends Screen {
 			});
 		}
 		
+		// also add the "download more maps" menu item
 		menu.addItem("menu/download.png", menu.new Callback() {
 			
 			public void handle() {
@@ -169,6 +189,9 @@ public class MapsScreen extends Screen {
 	}
 
 	@Override
+	/**
+	 * Update the menu according to the users input (gestures)
+	 */
 	public void update(float deltaTime) {
 
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
@@ -182,6 +205,9 @@ public class MapsScreen extends Screen {
 	}
 
 	@Override
+	/**
+	 * Draw menu and header
+	 */
 	public void present(float deltaTime) {
 		
 		GL10 gl = glGraphics.getGL();
@@ -202,11 +228,18 @@ public class MapsScreen extends Screen {
 	}
 
 	@Override
+	/**
+	 * Nothing to do on GLGame pause
+	 */
 	public void pause() {
 		
 	}
 
 	@Override
+	/**
+	 * reload all textures when the 
+	 * openGL context was lost
+	 */
 	public void resume() {
 		
 		this.header.reloadTexture();
@@ -215,6 +248,9 @@ public class MapsScreen extends Screen {
 	}
 
 	@Override
+	/**
+	 * Get rid of all textures when leaving the screen
+	 */
 	public void dispose() {
 		
 		this.header.dispose();

@@ -18,8 +18,12 @@ import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Screen;
 import org.racenet.framework.interfaces.Input.TouchEvent;
 
-import android.util.Log;
-
+/**
+ * Class which represents the racesow game itsself.
+ * 
+ * @author soh#zolex
+ *
+ */
 class GameScreen extends Screen {
 		
 	public Player player;
@@ -80,11 +84,23 @@ class GameScreen extends Screen {
 		this.camera.addHud(pause);
 	}
 	
+	/**
+	 * Create a new instance of the CamraText which
+	 * is used as a HudItem on the Camera.
+	 * 
+	 * @param float cameraX
+	 * @param float cameraY
+	 * @return CameraText
+	 */
 	public CameraText createCameraText(float cameraX, float cameraY) {
 		
 		return new CameraText(this.batcher, this.font, this.glGraphics.getGL(), cameraX, cameraY);
 	}
 
+	/**
+	 * Update player, map and camera.
+	 * Called each frame from GLGame.
+	 */
 	public void update(float deltaTime) {
 		
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
@@ -95,6 +111,7 @@ class GameScreen extends Screen {
 			
 			if (e.type == TouchEvent.TOUCH_DOWN) {
 				
+				// when touching the pause-button
 				if (e.y / (float)game.getScreenHeight() < 0.1f && e.x / (float)game.getScreenWidth() < 0.1f) {
 				
 					if (this.state == GameState.Running) {
@@ -107,7 +124,8 @@ class GameScreen extends Screen {
 						
 					} 
 				}
-					
+				
+				// when touching the jump-area on the screen
 				if (e.x / (float)game.getScreenWidth() > 0.5f) {
 					
 					if (!this.jumpPressed) {
@@ -115,7 +133,8 @@ class GameScreen extends Screen {
 						this.jumpPressed = true;
 						this.jumpPressedTime = 0;
 					}
-					
+				
+				// when touching the shoot-area on the screen
 				} else {
 					
 					if (!this.shootPressed) {
@@ -127,16 +146,19 @@ class GameScreen extends Screen {
 
 			} else if (e.type == TouchEvent.TOUCH_UP) {
 				
+				// this is only for the tutorial
 				if (this.state == GameState.Paused) {
 					
 					this.player.updateTutorial("release");
 				}
 				
+				// when releasing the jump-button
 				if (e.x / (float)game.getScreenWidth() > 0.5f) {
 					
 					this.jumpPressed = false;
 					this.jumpPressedTime = 0;
 					
+				// when releasing the shoot-button
 				} else {
 					
 					this.shootPressed = false;
@@ -144,25 +166,31 @@ class GameScreen extends Screen {
 				}
 			}
 		}
+		
+		// execute jump if requested
 		if (this.jumpPressed) {
 			
 			this.player.jump(this.jumpPressedTime);
 			this.jumpPressedTime += deltaTime;
 		}
 		
+		// execute shoot if requested
 		if (this.shootPressed) {
 			
 			this.player.shoot(this.shootPressedTime);
 			this.shootPressedTime += deltaTime;
 		}
 		
+		//  nothing more to do here when paused
 		if (this.state == GameState.Paused) {
 			
 			return;
 		}
 		
+		// update the player
 		this.player.move(this.gravity, deltaTime, this.jumpPressed);
 		
+		// move the camera upwards if the player goes to high
 		float camY = this.camera.frustumHeight / 2;
 		if (this.player.getPosition().y + 12 > this.camera.frustumHeight) {
 			
@@ -172,6 +200,7 @@ class GameScreen extends Screen {
 		this.camera.setPosition(this.player.getPosition().x + 20, camY);		
 		this.map.update(deltaTime);
 
+		// update HUD for frames per second
 		this.frames--;
 		this.sumDelta += deltaTime;
 		if (frames == 0) {
@@ -182,10 +211,14 @@ class GameScreen extends Screen {
 			
 		}
 
+		// update HUD for player-speed and time
 		this.ups.text = "ups " + String.valueOf(new Integer((int)player.virtualSpeed));
 		this.timer.text = "t " + String.format("%.4f", map.getCurrentTime());
 	}
 
+	/**
+	 * Draw player map and HUD. Called by GLGame each frame.
+	 */
 	public void present(float deltaTime) {
 		
 		GL10 gl = this.glGraphics.getGL();
@@ -210,10 +243,17 @@ class GameScreen extends Screen {
 		}
 	}
 
+	/**
+	 * Nothing to do on GLGame pause
+	 */
 	public void pause() {
 
 	}
 
+	/**
+	 * Reload all textures because
+	 * the openGL context was lost
+	 */
 	public void resume() {
 
 		this.camera.reloadTextures();
@@ -221,6 +261,9 @@ class GameScreen extends Screen {
 		this.player.reloadTextures();
 	}
 
+	/**
+	 * Get rid of all textures when leaving the screen
+	 */
 	public void dispose() {
 
 		this.camera.dispose();

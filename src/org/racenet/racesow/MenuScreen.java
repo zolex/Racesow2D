@@ -18,6 +18,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.GestureDetector;
 
+/**
+ * The game's main menu
+ * 
+ * @author soh#zolex
+ *
+ */
 public class MenuScreen extends Screen {
 	
 	public TexturedBlock header;
@@ -27,6 +33,11 @@ public class MenuScreen extends Screen {
 	float menuVelocity = 0;
 	Menu menu;
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param GLGame game
+	 */
 	public MenuScreen(final Game game) {
 		
 		super(game);
@@ -90,6 +101,9 @@ public class MenuScreen extends Screen {
 	}
 
 	@Override
+	/**
+	 * Get touch events and update the menu
+	 */
 	public void update(float deltaTime) {
 
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
@@ -104,6 +118,9 @@ public class MenuScreen extends Screen {
 	}
 
 	@Override
+	/**
+	 * Draw header and menu
+	 */
 	public void present(float deltaTime) {
 		
 		GL10 gl = glGraphics.getGL();
@@ -124,11 +141,18 @@ public class MenuScreen extends Screen {
 	}
 
 	@Override
+	/**
+	 * Nothing to do on GLGame pause
+	 */
 	public void pause() {
 		
 	}
 
 	@Override
+	/**
+	 * Reload all tetxures if
+	 * openGL context was lost
+	 */
 	public void resume() {
 		
 		this.header.reloadTexture();
@@ -136,6 +160,9 @@ public class MenuScreen extends Screen {
 	}
 
 	@Override
+	/**
+	 * Get rid of all textures when leaving the screen
+	 */
 	public void dispose() {
 		
 		this.header.dispose();

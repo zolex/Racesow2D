@@ -20,19 +20,29 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.support.v4.view.ViewPager;
 
+/**
+ * Obtain the online scores and display pages of lists of scores
+ * 
+ * @author soh#zolex
+ *
+ */
 public class OnlineScores extends Activity {
 
 	WakeLock wakeLock;
 	ViewPager viewPager;
 	
     @Override
+    /**
+     * Load the scores and initialize the pager and adapter
+     * 
+     * @param Bundle savedInstanceState
+     */
     public void onCreate(Bundle savedInstanceState) {
         
     	super.onCreate(savedInstanceState);
     	
     	PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
-    	
     	
     	final ProgressDialog pd = new ProgressDialog(OnlineScores.this);
 		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -47,6 +57,7 @@ public class OnlineScores extends Activity {
 	    		
 	    		switch (msg.what) {
 	    			
+	    			// network error
 	    			case 0:
 	    				new AlertDialog.Builder(OnlineScores.this)
 				            .setMessage("Could not obtain the online scores.\nCheck your network connection and try again.")
@@ -61,6 +72,7 @@ public class OnlineScores extends Activity {
 				            .show();
 	    				break;
 	    				
+	    			// scores received
 	    			case 1:
 						InputStream xmlStream;
 						try {
@@ -90,28 +102,27 @@ public class OnlineScores extends Activity {
         setContentView(R.layout.viewpager);
     }
     
+    /**
+	 * Acquire the wakelock on resume
+	 */
     public void onResume() {
     	
     	super.onResume();
     	this.wakeLock.acquire();
     }
     
+    /**
+     * Release the wakelock when leaving the activity
+     */
     public void onDestroy() {
     	
     	super.onDestroy();
     	this.wakeLock.release();
     }
-    
-    public void onStart() {
-    	
-    	super.onStart();
-    }
-    
-    public void onStop() {
-    	
-    	super.onStop();
-    }
-    
+
+    /**
+     * Disable animations when leaving the activity
+     */
 	public void onBackPressed() {
     	
     	this.finish();

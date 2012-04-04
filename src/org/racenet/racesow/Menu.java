@@ -11,6 +11,12 @@ import android.os.Looper;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+/**
+ * Class which represends a horizontal slideable openGL menu
+ * 
+ * @author soh#zolex
+ *
+ */
 public class Menu implements GestureDetector.OnGestureListener {
 
 	List<TexturedBlock> items = new ArrayList<TexturedBlock>();
@@ -21,11 +27,24 @@ public class Menu implements GestureDetector.OnGestureListener {
 	float spaceWidth = 5;
 	float velocity = 0;
 	
+	/**
+	 * Simple callback for menu item clicks
+	 * 
+	 * @author soh#zolex
+	 *
+	 */
 	public class Callback {
 		
 		public void handle() {}
 	}
 	
+	/**
+	 * Constructor. TODO: calls the looper.prepare method once
+	 * 
+	 * @param GLGame game
+	 * @param float viewWidth
+	 * @param float viewHeight
+	 */
 	public Menu(GLGame game, float viewWidth, float viewHeight) {
 		
 		if (!Racesow.LOOPER_PREPARED) {
@@ -39,6 +58,12 @@ public class Menu implements GestureDetector.OnGestureListener {
 		this.viewHeight = viewHeight;
 	}
 	
+	/**
+	 * Add a menu item right of the last added item
+	 * 
+	 * @param String texture
+	 * @param Callback callback
+	 */
 	public void addItem(String texture, Callback callback) {
 		
 		TexturedBlock item = new TexturedBlock(this.game, texture, TexturedBlock.FUNC_NONE, -1, -1, new Vector2(0, 0), new Vector2(this.viewWidth / 3, 0));
@@ -56,12 +81,18 @@ public class Menu implements GestureDetector.OnGestureListener {
 		this.callbacks.add(callback);
 	}
 	
+	/**
+	 * When the user touches the menu
+	 */
 	public boolean onDown(MotionEvent event) {
 		
 		this.velocity = 0;
-		return false;
+		return true;
 	}
 
+	/**
+	 * When the user flings the menu
+	 */
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 				
 		if (!this.allowMoveMenu(velocityX)) {
@@ -74,25 +105,44 @@ public class Menu implements GestureDetector.OnGestureListener {
 		return true;
 	}
 
+	/**
+	 * When the user presses the menu long
+	 */
 	public void onLongPress(MotionEvent arg0) {
 		
 	}
 
+	/**
+	 * When the user scrolls the menu
+	 */
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 		
 		return this.moveMenu(distanceX);
 	}
 
+	/**
+	 * XXX: Dunno what this is...
+	 */
 	public void onShowPress(MotionEvent arg0) {
 		
 	}
 
+	/**
+	 * When the user just touches and releases the menu
+	 */
 	public boolean onSingleTapUp(MotionEvent event) {
 
 		this.buttonPress(event.getX(), this.viewHeight - event.getY());
-		return false;
+		return true;
 	}
 	
+	/**
+	 * Check if a menu item was pressed. If so
+	 * call the handler form the callback
+	 * 
+	 * @param float x
+	 * @param float y
+	 */
 	public void buttonPress(float x, float y) {
 		
 		int length = this.items.size();
@@ -108,6 +158,13 @@ public class Menu implements GestureDetector.OnGestureListener {
 		}
 	}
 	
+	/**
+	 * Check if the menu is allowed to move.
+	 * Stops on left and right end of the menu.
+	 * 
+	 * @param float distance
+	 * @return boolean
+	 */
 	public boolean allowMoveMenu(float distance) {
 		
 		TexturedBlock first = this.items.get(0);
@@ -124,6 +181,12 @@ public class Menu implements GestureDetector.OnGestureListener {
 		}
 	}
 	
+	/**
+	 * Move the menu by the given distance
+	 * 
+	 * @param float distance
+	 * @return boolean
+	 */
 	public boolean moveMenu(float distance) {
 		
 		if (!this.allowMoveMenu(distance)) {
@@ -140,6 +203,11 @@ public class Menu implements GestureDetector.OnGestureListener {
 		return true;
 	}
 	
+	/**
+	 * Update he menu position according to it's velocity
+	 * 
+	 * @param float deltaTime
+	 */
 	public void update(float deltaTime) {
 		
 		if (this.velocity != 0) {
@@ -149,6 +217,9 @@ public class Menu implements GestureDetector.OnGestureListener {
 		}
 	}
 	
+	/**
+	 * Draw the menu
+	 */
 	public void draw() {
 		
 		int length = this.items.size();
@@ -158,6 +229,9 @@ public class Menu implements GestureDetector.OnGestureListener {
 		}
 	}
 	
+	/**
+	 * Reload all menu item's textures
+	 */
 	public void reloadTextures() {
 		
 		int length = this.items.size();
@@ -167,6 +241,9 @@ public class Menu implements GestureDetector.OnGestureListener {
 		}
 	}
 	
+	/**
+	 * Get rid of all menu item's textures
+	 */
 	public void dispose() {
 		
 		int length = this.items.size();

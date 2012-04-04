@@ -17,6 +17,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+/**
+ * Class beeing invoked when loading a map
+ * 
+ * @author soh-zolex
+ *
+ */
 class LoadingScreen extends Screen {
 
 	public Camera2 camera;
@@ -26,6 +32,12 @@ class LoadingScreen extends Screen {
 	String mapName;
 	BitmapFont loading;
 	
+	/**
+	 * Prepare the header graphics and the loading text
+	 * 
+	 * @param GLGame game
+	 * @param String mapName
+	 */
 	public LoadingScreen(Game game, String mapName) {
 			
 		super(game);
@@ -52,11 +64,17 @@ class LoadingScreen extends Screen {
 		this.header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);		
 	}
 
+	/**
+	 * Be sure to clear the touch event buffer
+	 */
 	public void update(float deltaTime) {
 		
 		this.game.getInput().getTouchEvents();
 	}
 
+	/**
+	 * Show the loading screen and load the map
+	 */
 	public void present(float deltaTime) {
 		
 		GL10 gl = glGraphics.getGL();
@@ -82,20 +100,30 @@ class LoadingScreen extends Screen {
 		Map map = new Map(glGraphics.getGL(), this.camera, prefs.getBoolean("celshading", false));
 		map.load((GLGame)game, this.mapName);
 		Player player = new Player((GLGame)game, map, this.camera, map.playerX, map.playerY, prefs.getBoolean("sound", true));
-		
 		game.setScreen(new GameScreen(this.game, this.camera, map, player));
 	}
 
+	/**
+	 * Nothing to do on GLGame pause
+	 */
 	public void pause() {
 
 	}
 
+	/**
+	 * Reload all textures when the
+	 * openGL context was lost
+	 */
 	public void resume() {
 
 		this.header.reloadTexture();
 		this.loading.texture.reload();
 	}
 
+	/**
+	 * Get rid of all textures when
+	 * leaving the screen
+	 */
 	public void dispose() {
 
 		this.header.dispose();

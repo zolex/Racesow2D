@@ -38,6 +38,14 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+ * Activity to show a list of available maps
+ * for download from a remote server. It guides
+ * the user through the download process.
+ * 
+ * @author soh#zolex
+ *
+ */
 public class DownloadMaps extends ListActivity {
 
 	private static int MENU_ITEM_REFRESH = 0;
@@ -45,16 +53,22 @@ public class DownloadMaps extends ListActivity {
 	WakeLock wakeLock;
 	
     @Override
+    /**
+     * Set the listview, and initialize the maplist loading
+     */
     public void onCreate(Bundle savedInstanceState) {
         
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.listview);
     	PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
-    	this.wakeLock.acquire();
         this.refreshMapList();
     }
 
+    /**
+     * Loads the available maps from a remote
+     * server to finally show a listview.
+     */
     public void refreshMapList() {
     	
     	final String racesowPath = AndroidFileIO.externalStoragePath + "racesow" + File.separator;
@@ -72,8 +86,8 @@ public class DownloadMaps extends ListActivity {
 	    		
 	    		switch (msg.what) {
 	    			
+	    			// an error accured
 	    			case 0:
-	    				
 	    				new AlertDialog.Builder(DownloadMaps.this)
 				            .setMessage("Could not obtain the list of available maps.\nCheck your network connection and try again.")
 				            .setNeutralButton("OK", new OnClickListener() {
@@ -87,45 +101,45 @@ public class DownloadMaps extends ListActivity {
 				            .show();
 	    				break;
 	    				
+	    			// the list was received
 	    			case 1:
-	    				
-					InputStream xmlStream;
-					try {
-						xmlStream = new ByteArrayInputStream(msg.getData().getString("xml").getBytes("UTF-8"));
-					
-			    		XMLParser parser = new XMLParser();
-			    		parser.read(xmlStream);
-			    		
-			    		List<MapItem> mapList = new ArrayList<MapItem>();
-			    		NodeList maps = parser.doc.getElementsByTagName("map");
-			    		int numMaps = maps.getLength();
-			    		for (int i = 0; i < numMaps; i++) {
-			    			
-			    			Element map = (Element)maps.item(i);
-			    			MapItem mapItem = new MapItem();
-			    			mapItem.id = Integer.parseInt(parser.getValue(map, "id"));
-			    			mapItem.name = parser.getValue(map, "name");
-			    			mapItem.skill = parser.getValue(map, "skill");
-			    			mapItem.download = parser.getValue(map, "download");
-			    			mapItem.author = parser.getValue(map, "author");
-			    			mapItem.filename = parser.getValue(map, "filename");
-			    			File test = new File(racesowPath + "maps" + File.separator + mapItem.filename);
-			    			mapItem.installed = test.isFile();
-			    			mapList.add(mapItem);
-			    		}
-			    		
-			    		mAdapter = new DownloadMapsAdapter(getApplicationContext(), mapList);
-			    		setListAdapter(mAdapter);
-			    		
-					} catch (UnsupportedEncodingException e) {
-
-						new AlertDialog.Builder(DownloadMaps.this)
-				            .setMessage("Internal error: " + e.getMessage())
-				            .setNeutralButton("OK", null)
-				            .show();
-					}
-	    			
-					break;
+						InputStream xmlStream;
+						try {
+							xmlStream = new ByteArrayInputStream(msg.getData().getString("xml").getBytes("UTF-8"));
+						
+				    		XMLParser parser = new XMLParser();
+				    		parser.read(xmlStream);
+				    		
+				    		List<MapItem> mapList = new ArrayList<MapItem>();
+				    		NodeList maps = parser.doc.getElementsByTagName("map");
+				    		int numMaps = maps.getLength();
+				    		for (int i = 0; i < numMaps; i++) {
+				    			
+				    			Element map = (Element)maps.item(i);
+				    			MapItem mapItem = new MapItem();
+				    			mapItem.id = Integer.parseInt(parser.getValue(map, "id"));
+				    			mapItem.name = parser.getValue(map, "name");
+				    			mapItem.skill = parser.getValue(map, "skill");
+				    			mapItem.download = parser.getValue(map, "download");
+				    			mapItem.author = parser.getValue(map, "author");
+				    			mapItem.filename = parser.getValue(map, "filename");
+				    			File test = new File(racesowPath + "maps" + File.separator + mapItem.filename);
+				    			mapItem.installed = test.isFile();
+				    			mapList.add(mapItem);
+				    		}
+				    		
+				    		mAdapter = new DownloadMapsAdapter(getApplicationContext(), mapList);
+				    		setListAdapter(mAdapter);
+				    		
+						} catch (UnsupportedEncodingException e) {
+	
+							new AlertDialog.Builder(DownloadMaps.this)
+					            .setMessage("Internal error: " + e.getMessage())
+					            .setNeutralButton("OK", null)
+					            .show();
+						}
+		    			
+						break;
 	    		}
 	    		
 	        	pd.dismiss();
@@ -134,6 +148,7 @@ public class DownloadMaps extends ListActivity {
 	    
 		t.start();
 		
+		// when clicking a map
         getListView().setOnItemClickListener(new OnItemClickListener() {
 
 			public void onItemClick(AdapterView<?> parent, final View view, final int pos, long id) {
@@ -141,6 +156,7 @@ public class DownloadMaps extends ListActivity {
 				final String mapName =  ((MapItem)mAdapter.getItem(pos)).name;
 				boolean installed = ((MapItem)mAdapter.getItem(pos)).installed;
 				
+				// when the map is installed we do not need to download it again
 				if (installed) {
 					
 					new AlertDialog.Builder(DownloadMaps.this)
@@ -148,6 +164,7 @@ public class DownloadMaps extends ListActivity {
 			            .setNeutralButton("OK", null)
 			            .show();
 					
+				// otherwise ask before downloading
 				} else {
 				
 					new AlertDialog.Builder(DownloadMaps.this)
@@ -173,6 +190,7 @@ public class DownloadMaps extends ListActivity {
 								    		int code = b.getInt("code");
 								    		switch (code) {
 								    		
+								    			// update the progress-bar
 								    			case 1:
 								    				int percent = b.getInt("percent");
 										    		pd2.setProgress(percent);
@@ -198,6 +216,7 @@ public class DownloadMaps extends ListActivity {
 													    		int code = b.getInt("code");
 													    		switch (code) {
 													    		
+													    			// update the progress-bar
 													    			case 1:
 													    				int percent = msg.getData().getInt("percent");
 															    		pd3.setProgress(percent);
@@ -217,6 +236,7 @@ public class DownloadMaps extends ListActivity {
 															    		}
 															    		break;
 															    		
+															    	// upzip eror
 													    			case 2:
 													    				pd3.dismiss();
 													    				new AlertDialog.Builder(DownloadMaps.this)
@@ -232,7 +252,8 @@ public class DownloadMaps extends ListActivity {
 										    			t2.start();
 										    		}
 								    				break;
-								    				
+								    			
+								    			// download error
 								    			case 2:
 								    				pd2.dismiss();
 								    				new AlertDialog.Builder(DownloadMaps.this)
@@ -244,6 +265,7 @@ public class DownloadMaps extends ListActivity {
 								    	}
 								});
 								
+								// stop the download if the user requests it
 								pd2.setOnCancelListener(new OnCancelListener() {
 									
 									public void onCancel(DialogInterface arg0) {
@@ -268,35 +290,28 @@ public class DownloadMaps extends ListActivity {
 		});
     }
     
+    /**
+     * Acquire the wacklock when reusming the activity
+     */
     public void onResume() {
     	
     	super.onResume();
     	this.wakeLock.acquire();
     }
     
+    /**
+     * Release the wakelock when quitting the activity
+     */
     public void onDestroy() {
     	
     	super.onDestroy();
     	this.wakeLock.release();
     }
-    
-    public void onStart() {
-    	
-    	super.onStart();
-    }
-    
-    public void onStop() {
-    	
-    	super.onStop();
-    }
-    
-    @Override
-	public boolean onPrepareOptionsMenu (Menu menu) {
-
-	    return true;
-	}
 
 	@Override
+	/**
+	 * Show the option to refresh the list manually
+	 */
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
 		MenuInflater inflater = getMenuInflater();
@@ -315,6 +330,9 @@ public class DownloadMaps extends ListActivity {
 		return true;
 	}
 	
+	/**
+	 * No animations when leaving the activity
+	 */
 	public void onBackPressed() {
     	
     	this.finish();

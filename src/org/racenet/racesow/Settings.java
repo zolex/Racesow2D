@@ -12,11 +12,20 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 
+/**
+ * Activity to handle the game settings
+ * 
+ * @author soh#zolex
+ *
+ */
 public class Settings extends PreferenceActivity {
 	
 	WakeLock wakeLock;
 	
     @Override
+    /**
+     * create the view and add handle changes in the settings
+     */
     protected void onCreate(Bundle savedInstanceState) {
     	
         super.onCreate(savedInstanceState);
@@ -61,18 +70,27 @@ public class Settings extends PreferenceActivity {
 		findPreference("celshading").setOnPreferenceChangeListener(listener);
     }
     
+    /**
+     * Acquire the wakelock on resume
+     */
     public void onResume() {
     	
     	super.onResume();
     	this.wakeLock.acquire();
     }
     
+    /**
+     * Release the wakelock on destroy
+     */
     public void onDestroy() {
     	
     	super.onDestroy();
     	this.wakeLock.release();
     }
     
+    /**
+     * Disable animations when leaving the activity
+     */
     public void onBackPressed() {
     	
     	this.finish();

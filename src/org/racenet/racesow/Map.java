@@ -24,6 +24,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+/**
+ * Class which mainly loads the map from an 
+ * XML file and draws it
+ * 
+ * @author soh#zolex
+ *
+ */
 public class Map {
 	
 	private GL10 gl;
@@ -52,29 +59,48 @@ public class Map {
 	public String fileName;
 	private GLGame game;
 	
+	/**
+	 * Map constructor.
+	 * 
+	 * @param GL10 gl
+	 * @param Camera2 camera
+	 * @param boolean drawOutlines
+	 */
 	public Map(GL10 gl, Camera2 camera, boolean drawOutlines) {
 		
 		this.gl = gl;
 		this.camera = camera;
 		this.drawOutlines = drawOutlines;
 		
+		// decalTime -1 means there is no decal
 		for (int i = 0; i < MAX_DECALS; i++) {
 			
 			this.decalTime[i] = -1;
 		}
 	}
 	
+	/**
+	 * Load the map from the given XML file and
+	 * store the different items from it
+	 * 
+	 * @param GLGame game
+	 * @param String fileName
+	 * @return boolean
+	 */
 	public boolean load(GLGame game, String fileName) {
 		
 		this.fileName = fileName;
 		this.game = game;
 		XMLParser parser = new XMLParser();
+		
+		// try to read the map from the assets
 		try {
 			
 			parser.read(game.getFileIO().readAsset("maps" + File.separator + fileName));
 			
 		} catch (IOException e) {
 			
+			// if not found in assets, try to read from sd-card
 			try {
 				
 				parser.read(game.getFileIO().readFile("racesow" + File.separator + "maps" + File.separator + fileName));
@@ -85,6 +111,7 @@ public class Map {
 			}
 		}
 		
+		// obtain the player position from the map
 		NodeList playern = parser.doc.getElementsByTagName("player");
 		if (playern.getLength() == 1) {
 			
@@ -101,9 +128,9 @@ public class Map {
 			}
 		}
 		
+		// calculate the width and height of the map
 		float worldWidth = 0;
 		float worldHeight = 0;
-		
 		NodeList blocks = parser.doc.getElementsByTagName("block");
 		int numblocks = blocks.getLength();
 		for (int i = 0; i < numblocks; i++) {
@@ -122,9 +149,11 @@ public class Map {
 			}
 		}
 		
+		// grids for pre-collision detection
 		this.groundGrid = new SpatialHashGrid(worldWidth, worldHeight, 30);
 		this.wallGrid = new SpatialHashGrid(worldWidth, worldHeight, 30);
 		
+		// parse the items like plasma and rocket from the map
 		NodeList items = parser.doc.getElementsByTagName("item");
 		int numItems = items.getLength();
 		for (int i = 0; i < numItems; i++) {
@@ -151,6 +180,7 @@ public class Map {
 			this.items.add(item);
 		}
 		
+		// parse the starttimer from the map
 		NodeList startTimerN = parser.doc.getElementsByTagName("starttimer");
 		if (startTimerN.getLength() == 1) {
 			
@@ -162,6 +192,7 @@ public class Map {
 			this.funcs.add(startTimer);
 		}
 		
+		// parse the stoptimer from the map
 		NodeList stopTimerN = parser.doc.getElementsByTagName("stoptimer");
 		if (stopTimerN.getLength() == 1) {
 			
@@ -172,6 +203,7 @@ public class Map {
 			this.funcs.add(stopTimer);
 		}
 		
+		// parse the sky from the map (a static background layer)
 		NodeList skyN = parser.doc.getElementsByTagName("sky");
 		if (skyN.getLength() == 1) {
 			
@@ -194,6 +226,7 @@ public class Map {
 					);
 		}
 		
+		// parse the background from the map (a slowly moving background layer)
 		NodeList backgroundN = parser.doc.getElementsByTagName("background");
 		if (backgroundN.getLength() == 1) {
 			
@@ -228,6 +261,7 @@ public class Map {
 				);
 		}
 		
+		// parse the blocks from the map
 		for (int i = 0; i < numblocks; i++) {
 			
 			Element xmlblock = (Element)blocks.item(i);
@@ -289,6 +323,7 @@ public class Map {
 			}
 		}
 
+		// parse the triangles from the map
 		NodeList triangles = parser.doc.getElementsByTagName("tri");
 		int numTriangles = triangles.getLength();
 		for (int i = 0; i < numTriangles; i++) {
@@ -381,6 +416,7 @@ public class Map {
 			}
 		}
 		
+		// parse tutorials from the map
 		NodeList tutorials = parser.doc.getElementsByTagName("turorial");
 		int numTutorials = tutorials.getLength();
 		for (int i = 0; i < numTutorials; i++) {
@@ -400,8 +436,14 @@ public class Map {
 		return true;
 	}
 	
+	/**
+	 * Update the map. Called by GameScreen each frame
+	 * 
+	 * @param float deltaTime
+	 */
 	public void update(float deltaTime) {
 		
+		// move the background layer
 		if (this.background != null) {
 			
 			this.background.setPosition(new Vector2(
@@ -410,6 +452,7 @@ public class Map {
 			));
 		}
 		
+		// set the sky position (TODO: could be done only once!)
 		if (this.sky != null) {
 
 			this.sky.setPosition(new Vector2(
@@ -418,6 +461,7 @@ public class Map {
 			));
 		}
 		
+		// hide decals if their time has elapsed
 		for (int i = 0; i < MAX_DECALS; i++) {
 			
 			if (this.decalTime[i] > 0) {
@@ -434,6 +478,9 @@ public class Map {
 		}
 	}
 	
+	/**
+	 * Reload the textures from the whole map
+	 */
 	public void reloadTextures() {
 		
 		this.sky.reloadTexture();
@@ -466,6 +513,9 @@ public class Map {
 		}
 	}
 	
+	/**
+	 * Get rid of the textures from the whole map
+	 */
 	public void dispose() {
 		
 		int length = this.ground.size();
@@ -489,18 +539,34 @@ public class Map {
 		}
 	}
 	
+	/**
+	 * Add a ground object to the map
+	 * 
+	 * @param TexturedShape block
+	 */
 	public void addGround(TexturedShape block) {
 		
 		this.ground.add(block);
 		this.groundGrid.insertStaticObject(block);
 	}
 	
+	/**
+	 * Add a wall object to the map
+	 * 
+	 * @param TexturedShape block
+	 */
 	public void addWall(TexturedShape block) {
 		
 		this.walls.add(block);
 		this.wallGrid.insertStaticObject(block);
 	}
 	
+	/**
+	 * Add a decal to the map
+	 * 
+	 * @param TexturedShape decal
+	 * @param float time
+	 */
 	public void addDecal(TexturedShape decal, float time) {
 		
 		for (int i = 0; i < MAX_DECALS; i++) {
@@ -514,6 +580,12 @@ public class Map {
 		}
 	}
 	
+	/**
+	 * Get the ground at the position of the given object
+	 * 
+	 * @param GameObject o
+	 * @return TetxuredShape
+	 */
 	public TexturedShape getGround(GameObject o) {
 		
 		int highestPart = 0;
@@ -539,21 +611,45 @@ public class Map {
 		return (TexturedShape)colliders.get(highestPart);
 	}
 	
+	/**
+	 * Get the potential ground colliders at the position
+	 * of the given object
+	 * 
+	 * @param GameObject o
+	 * @return List<GameObject>
+	 */
 	public List<GameObject> getPotentialGroundColliders(GameObject o) {
 		
 		return this.groundGrid.getPotentialColliders(o);
 	}
 
+	/**
+	 * Get the potential wall colliders at the position
+	 * of the given object
+	 * 
+	 * @param GameObject o
+	 * @return List<GameObject>
+	 */
 	public List<GameObject> getPotentialWallColliders(GameObject o) {
 		
 		return this.wallGrid.getPotentialColliders(o);
 	}
 	
+	/**
+	 * Get the potential func colliders at the position
+	 * of the given object
+	 * 
+	 * @param GameObject o
+	 * @return List<GameObject>
+	 */
 	public List<GameObject> getPotentialFuncColliders(GameObject o) {
 		
 		return this.funcs;
 	}
 	
+	/**
+	 * Draw the visible part of the map
+	 */
 	public void draw() {
 		
 		float fromX = this.camera.position.x - this.camera.frustumWidth / 2;
@@ -648,6 +744,12 @@ public class Map {
 		}
 	}
 	
+	/**
+	 * Restart the current race. Care for resetting
+	 * all required values.
+	 * 
+	 * @param Player player
+	 */
 	public void restartRace(Player player) {
 		
 		this.startTime = 0;
@@ -673,16 +775,29 @@ public class Map {
 		this.pickedUpItems.clear();
 	}
 	
+	/**
+	 * See if it's currently beeing races
+	 * 
+	 * @return boolean
+	 */
 	public boolean inRace() {
 		
 		return this.raceStarted;
 	}
 	
+	/**
+	 * See if the race wsa finished
+	 * 
+	 * @return boolean
+	 */
 	public boolean raceFinished() {
 		
 		return this.raceFinished;
 	}
 	
+	/**
+	 * Touch the map's startTimer
+	 */
 	public void startTimer() {
 		
 		if (this.raceStarted) return;
@@ -692,6 +807,9 @@ public class Map {
 		this.startTime = System.nanoTime() / 1000000000.0f;
 	}
 	
+	/**
+	 * Touch the map's stopTimer
+	 */
 	public void stopTimer() {
 		
 		if (this.raceFinished) return;
@@ -705,6 +823,11 @@ public class Map {
 		t.start();
 	}
 	
+	/**
+	 * Get the current race time
+	 * 
+	 * @return float
+	 */
 	public float getCurrentTime() {
 		
 		if (this.raceStarted) {

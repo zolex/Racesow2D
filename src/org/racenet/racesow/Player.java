@@ -25,11 +25,20 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+/**
+ * Class which represents the player in the game.
+ * Executes actions like shoot and jump and moves
+ * the player througt the world.
+ * 
+ * @author al
+ *
+ */
 class Player extends AnimatedBlock {
 	
 	public final Vector2 velocity = new Vector2();
 	public final Vector2 accel = new Vector2();
 	
+	// animations
 	public static final short ANIM_RUN = 0;
 	public static final short ANIM_JUMP = 1;
 	public static final short ANIM_WALLJUMP = 2;
@@ -43,6 +52,7 @@ class Player extends AnimatedBlock {
 	public static final short ANIM_PLASMA_WALLJUMP = 10;
 	public static final short ANIM_DROWN = 11;
 	
+	// sounds
 	public static final short SOUND_JUMP1 = 0;
 	public static final short SOUND_JUMP2 = 1;
 	public static final short SOUND_WJ1 = 2;
@@ -53,6 +63,7 @@ class Player extends AnimatedBlock {
 	public static final short SOUND_PLASMA = 7;
 	private AndroidSound sounds[] = new AndroidSound[8];
 	
+	// firerates
 	private static final float FIRERATE_ROCKET = 1.75f;
 	private static final float FIRERATE_PLASMA = 0.04f;
 	private float lastShot = 0;
@@ -87,8 +98,19 @@ class Player extends AnimatedBlock {
 	
 	private int frames = 0;
 	
-	public <T> Player(final GLGame game, Map map, Camera2 camera, float x, float y, boolean soundEnabled) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param GLGame game
+	 * @param Map map
+	 * @param Camera2 camera
+	 * @param float x
+	 * @param float y
+	 * @param boolean soundEnabled
+	 */
+	public Player(final GLGame game, Map map, Camera2 camera, float x, float y, boolean soundEnabled) {
 		
+		// create the TexturedShape with static width and height
 		super(game, new Vector2(x,y), new Vector2(x + 3.4f, y), new Vector2(x + 3.4f, y + 6.5f), new Vector2(x, y + 6.5f));
 		
 		this.soundEnabled = soundEnabled;
@@ -96,6 +118,7 @@ class Player extends AnimatedBlock {
 		this.camera = camera;
 		this.map = map;
 		
+		// load the sounds
 		AndroidAudio audio = (AndroidAudio)game.getAudio();
 		this.sounds[SOUND_JUMP1] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/jump_1.ogg");
 		this.sounds[SOUND_JUMP2] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/jump_2.ogg");
@@ -109,6 +132,7 @@ class Player extends AnimatedBlock {
 		this.loadAnimations();
 		this.setupVertices();
 		
+		// create a first-in-first-out pool for plasma decals
 		this.plasmaPool = new FifoPool<TexturedBlock>(new PoolObjectFactory<TexturedBlock>() {
 			
 			public TexturedBlock createObject() {
@@ -125,6 +149,7 @@ class Player extends AnimatedBlock {
 			}
 		}, 10);
 		
+		// create a first-in-first-out pool for rocket decals
 		this.rocketPool = new FifoPool<TexturedBlock>(new PoolObjectFactory<TexturedBlock>() {
 	        	
             public TexturedBlock createObject() {
@@ -142,11 +167,19 @@ class Player extends AnimatedBlock {
         }, 1);
 	}
 	
+	/**
+	 * Player requires to know the gameScreen
+	 * 
+	 * @param GameScreen gameScreen
+	 */
 	public void setGameScreen(GameScreen gameScreen) {
 		
 		this.gameScreen = gameScreen;
 	}
 	
+	/**
+	 * Load all defined animations
+	 */
 	public void loadAnimations() {
 		
 		String[][] animations = new String[12][];
@@ -220,6 +253,12 @@ class Player extends AnimatedBlock {
 		this.setAnimations(animations);
 	}
 	
+	/**
+	 * Remove a tutorial message and continue the
+	 * game if the proper event is beeing passed
+	 *  
+	 * @param String event
+	 */
 	public void updateTutorial(String event) {
 		
 		if (this.tutorialActive != null) {
@@ -258,15 +297,22 @@ class Player extends AnimatedBlock {
 		}
 	}
 	
+	/**
+	 * Execute the jump action
+	 * 
+	 * @param float jumpPressedTime
+	 */
 	public void jump(float jumpPressedTime) {
 		
 		if (this.isDead) return;
 		
+		// only for an initial jump action (not if the player holds jump)
 		if (jumpPressedTime == 0) {
 		
 			this.updateTutorial("jump");
 		}
 		
+		// remember the distance to the ground when falling and pressing jump
 		if (!this.distanceRemembered && this.velocity.y < 0) {
 			
 			TexturedShape ground = this.map.getGround(this);
@@ -278,6 +324,7 @@ class Player extends AnimatedBlock {
 			}
 		}
 		
+		// only jump when the player is on the floor
 		if (this.onFloor) {
 		
 			this.onFloor = false;
@@ -288,11 +335,14 @@ class Player extends AnimatedBlock {
 				this.sounds[jumpSound].play(this.volume);
 			}
 			
+			// reset to startspeed when no speed left
 			if (this.virtualSpeed == 0) {
 				
 				this.virtualSpeed = this.startSpeed;
 			}
 			
+			// give the player a speed boost according to
+			// the distance when initially pressed jump
 			if (this.distanceOnJump > 0) {
 				
 				float boost = (30000 / (this.virtualSpeed / 2) / this.distanceOnJump);
@@ -303,7 +353,7 @@ class Player extends AnimatedBlock {
 			this.distanceRemembered = false;
 			this.distanceOnJump = -1;
 			
-			
+			// choose the proper jump animation
 			if (this.attachedItem != null) {
 				
 				switch (this.attachedItem.func) {
@@ -329,8 +379,10 @@ class Player extends AnimatedBlock {
 			this.enableAnimation = true;
 			this.animDuration = 0.3f;
 		
+		// when in the air check for walls to perform a walljump
 		} else {
 			
+			// allow walljump only in certain intervals
 			if (jumpPressedTime == 0 && System.nanoTime() / 1000000000.0f > this.lastWallJumped + 1.5f) {
 				
 				List<GameObject> colliders = this.map.getPotentialWallColliders(this);
@@ -347,8 +399,13 @@ class Player extends AnimatedBlock {
 							this.sounds[wjSound].play(this.volume);
 						}
 						
+						// add some velocity after a walljump
 						this.velocity.set(this.velocity.x + 5, 17);
+						
+						// remember the walljump time for the interval to work
 						this.lastWallJumped = System.nanoTime() / 1000000000.0f;
+						
+						// choose the proper animation
 						if (this.attachedItem != null) {
 							
 							switch (this.attachedItem.func) {
@@ -378,8 +435,15 @@ class Player extends AnimatedBlock {
 		}
 	}
 	
+	/**
+	 * Execute the shoot action
+	 * 
+	 * @param float shootPressedTime
+	 */
 	public void shoot(float shootPressedTime) {
 		
+		// if there is no attached item or the
+		// player is dead we can not shoot
 		if (this.attachedItem == null || this.isDead) return;
 		
 		this.updateTutorial("shoot");
@@ -387,10 +451,12 @@ class Player extends AnimatedBlock {
 		float currentTime = System.nanoTime() / 1000000000.0f;
 		switch (this.attachedItem.func) {
 		
+			// when shooting with the rocketlauncher
 			case GameObject.ITEM_ROCKET:
 				boolean hitWall = false;
 				if (currentTime >= this.lastShot + FIRERATE_ROCKET) {
 					
+					// prefer wall-rockets 
 					List<GameObject> colliders = this.map.getPotentialWallColliders(this);
 					int length = colliders.size();
 					for (int i = 0; i < length; i++) {
@@ -402,6 +468,8 @@ class Player extends AnimatedBlock {
 							hitWall = true;
 							float impactX = this.getPosition().x;
 							float impactY = this.getPosition().y;
+							
+							// give the player some speed boost for wall-rockets
 							this.velocity.set(this.velocity.x, this.velocity.y < 0 ? 30 : this.velocity.y + 20);
 							this.virtualSpeed += 200;
 							
@@ -410,6 +478,7 @@ class Player extends AnimatedBlock {
 								this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
 							}
 							
+							// show the rocket explosion
 							TexturedBlock decal = this.rocketPool.newObject();
 							decal.setPosition(new Vector2(impactX, impactY));
 							map.addDecal(decal, 0.25f);
@@ -419,6 +488,7 @@ class Player extends AnimatedBlock {
 						}
 					}
 					
+					// if we didn't hit a wall then hit the ground
 					if (!hitWall) {
 						
 						TexturedShape ground = map.getGround(this);
@@ -427,6 +497,7 @@ class Player extends AnimatedBlock {
 							float impactY = ground.getPosition().y + ground.getHeightAt(this.getPosition().x) - 4;
 							float distance = this.getPosition().y - impactY;
 							
+							// only allow to hit blocks without functionality (ie. no lava)
 							if (ground.func == GameObject.FUNC_NONE) {
 								
 								this.addToPosition(0, 1);
@@ -439,6 +510,7 @@ class Player extends AnimatedBlock {
 								this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
 							}
 							
+							// show the rocket explosion
 							TexturedBlock decal = this.rocketPool.newObject();
 							decal.setPosition(new Vector2(this.getPosition().x, impactY));
 							map.addDecal(decal, 0.25f);
@@ -449,9 +521,11 @@ class Player extends AnimatedBlock {
 				}
 				break;
 				
+			// when shooting with the plasma gun
 			case GameObject.ITEM_PLASMA:
 				if (currentTime >= this.lastShot + FIRERATE_PLASMA) {
 					
+					// plasma can only hit walls
 					List<GameObject> colliders = this.map.getPotentialWallColliders(this);
 					int length = colliders.size();
 					for (int i = 0; i < length; i++) {
@@ -462,6 +536,8 @@ class Player extends AnimatedBlock {
 					
 							float impactX = this.getPosition().x;
 							float impactY = this.getPosition().y + 1;
+							
+							// give the player some speed boost
 							this.velocity.add(0, 2.5f);
 							this.virtualSpeed += 15;
 							
@@ -470,6 +546,7 @@ class Player extends AnimatedBlock {
 								this.sounds[SOUND_PLASMA].play(this.volume * 1.2f);
 							}
 							
+							// show the plasma impact
 							TexturedBlock decal = (TexturedBlock)this.plasmaPool.newObject();
 							decal.setPosition(new Vector2(impactX, impactY));
 							map.addDecal(decal, 0.25f);
@@ -485,10 +562,19 @@ class Player extends AnimatedBlock {
 		}
 	}
 	
+	/**
+	 * Move the player in the map
+	 * 
+	 * @param Vector2 gravity
+	 * @param float deltaTime
+	 * @param boolean pressingJump
+	 */
 	public void move(Vector2 gravity, float deltaTime, boolean pressingJump) {
 		
-		if (++frames < 3) return; // workaround
+		 // workaround for initial loading
+		if (++frames < 3) return;
 		
+		// if enabled run a player animation
 		if (this.enableAnimation) {
 			
 			this.animTime += deltaTime;
@@ -501,6 +587,8 @@ class Player extends AnimatedBlock {
 					
 					this.activeAnimId = Player.ANIM_INVISIBLE;
 				
+				// when the animation is over, choose
+				// the proper default animation
 				} else {
 				
 					if (this.attachedItem != null) {
@@ -530,6 +618,7 @@ class Player extends AnimatedBlock {
 		
 		if (this.isDead) return;
 		
+		// see if the player collides with a map-function
 		List<GameObject> colliders = this.map.getPotentialFuncColliders(this);
 		int length = colliders.size();
 		for (int i = 0; i < length; i++) {
@@ -548,13 +637,14 @@ class Player extends AnimatedBlock {
 						this.finishRace();
 						break;
 						
-					case GameObject.FUNC_TUTORIAL_JUMP:
+					case GameObject.FUNC_TUTORIAL:
 						this.showTutorialMessage(part);
 						break;
 				}
 			}
 		}
 		
+		// see if the player picks up an item (plasmagun, rocketlauncher)
 		length = this.map.items.size();
 		for (int i = 0; i < length; i++) {
 			
@@ -577,6 +667,7 @@ class Player extends AnimatedBlock {
 						break;
 				}
 				
+				// show a weapon icon in the HUD
 				TexturedBlock hudItem = new TexturedBlock(
 					this.game,
 					texture,
@@ -610,36 +701,24 @@ class Player extends AnimatedBlock {
 			}
 		}
 		
+		// when player is in the air
 		if (!this.onFloor) {
 			
-			//Log.d("DEBUG", "x = " + this.getPosition().x);
-			
-			/*
-			boolean straightUp = false;
-			if (this.velocity.x == 0 && this.velocity.y > 0) {
-				
-				straightUp = true;
-			}
-			*/
-			
+			// apply gravity
 			this.velocity.add(gravity.x * deltaTime, gravity.y * deltaTime);
-			
-			/*
-			if (straightUp && this.velocity.y <= 0) {
-				
-				straightUp = false;
-				this.virtualSpeed += 30;
-			}
-			*/
-			
+
+			// move the player
 			this.addToPosition(this.velocity.x * deltaTime, this.velocity.y * deltaTime);
 			
+			// check for collision with the ground
 			colliders = this.map.getPotentialGroundColliders(this);
 			length = colliders.size();
 			for (int i = 0; i < length; i++) {
 				
 				GameObject ground = colliders.get(i);
 				CollisionInfo info = this.intersect(ground);
+				
+				// check for functional collisions like water or lava
 				if (info.collided) {
 
 					switch (ground.func) {
@@ -703,18 +782,24 @@ class Player extends AnimatedBlock {
 					break;
 				}
 			}
-			
+		
+		// when on the ground...
 		} else {
-			
+		
+			// ... lose some speed
 			if (this.virtualSpeed > 0) {
 				
 				this.virtualSpeed = Math.max(0, this.virtualSpeed - 10000 * deltaTime);
 			}
 		}
 		
+		// apply the velocity given by the virtual-speed
 		this.velocity.set(this.virtualSpeed / 23, this.velocity.y);
 	}
 	
+	/**
+	 * Let the player die
+	 */
 	public void die() {
 		
 		this.virtualSpeed = 0;
@@ -728,6 +813,9 @@ class Player extends AnimatedBlock {
 		this.showRestartMessage();
 	}
 	
+	/**
+	 * Show a restart message
+	 */
 	public void showRestartMessage() {
 		
 		this.restartMessage = this.gameScreen.createCameraText(-30, -0);
@@ -740,6 +828,9 @@ class Player extends AnimatedBlock {
 		this.camera.addHud(this.restartMessage);
 	}
 	
+	/**
+	 * Show the current time
+	 */
 	public void showTimeMessage() {
 		
 		this.timeMessage = this.gameScreen.createCameraText(-27, 5);
@@ -752,6 +843,9 @@ class Player extends AnimatedBlock {
 		this.camera.addHud(this.timeMessage);
 	}
 	
+	/**
+	 * Show "new record" message
+	 */
 	public void showtRecordMessage() {
 		
 		this.recordMessage = this.gameScreen.createCameraText(-27, 10);
@@ -764,6 +858,9 @@ class Player extends AnimatedBlock {
 		this.camera.addHud(this.recordMessage);
 	}
 	
+	/**
+	 * Show "race finished" message
+	 */
 	public void showtFinishMessage() {
 		
 		this.finishMessage= this.gameScreen.createCameraText(-20, 10);
@@ -776,6 +873,11 @@ class Player extends AnimatedBlock {
 		this.camera.addHud(this.finishMessage);
 	}
 	
+	/**
+	 * Show a tutorial message
+	 * 
+	 * @param GameObject tutorial
+	 */
 	public void showTutorialMessage(GameObject tutorial) {
 		
 		if (tutorial.finished || this.tutorialActive != null) return;
@@ -812,6 +914,9 @@ class Player extends AnimatedBlock {
 		this.camera.addHud(this.tutorialMessage3);
 	}
 	
+	/**
+	 * Finish the race. Called when stopTimer is touched.
+	 */
 	public void finishRace() {
 		
 		if (!this.map.inRace()) return;
@@ -820,6 +925,7 @@ class Player extends AnimatedBlock {
 		
 		SharedPreferences prefs = this.game.getSharedPreferences("racesow", Context.MODE_PRIVATE);
 		
+		// save the time to the local scores
 		InternalScoresThread t = new InternalScoresThread(
 			this.game.getApplicationContext(),
 			this.map.fileName,
@@ -847,6 +953,13 @@ class Player extends AnimatedBlock {
 		t.start();
 	}
 	
+	/**
+	 * Reset the player to the initial position
+	 * and also reset some variables and messages.
+	 * 
+	 * @param float x
+	 * @param float y
+	 */
 	public void reset(float x, float y) {
 				
 		this.updateTutorial("");

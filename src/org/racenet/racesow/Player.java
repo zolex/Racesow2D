@@ -382,6 +382,8 @@ class Player extends AnimatedBlock {
 		
 		if (this.attachedItem == null || this.isDead) return;
 		
+		this.updateTutorial("shoot");
+		
 		float currentTime = System.nanoTime() / 1000000000.0f;
 		switch (this.attachedItem.func) {
 		
@@ -782,7 +784,7 @@ class Player extends AnimatedBlock {
 		tutorial.finished = true;
 		((GameScreen)this.game.getCurrentScreen()).state = GameState.Paused;
 		
-		this.tutorialMessage1= this.gameScreen.createCameraText(-20, 10);
+		this.tutorialMessage1= this.gameScreen.createCameraText(-25, 10);
 		this.tutorialMessage1.text = tutorial.info1;
 		this.tutorialMessage1.red = 0;
 		this.tutorialMessage1.green = 1;
@@ -791,7 +793,7 @@ class Player extends AnimatedBlock {
 		this.tutorialMessage1.space = 0.075f;
 		this.camera.addHud(this.tutorialMessage1);
 		
-		this.tutorialMessage2 = this.gameScreen.createCameraText(-20, 6);
+		this.tutorialMessage2 = this.gameScreen.createCameraText(-25, 6);
 		this.tutorialMessage2.text = tutorial.info2;
 		this.tutorialMessage2.red = 0;
 		this.tutorialMessage2.green = 1;
@@ -800,7 +802,7 @@ class Player extends AnimatedBlock {
 		this.tutorialMessage2.space = 0.075f;
 		this.camera.addHud(this.tutorialMessage2);
 		
-		this.tutorialMessage3 = this.gameScreen.createCameraText(-20, 2);
+		this.tutorialMessage3 = this.gameScreen.createCameraText(-25, 2);
 		this.tutorialMessage3.text = tutorial.info3;
 		this.tutorialMessage3.red = 0;
 		this.tutorialMessage3.green = 1;

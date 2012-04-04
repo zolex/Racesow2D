@@ -5,21 +5,21 @@
 	<levelshot>business/levelshot.png</levelshot>
 	<player><x>50</x><y>12</y></player>
 	<starttimer><x>60</x></starttimer>
-	<stoptimer><x>2980</x></stoptimer>
+	<stoptimer><x>1980</x></stoptimer>
 	<sky>
 		<texture>business/sky.png</texture>
 		<position>5</position>
 	</sky>
 	<background>
 		<texture>business/silhouette.png</texture>
-		<position>30</position>
+		<position>10</position>
 		<speed>1.75</speed>
 	</background>
 	<block>
 		<level>ground</level>
 		<x>0</x>
 		<y>0</y>
-		<width>850</width>
+		<width>1130</width>
 		<height>10</height>
 		<texture>business/metal17.png</texture>
 	</block>
@@ -30,7 +30,7 @@
 	</item>
 	<block>
 		<level>ground</level>
-		<x>150</x>
+		<x>165</x>
 		<y>10</y>
 		<width>10</width>
 		<height>15</height>
@@ -38,7 +38,7 @@
 	</block>
 	<block>
 		<level>ground</level>
-		<x>300</x>
+		<x>310</x>
 		<y>10</y>
 		<width>10</width>
 		<height>17</height>
@@ -46,7 +46,7 @@
 	</block>
 	<block>
 		<level>ground</level>
-		<x>450</x>
+		<x>550</x>
 		<y>10</y>
 		<width>10</width>
 		<height>20</height>
@@ -54,7 +54,7 @@
 	</block>
 	<block>
 		<level>ground</level>
-		<x>600</x>
+		<x>800</x>
 		<y>10</y>
 		<width>10</width>
 		<height>20</height>
@@ -62,7 +62,7 @@
 	</block>
 	<block>
 		<level>ground</level>
-		<x>750</x>
+		<x>1110</x>
 		<y>10</y>
 		<width>10</width>
 		<height>25</height>
@@ -70,9 +70,9 @@
 	</block>
 	<block>
 		<level>ground</level>
-		<x>850</x>
+		<x>1120</x>
 		<y>0</y>
-		<width>200</width>
+		<width>180</width>
 		<height>5</height>
 		<texture>purple-sky/lava.jpg</texture>
 		<func>1</func>
@@ -81,9 +81,9 @@
 	</block>
 	<block>
 		<level>wall</level>
-		<x>845</x>
+		<x>1120</x>
 		<y>5</y>
-		<width>210</width>
+		<width>185</width>
 		<height>20</height>
 		<texture>purple-sky/wood.png</texture>
 		<texsx>0.05</texsx>
@@ -91,18 +91,44 @@
 	</block>
 	<block>
 		<level>ground</level>
-		<x>1050</x>
+		<x>1300</x>
 		<y>0</y>
-		<width>800</width>
+		<width>240</width>
+		<height>10</height>
+		<texture>business/metal17.png</texture>
+	</block>
+	<tri>
+		<level>ground</level>
+		<v1><x>1500</x><y>10</y></v1>
+		<v2><x>1540</x><y>10</y></v2>
+		<v3><x>1540</x><y>30</y></v3>
+		<texture>purple-sky/stone.png</texture>
+	</tri>
+	<block>
+		<level>ground</level>
+		<x>1540</x>
+		<y>0</y>
+		<width>160</width>
+		<height>5</height>
+		<texture>purple-sky/lava.jpg</texture>
+		<func>1</func>
+		<texsx>0.1</texsx>
+		<texsy>0.1</texsy>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>1700</x>
+		<y>0</y>
+		<width>300</width>
 		<height>10</height>
 		<texture>business/metal17.png</texture>
 	</block>
 	<block>
 		<level>ground</level>
-		<x>2990</x>
+		<x>1990</x>
 		<y>10</y>
 		<width>10</width>
-		<height>30</height>
+		<height>50</height>
 		<texture>purple-sky/stone.png</texture>
 	</block>
 </map>

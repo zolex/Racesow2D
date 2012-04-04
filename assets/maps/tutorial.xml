@@ -117,7 +117,7 @@
 	    <info2>the tutorial. Touch back twice</info2>
 	    <info3>to return to the menu.</info3>
 	    <func>5</func>
-	    <event>shoot</event>
+	    <event>reset</event>
 	</tutorial>
 	<sky>
 		<texture>purple-sky/sky.png</texture>

@@ -1,5 +1,11 @@
 package org.racenet.framework.interfaces;
 
+/**
+ * Interface for graphics handling
+ * 
+ * @author soh#zolex
+ *
+ */
 public interface Graphics {
 
 	public static enum PixmapFormat {

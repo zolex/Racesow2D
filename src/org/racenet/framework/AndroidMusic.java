@@ -8,11 +8,22 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 
+/**
+ * Container for android music
+ * 
+ * @author soh#zolex
+ *
+ */
 public class AndroidMusic implements Music, OnCompletionListener {
 
 	private MediaPlayer mediaPlayer;
 	private boolean isPrepared = false;
 	
+	/**
+	 * Constructor 
+	 * 
+	 * @param AssetFileDescriptor assetDescriptor
+	 */
 	public AndroidMusic(AssetFileDescriptor assetDescriptor) {
 		
 		mediaPlayer = new MediaPlayer();
@@ -31,6 +42,9 @@ public class AndroidMusic implements Music, OnCompletionListener {
 		}
 	}
 	
+	/**
+	 * Play the music 
+	 */
 	public void play() {
 		
 		if (isPlaying()) {
@@ -60,6 +74,9 @@ public class AndroidMusic implements Music, OnCompletionListener {
 		}
 	}
 
+	/**
+	 * Stop the music
+	 */
 	public void stop() {
 		
 		mediaPlayer.stop();
@@ -69,36 +86,67 @@ public class AndroidMusic implements Music, OnCompletionListener {
 		}
 	}
 
+	/**
+	 * Pause the music
+	 */
 	public void pause() {
 		
 		mediaPlayer.pause();
 	}
 
+	/**
+	 * Set if we want to repeat the music
+	 * 
+	 * @param boolean looping
+	 */
 	public void setLooping(boolean looping) {
 		
 		mediaPlayer.setLooping(looping);
 	}
 
+	/**
+	 * The the volume of the music
+	 * 
+	 * @param float volume
+	 */
 	public void setVolume(float volume) {
 		
 		mediaPlayer.setVolume(volume, volume);
 	}
 
+	/**
+	 * See if the music is playing
+	 * 
+	 * @return boolean
+	 */
 	public boolean isPlaying() {
 		
 		return mediaPlayer.isPlaying();
 	}
 
+	/**
+	 * See if the music is stopped
+	 * 
+	 * @return boolean
+	 */
 	public boolean isStopped() {
 		
 		return !isPrepared;
 	}
 
+	/**
+	 * See if the music is repeating
+	 * 
+	 * @return boolean
+	 */
 	public boolean isLooping() {
 
 		return mediaPlayer.isLooping();
 	}
 
+	/**
+	 * Get rid of the music
+	 */
 	public void dispose() {
 		
 		if (mediaPlayer.isPlaying()) {
@@ -109,6 +157,11 @@ public class AndroidMusic implements Music, OnCompletionListener {
 		mediaPlayer.release();
 	}
 
+	/**
+	 * Called internal
+	 * 
+	 * @param MediaPlayer mediaPlayer
+	 */
 	public void onCompletion(MediaPlayer mediaPlayer) {
 		
 		synchronized (this) {

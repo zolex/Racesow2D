@@ -4,6 +4,12 @@ import org.racenet.framework.interfaces.Graphics.PixmapFormat;
 
 import android.graphics.Bitmap;
 
+/**
+ * Interface for Pixmap handling
+ * 
+ * @author soh#zolex
+ *
+ */
 public interface Pixmap {
 
 	public Bitmap getBitmap();

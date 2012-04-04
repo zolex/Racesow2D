@@ -6,6 +6,13 @@ import java.util.List;
 
 import android.util.FloatMath;
 
+/**
+ * A grid for pre-collision detection.
+ * Groups the given objects into cells.
+ * 
+ * @author soh#zolex
+ *
+ */
 public class SpatialHashGrid {
 	
     List<GameObject>[] cells;
@@ -17,6 +24,13 @@ public class SpatialHashGrid {
     List<GameObject> foundObjects;
     
     @SuppressWarnings("unchecked")
+    /**
+     * Constructor
+     * 
+     * @param float worldWidth
+     * @param float worldHeight
+     * @param float cellSize
+     */
     public SpatialHashGrid(float worldWidth, float worldHeight, float cellSize) {
     	
         this.cellSize = cellSize;
@@ -33,6 +47,11 @@ public class SpatialHashGrid {
         foundObjects = new ArrayList<GameObject>();
     }
     
+    /**
+     * Insert an object into the grid
+     * 
+     * @param GameObject obj
+     */
     public void insertStaticObject(GameObject obj) {
     	
     	int[] cellIds = getCellIds(obj);
@@ -44,6 +63,11 @@ public class SpatialHashGrid {
     	}
     }
     
+    /**
+     * Remove an object from the grid
+     * 
+     * @param GameObject obj
+     */
     public void removeObject(GameObject obj) {
     	
         int[] cellIds = getCellIds(obj);
@@ -55,6 +79,13 @@ public class SpatialHashGrid {
         }
     }
     
+    /**
+     * Get a list of objects which are in the
+     * same cell as the given object
+     * 
+     * @param GabeObject obj
+     * @return List<GameObject>
+     */
     public List<GameObject> getPotentialColliders(GameObject obj) {
     	
         foundObjects.clear();
@@ -77,6 +108,12 @@ public class SpatialHashGrid {
         return foundObjects;
     }
     
+    /**
+     * Get the IDs of the cells an object is inside of
+     * 
+     * @param GameObject obj
+     * @return int[]
+     */
     public int[] getCellIds(GameObject obj) {
     	
     	Vector2 position = obj.getPosition();

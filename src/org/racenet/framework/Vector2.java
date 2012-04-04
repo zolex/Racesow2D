@@ -2,32 +2,64 @@ package org.racenet.framework;
 
 import android.util.FloatMath;
 
+/**
+ * Represents a vector in a two-dimensional room
+ * 
+ * @author soh#zolex
+ *
+ */
 public class Vector2 {
 	
 	public static float TO_RADIANS = (1 / 180.0f) * (float) Math.PI;
 	public static float TO_DEGREES = (1 / (float) Math.PI) * 180;
 	public float x, y;
 
+	/**
+	 * Empty constructor
+	 */
 	public Vector2() {
 	}
 
+	/**
+	 * Constructor with coordinates
+	 * 
+	 * @param float x
+	 * @param float y
+	 */
 	public Vector2(float x, float y) {
 		
 		this.x = x;
 		this.y = y;
 	}
 
+	/**
+	 * Constructor with other vector
+	 * 
+	 * @param Vector2 other
+	 */
 	public Vector2(Vector2 other) {
 		
 		this.x = other.x;
 		this.y = other.y;
 	}
 
+	/**
+	 * Copy the vector
+	 * 
+	 * @return Vector2
+	 */
 	public Vector2 copy() {
 		
 		return new Vector2(x, y);
 	}
 
+	/**
+	 * Set new coordinates for the vector
+	 * 
+	 * @param float x
+	 * @param float y
+	 * @return Vector2
+	 */
 	public Vector2 set(float x, float y) {
 		
 		this.x = x;
@@ -35,6 +67,12 @@ public class Vector2 {
 		return this;
 	}
 
+	/**
+	 * Set the vector using another vector
+	 * 
+	 * @param Vector2 other
+	 * @return Vector2
+	 */
 	public Vector2 set(Vector2 other) {
 		
 		this.x = other.x;
@@ -42,6 +80,12 @@ public class Vector2 {
 		return this;
 	}
 
+	/**
+	 * Add values to the coordinates of the vector
+	 * @param float x
+	 * @param float y
+	 * @return Vector2
+	 */
 	public Vector2 add(float x, float y) {
 		
 		this.x += x;
@@ -49,6 +93,12 @@ public class Vector2 {
 		return this;
 	}
 
+	/**
+	 * Add another vector to this one
+	 * 
+	 * @param Vector2 other
+	 * @return Vector2
+	 */
 	public Vector2 add(Vector2 other) {
 		
 		this.x += other.x;
@@ -56,6 +106,13 @@ public class Vector2 {
 		return this;
 	}
 
+	/**
+	 * Subtract coordinates from the vector
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public Vector2 subtract(float x, float y) {
 		
 		this.x -= x;
@@ -63,18 +120,36 @@ public class Vector2 {
 		return this;
 	}
 	
-	public float dotProduct(Vector2 other) {
-		
-		return this.x * other.x + this.y * other.y;
-	}
-
+	/**
+	 * Subtract another vector from the vector
+	 * 
+	 * @param Vector2 other
+	 * @return Vector2
+	 */
 	public Vector2 subtract(Vector2 other) {
 		
 		this.x -= other.x;
 		this.y -= other.y;
 		return this;
 	}
+	
+	/**
+	 * Create the dotproduct of the vector and another one
+	 * 
+	 * @param Vector2 other
+	 * @return Vector2
+	 */
+	public float dotProduct(Vector2 other) {
+		
+		return this.x * other.x + this.y * other.y;
+	}
 
+	/**
+	 * Multiply the vector by a scalar
+	 * 
+	 * @param float scalar
+	 * @return Vector2
+	 */
 	public Vector2 multiply(float scalar) {
 		
 		this.x *= scalar;
@@ -82,11 +157,21 @@ public class Vector2 {
 		return this;
 	}
 
+	/**
+	 * Get the length of the vector
+	 * 
+	 * @return float
+	 */
 	public float length() {
 		
 		return FloatMath.sqrt(x * x + y * y);
 	}
 
+	/**
+	 * Normalize the vector
+	 * 
+	 * @return Vector2
+	 */
 	public Vector2 normalize() {
 		
 		float len = length();
@@ -97,6 +182,11 @@ public class Vector2 {
 		return this;
 	}
 
+	/**
+	 * Get the angle of the vector
+	 * 
+	 * @return float
+	 */
 	public float angle() {
 		
 		float angle = (float) Math.atan2(y, x) * TO_DEGREES;
@@ -108,6 +198,12 @@ public class Vector2 {
 		return angle;
 	}
 
+	/**
+	 * Rotate the vector by an angle
+	 * 
+	 * @param float angle
+	 * @return Vector2
+	 */
 	public Vector2 rotate(float angle) {
 		
 		float rad = angle * TO_RADIANS;
@@ -123,6 +219,12 @@ public class Vector2 {
 		return this;
 	}
 
+	/**
+	 * Calculate the distance to another verctor
+	 * 
+	 * @param Vector2 other
+	 * @return float
+	 */
 	public float distance(Vector2 other) {
 		
 		float distX = this.x - other.x;
@@ -130,6 +232,13 @@ public class Vector2 {
 		return FloatMath.sqrt(distX * distX + distY * distY);
 	}
 
+	/**
+	 * Calculate the distance to coordinates
+	 * 
+	 * @param float x
+	 * @param float y
+	 * @return float
+	 */
 	public float distance(float x, float y) {
 		
 		float distX = this.x - x;
@@ -137,6 +246,12 @@ public class Vector2 {
 		return FloatMath.sqrt(distX * distX + distY * distY);
 	}
 
+	/**
+	 * Return the squared distance to another vector
+	 * 
+	 * @param Vector2 other
+	 * @return float
+	 */
 	public float distanceSquared(Vector2 other) {
 		
 		float distX = this.x - other.x;
@@ -144,6 +259,13 @@ public class Vector2 {
 		return distX * distX + distY * distY;
 	}
 
+	/**
+	 * Return the squared distance to coordinates
+	 * 
+	 * @param float x
+	 * @param float y
+	 * @return float
+	 */
 	public float distanceSquared(float x, float y) {
 		
 		float distX = this.x - x;

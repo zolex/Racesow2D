@@ -12,6 +12,12 @@ import android.content.res.AssetManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
 
+/**
+ * Container to handle android audio (music and sounds)
+ * 
+ * @author soh#zolex
+ *
+ */
 public class AndroidAudio implements Audio {
 
 	public static final int MAX_SIMULTANEOUS_SOUNDS = 20;
@@ -20,6 +26,11 @@ public class AndroidAudio implements Audio {
 	private AssetManager assetManager;
 	private SoundPool soundPool;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param Activity activity
+	 */
 	public AndroidAudio(Activity activity) {
 		
 		activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -27,6 +38,12 @@ public class AndroidAudio implements Audio {
 		soundPool = new SoundPool(MAX_SIMULTANEOUS_SOUNDS, AudioManager.STREAM_MUSIC, SOURCE_QUALITY);
 	}
 	
+	/**
+	 * Create a new music object
+	 * 
+	 * @param String fileName
+	 * @return Music
+	 */
 	public Music newMusic(String fileName) {
 		
 		try {
@@ -40,6 +57,12 @@ public class AndroidAudio implements Audio {
 		}
 	}
 
+	/**
+	 * Create a new sound
+	 * 
+	 * @param String fileName
+	 * @return Sound
+	 */
 	public Sound newSound(String fileName) {
 		
 		try {

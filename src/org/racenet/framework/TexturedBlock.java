@@ -2,13 +2,32 @@ package org.racenet.framework;
 
 import javax.microedition.khronos.opengles.GL10;
 
+/**
+ * A drawable rectangle with a texture applied
+ * 
+ * @author al
+ *
+ */
 public class TexturedBlock extends TexturedShape {
 
+	/**
+	 * Constructor 
+	 * 
+	 * @param GLGame game
+	 * @param String texture
+	 * @param short func
+	 * @param float texScaleWidth
+	 * @param float texScaleHeight
+	 * @param Vector2 ... vertices
+	 */
 	public TexturedBlock(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, Vector2 ... vertices) {
 		
 		super(game, texture, func, texScaleWidth, texScaleHeight, vertices);
 	}
 	
+	/**
+	 * Setup the vertices and texture coordinates for the rectangle
+	 */
 	protected void setupVertices() {
 		
 		float[] vertices;
@@ -48,6 +67,9 @@ public class TexturedBlock extends TexturedShape {
 		this.glVertices.setIndices(new short[] {0, 1, 2, 0, 2, 3}, 0, 6);
 	}
 	
+	/**
+	 * Draw the rectangle with it's texture
+	 */
 	public void draw() {
 		
 		GL10 gl = this.game.getGLGraphics().getGL();
@@ -61,17 +83,18 @@ public class TexturedBlock extends TexturedShape {
 		gl.glPopMatrix();
 	}
 	
+	/**
+	 * Draw the outlines of the rectangle
+	 */
 	public void drawOutline() {
 		
 		GL10 gl = this.game.getGLGraphics().getGL();
 		
 		gl.glPushMatrix();
-		//gl.glDisable(GL10.GL_TEXTURE_2D);
 		gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
 		this.glVertices.bind();
 		this.glVertices.draw(GL10.GL_LINE_LOOP, 0, 6);
 		this.glVertices.unbind();
-		//gl.glEnable(GL10.GL_TEXTURE_2D);
 		gl.glPopMatrix();
 	}
 }

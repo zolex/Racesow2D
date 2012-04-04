@@ -16,6 +16,12 @@ import org.xml.sax.SAXException;
 
 import android.util.Log;
 
+/**
+ * Parse an XML stream into an XMLDocument
+ * 
+ * @author soh#zolex
+ *
+ */
 public class XMLParser {
 
 	public Document doc = null;
@@ -24,6 +30,11 @@ public class XMLParser {
 		
     }
 	
+	/**
+	 * Read the stream and create a document from it
+	 * 
+	 * @param InputStream xml
+	 */
 	public void read(InputStream xml) {
 		
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -49,12 +60,25 @@ public class XMLParser {
         }
 	}
 	
+	/**
+	 * Get the value of node in the given item
+	 * 
+	 * @param Element item
+	 * @param String str
+	 * @return String
+	 */
 	public String getValue(Element item, String str) {
 		
 	    NodeList n = item.getElementsByTagName(str);
 	    return this.getNodeValue(n.item(0));
 	}
-	 
+	
+	/**
+	 * Get the value of the given node
+	 * 
+	 * @param Node elem
+	 * @return String
+	 */
 	public final String getNodeValue(Node elem) {
 		
 		Node child;

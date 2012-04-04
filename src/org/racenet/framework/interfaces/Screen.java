@@ -1,5 +1,11 @@
 package org.racenet.framework.interfaces;
 
+/**
+ * Interface for game screens
+ * 
+ * @author soh#zolex
+ *
+ */
 public abstract class Screen {
 
 	protected final Game game;

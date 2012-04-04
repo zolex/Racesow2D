@@ -1,5 +1,11 @@
 package org.racenet.racesow.models;
 
+/**
+ * Class to represent a map
+ * 
+ * @author soh#zolex
+ *
+ */
 public class MapItem {
 
 	public int id;

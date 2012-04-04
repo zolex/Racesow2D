@@ -20,16 +20,30 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+/**
+ * Thread to load the online scores from the web
+ * 
+ * @author soh#zolex
+ *
+ */
 public class OnlineScoresThread extends Thread {
 
 	private Handler handler;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param Handler h
+	 */
 	public OnlineScoresThread(Handler h) {
 		
 		this.handler = h;
 	}
 	
 	@Override
+	/**
+	 * Load the data remotely and pass the XML to the provided handler
+	 */
     public void run() {         
 
 		HttpClient client = new DefaultHttpClient();				
@@ -42,6 +56,7 @@ public class OnlineScoresThread extends Thread {
 	    	
 	        HttpResponse response = client.execute(get);
 	        
+	        // Bundle can not carry a stream, too bad
 	        b.putString("xml", InputStreamToString.convert(response.getEntity().getContent()));
 	        msg.what = 1;   
 	        

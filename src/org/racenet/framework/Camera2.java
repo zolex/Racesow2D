@@ -5,6 +5,13 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
+/**
+ * A camera which represents the two dimensional
+ * view area of an openGL ES application
+ * 
+ * @author soh#zolex
+ *
+ */
 public class Camera2 {
 	
     public final Vector2 position;
@@ -14,6 +21,13 @@ public class Camera2 {
     final GLGraphics glGraphics;
     protected List<HudItem> hudItems = new ArrayList<HudItem>();
     
+    /**
+     * Constructor
+     * 
+     * @param GLGraphics glGraphics
+     * @param float frustumWidth
+     * @param float frustumHeight
+     */
     public Camera2(GLGraphics glGraphics, float frustumWidth, float frustumHeight) {
     	
         this.glGraphics = glGraphics;
@@ -23,6 +37,13 @@ public class Camera2 {
         this.zoom = 1.0f;
     }
 
+    /**
+     * Set the camera to a new position and
+     * care for all HUD items to move with the camera
+     * 
+     * @param float x
+     * @param float y
+     */
 	public void setPosition(float x, float y) {
 		
 		this.position.set(x, y);
@@ -35,6 +56,12 @@ public class Camera2 {
 		}
 	}
     
+	/**
+	 * Zoom the camera view and care for all
+	 * HUD items to be realigned
+	 * 
+	 * @param float factor
+	 */
 	public void setZoom(float factor) {
 		
 		this.zoom = factor;
@@ -46,11 +73,21 @@ public class Camera2 {
 		}
 	}
 	
+	/**
+	 * Add a HUD item to the camrea
+	 * 
+	 * @param HudItem item
+	 */
 	public void addHud(HudItem item) {
 		
 		this.hudItems.add(item);
 	}
 	
+	/**
+	 * Remove a HudItem from the camera
+	 * 
+	 * @param HudItem item
+	 */
     public void removeHud(HudItem item) {
     	
     	if (this.hudItems.contains(item)) {
@@ -59,6 +96,9 @@ public class Camera2 {
     	}
     }
     
+    /**
+     * Setup openGL ES internals
+     */
     public void setViewportAndMatrices() {
     	
         GL10 gl = glGraphics.getGL();
@@ -74,6 +114,9 @@ public class Camera2 {
         gl.glLoadIdentity();
     }
     
+    /**
+     * Draw all HUD items attached to the camera
+     */
     public void drawHud() {
     	
 		for (int i = 0; i < hudItems.size(); i++) {
@@ -82,6 +125,11 @@ public class Camera2 {
 		}
     }
     
+    /**
+     * Assign the touch coordinates to the viewed area
+     * 
+     * @param Vector2 touch
+     */
     public void touchToWorld(Vector2 touch) {
     	
     	touch.x = (touch.x / (float) glGraphics.getWidth()) * frustumWidth * zoom;
@@ -89,6 +137,9 @@ public class Camera2 {
     	touch.add(position).subtract(frustumWidth * zoom / 2, frustumHeight * zoom / 2);
     }
     
+    /**
+     * Reload the HUD textures
+     */
     public void reloadTextures() {
     	
     	for (int i = 0; i < hudItems.size(); i++) {
@@ -97,6 +148,9 @@ public class Camera2 {
     	}
     }
     
+    /**
+     * Get rid of the HUD textures
+     */
     public void dispose() {
     	
     	for (int i = 0; i < hudItems.size(); i++) {

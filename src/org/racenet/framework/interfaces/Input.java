@@ -4,6 +4,12 @@ import java.util.List;
 
 import android.view.MotionEvent;
 
+/**
+ * Interface for user input handling
+ * 
+ * @author soh#zolex
+ *
+ */
 public interface Input {
 
 	public static class TouchEvent {

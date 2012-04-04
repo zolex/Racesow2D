@@ -21,19 +21,34 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+/**
+ * Maps PagerAdapter for local highscores
+ * 
+ * @author soh#zolex
+ *
+ */
 public class LocalMapPagesAdapter extends PagerAdapter {
 
 	Context context;
 	List<MapItem> maps = new ArrayList<MapItem>();
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param Context context
+	 * @param FileIO fileIO
+	 */
 	public LocalMapPagesAdapter(Context context, FileIO fileIO) {
 		
 		this.context = context;
 
+		// read all maps from the assets
 		String[] maps = fileIO.listAssets("maps");
 		for (int i = 0; i < maps.length; i++) {
 			
 			final String mapName = maps[i];
+			
+			// exclude non-xml files and the tutorial map
 			if (!mapName.endsWith(".xml") | mapName.equals("tutorial.xml")) continue;
 			
 			XMLParser parser = new XMLParser();
@@ -57,13 +72,15 @@ public class LocalMapPagesAdapter extends PagerAdapter {
 			}
 		}
 		
+		// read all maps from the sd-card
 		String[] externalMaps = fileIO.listFiles("racesow" + File.separator + "maps");
 		if (externalMaps != null) {
 			for (int i = 0; i < externalMaps.length; i++) {
 				
 				final String mapName = externalMaps[i];
-				if (!mapName.endsWith(".xml")) continue;
 				
+				// exclude non-xml files
+				if (!mapName.endsWith(".xml")) continue;
 				
 				XMLParser parser = new XMLParser();
 				try {
@@ -87,10 +104,18 @@ public class LocalMapPagesAdapter extends PagerAdapter {
 			}
 		}
 		
+		// order the maps by name
 		Collections.sort(this.maps, new MapComperator());
 	}
 	
 	@Override
+	/**
+	 * Create the view for a single page in the ViewPager
+	 * 
+	 * @param ViewGroup container
+	 * @param int position
+	 * @return Object
+	 */
 	public Object instantiateItem(ViewGroup container, int position) {
 
 		RelativeLayout layout = (RelativeLayout)View.inflate(context, R.layout.mapscores, null);
@@ -117,21 +142,35 @@ public class LocalMapPagesAdapter extends PagerAdapter {
 	}
 	
 	@Override
+	/**
+	 * Remove a page from the container
+	 */
 	public void destroyItem (ViewGroup container, int position, Object object) {
 		
 		container.removeView((View)object);
 	}
 	
 	@Override
+	/**
+	 * Get the number of pages
+	 * 
+	 * @return int
+	 */
 	public int getCount() {
 	
 		return this.maps.size();
 	}
 
 	@Override
+	/**
+	 * Check if a page belongs to a view
+	 * 
+	 * @param View view
+	 * @param Object object
+	 * @return boolean
+	 */
 	public boolean isViewFromObject(View view, Object object) {
 		
 		return view == (View)object;
 	}
-
 }

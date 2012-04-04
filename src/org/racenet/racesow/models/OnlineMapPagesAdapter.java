@@ -17,12 +17,24 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+/**
+ * Maps PagerAdapter for online highscores
+ * 
+ * @author soh#zolex
+ *
+ */
 public class OnlineMapPagesAdapter extends PagerAdapter {
 
 	Context context;
 	List<MapItem> maps = new ArrayList<MapItem>();
 	List<OnlineScoresAdapter> adapters = new ArrayList<OnlineScoresAdapter>();
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param Context context
+	 * @param InputStream xmlStream
+	 */
 	public OnlineMapPagesAdapter(Context context, InputStream xmlStream) {
 		
 		this.context = context;
@@ -32,6 +44,7 @@ public class OnlineMapPagesAdapter extends PagerAdapter {
 		
 		NodeList maps = parser.doc.getElementsByTagName("map");
 		
+		// read all maps from the XML stream
 		int numMaps = maps.getLength();
 		for (int i = 0; i < numMaps; i++) {
 			
@@ -40,6 +53,7 @@ public class OnlineMapPagesAdapter extends PagerAdapter {
 			item.name = parser.getValue(map, "name");
 			this.maps.add(item);
 			
+			// read the scores for each map
 			List<ScoreItem> scores = new ArrayList<ScoreItem>();
 			NodeList positions = map.getElementsByTagName("position");
 			int numPositions = positions.getLength();
@@ -60,6 +74,13 @@ public class OnlineMapPagesAdapter extends PagerAdapter {
 	}
 	
 	@Override
+	/**
+	 * Create the view for a single page in the ViewPager
+	 * 
+	 * @param ViewGroup container
+	 * @param int position
+	 * @return Object
+	 */
 	public Object instantiateItem(ViewGroup container, int position) {
 
 		RelativeLayout layout = (RelativeLayout)View.inflate(context, R.layout.mapscores, null);
@@ -85,18 +106,33 @@ public class OnlineMapPagesAdapter extends PagerAdapter {
 	}
 	
 	@Override
+	/**
+	 * Remove a page from the container
+	 */
 	public void destroyItem (ViewGroup container, int position, Object object) {
 		
 		container.removeView((View)object);
 	}
 	
 	@Override
+	/**
+	 * Get the number of pages
+	 * 
+	 * @return int
+	 */
 	public int getCount() {
 	
 		return this.maps.size();
 	}
 
 	@Override
+	/**
+	 * Check if a page belongs to a view
+	 * 
+	 * @param View view
+	 * @param Object object
+	 * @return boolean
+	 */
 	public boolean isViewFromObject(View view, Object object) {
 		
 		return view == (View)object;

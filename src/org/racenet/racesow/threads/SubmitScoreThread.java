@@ -13,6 +13,12 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+/**
+ * Thread to submit a race score to the web api
+ * 
+ * @author soh#zolex
+ *
+ */
 public class SubmitScoreThread extends Thread {
 
 	private float time;
@@ -20,6 +26,13 @@ public class SubmitScoreThread extends Thread {
 	private String player;
 	private short submitTries;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param Stirng map
+	 * @param String player
+	 * @param float time
+	 */
 	public SubmitScoreThread(String map, String player, float time) {
 		
 		this.time = time;
@@ -29,11 +42,17 @@ public class SubmitScoreThread extends Thread {
 	}
 	
 	@Override
+	/**
+	 * Run the thread
+	 */
     public void run() {         
 
 		this.submitScores();
     }
 	
+	/**
+	 * Submit the scores to the web api
+	 */
 	private void submitScores() {
 		
 		HttpClient client = new DefaultHttpClient();				
@@ -49,6 +68,7 @@ public class SubmitScoreThread extends Thread {
 	        post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 	        client.execute(post);
 	        
+	    // if the submission did not work, retry a few times
 	    } catch (ClientProtocolException e) {
 	    	
 	    	if (this.submitTries++ < 10) this.submitScores();

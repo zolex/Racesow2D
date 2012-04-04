@@ -1,5 +1,11 @@
 package org.racenet.framework.interfaces;
 
+/**
+ * Interface for a game implementation
+ * 
+ * @author soh#zolex
+ *
+ */
 public interface Game {
 
 	public Input getInput();

@@ -1,5 +1,11 @@
 package org.racenet.framework;
 
+/**
+ * Base Class for TexturedTriangle and TexturedRectangle
+ * 
+ * @author soh#zolex
+ *
+ */
 public abstract class TexturedShape extends HudItem {
 	
 	GLGame game = null;
@@ -8,6 +14,16 @@ public abstract class TexturedShape extends HudItem {
 	float texScaleWidth = 0.05f;
 	float texScaleHeight = 0.05f;
 	
+	/**
+	 * Constructor 
+	 * 
+	 * @param GLGame game
+	 * @param String texture
+	 * @param short func
+	 * @param float texScaleWidth
+	 * @param float texScaleHeight
+	 * @param Vectro2 ... vertices
+	 */
 	public TexturedShape(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, Vector2 ... vertices) {
 		
 		super(vertices);
@@ -17,6 +33,13 @@ public abstract class TexturedShape extends HudItem {
 		this.func = func;
 	}
 	
+	/**
+	 * Load the texture for the shape 
+	 * 
+	 * @param String fileName
+	 * @param float scaleWidth
+	 * @param float scaleHeight
+	 */
 	public void setupTexture(String fileName, float scaleWidth, float scaleHeight) {
 		
 		this.texture = new GLTexture(this.game, fileName);
@@ -24,6 +47,9 @@ public abstract class TexturedShape extends HudItem {
 		this.texScaleHeight = scaleHeight == 0 ? 0.1f : scaleHeight;
 	}
 	
+	/**
+	 * Reload the texture
+	 */
 	public void reloadTexture() {
 		
 		if (this.texture != null) {
@@ -32,6 +58,9 @@ public abstract class TexturedShape extends HudItem {
 		}
 	}
 	
+	/**
+	 * Dispose the texture
+	 */
 	public void dispose() {
 		
 		if (this.texture != null) {
@@ -40,6 +69,9 @@ public abstract class TexturedShape extends HudItem {
 		}
 	}
 	
+	/**
+	 * These methods must be implemented by derivatives
+	 */
 	public abstract void draw();
 	public abstract void drawOutline();
 	protected abstract void setupVertices();

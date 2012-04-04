@@ -4,20 +4,33 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.util.FloatMath;
 
-
-
-public class SpriteBatcher {        
+/**
+ * Class to draw sprites on form of TextureRegions
+ * 
+ * @author soh#zolex
+ *
+ */
+public class SpriteBatcher {
+	
     final float[] verticesBuffer;
     int bufferIndex;
     final GLVertices vertices;
     int numSprites;    
     
-    public SpriteBatcher(GLGraphics glGraphics, int maxSprites) {                
+    /**
+     * Constructor
+     * 
+     * @param GLGraphics glGraphics
+     * @param int maxSprites
+     */
+    public SpriteBatcher(GLGraphics glGraphics, int maxSprites) {   
+    	
         this.verticesBuffer = new float[maxSprites*4*4];        
         this.vertices = new GLVertices(glGraphics, maxSprites*4, maxSprites*6, false, true);
         this.bufferIndex = 0;
         this.numSprites = 0;
-                
+        
+        // create the indices for the vertices
         short[] indices = new short[maxSprites*6];
         int len = indices.length;
         short j = 0;
@@ -32,12 +45,20 @@ public class SpriteBatcher {
         vertices.setIndices(indices, 0, indices.length);                
     }       
     
+    /**
+     * Start drawing sprites using the given tetxure
+     * 
+     * @param GLTetxure texture
+     */
     public void beginBatch(GLTexture texture) {
         texture.bind();
         numSprites = 0;
         bufferIndex = 0;
     }
     
+    /**
+     * End drawing the sprites
+     */
     public void endBatch() {
         vertices.setVertices(verticesBuffer, 0, bufferIndex);
         vertices.bind();
@@ -45,7 +66,17 @@ public class SpriteBatcher {
         vertices.unbind();
     }
     
+    /**
+     * Draw a single sprite
+     * 
+     * @param float x
+     * @param float y
+     * @param float width
+     * @param float height
+     * @param TextureRegion region
+     */
     public void drawSprite(float x, float y, float width, float height, TextureRegion region) {
+    	
         float halfWidth = width / 2;
         float halfHeight = height / 2;
         float x1 = x - halfWidth;
@@ -76,7 +107,18 @@ public class SpriteBatcher {
         numSprites++;
     }
     
+    /**
+     * Draw a rotated sprite
+     * 
+     * @param float x
+     * @param float y
+     * @param float width
+     * @param float height
+     * @param float angle
+     * @param TextureRegion region
+     */
     public void drawSprite(float x, float y, float width, float height, float angle, TextureRegion region) {
+    	
         float halfWidth = width / 2;
         float halfHeight = height / 2;
         

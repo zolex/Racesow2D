@@ -1,7 +1,14 @@
 package org.racenet.framework;
 
+/**
+ * Represents a basic object inside of an openGL game
+ * 
+ * @author soh#zolex
+ *
+ */
 public class GameObject extends Polygon {
 
+	// object functions
 	public static final short FUNC_NONE = 0;
 	public static final short FUNC_LAVA = 1;
 	public static final short FUNC_START_TIMER = 2;
@@ -9,19 +16,26 @@ public class GameObject extends Polygon {
 	public static final short FUNC_WATER = 4;
 	public static final short FUNC_TUTORIAL = 5;
 	
+	// item functions
 	public static final short ITEM_NONE = 100;
 	public static final short ITEM_ROCKET = 101;
 	public static final short ITEM_PLASMA = 102;
 	
+	// the applied function
 	public short func;
 	
-	// for tutorial
+	// only for tutorial
 	public String info1 = "";
 	public String info2 = "";
 	public String info3 = "";
 	public boolean finished = false;
 	public String event = "";
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param Vertices ... vertices
+	 */
 	public GameObject(Vector2 ... vertices) {
 		
 		super(vertices);

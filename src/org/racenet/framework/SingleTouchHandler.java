@@ -10,6 +10,12 @@ import org.racenet.framework.interfaces.TouchHandler;
 import android.view.MotionEvent;
 import android.view.View;
 
+/**
+ * Class to handle single touch events
+ * 
+ * @author soh#zolex
+ *
+ */
 public class SingleTouchHandler implements TouchHandler {
 
 	private static final int POOL_SIZE = 100;
@@ -20,6 +26,13 @@ public class SingleTouchHandler implements TouchHandler {
 	float scaleX;
 	float scaleY;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param View view
+	 * @param float scaleX
+	 * @param float scaleY
+	 */
 	public SingleTouchHandler(View view, float scaleX, float scaleY) {
 		
 		PoolObjectFactory<TouchEvent> factory = new PoolObjectFactory<TouchEvent>() {
@@ -37,6 +50,13 @@ public class SingleTouchHandler implements TouchHandler {
 		this.scaleY = scaleY;
 	}
 	
+	/**
+	 * Event when the screen is being touched
+	 * 
+	 * @param View v
+	 * @param MotionEvent e
+	 * @return boolean
+	 */
 	public boolean onTouch(View v, MotionEvent e) {
 		
 		synchronized (this) {
@@ -68,6 +88,11 @@ public class SingleTouchHandler implements TouchHandler {
 		}
 	}
 
+	/**
+	 * Get a list of buffered touch events
+	 * 
+	 * @return List<TouchEvent>
+	 */
 	public List<TouchEvent> getTouchEvents() {
 		
 		synchronized (this) {

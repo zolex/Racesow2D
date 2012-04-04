@@ -11,13 +11,37 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * Class to store information in an SQLite database
+ *
+ * @author soh#zolex
+ * 
+ */
 public final class Database extends SQLiteOpenHelper {
 
+	/**
+	 * The current version of the database.
+	 * Should be increased which each change to the
+	 * database structure
+	 */
 	private static final int DATABASE_VERSION = 4;
+	
+	/**
+	 * Filename for the SQLite database
+	 */
     private static final String DATABASE_NAME = "org.racenet.racesow.db";
 
+    /**
+     * Instance for singleton access
+     */
     private static Database __instance;
     
+    /**
+     * Singleton getter
+     * 
+     * @param Context context
+     * @return Database
+     */
     public static Database getInstance(Context context) {
     	
     	if (__instance == null) {
@@ -28,12 +52,22 @@ public final class Database extends SQLiteOpenHelper {
     	return __instance;
     }
     
+    /**
+     * Private constructor to only allot singleton usage
+     * 
+     * @param Context context
+     */
     private Database(Context context) {
     	
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
+    /**
+     * Called when the database is initially created
+     * 
+     * @param SQLiteDatabase db
+     */
     public void onCreate(SQLiteDatabase db) {
     	
         db.execSQL("CREATE TABLE settings(key TEXT, value TEXT, PRIMARY KEY(key))");
@@ -57,6 +91,13 @@ public final class Database extends SQLiteOpenHelper {
     }
 
 	@Override
+	/**
+	 * Called when the database version has changed.
+	 * 
+	 * @param SQLiteDatabase db
+	 * @param int oldVersion
+	 * @param int oldVersion
+	 */
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		
 		if (oldVersion < 4 && newVersion >= 4) {
@@ -65,6 +106,14 @@ public final class Database extends SQLiteOpenHelper {
 		}
 	}
 	
+	/**
+	 * Set a value in the settings table.
+	 * Be sure to create the value in onCreate or onUpgrade
+	 * as this method only updates values.
+	 * 
+	 * @param String key
+	 * @param String value
+	 */
 	public void set(String key, String value) {
 		
 		ContentValues values = new ContentValues();
@@ -75,6 +124,12 @@ public final class Database extends SQLiteOpenHelper {
     	database.close();
 	}
 	
+	/**
+	 * Get a value from the settings table
+	 * 
+	 * @param String key
+	 * @return String
+	 */
 	public String get(String key) {
 		
 		SQLiteDatabase database = getReadableDatabase();
@@ -87,6 +142,13 @@ public final class Database extends SQLiteOpenHelper {
 	    return value;
 	}
 	
+	/**
+	 * Add a race to the local race table
+	 * 
+	 * @param String map
+	 * @param String player
+	 * @param float time
+	 */
 	public void addRace(String map, String player, float time) {
 		
 		ContentValues values = new ContentValues();
@@ -103,6 +165,12 @@ public final class Database extends SQLiteOpenHelper {
     	database.close();
 	}
 	
+	/**
+	 * Get the best time for the given map
+	 * 
+	 * @param String map
+	 * @return float
+	 */
 	public float getBestTime(String map) {
 		
 		SQLiteDatabase database = getReadableDatabase();
@@ -124,6 +192,12 @@ public final class Database extends SQLiteOpenHelper {
 	    return value;
 	}
 	
+	/**
+	 * Get the scores for the given map
+	 * 
+	 * @param String map
+	 * @return List<ScoreItem>
+	 */
 	public List<ScoreItem> getScores(String map) {
 		
 		SQLiteDatabase database = getReadableDatabase();

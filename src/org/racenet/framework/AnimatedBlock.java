@@ -2,6 +2,12 @@ package org.racenet.framework;
 
 import javax.microedition.khronos.opengles.GL10;
 
+/**
+ * Class which can render an animated rectangle
+ * 
+ * @author soh#zolex
+ *
+ */
 public class AnimatedBlock extends GameObject {
 
 	protected GLGame game = null;
@@ -13,12 +19,23 @@ public class AnimatedBlock extends GameObject {
 	float texScaleWidth = 0.05f;
 	float texScaleHeight = 0.05f;
 	
-	public AnimatedBlock(GLGame game, Vector2 ... edges) {
+	/**
+	 * Constructor 
+	 * 
+	 * @param GLGame game
+	 * @param Vector2 ... vertices
+	 */
+	public AnimatedBlock(GLGame game, Vector2 ... vertices) {
 		
-		super(edges);
+		super(vertices);
 		this.game = game;
 	}
 	
+	/**
+	 * Set a list of animations for the ractangle
+	 * 
+	 * @param String[] ... animations
+	 */
 	protected void setAnimations(String[] ... animations) {
 		
 		this.numAnims = animations.length;
@@ -29,6 +46,13 @@ public class AnimatedBlock extends GameObject {
 		}
 	}
 	
+	/**
+	 * Setup the keyframes by loading the textures for the animations
+	 * 
+	 * @param float frameDuration
+	 * @param int animId
+	 * @param String ... keyFrames
+	 */
 	public void setupKeyFrames(float frameDuration, int animId, String ... keyFrames) {
 		
 		GLTexture[] frames = new GLTexture[keyFrames.length];
@@ -40,6 +64,9 @@ public class AnimatedBlock extends GameObject {
 		this.anims[animId] = new Animation(frameDuration, frames);
 	}
 	
+	/**
+	 * Prepare the vertices for the openGL renderer
+	 */
 	protected void setupVertices() {
 		
 		GLTexture firstFrame = this.anims[0].getKeyFrame(0); // TODO: choose proper frame
@@ -52,6 +79,9 @@ public class AnimatedBlock extends GameObject {
 		this.vertices.setIndices(new short[] {0, 1, 2, 0, 2, 3}, 0, 6);
 	}
 	
+	/**
+	 * Draw the rectangle with the current keyframe
+	 */
 	public void draw() {
 		
 		GL10 gl = this.game.getGLGraphics().getGL();
@@ -65,6 +95,9 @@ public class AnimatedBlock extends GameObject {
 		gl.glPopMatrix();
 	}
 	
+	/**
+	 * Reload all textures of all animations
+	 */
 	public void reloadTextures() {
 		
 		int length = this.anims.length;
@@ -74,6 +107,9 @@ public class AnimatedBlock extends GameObject {
 		}
 	}
 	
+	/**
+	 * Get rid of all textures of all animations
+	 */
 	public void dispose() {
 		
 		int length = this.anims.length;

@@ -20,8 +20,17 @@ import android.os.PowerManager.WakeLock;
 import android.view.Window;
 import android.view.WindowManager;
 
+/**
+ * Android Activity which represents an openGL ES game
+ * 
+ * @author soh#zolex
+ *
+ */
 public abstract class GLGame extends Activity implements Game, Renderer {
 	
+	/**
+	 * Internal states of the game
+	 */
     enum GLGameState {
         Initialized,
         Running,
@@ -41,7 +50,11 @@ public abstract class GLGame extends Activity implements Game, Renderer {
     long startTime = System.nanoTime();
     WakeLock wakeLock;
     
-    @Override 
+    @Override
+    /**
+     * When the activity is being created
+     * create instances of all openGL ES dependencies
+     */
     public void onCreate(Bundle savedInstanceState) {
     	
         super.onCreate(savedInstanceState);
@@ -60,6 +73,9 @@ public abstract class GLGame extends Activity implements Game, Renderer {
         wakeLock.acquire();
     }
     
+    /**
+     * Acquire wakelock on resume
+     */
     public void onResume() {
     	
         super.onResume();
@@ -67,6 +83,13 @@ public abstract class GLGame extends Activity implements Game, Renderer {
         wakeLock.acquire();
     }
     
+    /**
+     * Get the startScreen for the game when
+     * the openGL surface is being created
+     * 
+     * @param GL10 gl
+     * @param EGLConfig config
+     */
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {   
     	
         glGraphics.setGL(gl);
@@ -84,19 +107,34 @@ public abstract class GLGame extends Activity implements Game, Renderer {
         }        
     }
     
+    /**
+     * Nothing to do on surfaceChanged
+     * 
+     * @param GL10 gl
+     * @param int width
+     * @param int height
+     */
     public void onSurfaceChanged(GL10 gl, int width, int height) {   
     	
     }
 
+    /**
+     * onDrawframe is being called by openGL and updates
+     * the world and draws it accoring to the internal gamestate
+     * 
+     * @param GL10 gl
+     */
     public void onDrawFrame(GL10 gl) {     
     	
         GLGameState state = null;
         
+        // listen for a state change
         synchronized (stateChanged) {
         	
             state = this.state;
         }
         
+        // when the game is running update the world and draw it
         if (state == GLGameState.Running) {
         	
             float deltaTime = (System.nanoTime()-startTime) / 1000000000.0f;
@@ -106,6 +144,8 @@ public abstract class GLGame extends Activity implements Game, Renderer {
             screen.present(deltaTime);
         }
         
+        // when the game was paused, set the new state to idle
+        // ie. when the home button is pressed and the game is minimized
         if (state == GLGameState.Paused) {
         	
             screen.pause();            
@@ -116,6 +156,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
             }
         }
         
+        // When the game is closed get rid of all loaded content
         if (state == GLGameState.Finished) {
             screen.pause();
             screen.dispose();
@@ -126,16 +167,10 @@ public abstract class GLGame extends Activity implements Game, Renderer {
         }
     }   
     
-    public void setGameState(GLGameState state) {
-    	
-    	synchronized (stateChanged) {
-    	
-    		this.state = state;
-    		stateChanged.notifyAll();
-    	}
-    }
-    
     @Override 
+    /**
+     * Called by opengl when the game is minimized
+     */
     public void onPause() {
     	
         synchronized(stateChanged) {
@@ -158,31 +193,61 @@ public abstract class GLGame extends Activity implements Game, Renderer {
         super.onPause();
     }    
     
+    /**
+     * Get the openGL graphics
+     * 
+     * @return GLGraphics
+     */
     public GLGraphics getGLGraphics() {
     	
         return glGraphics;
     }  
     
+    /**
+     * Get the user input
+     * 
+     * @return Input
+     */
     public Input getInput() {
     	
         return input;
     }
 
+    /**
+     * Get the FileIO object
+     * 
+     * @return FileIO
+     */
     public FileIO getFileIO() {
     	
         return fileIO;
     }
 
+    /**
+     * Must be implemented for the Game interface
+     * 
+     * @throws IllegalStateException
+     */
     public Graphics getGraphics() {
     	
         throw new IllegalStateException("We are using OpenGL!");
     }
 
+    /**
+     * Get the audio interface
+     * 
+     * @return Audio
+     */
     public Audio getAudio() {
     	
         return audio;
     }
 
+    /**
+     * Set the current game screen
+     * 
+     * @param Screen screen
+     */
     public void setScreen(Screen screen) {
     	
         if (screen == null) {
@@ -195,16 +260,31 @@ public abstract class GLGame extends Activity implements Game, Renderer {
         this.screen = screen;
     }
 
+    /**
+     * Get the current screen
+     * 
+     * @return Screen
+     */
     public Screen getCurrentScreen() {
     	
         return screen;
     }
     
+    /**
+     * Get the screen width
+     * 
+     * @return float
+     */
     public int getScreenWidth() {
     	
     	return getWindowManager().getDefaultDisplay().getWidth();
     }
     
+    /**
+     * Get the screen height
+     * 
+     * @return float
+     */
     public int getScreenHeight() {
     	
     	return getWindowManager().getDefaultDisplay().getHeight();

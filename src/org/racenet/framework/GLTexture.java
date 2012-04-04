@@ -14,6 +14,12 @@ import org.racenet.framework.interfaces.FileIO;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
 
+/**
+ * Class which represents an openGL ES texture
+ * 
+ * @author soh#zolex
+ *
+ */
 public class GLTexture {
 	
     GLGraphics glGraphics;
@@ -26,6 +32,12 @@ public class GLTexture {
     public int height;
     public static String APP_FOLDER = "";
     
+    /**
+     * Constructor
+     * 
+     * @param GLGame glGame
+     * @param String fileName
+     */
     public GLTexture(GLGame glGame, String fileName) {
     	
         glGraphics = glGame.getGLGraphics();
@@ -34,11 +46,21 @@ public class GLTexture {
         load();
     }
     
+    /**
+     * Get the openGL texture ID
+     * 
+     * @return int
+     */
     public int getId() {
     	
     	return textureId;
     }
     
+    /**
+     * Load the texture from the assets or from the sd-card
+     * 
+     * @return boolean
+     */
     private boolean load() {
     	
         GL10 gl = glGraphics.getGL();
@@ -47,6 +69,7 @@ public class GLTexture {
         textureId = textureIds[0];
         
         InputStream in = null;
+        // try loading from assets
         try {
         	
             in = fileIO.readAsset("textures" + File.separator + this.fileName);
@@ -61,6 +84,7 @@ public class GLTexture {
             
         } catch (IOException e) {
         	
+        	// if not found in assets try loading from sd-card
             try {
             	
             	in = fileIO.readFile(APP_FOLDER + File.separator + "textures" + File.separator + this.fileName);
@@ -96,6 +120,9 @@ public class GLTexture {
         return true;
     }
     
+    /**
+     * Reload the texture
+     */
     public void reload() {
     	
         this.load();
@@ -104,6 +131,12 @@ public class GLTexture {
         glGraphics.getGL().glBindTexture(GL10.GL_TEXTURE_2D, 0);
     }
     
+    /**
+     * Set the openGL filters for the texture
+     * 
+     * @param int min
+     * @param itn mag
+     */
     public void setFilters(int min, int mag) {
     	
     	this.minFilter = min;
@@ -113,11 +146,17 @@ public class GLTexture {
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, magFilter);
     }    
     
+    /**
+     * Bind the texture
+     */
     public void bind() {
     	
     	glGraphics.getGL().glBindTexture(GL10.GL_TEXTURE_2D, textureId);
     }
     
+    /**
+     * Get rid of the tetxure
+     */
     public void dispose() {
     	
         GL10 gl = glGraphics.getGL();

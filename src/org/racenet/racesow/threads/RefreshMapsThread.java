@@ -20,16 +20,30 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+/**
+ * Thread to load the maps available for download from the web
+ * 
+ * @author soh#zolex
+ *
+ */
 public class RefreshMapsThread extends Thread {
 
 	private Handler handler;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param handler h
+	 */
 	public RefreshMapsThread(Handler h) {
 		
 		this.handler = h;
 	}
 	
 	@Override
+	/**
+	 * Load the data and pass the XML string to the provided handler
+	 */
     public void run() {         
 
 		HttpClient client = new DefaultHttpClient();				
@@ -42,6 +56,7 @@ public class RefreshMapsThread extends Thread {
 	    	
 	        HttpResponse response = client.execute(get);
 	        
+	        // Bundle can not carry streams, too bad
 	        b.putString("xml", InputStreamToString.convert(response.getEntity().getContent()));
 	        msg.what = 1;   
 	        

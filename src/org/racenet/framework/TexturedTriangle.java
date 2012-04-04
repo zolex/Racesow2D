@@ -2,16 +2,37 @@ package org.racenet.framework;
 
 import javax.microedition.khronos.opengles.GL10;
 
+/**
+ * A drawable triangle with a texture applied
+ * 
+ * @author al
+ *
+ */
 public class TexturedTriangle extends TexturedShape {
 
+	/**
+	 * Constructor 
+	 * 
+	 * @param GLGame game
+	 * @param String texture
+	 * @param short func
+	 * @param float texScaleWidth
+	 * @param float texScaleHeight
+	 * @param Vector2 ... vertices
+	 */
 	public TexturedTriangle(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, Vector2 ... vertices) {
 		
 		super(game, texture, func, texScaleWidth, texScaleHeight, vertices);
 	}
 
+	/**
+	 * Setup the vertices and texture coordinates for the triangle
+	 */
 	protected void setupVertices() {
 
 		float[] glVertices;
+		
+		// if the triangle is a "ramp-up"
 		if (this.vertices[1].x == this.vertices[2].x) {
 		
 			glVertices = new float[] {
@@ -19,6 +40,7 @@ public class TexturedTriangle extends TexturedShape {
 				this.vertices[1].x, this.vertices[1].y,	this.width / (this.texture.width * this.texScaleWidth), height / (this.texture.height * this.texScaleHeight),
 				this.vertices[2].x, this.vertices[2].y,	this.width / (this.texture.width * this.texScaleWidth), 0 };
 			
+		// if the trianlge is a "ramp-down"
 		} else {
 			
 			glVertices = new float[] {
@@ -32,6 +54,9 @@ public class TexturedTriangle extends TexturedShape {
 		this.glVertices.setVertices(glVertices, 0, 12);
 	}
 	
+	/**
+	 * Draw the triangle
+	 */
 	public void draw() {
 		
 		this.texture.bind();
@@ -40,6 +65,9 @@ public class TexturedTriangle extends TexturedShape {
 		this.glVertices.unbind();
 	}
 	
+	/**
+	 * Draw the outlines of the triangle
+	 */
 	public void drawOutline() {
 		
 		this.glVertices.bind();

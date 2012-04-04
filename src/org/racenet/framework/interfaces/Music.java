@@ -1,5 +1,11 @@
 package org.racenet.framework.interfaces;
 
+/**
+ * Intreface for music handling
+ * 
+ * @author soh#zolex
+ *
+ */
 public interface Music {
 
 	public void play();

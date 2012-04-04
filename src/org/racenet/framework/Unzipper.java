@@ -12,17 +12,38 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+/**
+ * Class to unzip a file
+ * 
+ * @author soh#zolex
+ *
+ */
 public class Unzipper {
 	
-	 private static void checkDir(String dir) { 
+	/**
+	 * Check if a directory exists and create it
+	 * if required
+	 * 
+	 * @param String dir
+	 */
+	private static void checkDir(String dir) { 
 		 
-		 File f = new File(dir); 
-		 if (!f.isDirectory()) { 
-			 
-			 f.mkdirs(); 
-		 } 
-	 } 
+		File f = new File(dir); 
+		if (!f.isDirectory()) { 
+		
+			f.mkdirs(); 
+		} 
+	} 
 	
+	/**
+	 * Unzip the file to the given destination and
+	 * report the progress to the provided handler
+	 * 
+	 * @param String zipFile
+	 * @param String destination
+	 * @param handler progress
+	 * @return boolean
+	 */
 	public static boolean unzip(String zipFile, String destination, Handler progress) {
 		
 		checkDir(destination);
@@ -30,6 +51,7 @@ public class Unzipper {
 		FileInputStream fin;
 		try {
 			
+			// unzip the file
 			fin = new FileInputStream(zipFile);
 			int totalBytes = fin.available();
 			int bytesRead = 0;
@@ -37,6 +59,7 @@ public class Unzipper {
 			ZipEntry ze = null; 
 			while ((ze = zin.getNextEntry()) != null) {
 				
+				// report the progress to the handler
 				bytesRead = totalBytes - fin.available();
 				int percent = (int)((float)bytesRead / (float)totalBytes * 100);
 				Message msg = new Message();
@@ -63,6 +86,7 @@ public class Unzipper {
 				} 
 			} 
 			
+			// report final progress
 			Message msg = new Message();
 		    Bundle b = new Bundle();
 		    b.putInt("code", 1);
@@ -72,6 +96,7 @@ public class Unzipper {
 			
 			zin.close();
 			
+		// send a failure message
 		} catch (FileNotFoundException e) {
 			
 			Message msg = new Message();
@@ -82,6 +107,7 @@ public class Unzipper {
 	        progress.sendMessage(msg);
 			return false;
 			
+		// send a failure message
 		} catch (IOException e) {
 			
 			Message msg = new Message();

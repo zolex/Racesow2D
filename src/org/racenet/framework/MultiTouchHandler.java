@@ -11,6 +11,12 @@ import org.racenet.framework.Pool.PoolObjectFactory;
 import org.racenet.framework.interfaces.Input.TouchEvent;
 import org.racenet.framework.interfaces.TouchHandler;
 
+/**
+ * Class to handle multiple touch events
+ * 
+ * @author soh#zolex
+ *
+ */
 public class MultiTouchHandler implements TouchHandler {
 	
 	private static final int POOL_SIZE = 100;
@@ -20,6 +26,13 @@ public class MultiTouchHandler implements TouchHandler {
     float scaleX;
     float scaleY;
 
+    /**
+     * Constructor 
+     * 
+     * @param View view
+     * @param float scaleX
+     * @param float scaleY
+     */
     public MultiTouchHandler(View view, float scaleX, float scaleY) {
     	
         PoolObjectFactory<TouchEvent> factory = new PoolObjectFactory<TouchEvent>() {
@@ -37,6 +50,13 @@ public class MultiTouchHandler implements TouchHandler {
         this.scaleY = scaleY;
     }
 
+    /**
+	 * Event when the screen is being touched
+	 * 
+	 * @param View v
+	 * @param MotionEvent e
+	 * @return boolean
+	 */
     public boolean onTouch(View v, MotionEvent event) {
     	
         synchronized (this) {
@@ -93,6 +113,11 @@ public class MultiTouchHandler implements TouchHandler {
         }
     }
 
+    /**
+	 * Get a list of buffered touch events
+	 * 
+	 * @return List<TouchEvent>
+	 */
     public List<TouchEvent> getTouchEvents() {
     	
         synchronized (this) {

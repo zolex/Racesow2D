@@ -2,6 +2,12 @@ package org.racenet.framework;
 
 import javax.microedition.khronos.opengles.GL10;
 
+/**
+ * A text assigned to the Camera2 class
+ * 
+ * @author soh#zolex
+ *
+ */
 public class CameraText extends HudItem {
 
 	SpriteBatcher batcher;
@@ -15,6 +21,15 @@ public class CameraText extends HudItem {
 	public float scale = 0.075f;
 	public float space = 0.06f;
 	
+	/**
+	 * Constructor 
+	 * 
+	 * @param SpriteBatcher batcher
+	 * @param BitmapFont font
+	 * @param GL10 gl
+	 * @param float cameraX
+	 * @param float cameraY
+	 */
 	public CameraText(SpriteBatcher batcher, BitmapFont font, GL10 gl, float cameraX, float cameraY) {
 		
 		super(new Vector2(cameraX, cameraY));
@@ -24,6 +39,9 @@ public class CameraText extends HudItem {
 	}
 
 	@Override
+	/**
+	 * Draw the text
+	 */
 	public void draw() {
 		
 		this.gl.glColor4f(this.red, this.green, this.blue, this.alpha);
@@ -32,12 +50,18 @@ public class CameraText extends HudItem {
 	}
 
 	@Override
+	/**
+	 * Reload the bitmap font
+	 */
 	public void reloadTexture() {
 		
 		this.font.texture.reload();
 	}
 	
 	@Override
+	/**
+	 * Get rid of the bitmap font
+	 */
 	public void dispose() {
 		
 		this.font.texture.dispose();

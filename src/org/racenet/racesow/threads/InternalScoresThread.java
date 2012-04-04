@@ -8,6 +8,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+/**
+ * Thread to save data to the internal scores database
+ * 
+ * @author soh#zolex
+ *
+ */
 public class InternalScoresThread extends Thread {
 
 	private Handler handler;
@@ -16,6 +22,15 @@ public class InternalScoresThread extends Thread {
 	private float time;
 	private Context context;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param Context context
+	 * @param String map
+	 * @param String player
+	 * @param float time
+	 * @param Handler handler
+	 */
 	public InternalScoresThread(Context context, String map, String player, float time, Handler handler) {
 		
 		this.context = context;
@@ -26,6 +41,9 @@ public class InternalScoresThread extends Thread {
 	}
 	
 	@Override
+	/**
+	 * Adds the race to the database
+	 */
     public void run() {         
 
 	    Database db = Database.getInstance(this.context);

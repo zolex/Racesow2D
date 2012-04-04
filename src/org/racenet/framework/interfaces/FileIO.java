@@ -4,6 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * Interface for File in- and output
+ * 
+ * @author soh#zolex
+ *
+ */
 public interface FileIO {
 
 	public InputStream readAsset(String fileName) throws IOException;

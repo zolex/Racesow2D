@@ -14,15 +14,32 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
  
+/**
+ * Class to download files from web and
+ * report the progress to a handler
+ * 
+ * @author soh#zolex
+ *
+ */
 public class Downloader {
  
 	private boolean cancelDownload = false;
 	
+	/**
+	 * Cancel a started download
+	 */
 	public void cancelDownload() {
 		
 		this.cancelDownload = true;
 	}
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param String source
+	 * @param String destination
+	 * @param Handler progress
+	 */
 	public void download(String source, String destination, Handler progress) {
 		
 		try {
@@ -34,6 +51,7 @@ public class Downloader {
 			
 			File file = new File(destination);
 
+			// open the web connection
 			URLConnection ucon = url.openConnection();
 			InputStream is = ucon.getInputStream();
 			BufferedInputStream bis = new BufferedInputStream(is);
@@ -42,11 +60,14 @@ public class Downloader {
 			ByteArrayBuffer baf = new ByteArrayBuffer(50);
 			int current = 0;
 			int updateInterval = 0;
+			// download the file
 			while (!this.cancelDownload && (current = bis.read()) != -1) {
 				
 				bytesRead += current;
+				// don't report the progress too often...
 				if (updateInterval++ == 4096) {
 					
+					// report the progress
 					updateInterval = 0;
 					int percent = (int)(((float)bytesRead / 128) / (float)totalBytes * 100);
 					if (percent < 100) {
@@ -70,10 +91,12 @@ public class Downloader {
 				
 			} else {
 
+				// write the local file
 				FileOutputStream fos = new FileOutputStream(file);
 				fos.write(baf.toByteArray());
 				fos.close();
 				
+				// report the final progress
 				Message msg = new Message();
 			    Bundle b = new Bundle();
 			    b.putInt("code", 1);
@@ -84,6 +107,7 @@ public class Downloader {
 
 		} catch (IOException e) {
 			
+			// report an error
 			Message msg = new Message();
 		    Bundle b = new Bundle();
 		    b.putInt("code", 2);

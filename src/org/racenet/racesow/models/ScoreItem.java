@@ -1,5 +1,11 @@
 package org.racenet.racesow.models;
 
+/**
+ * Class to represent a single score
+ * 
+ * @author soh#zolex
+ *
+ */
 public class ScoreItem {
 
 	public int id;

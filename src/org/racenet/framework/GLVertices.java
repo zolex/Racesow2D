@@ -9,6 +9,12 @@ import javax.microedition.khronos.opengles.GL10;
 
 import org.racenet.framework.GLGraphics;
 
+/**
+ * Class to manage and draw openGL ES vertices
+ * 
+ * @author soh#zolex
+ *
+ */
 public class GLVertices {
 	
     final GLGraphics glGraphics;
@@ -18,6 +24,15 @@ public class GLVertices {
     final FloatBuffer vertices;
     final ShortBuffer indices;
     
+    /**
+     * Constructor 
+     * 
+     * @param GLGraphics glGraphics
+     * @param int maxVertices
+     * @param int maxIndices
+     * @param boolean hasColor
+     * @param boolean hasTexCoords
+     */
     public GLVertices (GLGraphics glGraphics, int maxVertices, int maxIndices, boolean hasColor, boolean hasTexCoords) {
     	
         this.glGraphics = glGraphics;
@@ -29,7 +44,7 @@ public class GLVertices {
         buffer.order(ByteOrder.nativeOrder());
         vertices = buffer.asFloatBuffer();
         
-        if(maxIndices > 0) {
+        if (maxIndices > 0) {
         	
             buffer = ByteBuffer.allocateDirect(maxIndices * Short.SIZE / 8);
             buffer.order(ByteOrder.nativeOrder());
@@ -41,6 +56,13 @@ public class GLVertices {
         }            
     }
     
+    /**
+     * Prepare the vertices for drawing
+     * 
+     * @param float[] vertices
+     * @param int offset
+     * @param int length
+     */
     public void setVertices(float[] vertices, int offset, int length) {
     	
         this.vertices.clear();
@@ -48,6 +70,13 @@ public class GLVertices {
         this.vertices.flip();
     }
     
+    /**
+     * Set the indices for sharing vertices
+     * 
+     * @param short[] indices
+     * @param int offset
+     * @param int length
+     */
     public void setIndices(short[] indices, int offset, int length) {
     	
         this.indices.clear();
@@ -55,6 +84,10 @@ public class GLVertices {
         this.indices.flip();
     }
     
+    /**
+     * Bind the vertices to the openGL renderer
+     * according to the provided parameters
+     */
     public void bind() {
     	
         GL10 gl = glGraphics.getGL();
@@ -78,6 +111,13 @@ public class GLVertices {
         }
     }
 
+    /**
+     * Draw the provided vertices accoring to the given parameters
+     * 
+     * @param int primitiveType
+     * @param int offset
+     * @param int numVertices
+     */
     public void draw(int primitiveType, int offset, int numVertices) {  
     	
         GL10 gl = glGraphics.getGL();
@@ -93,6 +133,9 @@ public class GLVertices {
         }        
     }
 
+    /**
+     * Unbind the vertices
+     */
     public void unbind() {
     	
         GL10 gl = glGraphics.getGL();

@@ -1,5 +1,11 @@
 package org.racenet.framework;
 
+/**
+ * Class to render text using a bitmap with ascii characters
+ * 
+ * @author soh#zolex
+ *
+ */
 public class BitmapFont {
 
 	public GLTexture texture;
@@ -7,6 +13,16 @@ public class BitmapFont {
 	public int glyphHeight;
 	public TextureRegion[] glyphs = new TextureRegion[96];
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param GLTexture texture
+	 * @param int offsetX
+	 * @param int offsetY
+	 * @param int glyphsPerRow
+	 * @param int glyphWidth
+	 * @param itn glyphHeight
+	 */
 	public BitmapFont(GLTexture texture, int offsetX, int offsetY, int glyphsPerRow, int glyphWidth, int glyphHeight) {
 		
 		this.texture = texture;
@@ -26,6 +42,17 @@ public class BitmapFont {
 		}
 	}
 	
+	/**
+	 * Draw text on the given position using the given
+	 * scale and letter spacing using the SpriteBatcher class
+	 * 
+	 * @param SpriteBatcher batcher
+	 * @param String text
+	 * @param float scale
+	 * @param float spacing
+	 * @param float x
+	 * @param float y
+	 */
 	public void draw(SpriteBatcher batcher, String text, float scale, float spacing, float x, float y) {
 		
 		batcher.beginBatch(texture);

@@ -201,7 +201,11 @@ class GameScreen extends Screen {
 		//  nothing more to do here when paused
 		if (this.state == GameState.Paused) {
 			
-			this.map.pauseTime += deltaTime;
+			if (map.getCurrentTime() > 0 ) {
+			
+				this.map.pauseTime += deltaTime;
+			}
+			
 			return;
 		}
 		

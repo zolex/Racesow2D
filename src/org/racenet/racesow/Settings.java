@@ -59,6 +59,14 @@ public class Settings extends PreferenceActivity {
 				} else if (pref.getKey().equals("name")) {
 					
 					prefs.edit().putString("name", value.toString()).commit();
+				
+				} else if (pref.getKey().equals("ups")) {
+					
+					prefs.edit().putBoolean("ups", value.toString().equals("true") ? true : false).commit();
+
+				} else if (pref.getKey().equals("fps")) {
+					
+					prefs.edit().putBoolean("fps", value.toString().equals("true") ? true : false).commit();
 				}
 				
 				return true;
@@ -68,6 +76,8 @@ public class Settings extends PreferenceActivity {
 		findPreference("name").setOnPreferenceChangeListener(listener);
 		findPreference("sound").setOnPreferenceChangeListener(listener);
 		findPreference("celshading").setOnPreferenceChangeListener(listener);
+		findPreference("ups").setOnPreferenceChangeListener(listener);
+		findPreference("fps").setOnPreferenceChangeListener(listener);
     }
     
     /**

@@ -18,6 +18,10 @@ import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Screen;
 import org.racenet.framework.interfaces.Input.TouchEvent;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+
 /**
  * Class which represents the racesow game itsself.
  * 
@@ -40,6 +44,8 @@ class GameScreen extends Screen {
 	float shootPressedTime = 0;
 	SpriteBatcher batcher;
 	BitmapFont font;
+	
+	boolean showFPS, showUPS;
 	
 	int fpsInterval = 5;
 	int frames = 10;
@@ -67,14 +73,24 @@ class GameScreen extends Screen {
 		GLTexture texture = new GLTexture((GLGame)game, "font.png");
 		this.font = new BitmapFont(texture, 0, 0, 17, 30, 50);
 		
-		this.fps = this.createCameraText(this.camera.frustumWidth / 2 - 10, this.camera.frustumHeight / 2 - 3);
-		this.fps.text = "fps";
-		this.camera.addHud(this.fps);
+		SharedPreferences prefs = ((Activity)this.game).getSharedPreferences("racesow", Context.MODE_PRIVATE);
+		this.showFPS = prefs.getBoolean("fps", false);
+		this.showUPS = prefs.getBoolean("ups", true);
 		
-		this.ups = this.createCameraText(this.camera.frustumWidth / 2 - 25, this.camera.frustumHeight / 2 - 3);
-		this.camera.addHud(this.ups);
+		if (this.showFPS) {
 		
-		this.timer = this.createCameraText(this.camera.frustumWidth / 2 - 40, this.camera.frustumHeight / 2 - 3);
+			this.fps = this.createCameraText(this.camera.frustumWidth / 2 - 10, this.camera.frustumHeight / 2 - 3);
+			this.fps.text = "fps";
+			this.camera.addHud(this.fps);
+		}
+		
+		if (this.showUPS) {
+			
+			this.ups = this.createCameraText(this.camera.frustumWidth / 2 - 25, this.camera.frustumHeight / 2 - 3);
+			this.camera.addHud(this.ups);
+		}
+		
+		this.timer = this.createCameraText(this.camera.frustumWidth / 2 - 45, this.camera.frustumHeight / 2 - 3);
 		this.camera.addHud(this.timer);
 		
 		TexturedBlock pause = new TexturedBlock(
@@ -202,19 +218,27 @@ class GameScreen extends Screen {
 		this.camera.setPosition(this.player.getPosition().x + 20, camY);		
 		this.map.update(deltaTime);
 
-		// update HUD for frames per second
-		this.frames--;
-		this.sumDelta += deltaTime;
-		if (frames == 0) {
-		
-			this.fps.text = "fps " + String.valueOf(new Integer((int)(this.fpsInterval / this.sumDelta)));
-			this.frames = fpsInterval;
-			this.sumDelta = 0;
+		if (this.showFPS) {
 			
+			// update HUD for frames per second
+			this.frames--;
+			this.sumDelta += deltaTime;
+			if (frames == 0) {
+			
+				this.fps.text = "fps " + String.valueOf(new Integer((int)(this.fpsInterval / this.sumDelta)));
+				this.frames = fpsInterval;
+				this.sumDelta = 0;
+				
+			}
 		}
 
-		// update HUD for player-speed and time
-		this.ups.text = "ups " + String.valueOf(new Integer((int)player.virtualSpeed));
+		if (this.showUPS) {
+		
+			// update HUD for player-speed
+			this.ups.text = "ups " + String.valueOf(new Integer((int)player.virtualSpeed));
+		}
+		
+		// update hud for time
 		this.timer.text = "t " + String.format("%.4f", map.getCurrentTime());
 	}
 

@@ -58,6 +58,7 @@ public class Map {
 	private Camera2 camera;
 	public String fileName;
 	private GLGame game;
+	public float pauseTime = 0;
 	
 	/**
 	 * Map constructor.
@@ -832,11 +833,11 @@ public class Map {
 		
 		if (this.raceStarted) {
 		
-			return System.nanoTime() / 1000000000.0f - this.startTime;
+			return System.nanoTime() / 1000000000.0f - this.startTime - this.pauseTime;
 			
 		} else if (this.raceFinished) {
 			
-			return this.stopTime - this.startTime;
+			return this.stopTime - this.startTime - this.pauseTime;
 			
 		} else {
 			

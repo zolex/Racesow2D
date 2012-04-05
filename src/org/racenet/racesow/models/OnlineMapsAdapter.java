@@ -1,80 +1,99 @@
 package org.racenet.racesow.models;
 
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.racenet.framework.XMLParser;
 import org.racenet.racesow.R;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import android.content.Context;
 import android.database.DataSetObserver;
-import android.graphics.Color;
+import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
- * Adapter to provide data for the maps
- * available for download
+ * Maps PagerAdapter for online highscores
  * 
  * @author soh#zolex
  *
  */
-public class DownloadMapsAdapter implements ListAdapter {
-	
-	private Context context;
-	private List<MapItem> mapList;
+public class OnlineMapsAdapter implements ListAdapter {
+
+	Context context;
+	List<MapItem> maps = new ArrayList<MapItem>();
 	
 	/**
 	 * Constructor
 	 * 
 	 * @param Context context
-	 * @param List<MapItem> mapList
+	 * @param InputStream xmlStream
 	 */
-	public DownloadMapsAdapter(Context context, List<MapItem> mapList) {
+	public OnlineMapsAdapter(Context context, InputStream xmlStream) {
 		
 		this.context = context;
-		this.mapList = mapList;
+	    
+        XMLParser parser = new XMLParser();
+		parser.read(xmlStream);
+		
+		NodeList maps = parser.doc.getElementsByTagName("map");
+		
+		// read all maps from the XML stream
+		int numMaps = maps.getLength();
+		for (int i = 0; i < numMaps; i++) {
+			
+			MapItem item = new MapItem();
+			item.name = parser.getNodeValue((Element)maps.item(i));
+			this.maps.add(item);
+		}
 	}
+	
 
 	/**
-	 * Get the number of available maps
+	 * Get the number of scores
 	 * 
 	 * @return int
 	 */
 	public int getCount() {
 
-		return this.mapList.size();
+		return this.maps.size();
 	}
 
 	/**
-	 * Get a map item
+	 * Get a score item
 	 * 
 	 * @param int pos
 	 * @return Object
 	 */
 	public Object getItem(int pos) {
 		
-		return this.mapList.get(pos);
+		return this.maps.get(pos);
 	}
 
 	/**
-	 * Get the ID of a map
+	 * Get the id of a score
 	 * 
-	 * @param int pos
-	 * @return long
+	 * @param in pos
+	 * @retrn long
 	 */
 	public long getItemId(int pos) {
 		
-		return this.mapList.get(pos).id;
+		return 0;
 	}
 
 	/**
-	 * Get the view type of an item
+	 * Get the type of an item view
 	 * 
-	 * @param int arg0
+	 * @param int pos
 	 * @return int
-	 * 
 	 */
 	public int getItemViewType(int arg0) {
 		
@@ -90,44 +109,13 @@ public class DownloadMapsAdapter implements ListAdapter {
 	 * @param ViewGroup viewGroup
 	 * @return View
 	 */
-	public View getView(int arg0, View arg1, ViewGroup arg2) {
+	public View getView(int pos, View view, ViewGroup group) {
 		
-		MapItem item = (MapItem)getItem(arg0);
-		LinearLayout layout =  (LinearLayout)View.inflate(context, R.layout.downloadmapitem, null);
+		LinearLayout layout = (LinearLayout)View.inflate(context, R.layout.scoremapitem, null);
 		TextView name = (TextView)layout.findViewById(R.id.name);
-		TextView skill = (TextView)layout.findViewById(R.id.skill);
-		TextView author = (TextView)layout.findViewById(R.id.author);
-		TextView status = (TextView)layout.findViewById(R.id.status);
 		
+		MapItem item = (MapItem)getItem(pos);
 		name.setText(item.name);
-		skill.setText("(" + item.skill + ")");
-		
-		if (!item.author.equals("")) {
-		
-			author.setText("by " + item.author);
-		}
-		
-		if (item.installed) {
-		
-			status.setText("installed");
-			
-		} else {
-		
-			status.setText("download now!");
-		}
-		
-		if (item.skill.equals("hard")) {
-			
-			skill.setTextColor(Color.RED);
-			
-		} else if (item.skill.equals("medium")) {
-			
-			skill.setTextColor(Color.YELLOW);
-			
-		} else if (item.skill.equals("easy")) {
-			
-			skill.setTextColor(Color.GREEN);
-		}
 
         return layout;
 	}
@@ -149,7 +137,7 @@ public class DownloadMapsAdapter implements ListAdapter {
 	 */
 	public boolean hasStableIds() {
 		
-		return true;
+		return false;
 	}
 
 	/**
@@ -159,7 +147,7 @@ public class DownloadMapsAdapter implements ListAdapter {
 	 */
 	public boolean isEmpty() {
 		
-		return this.mapList.size() == 0;
+		return this.maps.size() == 0;
 	}
 
 	/**
@@ -195,7 +183,7 @@ public class DownloadMapsAdapter implements ListAdapter {
 	/**
 	 * All items should be selectable
 	 * 
-	 * @param int arg0
+	 * @param int pos
 	 * @return boolean
 	 */
 	public boolean isEnabled(int arg0) {

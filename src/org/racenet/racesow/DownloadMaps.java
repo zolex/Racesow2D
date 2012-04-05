@@ -12,8 +12,8 @@ import org.racenet.framework.XMLParser;
 import org.racenet.racesow.models.DownloadMapsAdapter;
 import org.racenet.racesow.models.MapItem;
 import org.racenet.racesow.threads.DownloadThread;
-import org.racenet.racesow.threads.RefreshMapsThread;
 import org.racenet.racesow.threads.UnzipThread;
+import org.racenet.racesow.threads.XMLLoaderThread;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -79,7 +79,7 @@ public class DownloadMaps extends ListActivity {
 		pd.setCancelable(false);
 		pd.show();
         
-		final RefreshMapsThread t = new RefreshMapsThread(new Handler() {
+		final XMLLoaderThread t = new XMLLoaderThread("http://racesow2d.warsow-race.net/maplist.php", new Handler() {
 	    	
 	    	@Override
 	        public void handleMessage(Message msg) {

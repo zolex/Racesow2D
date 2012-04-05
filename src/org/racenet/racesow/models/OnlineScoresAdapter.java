@@ -1,8 +1,13 @@
 package org.racenet.racesow.models;
 
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.racenet.framework.XMLParser;
 import org.racenet.racesow.R;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -21,7 +26,7 @@ import android.widget.TextView;
 public class OnlineScoresAdapter implements ListAdapter {
 	
 	private Context context;
-	private List<ScoreItem> scores;
+	private List<ScoreItem> scores = new ArrayList<ScoreItem>();
 	
 	/**
 	 * Constructor
@@ -29,10 +34,26 @@ public class OnlineScoresAdapter implements ListAdapter {
 	 * @param Context context
 	 * @param List<ScoreItem> scores
 	 */
-	public OnlineScoresAdapter(Context context, List<ScoreItem> scores) {
+	public OnlineScoresAdapter(Context context, InputStream xmlStream) {
 		
 		this.context = context;
-		this.scores = scores;
+		
+		XMLParser parser = new XMLParser();
+		parser.read(xmlStream);
+
+		NodeList positions = parser.doc.getElementsByTagName("position");
+		int numPositions = positions.getLength();
+		for (int i = 0; i < numPositions; i++) {
+
+			Element position = (Element)positions.item(i);
+	
+			ScoreItem score = new ScoreItem();
+			score.position = Integer.parseInt(parser.getValue(position, "no"));
+			score.player = parser.getValue(position, "player");
+			score.time = Float.parseFloat(parser.getValue(position, "time"));
+			score.created_at = parser.getValue(position, "created_at");
+			this.scores.add(score);
+		}
 	}
 
 	/**

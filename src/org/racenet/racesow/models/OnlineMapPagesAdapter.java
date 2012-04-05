@@ -27,7 +27,6 @@ public class OnlineMapPagesAdapter extends PagerAdapter {
 
 	Context context;
 	List<MapItem> maps = new ArrayList<MapItem>();
-	List<OnlineScoresAdapter> adapters = new ArrayList<OnlineScoresAdapter>();
 	
 	/**
 	 * Constructor
@@ -48,28 +47,9 @@ public class OnlineMapPagesAdapter extends PagerAdapter {
 		int numMaps = maps.getLength();
 		for (int i = 0; i < numMaps; i++) {
 			
-			Element map = (Element)maps.item(i);
 			MapItem item = new MapItem();
-			item.name = parser.getValue(map, "name");
+			item.name = parser.getNodeValue((Element)maps.item(i));
 			this.maps.add(item);
-			
-			// read the scores for each map
-			List<ScoreItem> scores = new ArrayList<ScoreItem>();
-			NodeList positions = map.getElementsByTagName("position");
-			int numPositions = positions.getLength();
-			for (int j = 0; j < numPositions; j++) {
-				
-				Element position = (Element)positions.item(j);
-				
-				ScoreItem score = new ScoreItem();
-				score.position = Integer.parseInt(parser.getValue(position, "no"));
-				score.player = parser.getValue(position, "player");
-				score.time = Float.parseFloat(parser.getValue(position, "time"));
-				score.created_at = parser.getValue(position, "created_at");
-				scores.add(score);
-			}
-			
-			this.adapters.add(new OnlineScoresAdapter(context, scores));
 		}
 	}
 	
@@ -100,7 +80,6 @@ public class OnlineMapPagesAdapter extends PagerAdapter {
 		}
 		
 		name.setText(this.maps.get(position).name);
-		list.setAdapter(this.adapters.get(position));
 		container.addView(layout);
 		return layout;
 	}

@@ -3,14 +3,10 @@ package org.racenet.racesow;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.racenet.framework.XMLParser;
-import org.racenet.racesow.models.MapItem;
-import org.racenet.racesow.models.OnlineMapsAdapter;
 import org.racenet.racesow.models.OnlineScoresAdapter;
 import org.racenet.racesow.models.ScoreItem;
+import org.racenet.racesow.threads.XMLLoaderTask;
 import org.racenet.racesow.threads.XMLLoaderThread;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -26,27 +22,24 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 
 /**
- * Obtain the online scores and display pages of lists of scores
+ * Obtain and display the online scores
  * 
  * @author soh#zolex
  *
  */
-public class OnlineScoresDetails extends ListActivity {
+public class OnlineScoresDetails extends XMLListActivity {
 
 	WakeLock wakeLock;
-	OnlineScoresAdapter mAdapter;
-	List<ScoreItem> scores = new ArrayList<ScoreItem>();
+	OnlineScoresAdapter adapter;
 	boolean isLoading = false;
 	int chunkLimit = 50;
 	int chunkOffset = 0;
+	ProgressDialog pd;
 	
     @Override
     /**
@@ -61,6 +54,8 @@ public class OnlineScoresDetails extends ListActivity {
     	PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
 		
+    	adapter = new OnlineScoresAdapter(this);
+		setListAdapter(adapter);
 		this.loadData();
 		
 		setContentView(R.layout.listview);
@@ -74,7 +69,7 @@ public class OnlineScoresDetails extends ListActivity {
 
 				if (totalItemCount > 0 && visibleItemCount > 0 && firstVisibleItem + visibleItemCount >= totalItemCount) {
 					
-					if (!isLoading) {
+					if (!isLoading && adapter.getCount() % chunkLimit == 0) {
 					
 						loadData();
 					}
@@ -85,7 +80,7 @@ public class OnlineScoresDetails extends ListActivity {
     
     public void loadData() {
     	
-    	final ProgressDialog pd = new ProgressDialog(OnlineScoresDetails.this);
+    	pd = new ProgressDialog(OnlineScoresDetails.this);
 		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		pd.setMessage("Obtaining scores...");
 		pd.setCancelable(false);
@@ -93,73 +88,58 @@ public class OnlineScoresDetails extends ListActivity {
     	
     	isLoading = true;
 		String mapName = getIntent().getStringExtra("map");
-		XMLLoaderThread t = new XMLLoaderThread("http://racesow2d.warsow-race.net/map_positions.php?name=" + mapName + "&offset=" + this.chunkOffset + "&limit=" + this.chunkLimit, new Handler() {
-	    	
-	    	@Override
-	        public void handleMessage(Message msg) {
-	    		
-	    		switch (msg.what) {
-	    			
-	    			// network error
-	    			case 0:
-	    				new AlertDialog.Builder(OnlineScoresDetails.this)
-				            .setMessage("Could not obtain the maplist.\nCheck your network connection and try again.")
-				            .setNeutralButton("OK", new OnClickListener() {
+		String url = "http://racesow2d.warsow-race.net/map_positions.php?name=" + mapName + "&offset=" + this.chunkOffset + "&limit=" + this.chunkLimit;
+		new XMLLoaderTask(this).execute(url);
+    }
+    
+    public void xmlCallback(InputStream xmlStream) {
+    	
+    	pd.dismiss();
+		
+		if (xmlStream == null) {
+			
+			new AlertDialog.Builder(this)
+	            .setMessage("Could not load the scores.\nCheck your network connection and try again.")
+	            .setNeutralButton("OK", new OnClickListener() {
 								
-								public void onClick(DialogInterface arg0, int arg1) {
-									
-									finish();
-									overridePendingTransition(0, 0);
-								}
-							})
-				            .show();
-	    				break;
-	    				
-	    			// maplist received
-	    			case 1:
-	    				pd.dismiss();
-						InputStream xmlStream;
-						try {
-							
-							xmlStream = new ByteArrayInputStream(msg.getData().getString("xml").getBytes("UTF-8"));
-							XMLParser parser = new XMLParser();
-							parser.read(xmlStream);
-
-							NodeList positions = parser.doc.getElementsByTagName("position");
-							int numPositions = positions.getLength();
-							for (int i = 0; i < numPositions; i++) {
-
-								Element position = (Element)positions.item(i);
+					public void onClick(DialogInterface arg0, int arg1) {
 						
-								ScoreItem score = new ScoreItem();
-								score.position = Integer.parseInt(parser.getValue(position, "no"));
-								score.player = parser.getValue(position, "player");
-								score.time = Float.parseFloat(parser.getValue(position, "time"));
-								score.created_at = parser.getValue(position, "created_at");
-								scores.add(score);
-							}
+						if (chunkOffset == 0) {
 							
-							mAdapter = new OnlineScoresAdapter(getApplicationContext(), scores);
-				    		setListAdapter(mAdapter);
-				    		chunkOffset += chunkLimit;
-				    		isLoading = false;
-							
-						} catch (UnsupportedEncodingException e) {
-	
-							new AlertDialog.Builder(OnlineScoresDetails.this)
-					            .setMessage("Internal error: " + e.getMessage())
-					            .setNeutralButton("OK", null)
-					            .show();
+							finish();
+							overridePendingTransition(0, 0);
 						}
-		    			
-						break;
-	    		}
-	    		
-	        	pd.dismiss();
-	        }
-	    });
-	    
-		t.start();
+					}
+				})
+	            .show();
+			
+		} else {
+		
+			XMLParser parser = new XMLParser();
+			parser.read(xmlStream);
+			NodeList positions = parser.doc.getElementsByTagName("position");
+			int numPositions = positions.getLength();
+			for (int i = 0; i < numPositions; i++) {
+
+				Element position = (Element)positions.item(i);
+		
+				ScoreItem score = new ScoreItem();
+				score.position = Integer.parseInt(parser.getValue(position, "no"));
+				score.player = parser.getValue(position, "player");
+				score.time = Float.parseFloat(parser.getValue(position, "time"));
+				score.created_at = parser.getValue(position, "created_at");
+				
+				adapter.addItem(score);
+			}
+			
+			// adapter.notifyDataSetChanged(); // WHY THE FUCK DOESN'T THIS WORK????
+			setListAdapter(adapter);
+			getListView().setSelection(chunkOffset - 6);
+			
+			chunkOffset += chunkLimit;
+		}
+		
+		isLoading = false;
     }
     
     /**

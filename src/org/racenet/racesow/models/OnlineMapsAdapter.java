@@ -37,26 +37,21 @@ public class OnlineMapsAdapter implements ListAdapter {
 	 * @param Context context
 	 * @param InputStream xmlStream
 	 */
-	public OnlineMapsAdapter(Context context, InputStream xmlStream) {
+	public OnlineMapsAdapter(Context context) {
 		
 		this.context = context;
-	    
-        XMLParser parser = new XMLParser();
-		parser.read(xmlStream);
-		
-		NodeList maps = parser.doc.getElementsByTagName("map");
-		
-		// read all maps from the XML stream
-		int numMaps = maps.getLength();
-		for (int i = 0; i < numMaps; i++) {
-			
-			MapItem item = new MapItem();
-			item.name = parser.getNodeValue((Element)maps.item(i));
-			this.maps.add(item);
-		}
 	}
 	
-
+	/**
+	 * Add an item to the maplist
+	 * 
+	 * @param MapItem item
+	 */
+	public void addItem(MapItem item) {
+		
+		this.maps.add(item);
+	}
+	
 	/**
 	 * Get the number of scores
 	 * 

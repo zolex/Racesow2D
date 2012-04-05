@@ -1,21 +1,17 @@
 package org.racenet.racesow.models;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.racenet.framework.XMLParser;
 import org.racenet.racesow.R;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 /**
@@ -24,10 +20,10 @@ import android.widget.TextView;
  * @author soh#zolex
  *
  */
-public class OnlineScoresAdapter implements ListAdapter {
+public class OnlineScoresAdapter extends BaseAdapter {
 	
 	private Context context;
-	private List<ScoreItem> scores;
+	private List<ScoreItem> scores = new ArrayList<ScoreItem>();
 	
 	/**
 	 * Constructor
@@ -35,10 +31,19 @@ public class OnlineScoresAdapter implements ListAdapter {
 	 * @param Context context
 	 * @param List<ScoreItem> scores
 	 */
-	public OnlineScoresAdapter(Context context, List<ScoreItem> scores) {
+	public OnlineScoresAdapter(Context context) {
 		
 		this.context = context;
-		this.scores = scores;
+	}
+	
+	/**
+	 * Add an item to the adapter
+	 * 
+	 * @param item
+	 */
+	public void addItem(ScoreItem item) {
+		
+		this.scores.add(item);
 	}
 
 	/**
@@ -61,7 +66,7 @@ public class OnlineScoresAdapter implements ListAdapter {
 		
 		return this.scores.get(pos);
 	}
-
+	
 	/**
 	 * Get the id of a score
 	 * 
@@ -70,7 +75,7 @@ public class OnlineScoresAdapter implements ListAdapter {
 	 */
 	public long getItemId(int pos) {
 		
-		return this.scores.get(pos).id;
+		return 0;
 	}
 
 	/**
@@ -95,7 +100,16 @@ public class OnlineScoresAdapter implements ListAdapter {
 	 */
 	public View getView(int pos, View view, ViewGroup group) {
 		
-		LinearLayout layout = (LinearLayout)View.inflate(context, R.layout.scoreitem, null);
+		LinearLayout layout;
+		if (view == null) {
+			
+			layout = (LinearLayout)View.inflate(this.context, R.layout.scoreitem, null);
+			
+		} else {
+			
+			layout = (LinearLayout)view;
+		}
+		
 		TextView position = (TextView)layout.findViewById(R.id.pos);
 		TextView time = (TextView)layout.findViewById(R.id.time);
 		TextView player = (TextView)layout.findViewById(R.id.player);
@@ -127,7 +141,7 @@ public class OnlineScoresAdapter implements ListAdapter {
 	 */
 	public boolean hasStableIds() {
 		
-		return true;
+		return false;
 	}
 
 	/**

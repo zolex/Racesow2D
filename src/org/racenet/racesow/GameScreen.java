@@ -37,7 +37,7 @@ class GameScreen extends Screen {
 	Vector2 gravity = new Vector2(0, -30);
 	public Camera2 camera;
 	GLGraphics glGraphics;
-	
+	TexturedBlock pause, play;
 	boolean jumpPressed = false;
 	float jumpPressedTime = 0;
 	boolean shootPressed = false;
@@ -93,11 +93,19 @@ class GameScreen extends Screen {
 		this.timer = this.createCameraText(this.camera.frustumWidth / 2 - 45, this.camera.frustumHeight / 2 - 3);
 		this.camera.addHud(this.timer);
 		
-		TexturedBlock pause = new TexturedBlock(
+		this.pause = new TexturedBlock(
+				(GLGame)this.game,
+				"hud/pause.png", GameObject.FUNC_NONE, -1, -1,
+				new Vector2(-this.camera.frustumWidth / 2 + 1 , this.camera.frustumHeight / 2 - 6),
+				new Vector2(-this.camera.frustumWidth / 2 + 6, 0));
+		
+		this.play = new TexturedBlock(
 			(GLGame)this.game,
-			"hud/pause.png", GameObject.FUNC_NONE, -1, -1,
+			"hud/play.png", GameObject.FUNC_NONE, -1, -1,
 			new Vector2(-this.camera.frustumWidth / 2 + 1 , this.camera.frustumHeight / 2 - 6),
 			new Vector2(-this.camera.frustumWidth / 2 + 6, 0));
+		
+		this.camera.addHud(play);
 		this.camera.addHud(pause);
 	}
 	
@@ -113,7 +121,27 @@ class GameScreen extends Screen {
 		
 		return new CameraText(this.batcher, this.font, this.glGraphics.getGL(), cameraX, cameraY);
 	}
+	
+	/**
+	 * Set the game into pause state
+	 */
+	public void pauseGame() {
+		
+		this.state = GameState.Paused;
+		this.camera.addHud(this.play);
+		this.camera.removeHud(this.pause);
+	}
 
+	/**
+	 * Resume the game from pause state
+	 */
+	public void resumeGame() {
+		
+		this.state = GameState.Running;
+		this.camera.removeHud(this.play);
+		this.camera.addHud(this.pause);
+	}
+	
 	/**
 	 * Update player, map and camera.
 	 * Called each frame from GLGame.
@@ -133,17 +161,16 @@ class GameScreen extends Screen {
 				
 					if (this.state == GameState.Running) {
 						
-						this.state = GameState.Paused;		
+						this.pauseGame();
 						
 					} else if (this.state == GameState.Paused) {
 						
-						this.state = GameState.Running;
-						
+						this.resumeGame();
 					} 
 				}
 				
 				// when touching the jump-area on the screen
-				if (e.x / (float)game.getScreenWidth() > 0.5f) {
+				else if (e.x / (float)game.getScreenWidth() > 0.5f) {
 					
 					if (!this.jumpPressed) {
 						

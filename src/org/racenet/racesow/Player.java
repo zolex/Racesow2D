@@ -266,7 +266,7 @@ class Player extends AnimatedBlock {
 			if (!event.equals("reset") && !event.equals(this.tutorialActive.event)) return;
 			
 			this.tutorialActive = null;
-			((GameScreen)this.game.getCurrentScreen()).state = GameState.Running;
+			((GameScreen)this.game.getCurrentScreen()).resumeGame();
 			
 			if (this.tutorialMessage1 != null) {
 				
@@ -902,7 +902,7 @@ class Player extends AnimatedBlock {
 		
 		this.tutorialActive = tutorial;
 		tutorial.finished = true;
-		((GameScreen)this.game.getCurrentScreen()).state = GameState.Paused;
+		((GameScreen)this.game.getCurrentScreen()).pauseGame();
 		
 		this.tutorialMessage1= this.gameScreen.createCameraText(-32, 10);
 		this.tutorialMessage1.text = tutorial.info1;

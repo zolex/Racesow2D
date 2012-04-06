@@ -58,6 +58,14 @@ class GameScreen extends Screen {
 		Paused
 	}
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param Game game
+	 * @param Camera2 camera
+	 * @param Map map
+	 * @param Player player
+	 */
 	public GameScreen(Game game, Camera2 camera, Map map, Player player) {
 			
 		super(game);
@@ -69,10 +77,12 @@ class GameScreen extends Screen {
 		
 		GLTexture.APP_FOLDER = "racesow";
 		
+		// for bitmap-font rendering
 		this.batcher = new SpriteBatcher(this.glGraphics, 96);
 		GLTexture texture = new GLTexture((GLGame)game, "font.png");
 		this.font = new BitmapFont(texture, 0, 0, 17, 30, 50);
 		
+		// user settings
 		SharedPreferences prefs = ((Activity)this.game).getSharedPreferences("racesow", Context.MODE_PRIVATE);
 		this.showFPS = prefs.getBoolean("fps", false);
 		this.showUPS = prefs.getBoolean("ups", true);
@@ -105,6 +115,8 @@ class GameScreen extends Screen {
 			new Vector2(-this.camera.frustumWidth / 2 + 1 , this.camera.frustumHeight / 2 - 6),
 			new Vector2(-this.camera.frustumWidth / 2 + 6, 0));
 		
+		// add both, because somehow if play is added
+		// later it won't show up in the HUD
 		this.camera.addHud(play);
 		this.camera.addHud(pause);
 	}

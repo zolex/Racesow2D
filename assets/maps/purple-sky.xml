@@ -5,7 +5,7 @@
 	<levelshot>purple-sky/levelshot.png</levelshot>
 	<player><x>40</x><y>12</y></player>
 	<starttimer><x>50</x></starttimer>
-	<stoptimer><x>2590</x></stoptimer>
+	<stoptimer><x>4480</x></stoptimer>
 	<sky>
 		<texture>purple-sky/sky.png</texture>
 		<position>5</position>
@@ -19,20 +19,20 @@
 		<level>ground</level>
 		<x>0</x>
 		<y>0</y>
-		<width>600</width>
+		<width>850</width>
 		<height>10</height>
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<tri>
 		<level>ground</level>
 		<v1><x>100</x><y>10</y></v1>
-		<v2><x>150</x><y>10</y></v2>
-		<v3><x>150</x><y>20</y></v3>
+		<v2><x>175</x><y>10</y></v2>
+		<v3><x>175</x><y>20.1</y></v3>
 		<texture>purple-sky/stone.png</texture>
 	</tri>
 	<block>
 		<level>ground</level>
-		<x>150</x>
+		<x>175</x>
 		<y>10</y>
 		<width>100</width>
 		<height>10</height>
@@ -40,9 +40,9 @@
 	</block>
 	<block>
 		<level>ground</level>
-		<x>250</x>
+		<x>275</x>
 		<y>10</y>
-		<width>30</width>
+		<width>50</width>
 		<height>5</height>
 		<texture>purple-sky/lava.jpg</texture>
 		<func>1</func>
@@ -51,9 +51,9 @@
 	</block>
 	<block>
 		<level>wall</level>
-		<x>247.5</x>
+		<x>272.5</x>
 		<y>15</y>
-		<width>35</width>
+		<width>55</width>
 		<height>20</height>
 		<texture>purple-sky/wood.png</texture>
 		<texsx>0.05</texsx>
@@ -61,268 +61,200 @@
 	</block>
 	<block>
 		<level>ground</level>
-		<x>280</x>
+		<x>325</x>
 		<y>10</y>
-		<width>50</width>
+		<width>100</width>
 		<height>10</height>
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<tri>
 		<level>ground</level>
-		<v1><x>330</x><y>20</y></v1>
-		<v2><x>330</x><y>10</y></v2>
-		<v3><x>400</x><y>10</y></v3>
+		<v1><x>425</x><y>20</y></v1>
+		<v2><x>425</x><y>10</y></v2>
+		<v3><x>500</x><y>10</y></v3>
 		<texture>purple-sky/stone.png</texture>
 	</tri>
 	<block>
 		<level>ground</level>
-		<x>450</x>
+		<x>600</x>
 		<y>10</y>
+		<width>160</width>
+		<height>2.5</height>
+		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>610</x>
+		<y>12.5</y>
+		<width>140</width>
+		<height>2.5</height>
+		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>620</x>
+		<y>15</y>
+		<width>120</width>
+		<height>2.5</height>
+		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>630</x>
+		<y>17.5</y>
 		<width>100</width>
 		<height>2.5</height>
 		<texture>purple-sky/stone.png</texture>
-	</block>
-	<block>
-		<level>ground</level>
-		<x>460</x>
-		<y>12.5</y>
-		<width>80</width>
-		<height>2.5</height>
-		<texture>purple-sky/stone.png</texture>
-	</block>
-	<block>
-		<level>ground</level>
-		<x>470</x>
-		<y>15</y>
-		<width>60</width>
-		<height>2.5</height>
-		<texture>purple-sky/stone.png</texture>
-	</block>
-	<block>
-		<level>ground</level>
-		<x>480</x>
-		<y>17.5</y>
-		<width>40</width>
-		<height>2.5</height>
-		<texture>purple-sky/stone.png</texture>
-	</block>
-	<block>
-		<level>wall</level>
-		<x>595</x>
-		<y>5</y>
-		<width>50</width>
-		<height>20</height>
-		<texture>purple-sky/wood.png</texture>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
-	</block>
-	<block>
-		<level>ground</level>
-		<x>600</x>
-		<y>0</y>
-		<width>40</width>
-		<height>5</height>
-		<texture>purple-sky/lava.jpg</texture>
-		<func>1</func>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
 	</block>
 	<block>
 		<level>ground</level>
 		<x>640</x>
-		<y>0</y>
-		<width>360</width>
-		<height>10</height>
-		<texture>purple-sky/stone.png</texture>
-	</block>
-	<item>
-		<type>rocket</type>
-		<x>650</x>
-		<y>10.1</y>
-	</item>
-	<tri>
-		<level>ground</level>
-		<v1><x>670</x><y>10</y></v1>
-		<v2><x>710</x><y>10</y></v2>
-		<v3><x>710</x><y>30</y></v3>
-		<texture>purple-sky/stone.png</texture>
-	</tri>
-	<block>
-		<level>ground</level>
-		<x>710</x>
-		<y>10</y>
-		<width>90</width>
-		<height>5</height>
-		<texture>purple-sky/lava.jpg</texture>
-		<func>1</func>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
-	</block>
-	<block>
-		<level>ground</level>
-		<x>800</x>
-		<y>10</y>
-		<width>70</width>
-		<height>10</height>
-		<texture>purple-sky/stone.png</texture>
-	</block>
-	<tri>
-		<level>ground</level>
-		<v1><x>870</x><y>20</y></v1>
-		<v2><x>870</x><y>10</y></v2>
-		<v3><x>970</x><y>10</y></v3>
-		<texture>purple-sky/stone.png</texture>
-	</tri>
-	<block>
-		<level>ground</level>
-		<x>1000</x>
-		<y>0</y>
-		<width>40</width>
-		<height>5</height>
-		<texture>purple-sky/lava.jpg</texture>
-		<func>1</func>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
-	</block>
-	<block>
-		<level>ground</level>
-		<x>1040</x>
-		<y>0</y>
-		<width>40</width>
-		<height>10</height>
-		<texture>purple-sky/stone.png</texture>
-	</block>
-	<block>
-		<level>ground</level>
-		<x>1080</x>
-		<y>0</y>
-		<width>40</width>
-		<height>5</height>
-		<texture>purple-sky/lava.jpg</texture>
-		<func>1</func>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
-	</block>
-	<block>
-		<level>ground</level>
-		<x>1120</x>
-		<y>0</y>
-		<width>115</width>
-		<height>10</height>
-		<texture>purple-sky/stone.png</texture>
-	</block>
-	<item>
-		<type>plasma</type>
-		<x>1150</x>
-		<y>10.1</y>
-	</item>
-	<tri>
-		<level>ground</level>
-		<v1><x>1200</x><y>10</y></v1>
-		<v2><x>1235</x><y>10</y></v2>
-		<v3><x>1235</x><y>15</y></v3>
-		<texture>purple-sky/stone.png</texture>
-	</tri>
-	<block>
-		<level>ground</level>
-		<x>1235</x>
-		<y>0</y>
-		<width>300</width>
-		<height>5</height>
-		<texture>purple-sky/lava.jpg</texture>
-		<func>1</func>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
-	</block>
-	<block>
-		<level>wall</level>
-		<x>1230</x>
-		<y>5</y>
-		<width>310</width>
-		<height>30</height>
-		<texture>purple-sky/wood.png</texture>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
-	</block>
-	<block>
-		<level>ground</level>
-		<x>1535</x>
-		<y>0</y>
-		<width>215</width>
-		<height>10</height>
-		<texture>purple-sky/stone.png</texture>
-	</block>
-	<tri>
-		<level>ground</level>
-		<v1><x>1710</x><y>10</y></v1>
-		<v2><x>1750</x><y>10</y></v2>
-		<v3><x>1750</x><y>20</y></v3>
-		<texture>purple-sky/stone.png</texture>
-	</tri>
-	<block>
-		<level>ground</level>
-		<x>1750</x>
-		<y>0</y>
-		<width>100</width>
-		<height>5</height>
-		<texture>purple-sky/lava.jpg</texture>
-		<func>1</func>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
-	</block>
-	<block>
-		<level>ground</level>
-		<x>1850</x>
-		<y>0</y>
-		<width>250</width>
-		<height>10</height>
-		<texture>purple-sky/stone.png</texture>
-	</block>
-	<block>
-		<level>ground</level>
-		<x>2000</x>
-		<y>10</y>
-		<width>100</width>
-		<height>2.5</height>
-		<texture>purple-sky/stone.png</texture>
-	</block>
-	<block>
-		<level>ground</level>
-		<x>2010</x>
-		<y>12.5</y>
-		<width>90</width>
-		<height>2.5</height>
-		<texture>purple-sky/stone.png</texture>
-	</block>
-	<block>
-		<level>ground</level>
-		<x>2020</x>
-		<y>15</y>
+		<y>20</y>
 		<width>80</width>
 		<height>2.5</height>
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<block>
 		<level>ground</level>
-		<x>2030</x>
-		<y>17.5</y>
-		<width>70</width>
+		<x>650</x>
+		<y>22.5</y>
+		<width>60</width>
 		<height>2.5</height>
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<block>
+		<level>wall</level>
+		<x>847.5</x>
+		<y>5</y>
+		<width>80</width>
+		<height>20</height>
+		<texture>purple-sky/wood.png</texture>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
+	</block>
+	<block>
 		<level>ground</level>
-		<x>2040</x>
-		<y>20</y>
-		<width>60</width>
-		<height>2.5</height>
+		<x>850</x>
+		<y>0</y>
+		<width>75</width>
+		<height>5</height>
+		<texture>purple-sky/lava.jpg</texture>
+		<func>1</func>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
+	</block>
+	<item>
+		<type>rocket</type>
+		<x>960</x>
+		<y>10.1</y>
+	</item>
+	<block>
+		<level>ground</level>
+		<x>925</x>
+		<y>0</y>
+		<width>125</width>
+		<height>10</height>
 		<texture>purple-sky/stone.png</texture>
+	</block>
+	<tri>
+		<level>ground</level>
+		<v1><x>1000</x><y>10</y></v1>
+		<v2><x>1050</x><y>10</y></v2>
+		<v3><x>1050</x><y>30</y></v3>
+		<texture>purple-sky/stone.png</texture>
+	</tri>
+	<block>
+		<level>ground</level>
+		<x>1050</x>
+		<y>0</y>
+		<width>250</width>
+		<height>5</height>
+		<texture>purple-sky/lava.jpg</texture>
+		<func>1</func>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>1300</x>
+		<y>0</y>
+		<width>150</width>
+		<height>20</height>
+		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>1450</x>
+		<y>0</y>
+		<width>200</width>
+		<height>10</height>
+		<texture>purple-sky/stone.png</texture>
+	</block>
+	<tri>
+		<level>ground</level>
+		<v1><x>1450</x><y>20</y></v1>
+		<v2><x>1450</x><y>10</y></v2>
+		<v3><x>1650</x><y>10</y></v3>
+		<texture>purple-sky/stone.png</texture>
+	</tri>
+	<block>
+		<level>ground</level>
+		<x>1650</x>
+		<y>0</y>
+		<width>75</width>
+		<height>5</height>
+		<texture>purple-sky/lava.jpg</texture>
+		<func>1</func>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>1725</x>
+		<y>0</y>
+		<width>75</width>
+		<height>10</height>
+		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>1800</x>
+		<y>0</y>
+		<width>75</width>
+		<height>5</height>
+		<texture>purple-sky/lava.jpg</texture>
+		<func>1</func>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
+	</block>
+	<item>
+		<type>plasma</type>
+		<x>2050</x>
+		<y>10.1</y>
+	</item>
+	<block>
+		<level>ground</level>
+		<x>1875</x>
+		<y>0</y>
+		<width>225</width>
+		<height>10</height>
+		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>wall</level>
+		<x>2097.5</x>
+		<y>5</y>
+		<width>605</width>
+		<height>20</height>
+		<texture>purple-sky/wood.png</texture>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
 	</block>
 	<block>
 		<level>ground</level>
 		<x>2100</x>
 		<y>0</y>
-		<width>50</width>
+		<width>600</width>
 		<height>5</height>
 		<texture>purple-sky/lava.jpg</texture>
 		<func>1</func>
@@ -331,25 +263,86 @@
 	</block>
 	<block>
 		<level>ground</level>
-		<x>2150</x>
+		<x>2700</x>
 		<y>0</y>
-		<width>100</width>
+		<width>400</width>
+		<height>10</height>
+		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>3050</x>
+		<y>10</y>
+		<width>50</width>
+		<height>2.5</height>
+		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>3060</x>
+		<y>12.5</y>
+		<width>40</width>
+		<height>2.5</height>
+		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>3070</x>
+		<y>15</y>
+		<width>30</width>
+		<height>2.5</height>
+		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>3080</x>
+		<y>17.5</y>
+		<width>20</width>
+		<height>2.5</height>
+		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>3090</x>
+		<y>20</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>3100</x>
+		<y>0</y>
+		<width>200</width>
+		<height>5</height>
+		<texture>purple-sky/lava.jpg</texture>
+		<func>1</func>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
+	</block>
+	<block>
+		<level>ground</level>
+		<x>3300</x>
+		<y>0</y>
+		<width>500</width>
 		<height>10</height>
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<block>
 		<level>wall</level>
-		<x>2245</x>
-		<y>0</y>
-		<width>260</width>
-		<height>25</height>
+		<x>3797.5</x>
+		<y>5</y>
+		<width>505</width>
+		<height>20</height>
 		<texture>purple-sky/wood.png</texture>
+		<texsx>0.05</texsx>
+		<texsy>0.05</texsy>
 	</block>
 	<block>
 		<level>ground</level>
-		<x>2250</x>
+		<x>3800</x>
 		<y>0</y>
-		<width>250</width>
+		<width>500</width>
 		<height>5</height>
 		<texture>purple-sky/lava.jpg</texture>
 		<func>1</func>
@@ -358,18 +351,18 @@
 	</block>
 	<block>
 		<level>ground</level>
-		<x>2500</x>
+		<x>4300</x>
 		<y>0</y>
-		<width>120</width>
+		<width>200</width>
 		<height>10</height>
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<block>
 		<level>ground</level>
-		<x>2610</x>
-		<y>0</y>
+		<x>4490</x>
+		<y>10</y>
 		<width>10</width>
-		<height>40</height>
+		<height>30</height>
 		<texture>purple-sky/stone.png</texture>
 	</block>
 </map>

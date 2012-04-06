@@ -983,10 +983,11 @@ class Player extends AnimatedBlock {
 		this.updateTutorial("reset");
 		
 		this.isDead = false;
+		this.onFloor = false;
 		this.activeAnimId = ANIM_RUN;
 		this.virtualSpeed = 0;
-		this.setPosition(new Vector2(x, y));
 		this.velocity.set(0, 0);
+		this.setPosition(new Vector2(x, y));
 		
 		if (this.attachedItem != null) {
 			

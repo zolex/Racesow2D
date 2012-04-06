@@ -1,28 +1,21 @@
 package org.racenet.racesow;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import org.racenet.framework.XMLParser;
 import org.racenet.racesow.models.OnlineScoresAdapter;
 import org.racenet.racesow.models.ScoreItem;
 import org.racenet.racesow.threads.XMLLoaderTask;
-import org.racenet.racesow.threads.XMLLoaderThread;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 
@@ -78,6 +71,9 @@ public class OnlineScoresDetails extends XMLListActivity {
 		});
     }
     
+    /**
+     * Show a loading indication and trigger the xml request
+     */
     public void loadData() {
     	
     	pd = new ProgressDialog(OnlineScoresDetails.this);
@@ -88,10 +84,15 @@ public class OnlineScoresDetails extends XMLListActivity {
     	
     	isLoading = true;
 		String mapName = getIntent().getStringExtra("map");
-		String url = "http://racesow2d.warsow-race.net/map_positions.php?name=" + mapName + "&offset=" + this.chunkOffset + "&limit=" + this.chunkLimit;
+		String url = "http://racesow2d.warsow-race.net/scores.php?name=" + mapName + "&offset=" + this.chunkOffset + "&limit=" + this.chunkLimit;
 		new XMLLoaderTask(this).execute(url);
     }
     
+    /**
+     * Called by XMLLoaderTask when loading has finished
+     * 
+     * @param InputStream xmlStream
+     */
     public void xmlCallback(InputStream xmlStream) {
     	
     	pd.dismiss();

@@ -1,33 +1,23 @@
 package org.racenet.racesow;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import org.racenet.framework.XMLParser;
 import org.racenet.racesow.models.MapItem;
 import org.racenet.racesow.models.OnlineMapsAdapter;
-import org.racenet.racesow.models.OnlineScoresAdapter;
-import org.racenet.racesow.models.ScoreItem;
 import org.racenet.racesow.threads.XMLLoaderTask;
-import org.racenet.racesow.threads.XMLLoaderThread;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -92,7 +82,7 @@ public class OnlineScores extends XMLListActivity {
 		pd.show();
     	
     	isLoading = true;
-		String url = "http://racesow2d.warsow-race.net/map_pages.php";
+		String url = "http://racesow2d.warsow-race.net/maplist.php";
 		new XMLLoaderTask(this).execute(url);
     }
     

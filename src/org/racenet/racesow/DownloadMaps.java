@@ -1,9 +1,7 @@
 package org.racenet.racesow;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +11,11 @@ import org.racenet.racesow.models.DownloadMapsAdapter;
 import org.racenet.racesow.models.MapItem;
 import org.racenet.racesow.threads.DownloadThread;
 import org.racenet.racesow.threads.UnzipThread;
-import org.racenet.racesow.threads.XMLLoaderThread;
+import org.racenet.racesow.threads.XMLLoaderTask;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -46,11 +43,13 @@ import android.widget.AdapterView.OnItemClickListener;
  * @author soh#zolex
  *
  */
-public class DownloadMaps extends ListActivity {
+public class DownloadMaps extends XMLListActivity {
 
 	private static int MENU_ITEM_REFRESH = 0;
 	DownloadMapsAdapter mAdapter;
 	WakeLock wakeLock;
+	ProgressDialog pd;
+	String racesowPath = AndroidFileIO.externalStoragePath + "racesow" + File.separator;
 	
     @Override
     /**
@@ -66,6 +65,58 @@ public class DownloadMaps extends ListActivity {
     }
 
     /**
+     * Called by the XMLLoaderTask when finished
+     * 
+     * @param InputStream xmlStream
+     */
+    public void xmlCallback(InputStream xmlStream) {
+    	
+    	pd.dismiss();
+    	
+    	if (xmlStream == null) {
+    		
+    		new AlertDialog.Builder(DownloadMaps.this)
+	            .setMessage("Could not obtain the list of available maps.\nCheck your network connection and try again.")
+	            .setNeutralButton("OK", new OnClickListener() {
+					
+					public void onClick(DialogInterface arg0, int arg1) {
+						
+						finish();
+						overridePendingTransition(0, 0);
+					}
+				})
+	            .show();
+    		
+    	} else {
+    		
+    		XMLParser parser = new XMLParser();
+    		parser.read(xmlStream);
+    		
+    		List<MapItem> mapList = new ArrayList<MapItem>();
+    		NodeList maps = parser.doc.getElementsByTagName("map");
+    		int numMaps = maps.getLength();
+    		for (int i = 0; i < numMaps; i++) {
+    			
+    			Element map = (Element)maps.item(i);
+    			MapItem mapItem = new MapItem();
+    			mapItem.id = Integer.parseInt(parser.getValue(map, "id"));
+    			mapItem.name = parser.getValue(map, "name");
+    			mapItem.skill = parser.getValue(map, "skill");
+    			mapItem.download = parser.getValue(map, "download");
+    			mapItem.author = parser.getValue(map, "author");
+    			mapItem.filename = parser.getValue(map, "filename");
+    			File test = new File(racesowPath + "maps" + File.separator + mapItem.filename);
+    			mapItem.installed = test.isFile();
+    			mapList.add(mapItem);
+    		}
+    		
+    		mAdapter = new DownloadMapsAdapter(getApplicationContext(), mapList);
+    		setListAdapter(mAdapter);
+    	}
+    	
+    }
+    
+    /**
      * Loads the available maps from a remote
      * server to finally show a listview.
      */
@@ -73,80 +124,14 @@ public class DownloadMaps extends ListActivity {
     	
     	final String racesowPath = AndroidFileIO.externalStoragePath + "racesow" + File.separator;
     	
-    	final ProgressDialog pd = new ProgressDialog(DownloadMaps.this);
+    	pd = new ProgressDialog(DownloadMaps.this);
 		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		pd.setMessage("Obtaining available maps...");
 		pd.setCancelable(false);
 		pd.show();
         
-		final XMLLoaderThread t = new XMLLoaderThread("http://racesow2d.warsow-race.net/maplist.php", new Handler() {
-	    	
-	    	@Override
-	        public void handleMessage(Message msg) {
-	    		
-	    		switch (msg.what) {
-	    			
-	    			// an error accured
-	    			case 0:
-	    				new AlertDialog.Builder(DownloadMaps.this)
-				            .setMessage("Could not obtain the list of available maps.\nCheck your network connection and try again.")
-				            .setNeutralButton("OK", new OnClickListener() {
-								
-								public void onClick(DialogInterface arg0, int arg1) {
-									
-									finish();
-									overridePendingTransition(0, 0);
-								}
-							})
-				            .show();
-	    				break;
-	    				
-	    			// the list was received
-	    			case 1:
-						InputStream xmlStream;
-						try {
-							xmlStream = new ByteArrayInputStream(msg.getData().getString("xml").getBytes("UTF-8"));
-						
-				    		XMLParser parser = new XMLParser();
-				    		parser.read(xmlStream);
-				    		
-				    		List<MapItem> mapList = new ArrayList<MapItem>();
-				    		NodeList maps = parser.doc.getElementsByTagName("map");
-				    		int numMaps = maps.getLength();
-				    		for (int i = 0; i < numMaps; i++) {
-				    			
-				    			Element map = (Element)maps.item(i);
-				    			MapItem mapItem = new MapItem();
-				    			mapItem.id = Integer.parseInt(parser.getValue(map, "id"));
-				    			mapItem.name = parser.getValue(map, "name");
-				    			mapItem.skill = parser.getValue(map, "skill");
-				    			mapItem.download = parser.getValue(map, "download");
-				    			mapItem.author = parser.getValue(map, "author");
-				    			mapItem.filename = parser.getValue(map, "filename");
-				    			File test = new File(racesowPath + "maps" + File.separator + mapItem.filename);
-				    			mapItem.installed = test.isFile();
-				    			mapList.add(mapItem);
-				    		}
-				    		
-				    		mAdapter = new DownloadMapsAdapter(getApplicationContext(), mapList);
-				    		setListAdapter(mAdapter);
-				    		
-						} catch (UnsupportedEncodingException e) {
-	
-							new AlertDialog.Builder(DownloadMaps.this)
-					            .setMessage("Internal error: " + e.getMessage())
-					            .setNeutralButton("OK", null)
-					            .show();
-						}
-		    			
-						break;
-	    		}
-	    		
-	        	pd.dismiss();
-	        }
-	    });
-	    
-		t.start();
+		String url = "http://racesow2d.warsow-race.net/downloads.php";
+		new XMLLoaderTask(this).execute(url);
 		
 		// when clicking a map
         getListView().setOnItemClickListener(new OnItemClickListener() {

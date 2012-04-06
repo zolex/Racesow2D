@@ -1,23 +1,16 @@
 package org.racenet.racesow.models;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.racenet.framework.XMLParser;
 import org.racenet.racesow.R;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import android.content.Context;
 import android.database.DataSetObserver;
-import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**

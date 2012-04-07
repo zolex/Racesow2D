@@ -1,13 +1,10 @@
 package org.racenet.racesow;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -20,12 +17,11 @@ import org.racenet.framework.TexturedShape;
 import org.racenet.framework.TexturedTriangle;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.XMLParser;
+import org.racenet.racesow.models.DemoKeyFrame;
+import org.racenet.racesow.threads.DemoRecorderThread;
 import org.racenet.racesow.threads.SubmitScoreThread;
-import org.racenet.racesow.threads.WriteDemoThread;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentSkipListMap;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -67,6 +63,7 @@ public class Map {
 	private GLGame game;
 	public float pauseTime = 0;
 	String demo = "";
+	DemoRecorderThread demoRecorder;
 	
 	/**
 	 * Map constructor.
@@ -96,7 +93,7 @@ public class Map {
 	 * @param String fileName
 	 * @return boolean
 	 */
-	public boolean load(GLGame game, String fileName) {
+	public boolean load(GLGame game, String fileName, boolean demoPlayback) {
 		
 		this.fileName = fileName;
 		this.game = game;
@@ -442,12 +439,21 @@ public class Map {
 			this.funcs.add(tutorial);
 		}
 		
+		if (!demoPlayback) {
+		
+			this.demoRecorder = new DemoRecorderThread(this.game.getFileIO(), this.fileName);
+			this.demoRecorder.start();
+		}
+		
 		return true;
 	}
 	
 	public void appendToDemo(String part) {
 		
-		this.demo += part;
+		try {
+			this.demoRecorder.demoParts.put(part);
+		} catch (InterruptedException e) {
+		}
 	}
 	
 	/**
@@ -833,15 +839,14 @@ public class Map {
 		this.raceStarted = false;
 		this.stopTime = System.nanoTime() / 1000000000.0f;
 		
-		if (this.demoParts.size() == 0) {
-		
-			WriteDemoThread t = new WriteDemoThread(this.game.getFileIO(), this.fileName, this.demo);
-			t.start();
-		
-			SharedPreferences prefs = this.game.getSharedPreferences("racesow", Context.MODE_PRIVATE);
-			SubmitScoreThread t2 = new SubmitScoreThread(this.fileName, prefs.getString("name", "player"), this.getCurrentTime());
-			t2.start();
+		try {
+			this.demoRecorder.demoParts.put("shutdown");
+		} catch (InterruptedException e) {
 		}
+		
+		SharedPreferences prefs = this.game.getSharedPreferences("racesow", Context.MODE_PRIVATE);
+		SubmitScoreThread t2 = new SubmitScoreThread(this.fileName, prefs.getString("name", "player"), this.getCurrentTime());
+		t2.start();
 	}
 	
 	/**
@@ -865,7 +870,7 @@ public class Map {
 		}
 	}
 	
-	private HashMap<Float, String> demoParts = new HashMap<Float, String>();
+	private HashMap<Float, DemoKeyFrame> demoParts = new HashMap<Float, DemoKeyFrame>();
 	float demoOffset = 0;
 	
 	public void parseDemo(String demo) {
@@ -875,11 +880,19 @@ public class Map {
 			
 			String[] part = parts[i].split(":");
 			Float time = Float.parseFloat(part[0]);
-			demoParts.put(time, part[1]);
+			String[] info = part[1].split(",");
+			
+			DemoKeyFrame f = new DemoKeyFrame();
+			f.playerPosition.x = Float.parseFloat(info[0]);
+			f.playerPosition.y = Float.parseFloat(info[1]);
+			f.playerAnimation = Integer.parseInt(info[2]);
+			f.playerAnimDuration = Float.parseFloat(info[3]);
+			
+			demoParts.put(time, f);
 		}
 	}
 	
-	public String getDemoAction(float time) {
+	public DemoKeyFrame getDemoKeyFrame(float time) {
 		
 		if (this.demoParts.containsKey(time)) {
 				

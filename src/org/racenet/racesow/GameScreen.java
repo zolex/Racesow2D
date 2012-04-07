@@ -17,6 +17,7 @@ import org.racenet.framework.Vector2;
 import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Screen;
 import org.racenet.framework.interfaces.Input.TouchEvent;
+import org.racenet.racesow.models.DemoKeyFrame;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,7 +30,7 @@ import android.util.Log;
  * @author soh#zolex
  *
  */
-class GameScreen extends Screen {
+public class GameScreen extends Screen {
 		
 	public Player player;
 	CameraText ups, fps, timer;
@@ -52,6 +53,7 @@ class GameScreen extends Screen {
 	
 	int fpsInterval = 5;
 	int frames = 10;
+	int demoFrames = 10;
 	float sumDelta = 0;
 	public GameState state = GameState.Running;
 	
@@ -168,29 +170,14 @@ class GameScreen extends Screen {
 		
 		if (this.demoMode) {
 			
-			String action = map.getDemoAction(roundFrameTime);
-			if (action != null) {
+			DemoKeyFrame f = map.getDemoKeyFrame(roundFrameTime);
+			if (f != null) {
 				
-				if (action.equals("+j")) {
-					
-					this.jumpPressed = true;
-					this.jumpPressedTime = 0;
-					
-				} else if (action.equals("-j")) {
-					
-					this.jumpPressed = false;
-					this.jumpPressedTime = 0;
-				
-				} else if (action.equals("+s")) {
-					
-					this.shootPressed = true;
-					this.shootPressedTime = 0;
-				
-				} else if (action.equals("-s")) {
-					
-					this.shootPressed = false;
-					this.shootPressedTime = 0;
-				}
+				this.player.setPosition(f.playerPosition);
+				this.player.activeAnimId = f.playerAnimation;
+				this.player.animDuration = f.playerAnimDuration;
+				this.player.enableAnimation = true;
+				this.player.animate(deltaTime);
 			}
 			
 		} else {
@@ -221,7 +208,6 @@ class GameScreen extends Screen {
 						
 						if (!this.jumpPressed) {
 							
-							this.map.appendToDemo(roundFrameTime + ":" + "+j;");
 							this.jumpPressed = true;
 							this.jumpPressedTime = 0;
 						}
@@ -231,7 +217,6 @@ class GameScreen extends Screen {
 						
 						if (!this.shootPressed) {
 							
-							this.map.appendToDemo(roundFrameTime + ":" + "+s;");
 							this.shootPressed = true;
 							this.shootPressedTime = 0;
 						}
@@ -248,50 +233,57 @@ class GameScreen extends Screen {
 					// when releasing the jump-button
 					if (e.x / (float)game.getScreenWidth() > 0.5f) {
 						
-						this.map.appendToDemo(roundFrameTime + ":" + "-j;");
 						this.jumpPressed = false;
 						this.jumpPressedTime = 0;
 						
 					// when releasing the shoot-button
 					} else {
 						
-						this.map.appendToDemo(roundFrameTime + ":" + "-s;");
 						this.shootPressed = false;
 						this.shootPressedTime = 0;
 					}
 				}
 			}
-		}
 		
-		// execute jump if requested
-		if (this.jumpPressed) {
-			
-			this.player.jump(this.jumpPressedTime);
-			this.jumpPressedTime += deltaTime;
-		}
-		
-		// execute shoot if requested
-		if (this.shootPressed) {
-			
-			this.player.shoot(this.shootPressedTime);
-			this.shootPressedTime += deltaTime;
-		}
-		
-		//  nothing more to do here when paused
-		if (this.state == GameState.Paused) {
-			
-			if (map.getCurrentTime() > 0 ) {
-			
-				this.map.pauseTime += deltaTime;
+			// execute jump if requested
+			if (this.jumpPressed) {
+				
+				this.player.jump(this.jumpPressedTime);
+				this.jumpPressedTime += deltaTime;
 			}
 			
-			return;
+			// execute shoot if requested
+			if (this.shootPressed) {
+				
+				this.player.shoot(this.shootPressedTime);
+				this.shootPressedTime += deltaTime;
+			}
+			
+			//  nothing more to do here when paused
+			if (this.state == GameState.Paused) {
+				
+				if (map.getCurrentTime() > 0 ) {
+				
+					this.map.pauseTime += deltaTime;
+				}
+				
+				return;
+			}
+			
+			// update the player
+			this.player.move(this.gravity, deltaTime, this.jumpPressed);
+			
+			this.map.appendToDemo(
+				roundFrameTime + ":" +
+				this.player.getPosition().x + "," +
+				this.player.getPosition().y + "," +
+				this.player.activeAnimId + "," +
+				this.player.animDuration +
+				";"
+			);		
 		}
 		
 		this.frameTime += deltaTime;
-		
-		// update the player
-		this.player.move(this.gravity, deltaTime, this.jumpPressed);
 		
 		// move the camera upwards if the player goes to high
 		float camY = this.camera.frustumHeight / 2;
@@ -302,20 +294,6 @@ class GameScreen extends Screen {
 		
 		this.camera.setPosition(this.player.getPosition().x + 20, camY);		
 		this.map.update(deltaTime);
-
-		if (this.showFPS) {
-			
-			// update HUD for frames per second
-			this.frames--;
-			this.sumDelta += deltaTime;
-			if (frames == 0) {
-			
-				this.fps.text = "fps " + String.valueOf(new Integer((int)(this.fpsInterval / this.sumDelta)));
-				this.frames = fpsInterval;
-				this.sumDelta = 0;
-				
-			}
-		}
 
 		if (this.showUPS) {
 		
@@ -347,6 +325,20 @@ class GameScreen extends Screen {
 		
 		this.map.draw();
 		this.player.draw();
+		
+		if (this.showFPS) {
+			
+			// update HUD for frames per second
+			this.frames--;
+			this.sumDelta += deltaTime;
+			if (frames == 0) {
+			
+				this.fps.text = "fps " + String.valueOf(new Integer((int)(this.fpsInterval / this.sumDelta)));
+				this.frames = fpsInterval;
+				this.sumDelta = 0;
+				
+			}
+		}
 		
 		synchronized (this.player) {
 		

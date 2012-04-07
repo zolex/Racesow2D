@@ -32,7 +32,7 @@ import android.util.Log;
  * @author al
  *
  */
-class Player extends AnimatedBlock {
+public class Player extends AnimatedBlock {
 	
 	public final Vector2 velocity = new Vector2();
 	public final Vector2 accel = new Vector2();
@@ -73,9 +73,9 @@ class Player extends AnimatedBlock {
 	private boolean distanceRemembered = false;
 	public float virtualSpeed = 0;
 	private float startSpeed = 450;
-	private boolean enableAnimation = false;
+	public boolean enableAnimation = false;
 	private boolean isDead = false;
-	private float animDuration = 0;
+	public float animDuration = 0;
 	private TexturedBlock attachedItem;
 	private Camera2 camera;
 	private Random rGen;
@@ -561,6 +561,51 @@ class Player extends AnimatedBlock {
 		}
 	}
 	
+	public void animate(float deltaTime) {
+		
+		// if enabled run a player animation
+				if (this.enableAnimation) {
+					
+					this.animTime += deltaTime;
+					if (this.animTime > this.animDuration) {
+						
+						this.enableAnimation = false;
+						this.animTime = 0;
+						
+						if (this.activeAnimId == Player.ANIM_BURN || this.activeAnimId == Player.ANIM_DROWN) {
+							
+							this.activeAnimId = Player.ANIM_INVISIBLE;
+						
+						// when the animation is over, choose
+						// the proper default animation
+						} else {
+						
+							if (this.attachedItem != null) {
+								
+								switch (this.attachedItem.func) {
+								
+									case GameObject.ITEM_ROCKET:
+										this.activeAnimId = Player.ANIM_ROCKET_RUN;
+										break;
+									
+									case GameObject.ITEM_PLASMA:
+										this.activeAnimId = Player.ANIM_PLASMA_RUN;
+										break;
+										
+									default:
+										this.activeAnimId = Player.ANIM_RUN;
+										break;
+								}
+								
+							} else {
+							
+								this.activeAnimId = Player.ANIM_RUN;
+							}
+						}
+					}
+				}
+	}
+	
 	/**
 	 * Move the player in the map
 	 * 
@@ -573,47 +618,7 @@ class Player extends AnimatedBlock {
 		 // workaround for initial loading
 		if (++frames < 3) return;
 		
-		// if enabled run a player animation
-		if (this.enableAnimation) {
-			
-			this.animTime += deltaTime;
-			if (this.animTime > this.animDuration) {
-				
-				this.enableAnimation = false;
-				this.animTime = 0;
-				
-				if (this.activeAnimId == Player.ANIM_BURN || this.activeAnimId == Player.ANIM_DROWN) {
-					
-					this.activeAnimId = Player.ANIM_INVISIBLE;
-				
-				// when the animation is over, choose
-				// the proper default animation
-				} else {
-				
-					if (this.attachedItem != null) {
-						
-						switch (this.attachedItem.func) {
-						
-							case GameObject.ITEM_ROCKET:
-								this.activeAnimId = Player.ANIM_ROCKET_RUN;
-								break;
-							
-							case GameObject.ITEM_PLASMA:
-								this.activeAnimId = Player.ANIM_PLASMA_RUN;
-								break;
-								
-							default:
-								this.activeAnimId = Player.ANIM_RUN;
-								break;
-						}
-						
-					} else {
-					
-						this.activeAnimId = Player.ANIM_RUN;
-					}
-				}
-			}
-		}
+		this.animate(deltaTime);
 		
 		if (this.isDead) return;
 		

@@ -3,6 +3,9 @@ package org.racenet.racesow.threads;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.racenet.framework.interfaces.FileIO;
 import org.racenet.racesow.models.Database;
@@ -19,11 +22,12 @@ import android.util.Log;
  * @author soh#zolex
  *
  */
-public class WriteDemoThread extends Thread {
+public class DemoRecorderThread extends Thread {
 	
 	private FileIO fileIO;
 	private String map;
-	private String demo;
+	public BlockingQueue<String> demoParts = new LinkedBlockingQueue<String>();
+	private FileOutputStream fos;
 	
 	/**
 	 * Constructor
@@ -34,11 +38,18 @@ public class WriteDemoThread extends Thread {
 	 * @param float time
 	 * @param Handler handler
 	 */
-	public WriteDemoThread(FileIO fileIO, String map, String demo) {
+	public DemoRecorderThread(FileIO fileIO, String map) {
 		
 		this.fileIO = fileIO;
 		this.map = map;
-		this.demo = demo;
+		
+		String demoFolder = "racesow" + File.separator + "demos" + File.separator;
+		String fileName = demoFolder + this.map + "_" + (int)(System.nanoTime() / 1000000000.0f) + ".r2d";
+		this.fileIO.createDirectory(demoFolder);
+		try {
+			this.fos = (FileOutputStream)this.fileIO.writeFile(fileName);
+		} catch (IOException e) {
+		}
 	}
 	
 	@Override
@@ -46,17 +57,21 @@ public class WriteDemoThread extends Thread {
 	 * Adds the race to the database
 	 */
     public void run() {         
-
-		String demoFolder = "racesow" + File.separator + "demos" + File.separator;
-		String fileName = demoFolder + this.map + "_" + (int)(System.nanoTime() / 1000000000.0f) + ".r2d";
+		
 		try {
 			
-			this.fileIO.createDirectory(demoFolder);
-			FileOutputStream fos = (FileOutputStream)this.fileIO.writeFile(fileName);
-			fos.write(this.demo.getBytes());
+			String item;
+			while ((item = this.demoParts.take()) != "shutdown") {
+				
+				fos.write(item.getBytes());
+			}
+			
 			fos.close();
 			
+		} catch (InterruptedException e) {
+
 		} catch (IOException e) {
+			
 		}
     }
 }

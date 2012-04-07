@@ -36,6 +36,7 @@ class LoadingScreen extends Screen {
 	SpriteBatcher batcher;
 	String mapName, demoFile;
 	BitmapFont loading;
+	int frames = 0;
 	
 	/**
 	 * Prepare the header graphics and the loading text
@@ -51,7 +52,6 @@ class LoadingScreen extends Screen {
 		this.demoFile = demoFile;
 		
 		this.camera = new Camera2(glGraphics, 80,  80 * (float)game.getScreenHeight() / (float)game.getScreenWidth());
-		this.camera.position.set(0, this.camera.frustumHeight / 2);
 		
 		this.batcher = new SpriteBatcher(this.glGraphics, 96);
 		GLTexture font = new GLTexture((GLGame)game, "font.png");
@@ -64,10 +64,10 @@ class LoadingScreen extends Screen {
 			texture = "racesow_small.jpg";
 		}
 		
-		this.header = new TexturedBlock((GLGame)this.game, texture, TexturedBlock.FUNC_NONE, -1, -1,
-			new Vector2(0, 0), new Vector2(this.camera.frustumWidth, 0));
-		this.header.setPosition(new Vector2(0, this.camera.frustumHeight - this.header.height));
-		this.header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);		
+		header = new TexturedBlock((GLGame)game, texture, TexturedBlock.FUNC_NONE, -1, -1,
+				new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
+		header.setPosition(new Vector2(0, camera.frustumHeight - header.height));
+		header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
 	}
 
 	/**
@@ -76,6 +76,34 @@ class LoadingScreen extends Screen {
 	public void update(float deltaTime) {
 		
 		this.game.getInput().getTouchEvents();
+		
+		if (this.frames++ == 2) {
+			
+			SharedPreferences prefs = ((Activity)this.game).getSharedPreferences("racesow", Context.MODE_PRIVATE);
+			
+			// right after drawing the loading screen load
+			// the map and player and pass it to the GameScreen
+			Map map = new Map(glGraphics.getGL(), this.camera, prefs.getBoolean("celshading", false));
+			map.load((GLGame)game, this.mapName, this.demoFile != null);
+			Player player = new Player((GLGame)game, map, this.camera, map.playerX, map.playerY, prefs.getBoolean("sound", true));
+			
+			// load the demo if not empty
+			
+			boolean demoMode = false;
+			if (this.demoFile != null) {
+				
+				demoMode = true;
+				String folder = "racesow" + File.separator + "demos" + File.separator;
+				try {
+					InputStream demoStream = this.game.getFileIO().readFile(folder + this.demoFile);
+					map.parseDemo(InputStreamToString.convert(demoStream));
+					
+				} catch (IOException e) {
+				}
+			}
+			
+			game.setScreen(new GameScreen(this.game, this.camera, map, player, demoMode));
+		}
 	}
 
 	/**
@@ -97,32 +125,7 @@ class LoadingScreen extends Screen {
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		
 		this.header.draw();
-		this.loading.draw(this.batcher, "LOADING", 0.1f, 0.1f, -10, this.camera.frustumHeight / 2);
-		
-		SharedPreferences prefs = ((Activity)this.game).getSharedPreferences("racesow", Context.MODE_PRIVATE);
-		
-		// right after drawing the loading screen load
-		// the map and player and pass it to the GameScreen
-		Map map = new Map(glGraphics.getGL(), this.camera, prefs.getBoolean("celshading", false));
-		map.load((GLGame)game, this.mapName);
-		Player player = new Player((GLGame)game, map, this.camera, map.playerX, map.playerY, prefs.getBoolean("sound", true));
-		
-		// load the demo if not empty
-		
-		boolean demoMode = false;
-		if (this.demoFile != null) {
-			
-			demoMode = true;
-			String folder = "racesow" + File.separator + "demos" + File.separator;
-			try {
-				InputStream demoStream = this.game.getFileIO().readFile(folder + this.demoFile);
-				map.parseDemo(InputStreamToString.convert(demoStream));
-				
-			} catch (IOException e) {
-			}
-		}
-		
-		game.setScreen(new GameScreen(this.game, this.camera, map, player, demoMode));
+		this.loading.draw(this.batcher, "LOADING", 0.1f, 0.1f, this.camera.frustumWidth / 2 -10, this.camera.frustumHeight / 2);
 	}
 
 	/**

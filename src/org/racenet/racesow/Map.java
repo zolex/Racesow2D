@@ -783,15 +783,11 @@ public class Map {
 			this.demoRecorder.cancelDemo();
 		}
 		
-		this.demoRecorder.newDemo();
-		
 		this.demo = "";
 		this.startTime = 0;
 		this.stopTime = 0;
 		this.raceStarted = false;
 		this.raceFinished= false;
-		player.reset(this.playerX, this.playerY);
-		camera.setPosition(player.getPosition().x + 20, this.camera.frustumHeight / 2);
 		
 		int length = this.pickedUpItems.size();
 		for (int i = 0; i < length; i++) {
@@ -807,6 +803,10 @@ public class Map {
 		}
 		
 		this.pickedUpItems.clear();
+		
+		player.reset(this.playerX, this.playerY);
+		camera.setPosition(player.getPosition().x + 20, this.camera.frustumHeight / 2);
+		this.demoRecorder.newDemo();
 	}
 	
 	/**

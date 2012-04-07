@@ -1002,6 +1002,9 @@ public class Player extends AnimatedBlock {
 				
 		this.updateTutorial("reset");
 		
+		this.gameScreen.frameTime = 0;
+		this.gameScreen.frames = 0;
+		
 		this.isDead = false;
 		this.onFloor = false;
 		this.activeAnimId = ANIM_RUN;

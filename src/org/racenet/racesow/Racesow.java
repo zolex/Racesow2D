@@ -93,7 +93,6 @@ public class Racesow extends GLGame {
     		else if (gameScreen.map.inRace() || gameScreen.map.raceFinished()) {
     		
     			gameScreen.state = GameState.Running;
-    			gameScreen.frameTime = 0;
     			gameScreen.map.restartRace(gameScreen.player);
     			
     		// return to maps menu

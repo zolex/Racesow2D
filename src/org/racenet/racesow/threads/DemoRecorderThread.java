@@ -3,18 +3,10 @@ package org.racenet.racesow.threads;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.racenet.framework.interfaces.FileIO;
-import org.racenet.racesow.models.Database;
-
-import android.content.Context;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 
 /**
  * Thread to save data to the internal scores database

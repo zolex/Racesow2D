@@ -44,6 +44,8 @@ class GameScreen extends Screen {
 	float shootPressedTime = 0;
 	SpriteBatcher batcher;
 	BitmapFont font;
+	float frameTime = 0;
+	public boolean demoMode = false;
 	
 	boolean showFPS, showUPS;
 	
@@ -66,14 +68,15 @@ class GameScreen extends Screen {
 	 * @param Map map
 	 * @param Player player
 	 */
-	public GameScreen(Game game, Camera2 camera, Map map, Player player) {
-			
+	public GameScreen(Game game, Camera2 camera, Map map, Player player, boolean demoMode) {
+		
 		super(game);
 		this.glGraphics = ((GLGame)game).getGLGraphics();
 		this.camera = camera;
 		this.map = map;
 		this.player = player;
 		this.player.setGameScreen(this);
+		this.demoMode = demoMode;
 		
 		GLTexture.APP_FOLDER = "racesow";
 		
@@ -160,65 +163,99 @@ class GameScreen extends Screen {
 	 */
 	public void update(float deltaTime) {
 		
-		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
-		int len = touchEvents.size();
-		for (int i = 0; i < len; i++) {
+		if (this.demoMode) {
 			
-			TouchEvent e = touchEvents.get(i);
-			
-			if (e.type == TouchEvent.TOUCH_DOWN) {
+			String action = map.getDemoAction(this.frameTime);
+			if (action != null) {
 				
-				// when touching the pause-button
-				if (e.y / (float)game.getScreenHeight() < 0.1f && e.x / (float)game.getScreenWidth() < 0.1f) {
-				
-					if (this.state == GameState.Running) {
-						
-						this.pauseGame();
-						
-					} else if (this.state == GameState.Paused) {
-						
-						this.resumeGame();
-					} 
-				}
-				
-				// when touching the jump-area on the screen
-				else if (e.x / (float)game.getScreenWidth() > 0.5f) {
+				if (action.equals("+j")) {
 					
-					if (!this.jumpPressed) {
-						
-						this.jumpPressed = true;
-						this.jumpPressedTime = 0;
-					}
-				
-				// when touching the shoot-area on the screen
-				} else {
+					this.jumpPressed = true;
+					this.jumpPressedTime = 0;
 					
-					if (!this.shootPressed) {
-						
-						this.shootPressed = true;
-						this.shootPressedTime = 0;
-					}
-				}
-
-			} else if (e.type == TouchEvent.TOUCH_UP) {
-				
-				// this is only for the tutorial
-				if (this.state == GameState.Paused) {
-					
-					this.player.updateTutorial("release");
-				}
-				
-				// when releasing the jump-button
-				if (e.x / (float)game.getScreenWidth() > 0.5f) {
+				} else if (action.equals("-j")) {
 					
 					this.jumpPressed = false;
 					this.jumpPressedTime = 0;
+				
+				} else if (action.equals("+s")) {
 					
-				// when releasing the shoot-button
-				} else {
+					this.shootPressed = true;
+					this.shootPressedTime = 0;
+				
+				} else if (action.equals("-s")) {
 					
 					this.shootPressed = false;
 					this.shootPressedTime = 0;
+				}
+			}
+			
+		} else {
+			
+			List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+			int len = touchEvents.size();
+			for (int i = 0; i < len; i++) {
+				
+				TouchEvent e = touchEvents.get(i);
+				
+				if (e.type == TouchEvent.TOUCH_DOWN) {
+					
+					// when touching the pause-button
+					if (e.y / (float)game.getScreenHeight() < 0.1f && e.x / (float)game.getScreenWidth() < 0.1f) {
+					
+						if (this.state == GameState.Running) {
+							
+							this.pauseGame();
+							
+						} else if (this.state == GameState.Paused) {
+							
+							this.resumeGame();
+						} 
+					}
+					
+					// when touching the jump-area on the screen
+					else if (e.x / (float)game.getScreenWidth() > 0.5f) {
+						
+						if (!this.jumpPressed) {
+							
+							this.map.appendToDemo(this.frameTime + ":" + "+j;");
+							this.jumpPressed = true;
+							this.jumpPressedTime = 0;
+						}
+					
+					// when touching the shoot-area on the screen
+					} else {
+						
+						if (!this.shootPressed) {
+							
+							this.map.appendToDemo(this.frameTime + ":" + "+s;");
+							this.shootPressed = true;
+							this.shootPressedTime = 0;
+						}
+					}
+	
+				} else if (e.type == TouchEvent.TOUCH_UP) {
+					
+					// this is only for the tutorial
+					if (this.state == GameState.Paused) {
+						
+						this.player.updateTutorial("release");
+					}
+					
+					// when releasing the jump-button
+					if (e.x / (float)game.getScreenWidth() > 0.5f) {
+						
+						this.map.appendToDemo(this.frameTime + ":" + "-j;");
+						this.jumpPressed = false;
+						this.jumpPressedTime = 0;
+						
+					// when releasing the shoot-button
+					} else {
+						
+						this.map.appendToDemo(this.frameTime + ":" + "-s;");
+						this.shootPressed = false;
+						this.shootPressedTime = 0;
+					}
 				}
 			}
 		}
@@ -247,6 +284,8 @@ class GameScreen extends Screen {
 			
 			return;
 		}
+		
+		this.frameTime += deltaTime;
 		
 		// update the player
 		this.player.move(this.gravity, deltaTime, this.jumpPressed);
@@ -334,7 +373,7 @@ class GameScreen extends Screen {
 	 * Get rid of all textures when leaving the screen
 	 */
 	public void dispose() {
-
+		
 		this.camera.dispose();
 		this.map.dispose();
 		this.player.dispose();

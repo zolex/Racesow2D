@@ -1,5 +1,9 @@
 package org.racenet.racesow;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.microedition.khronos.opengles.GL10;
 
 import org.racenet.framework.BitmapFont;
@@ -12,6 +16,7 @@ import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Screen;
+import org.racenet.helpers.InputStreamToString;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,7 +34,7 @@ class LoadingScreen extends Screen {
 	GLGraphics glGraphics;
 	TexturedBlock header;
 	SpriteBatcher batcher;
-	String mapName;
+	String mapName, demoFile;
 	BitmapFont loading;
 	
 	/**
@@ -38,11 +43,12 @@ class LoadingScreen extends Screen {
 	 * @param GLGame game
 	 * @param String mapName
 	 */
-	public LoadingScreen(Game game, String mapName) {
+	public LoadingScreen(Game game, String mapName, String demoFile) {
 			
 		super(game);
 		this.glGraphics = ((GLGame)game).getGLGraphics();
 		this.mapName = mapName;
+		this.demoFile = demoFile;
 		
 		this.camera = new Camera2(glGraphics, 80,  80 * (float)game.getScreenHeight() / (float)game.getScreenWidth());
 		this.camera.position.set(0, this.camera.frustumHeight / 2);
@@ -100,7 +106,23 @@ class LoadingScreen extends Screen {
 		Map map = new Map(glGraphics.getGL(), this.camera, prefs.getBoolean("celshading", false));
 		map.load((GLGame)game, this.mapName);
 		Player player = new Player((GLGame)game, map, this.camera, map.playerX, map.playerY, prefs.getBoolean("sound", true));
-		game.setScreen(new GameScreen(this.game, this.camera, map, player));
+		
+		// load the demo if not empty
+		
+		boolean demoMode = false;
+		if (this.demoFile != null) {
+			
+			demoMode = true;
+			String folder = "racesow" + File.separator + "demos" + File.separator;
+			try {
+				InputStream demoStream = this.game.getFileIO().readFile(folder + this.demoFile);
+				map.parseDemo(InputStreamToString.convert(demoStream));
+				
+			} catch (IOException e) {
+			}
+		}
+		
+		game.setScreen(new GameScreen(this.game, this.camera, map, player, demoMode));
 	}
 
 	/**

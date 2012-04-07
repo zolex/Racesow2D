@@ -1,9 +1,13 @@
 package org.racenet.racesow;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -17,8 +21,11 @@ import org.racenet.framework.TexturedTriangle;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.XMLParser;
 import org.racenet.racesow.threads.SubmitScoreThread;
+import org.racenet.racesow.threads.WriteDemoThread;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentSkipListMap;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -59,6 +66,7 @@ public class Map {
 	public String fileName;
 	private GLGame game;
 	public float pauseTime = 0;
+	String demo = "";
 	
 	/**
 	 * Map constructor.
@@ -437,6 +445,11 @@ public class Map {
 		return true;
 	}
 	
+	public void appendToDemo(String part) {
+		
+		this.demo += part;
+	}
+	
 	/**
 	 * Update the map. Called by GameScreen each frame
 	 * 
@@ -753,6 +766,7 @@ public class Map {
 	 */
 	public void restartRace(Player player) {
 		
+		this.demo = "";
 		this.startTime = 0;
 		this.stopTime = 0;
 		this.raceStarted = false;
@@ -819,9 +833,15 @@ public class Map {
 		this.raceStarted = false;
 		this.stopTime = System.nanoTime() / 1000000000.0f;
 		
-		SharedPreferences prefs = this.game.getSharedPreferences("racesow", Context.MODE_PRIVATE);
-		SubmitScoreThread t = new SubmitScoreThread(this.fileName, prefs.getString("name", "player"), this.getCurrentTime());
-		t.start();
+		if (this.demoParts.size() == 0) {
+		
+			WriteDemoThread t = new WriteDemoThread(this.game.getFileIO(), this.fileName, this.demo);
+			t.start();
+		
+			SharedPreferences prefs = this.game.getSharedPreferences("racesow", Context.MODE_PRIVATE);
+			SubmitScoreThread t2 = new SubmitScoreThread(this.fileName, prefs.getString("name", "player"), this.getCurrentTime());
+			t2.start();
+		}
 	}
 	
 	/**
@@ -843,5 +863,37 @@ public class Map {
 			
 			return 0;
 		}
+	}
+	
+	private HashMap<Float, Boolean> partsDone = new HashMap<Float, Boolean>();
+	private ConcurrentSkipListMap demoParts = new ConcurrentSkipListMap();
+	float demoOffset = 0;
+	
+	public void parseDemo(String demo) {
+		
+		String[] parts = demo.split(";");
+		for (int i = 0; i < parts.length - 1; i++) {
+			
+			String[] part = parts[i].split(":");
+			Float time = Float.parseFloat(part[0]);
+			demoParts.put(time, part[1]);
+		}
+	}
+	
+	public String getDemoAction(float time) {
+		
+		time += this.demoOffset;
+		Entry<Float, String> part = this.demoParts.higherEntry(time);
+		if (part != null) {
+			
+			if (!this.partsDone.containsKey(part.getKey())) {
+				
+				this.demoOffset += (time - part.getKey());
+				this.partsDone.put(part.getKey(), true);
+				return (String)part.getValue();
+			}
+		}
+		
+		return null;
 	}
 }

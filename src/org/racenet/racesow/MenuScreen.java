@@ -77,6 +77,16 @@ public class MenuScreen extends Screen {
 			}
 		});
 		
+		menu.addItem("menu/demos.png", menu.new Callback() {
+			
+			public void handle() {
+				
+				Intent i = new Intent((Activity)game, DemoList.class);
+				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				((Activity)game).startActivity(i);
+			}
+		});
+		
 		menu.addItem("menu/settings.png", menu.new Callback() {
 			
 			public void handle() {

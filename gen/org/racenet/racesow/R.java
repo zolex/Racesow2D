@@ -35,12 +35,13 @@ public final class R {
     }
     public static final class layout {
         public static final int credititem=0x7f030000;
-        public static final int downloadmapitem=0x7f030001;
-        public static final int listview=0x7f030002;
-        public static final int mapscores=0x7f030003;
-        public static final int scoreitem=0x7f030004;
-        public static final int scoremapitem=0x7f030005;
-        public static final int viewpager=0x7f030006;
+        public static final int demoitem=0x7f030001;
+        public static final int downloadmapitem=0x7f030002;
+        public static final int listview=0x7f030003;
+        public static final int mapscores=0x7f030004;
+        public static final int scoreitem=0x7f030005;
+        public static final int scoremapitem=0x7f030006;
+        public static final int viewpager=0x7f030007;
     }
     public static final class menu {
         public static final int downloadmaps=0x7f060000;

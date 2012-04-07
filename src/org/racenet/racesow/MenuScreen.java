@@ -8,7 +8,6 @@ import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
 import org.racenet.framework.GLTexture;
-import org.racenet.framework.GameUpdateThread;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.interfaces.Game;
@@ -47,12 +46,6 @@ public class MenuScreen extends Screen {
 		glGraphics = ((GLGame)game).getGLGraphics();
 		
 		camera = new Camera2(glGraphics, (float)game.getScreenWidth(), (float)game.getScreenHeight());
-		
-		if (!GameUpdateThread.loopers.containsKey("GameScreen")) {
-		
-			GameUpdateThread.loopers.put("GameScreen", true);
-			Looper.prepare();
-		}
 		
 		menu = new Menu((GLGame)game, camera.frustumWidth, camera.frustumHeight);
 		gestures = new GestureDetector(menu);

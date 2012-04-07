@@ -118,6 +118,8 @@ public abstract class GLGame extends Activity implements Game, Renderer {
     	
     }
 
+    float offset = 0;
+    
     /**
      * onDrawframe is being called by openGL and updates
      * the world and draws it accoring to the internal gamestate
@@ -140,7 +142,18 @@ public abstract class GLGame extends Activity implements Game, Renderer {
             float deltaTime = (System.nanoTime()-startTime) / 1000000000.0f;
             startTime = System.nanoTime();
             
-            screen.update(deltaTime);
+            if (deltaTime + offset >= 0.01) {
+            
+            	float dt = deltaTime + offset;
+            	while (dt - 0.01f > 0) {
+            	
+            		screen.update(0.01f);
+            		dt -= 0.01f;
+            	}
+            	
+            	offset = dt;
+            }
+            
             screen.present(deltaTime);
         }
         

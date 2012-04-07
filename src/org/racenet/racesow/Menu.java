@@ -47,12 +47,6 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 */
 	public Menu(GLGame game, float viewWidth, float viewHeight) {
 		
-		if (!Racesow.LOOPER_PREPARED) {
-			
-			Racesow.LOOPER_PREPARED = true;
-			Looper.prepare();
-		}
-		
 		this.game = game;
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;

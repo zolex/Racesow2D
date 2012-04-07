@@ -12,6 +12,7 @@ import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
 import org.racenet.framework.GLTexture;
+import org.racenet.framework.GameUpdateThread;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.XMLParser;
@@ -81,6 +82,12 @@ public class MapsScreen extends Screen {
 		if (this.menu != null)  {
 		
 			this.menu.dispose();
+		}
+		
+		if (!GameUpdateThread.loopers.containsKey("MapsScreen")) {
+			
+			GameUpdateThread.loopers.put("MapsScreen", true);
+			Looper.prepare();
 		}
 		
 		this.menu = new Menu((GLGame)this.game, this.camera.frustumWidth, this.camera.frustumHeight);

@@ -49,6 +49,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
     Object stateChanged = new Object();
     long startTime = System.nanoTime();
     WakeLock wakeLock;
+    GameUpdateThread t;
     
     @Override
     /**
@@ -71,6 +72,8 @@ public abstract class GLGame extends Activity implements Game, Renderer {
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
         wakeLock.acquire();
+        t = new GameUpdateThread(this);
+        t.start();
     }
     
     /**
@@ -140,7 +143,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
             float deltaTime = (System.nanoTime()-startTime) / 1000000000.0f;
             startTime = System.nanoTime();
             
-            screen.update(deltaTime);
+            //screen.update(deltaTime);
             screen.present(deltaTime);
         }
         
@@ -175,7 +178,12 @@ public abstract class GLGame extends Activity implements Game, Renderer {
     	
         synchronized(stateChanged) {
         	
-            if (isFinishing()) state = GLGameState.Finished;
+            if (isFinishing()) {
+            	
+            	t.stop = true;
+            	t.stop();
+            	state = GLGameState.Finished;
+            }
             else state = GLGameState.Paused;
             while(true) {
             	

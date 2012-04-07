@@ -882,8 +882,8 @@ public class Map {
 	
 	public String getDemoAction(float time) {
 		
-		time += this.demoOffset;
-		Entry<Float, String> part = this.demoParts.higherEntry(time);
+		//time += this.demoOffset;
+		Entry<Float, String> part = this.demoParts.lowerEntry(time);
 		if (part != null) {
 			
 			if (!this.partsDone.containsKey(part.getKey())) {

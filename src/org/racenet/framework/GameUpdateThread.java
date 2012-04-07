@@ -1,5 +1,9 @@
 package org.racenet.framework;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Screen;
 
@@ -8,11 +12,11 @@ import android.util.Log;
 
 public class GameUpdateThread extends Thread {
 
-	Game game;
+	GLGame game;
 	public boolean stop = false;
-	public static boolean looperPrepared = false;
+	public static HashMap<String, Boolean> loopers = new HashMap<String, Boolean>();
 	
-	public GameUpdateThread(Game game) {
+	public GameUpdateThread(GLGame game) {
 		
 		this.game = game;
 	}
@@ -23,14 +27,24 @@ public class GameUpdateThread extends Thread {
 		long startTime = System.nanoTime();
 		while (!this.stop) {
 			
-			float delta = (System.nanoTime() - startTime) / 1000000000.0f;
-			Screen screen = this.game.getCurrentScreen();
+			final float delta = (System.nanoTime() - startTime) / 1000000000.0f;
+			startTime = System.nanoTime();
+			final Screen screen = this.game.getCurrentScreen();
 			if (screen != null && delta != 0) {
 			
-				screen.update(delta);
+				//this.game.runOnUiThread(new Runnable() {
+					
+					//public void run() {
+						
+						screen.update(delta);
+					//}
+				//});
 			}
-			
-			startTime = System.nanoTime();
+				
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+			}
 		}
 	}
 }

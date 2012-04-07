@@ -21,6 +21,7 @@ import org.racenet.framework.interfaces.Input.TouchEvent;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 /**
  * Class which represents the racesow game itsself.
@@ -163,9 +164,11 @@ class GameScreen extends Screen {
 	 */
 	public void update(float deltaTime) {
 		
+		float roundFrameTime = (float)(((int)(this.frameTime*100.0f))/100.0f);
+		
 		if (this.demoMode) {
 			
-			String action = map.getDemoAction(this.frameTime);
+			String action = map.getDemoAction(roundFrameTime);
 			if (action != null) {
 				
 				if (action.equals("+j")) {
@@ -218,7 +221,7 @@ class GameScreen extends Screen {
 						
 						if (!this.jumpPressed) {
 							
-							this.map.appendToDemo(this.frameTime + ":" + "+j;");
+							this.map.appendToDemo(roundFrameTime + ":" + "+j;");
 							this.jumpPressed = true;
 							this.jumpPressedTime = 0;
 						}
@@ -228,7 +231,7 @@ class GameScreen extends Screen {
 						
 						if (!this.shootPressed) {
 							
-							this.map.appendToDemo(this.frameTime + ":" + "+s;");
+							this.map.appendToDemo(roundFrameTime + ":" + "+s;");
 							this.shootPressed = true;
 							this.shootPressedTime = 0;
 						}
@@ -245,14 +248,14 @@ class GameScreen extends Screen {
 					// when releasing the jump-button
 					if (e.x / (float)game.getScreenWidth() > 0.5f) {
 						
-						this.map.appendToDemo(this.frameTime + ":" + "-j;");
+						this.map.appendToDemo(roundFrameTime + ":" + "-j;");
 						this.jumpPressed = false;
 						this.jumpPressedTime = 0;
 						
 					// when releasing the shoot-button
 					} else {
 						
-						this.map.appendToDemo(this.frameTime + ":" + "-s;");
+						this.map.appendToDemo(roundFrameTime + ":" + "-s;");
 						this.shootPressed = false;
 						this.shootPressedTime = 0;
 					}

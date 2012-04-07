@@ -865,8 +865,7 @@ public class Map {
 		}
 	}
 	
-	private HashMap<Float, Boolean> partsDone = new HashMap<Float, Boolean>();
-	private ConcurrentSkipListMap demoParts = new ConcurrentSkipListMap();
+	private HashMap<Float, String> demoParts = new HashMap<Float, String>();
 	float demoOffset = 0;
 	
 	public void parseDemo(String demo) {
@@ -882,16 +881,9 @@ public class Map {
 	
 	public String getDemoAction(float time) {
 		
-		//time += this.demoOffset;
-		Entry<Float, String> part = this.demoParts.lowerEntry(time);
-		if (part != null) {
-			
-			if (!this.partsDone.containsKey(part.getKey())) {
+		if (this.demoParts.containsKey(time)) {
 				
-				this.demoOffset += (time - part.getKey());
-				this.partsDone.put(part.getKey(), true);
-				return (String)part.getValue();
-			}
+			return this.demoParts.get(time);
 		}
 		
 		return null;

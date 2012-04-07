@@ -7,4 +7,9 @@ public class DemoKeyFrame {
 	public Vector2 playerPosition = new Vector2();
 	public int playerAnimation;
 	public float playerAnimDuration;
+	public int playerSound;
+	public String decalType;
+	public float decalX;
+	public float decalY;
+	public float decalTime;
 }

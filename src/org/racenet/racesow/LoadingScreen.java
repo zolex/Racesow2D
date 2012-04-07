@@ -81,28 +81,27 @@ class LoadingScreen extends Screen {
 			
 			SharedPreferences prefs = ((Activity)this.game).getSharedPreferences("racesow", Context.MODE_PRIVATE);
 			
+			DemoParser parser = null;
+			if (this.demoFile != null) {
+				
+				parser = new DemoParser();
+				String folder = "racesow" + File.separator + "demos" + File.separator;
+				try {
+					InputStream demoStream = this.game.getFileIO().readFile(folder + this.demoFile);
+					parser.parse(InputStreamToString.convert(demoStream));
+					this.mapName = parser.map;
+					
+				} catch (IOException e) {
+				}
+			}
+			
 			// right after drawing the loading screen load
 			// the map and player and pass it to the GameScreen
 			Map map = new Map(glGraphics.getGL(), this.camera, prefs.getBoolean("celshading", false));
 			map.load((GLGame)game, this.mapName, this.demoFile != null);
 			Player player = new Player((GLGame)game, map, this.camera, map.playerX, map.playerY, prefs.getBoolean("sound", true));
 			
-			// load the demo if not empty
-			
-			boolean demoMode = false;
-			if (this.demoFile != null) {
-				
-				demoMode = true;
-				String folder = "racesow" + File.separator + "demos" + File.separator;
-				try {
-					InputStream demoStream = this.game.getFileIO().readFile(folder + this.demoFile);
-					map.parseDemo(InputStreamToString.convert(demoStream));
-					
-				} catch (IOException e) {
-				}
-			}
-			
-			game.setScreen(new GameScreen(this.game, this.camera, map, player, demoMode));
+			game.setScreen(new GameScreen(this.game, this.camera, map, player, parser));
 		}
 	}
 

@@ -59,8 +59,7 @@ public class DemoList extends ListActivity {
 							
 							Intent i = new Intent(DemoList.this, Racesow.class);
 							i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-							i.putExtra("screen", "loading");
-							i.putExtra("map", "forest.xml");
+							i.putExtra("screen", "demo");
 							i.putExtra("demo", demo);
 							startActivityForResult(i, 0);
 						}

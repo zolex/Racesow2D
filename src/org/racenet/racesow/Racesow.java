@@ -63,9 +63,9 @@ public class Racesow extends GLGame {
     	
     		return new MenuScreen(this);
     		
-    	} else if (screen.equals("loading")) {
+    	} else if (screen.equals("demo")) {
     		
-    		return new LoadingScreen(this, getIntent().getStringExtra("map"), getIntent().getStringExtra("demo"));
+    		return new LoadingScreen(this, null, getIntent().getStringExtra("demo"));
     	}
     	
     	return null;
@@ -84,7 +84,7 @@ public class Racesow extends GLGame {
     		
     		GameScreen gameScreen = (GameScreen)screen;
     		
-    		if (gameScreen.demoMode) {
+    		if (gameScreen.demoParser != null) {
     			
     			super.onBackPressed();
     		}
@@ -93,10 +93,16 @@ public class Racesow extends GLGame {
     		else if (gameScreen.map.inRace() || gameScreen.map.raceFinished()) {
     		
     			gameScreen.state = GameState.Running;
+    			gameScreen.frameTime = 0;
     			gameScreen.map.restartRace(gameScreen.player);
     			
     		// return to maps menu
     		} else {
+    			
+    			if (gameScreen.map.demoRecorder != null) {
+    			
+    				gameScreen.map.demoRecorder.cancelDemo();
+    			}
     			
     			this.glView.queueEvent(new Runnable() {
 

@@ -63,7 +63,8 @@ public class Map {
 	private GLGame game;
 	public float pauseTime = 0;
 	String demo = "";
-	DemoRecorderThread demoRecorder;
+	public DemoRecorderThread demoRecorder;
+	private HashMap<Float, DemoKeyFrame> demoParts = new HashMap<Float, DemoKeyFrame>();
 	
 	/**
 	 * Map constructor.
@@ -538,6 +539,11 @@ public class Map {
 	 */
 	public void dispose() {
 		
+		if (this.demoRecorder != null) {
+		
+			this.demoRecorder.stop = true;
+		}
+		
 		int length = this.ground.size();
 		for (int i = 0; i < length; i++) {
 			
@@ -772,6 +778,13 @@ public class Map {
 	 */
 	public void restartRace(Player player) {
 		
+		if (!this.raceFinished) {
+		
+			this.demoRecorder.cancelDemo();
+		}
+		
+		this.demoRecorder.newDemo();
+		
 		this.demo = "";
 		this.startTime = 0;
 		this.stopTime = 0;
@@ -840,7 +853,7 @@ public class Map {
 		this.stopTime = System.nanoTime() / 1000000000.0f;
 		
 		try {
-			this.demoRecorder.demoParts.put("shutdown");
+			this.demoRecorder.demoParts.put("save-demo");
 		} catch (InterruptedException e) {
 		}
 		
@@ -868,37 +881,5 @@ public class Map {
 			
 			return 0;
 		}
-	}
-	
-	private HashMap<Float, DemoKeyFrame> demoParts = new HashMap<Float, DemoKeyFrame>();
-	float demoOffset = 0;
-	
-	public void parseDemo(String demo) {
-		
-		String[] parts = demo.split(";");
-		for (int i = 0; i < parts.length - 1; i++) {
-			
-			String[] part = parts[i].split(":");
-			Float time = Float.parseFloat(part[0]);
-			String[] info = part[1].split(",");
-			
-			DemoKeyFrame f = new DemoKeyFrame();
-			f.playerPosition.x = Float.parseFloat(info[0]);
-			f.playerPosition.y = Float.parseFloat(info[1]);
-			f.playerAnimation = Integer.parseInt(info[2]);
-			f.playerAnimDuration = Float.parseFloat(info[3]);
-			
-			demoParts.put(time, f);
-		}
-	}
-	
-	public DemoKeyFrame getDemoKeyFrame(float time) {
-		
-		if (this.demoParts.containsKey(time)) {
-				
-			return this.demoParts.get(time);
-		}
-		
-		return null;
 	}
 }

@@ -28,6 +28,9 @@ public class DemoRecorderThread extends Thread {
 	private String map;
 	public BlockingQueue<String> demoParts = new LinkedBlockingQueue<String>();
 	private FileOutputStream fos;
+	private String demoFolder;
+	private String fileName;
+	public boolean stop = false;
 	
 	/**
 	 * Constructor
@@ -43,12 +46,43 @@ public class DemoRecorderThread extends Thread {
 		this.fileIO = fileIO;
 		this.map = map;
 		
-		String demoFolder = "racesow" + File.separator + "demos" + File.separator;
-		String fileName = demoFolder + this.map + "_" + (int)(System.nanoTime() / 1000000000.0f) + ".r2d";
+		this.demoFolder = "racesow" + File.separator + "demos" + File.separator;
 		this.fileIO.createDirectory(demoFolder);
+		
+		this.newDemo();
+	}
+	
+	public void cancelDemo() {
+		
+		if (this.fos != null) {
+			
+			try {
+				this.fos.close();
+				this.fos = null;
+			} catch (IOException e) {
+			}
+		}
+		
+		if (this.fileName != null) {
+			
+			try {
+				this.fileIO.deleteFile(this.fileName);
+			} catch (IOException e) {
+			}
+		}
+	}
+	
+	public void newDemo() {
+		
+		this.fileName = this.demoFolder + this.map + "_" + (int)(System.nanoTime() / 1000000000.0f) + ".r2d";
 		try {
-			this.fos = (FileOutputStream)this.fileIO.writeFile(fileName);
+			this.fos = (FileOutputStream)this.fileIO.writeFile(this.fileName);
 		} catch (IOException e) {
+		}
+		
+		try {
+			this.demoParts.put(this.map + "/");
+		} catch (InterruptedException e) {
 		}
 	}
 	
@@ -61,17 +95,29 @@ public class DemoRecorderThread extends Thread {
 		try {
 			
 			String item;
-			while ((item = this.demoParts.take()) != "shutdown") {
+			while (!this.stop) {
 				
-				fos.write(item.getBytes());
+				item = this.demoParts.take();
+				if (item == "save-demo") {
+					
+					if (this.fos != null) {
+						
+						this.fos.close();
+						this.fos = null;
+						this.fileName = null;
+					}
+					
+				} else {
+					
+					if (this.fos != null) {
+						
+						this.fos.write(item.getBytes());
+					}
+				}
 			}
 			
-			fos.close();
-			
 		} catch (InterruptedException e) {
-
 		} catch (IOException e) {
-			
 		}
     }
 }

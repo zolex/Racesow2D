@@ -46,8 +46,8 @@ public class GameScreen extends Screen {
 	float shootPressedTime = 0;
 	SpriteBatcher batcher;
 	BitmapFont font;
-	float frameTime = 0;
-	public boolean demoMode = false;
+	public float frameTime = 0;
+	public DemoParser demoParser;
 	
 	boolean showFPS, showUPS;
 	
@@ -71,7 +71,7 @@ public class GameScreen extends Screen {
 	 * @param Map map
 	 * @param Player player
 	 */
-	public GameScreen(Game game, Camera2 camera, Map map, Player player, boolean demoMode) {
+	public GameScreen(Game game, Camera2 camera, Map map, Player player, DemoParser demoParser) {
 		
 		super(game);
 		this.glGraphics = ((GLGame)game).getGLGraphics();
@@ -79,7 +79,7 @@ public class GameScreen extends Screen {
 		this.map = map;
 		this.player = player;
 		this.player.setGameScreen(this);
-		this.demoMode = demoMode;
+		this.demoParser = demoParser;
 		
 		GLTexture.APP_FOLDER = "racesow";
 		
@@ -168,16 +168,39 @@ public class GameScreen extends Screen {
 		
 		float roundFrameTime = (float)(((int)(this.frameTime*100.0f))/100.0f);
 		
-		if (this.demoMode) {
+		if (this.demoParser != null) {
 			
-			DemoKeyFrame f = map.getDemoKeyFrame(roundFrameTime);
+			DemoKeyFrame f = demoParser.getKeyFrame(roundFrameTime);
 			if (f != null) {
+			
+				Log.d("DEBUG", "" + roundFrameTime);
 				
 				this.player.setPosition(f.playerPosition);
 				this.player.activeAnimId = f.playerAnimation;
 				this.player.animDuration = f.playerAnimDuration;
 				this.player.enableAnimation = true;
 				this.player.animate(deltaTime);
+				
+				if (f.playerSound != -1) {
+					
+					this.player.sounds[f.playerSound].play(player.volume);
+				}
+				
+				if (f.decalType != null) {
+					
+					if (f.decalType.equals("r")) {
+						
+						TexturedBlock decal = player.rocketPool.newObject();
+						decal.setPosition(new Vector2(f.decalX, f.decalY));
+						map.addDecal(decal, f.decalTime);
+						
+					} else if (f.decalType.equals("p")) {
+						
+						TexturedBlock decal = player.plasmaPool.newObject();
+						decal.setPosition(new Vector2(f.decalX, f.decalY));
+						map.addDecal(decal, f.decalTime);
+					}
+				}
 			}
 			
 		} else {
@@ -270,17 +293,19 @@ public class GameScreen extends Screen {
 				return;
 			}
 			
-			// update the player
-			this.player.move(this.gravity, deltaTime, this.jumpPressed);
-			
 			this.map.appendToDemo(
 				roundFrameTime + ":" +
 				this.player.getPosition().x + "," +
 				this.player.getPosition().y + "," +
 				this.player.activeAnimId + "," +
-				this.player.animDuration +
+				this.player.animDuration + "," +
+				this.player.frameSound + "," +
+				this.player.frameDecal +
 				";"
-			);		
+			);
+			
+			// update the player
+			this.player.move(this.gravity, deltaTime, this.jumpPressed);
 		}
 		
 		this.frameTime += deltaTime;

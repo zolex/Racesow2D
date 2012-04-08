@@ -65,6 +65,7 @@ public class Map {
 	String demo = "";
 	public DemoRecorderThread demoRecorder;
 	private HashMap<Float, DemoKeyFrame> demoParts = new HashMap<Float, DemoKeyFrame>();
+	boolean recordDemos;
 	
 	/**
 	 * Map constructor.
@@ -73,11 +74,12 @@ public class Map {
 	 * @param Camera2 camera
 	 * @param boolean drawOutlines
 	 */
-	public Map(GL10 gl, Camera2 camera, boolean drawOutlines) {
+	public Map(GL10 gl, Camera2 camera, boolean drawOutlines, boolean recordDemos) {
 		
 		this.gl = gl;
 		this.camera = camera;
 		this.drawOutlines = drawOutlines;
+		this.recordDemos = recordDemos;
 		
 		// decalTime -1 means there is no decal
 		for (int i = 0; i < MAX_DECALS; i++) {
@@ -440,7 +442,7 @@ public class Map {
 			this.funcs.add(tutorial);
 		}
 		
-		if (!demoPlayback) {
+		if (!demoPlayback && this.recordDemos) {
 		
 			this.demoRecorder = new DemoRecorderThread(this.game.getFileIO(), this.fileName);
 			this.demoRecorder.start();
@@ -451,9 +453,12 @@ public class Map {
 	
 	public void appendToDemo(String part) {
 		
-		try {
-			this.demoRecorder.demoParts.put(part);
-		} catch (InterruptedException e) {
+		if (this.recordDemos) {
+			
+			try {
+				this.demoRecorder.demoParts.put(part);
+			} catch (InterruptedException e) {
+			}
 		}
 	}
 	
@@ -539,7 +544,7 @@ public class Map {
 	 */
 	public void dispose() {
 		
-		if (this.demoRecorder != null) {
+		if (this.recordDemos && this.demoRecorder != null) {
 		
 			this.demoRecorder.stop = true;
 		}
@@ -778,7 +783,7 @@ public class Map {
 	 */
 	public void restartRace(Player player) {
 		
-		if (!this.raceFinished) {
+		if (this.recordDemos && !this.raceFinished) {
 		
 			this.demoRecorder.cancelDemo();
 		}
@@ -806,7 +811,11 @@ public class Map {
 		
 		player.reset(this.playerX, this.playerY);
 		camera.setPosition(player.getPosition().x + 20, this.camera.frustumHeight / 2);
-		this.demoRecorder.newDemo();
+		
+		if (this.recordDemos) {
+			
+			this.demoRecorder.newDemo();
+		}
 	}
 	
 	/**
@@ -852,9 +861,12 @@ public class Map {
 		this.raceStarted = false;
 		this.stopTime = System.nanoTime() / 1000000000.0f;
 		
-		try {
-			this.demoRecorder.demoParts.put("save-demo");
-		} catch (InterruptedException e) {
+		if (this.recordDemos) {
+			
+			try {
+				this.demoRecorder.demoParts.put("save-demo");
+			} catch (InterruptedException e) {
+			}
 		}
 		
 		SharedPreferences prefs = this.game.getSharedPreferences("racesow", Context.MODE_PRIVATE);

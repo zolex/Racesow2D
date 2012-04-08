@@ -96,6 +96,7 @@ public class Player extends AnimatedBlock {
 	CameraText tutorialMessage3;
 	public String frameDecal = "";
 	public int frameSound = -1;
+	boolean recordDemos;
 	
 	private int frames = 0;
 	
@@ -109,7 +110,7 @@ public class Player extends AnimatedBlock {
 	 * @param float y
 	 * @param boolean soundEnabled
 	 */
-	public Player(final GLGame game, Map map, Camera2 camera, float x, float y, boolean soundEnabled) {
+	public Player(final GLGame game, Map map, Camera2 camera, float x, float y, boolean soundEnabled, boolean recordDemos) {
 		
 		// create the TexturedShape with static width and height
 		super(game, new Vector2(x,y), new Vector2(x + 3.4f, y), new Vector2(x + 3.4f, y + 6.5f), new Vector2(x, y + 6.5f));
@@ -118,6 +119,7 @@ public class Player extends AnimatedBlock {
 		this.rGen = new Random();
 		this.camera = camera;
 		this.map = map;
+		this.recordDemos = recordDemos;
 		
 		// load the sounds
 		AndroidAudio audio = (AndroidAudio)game.getAudio();
@@ -486,7 +488,7 @@ public class Player extends AnimatedBlock {
 							TexturedBlock decal = this.rocketPool.newObject();
 							decal.setPosition(new Vector2(impactX, impactY));
 							map.addDecal(decal, 0.25f);
-							this.frameDecal = "r#" + impactX + "#" + impactY + "#0.25";
+							if (this.recordDemos) this.frameDecal = "r#" + impactX + "#" + impactY + "#0.25";
 							
 							this.lastShot = currentTime;
 							break;
@@ -521,7 +523,7 @@ public class Player extends AnimatedBlock {
 							decal.setPosition(new Vector2(this.getPosition().x, impactY));
 							map.addDecal(decal, 0.25f);
 							
-							this.frameDecal = "r#" + this.getPosition().x + "#" + impactY + "#0.25";
+							if (this.recordDemos) this.frameDecal = "r#" + this.getPosition().x + "#" + impactY + "#0.25";
 						}
 						
 						this.lastShot = currentTime;
@@ -559,7 +561,7 @@ public class Player extends AnimatedBlock {
 							TexturedBlock decal = (TexturedBlock)this.plasmaPool.newObject();
 							decal.setPosition(new Vector2(impactX, impactY));
 							map.addDecal(decal, 0.25f);
-							this.frameDecal = "p#" + impactX + "#" + impactY + "#0.25";
+							if (this.recordDemos) this.frameDecal = "p#" + impactX + "#" + impactY + "#0.25";
 							
 							this.lastShot = currentTime;
 							break;

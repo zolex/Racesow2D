@@ -2,9 +2,10 @@
 <PreferenceScreen
         
 xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference android:title="Nickname" android:summary="For the highscore list" android:key="name" android:dialogTitle="Enter your nickname" android:negativeButtonText="Cancel" android:positiveButtonText="Save"/><CheckBoxPreference android:title="Sound" android:summary="Enable ingame sound" android:key="sound" android:summaryOn="Sound enabled" android:summaryOff="Sound disabled" android:enabled="true" android:defaultValue="true"/>
+    <EditTextPreference android:title="Nickname" android:summary="For the highscore list" android:key="name" android:dialogTitle="Enter your nickname" android:negativeButtonText="Cancel" android:positiveButtonText="Save"/><CheckBoxPreference android:key="demos" android:title="Record demos" android:summary="Demo recording can reduce the performance" android:defaultValue="true" android:enabled="true" /><CheckBoxPreference android:title="Sound" android:summary="Enable ingame sound" android:key="sound" android:summaryOn="Sound enabled" android:summaryOff="Sound disabled" android:enabled="true" android:defaultValue="true"/>
     <CheckBoxPreference android:key="celshading" android:title="Toon-Shading" android:summary="Show comic outlines for the world" android:enabled="true" android:defaultValue="false"/>
     <CheckBoxPreference android:summary="Show the units per second (speed) in the HUD" android:title="Show UPS" android:key="ups" android:enabled="true" android:defaultValue="true"/><CheckBoxPreference android:summary="Show the frames per second in the HUD" android:title="Show FPS" android:key="fps" android:enabled="true" android:defaultValue="false"/>
+    
     
     
 </PreferenceScreen>

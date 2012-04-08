@@ -81,6 +81,8 @@ class LoadingScreen extends Screen {
 			
 			SharedPreferences prefs = ((Activity)this.game).getSharedPreferences("racesow", Context.MODE_PRIVATE);
 			
+			boolean recordDemos = prefs.getBoolean("demos", true);
+			
 			DemoParser parser = null;
 			if (this.demoFile != null) {
 				
@@ -97,11 +99,11 @@ class LoadingScreen extends Screen {
 			
 			// right after drawing the loading screen load
 			// the map and player and pass it to the GameScreen
-			Map map = new Map(glGraphics.getGL(), this.camera, prefs.getBoolean("celshading", false));
+			Map map = new Map(glGraphics.getGL(), this.camera, prefs.getBoolean("celshading", false), recordDemos);
 			map.load((GLGame)game, this.mapName, this.demoFile != null);
-			Player player = new Player((GLGame)game, map, this.camera, map.playerX, map.playerY, prefs.getBoolean("sound", true));
+			Player player = new Player((GLGame)game, map, this.camera, map.playerX, map.playerY, prefs.getBoolean("sound", true), recordDemos);
 			
-			game.setScreen(new GameScreen(this.game, this.camera, map, player, parser));
+			game.setScreen(new GameScreen(this.game, this.camera, map, player, parser, recordDemos));
 		}
 	}
 

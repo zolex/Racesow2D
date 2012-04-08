@@ -48,12 +48,7 @@ public class GameScreen extends Screen {
 	BitmapFont font;
 	public float frameTime = 0;
 	public DemoParser demoParser;
-	
-	int lastDemoPlayerSpeed;
-	float lastDemoPlayerX;
-	float lastDemoPlayerY;
-	int lastDemoActiveAnim;
-	float lastDemoAnimDuration;
+	boolean recordDemos;
 	
 	boolean showFPS, showUPS;
 	
@@ -77,7 +72,7 @@ public class GameScreen extends Screen {
 	 * @param Map map
 	 * @param Player player
 	 */
-	public GameScreen(Game game, Camera2 camera, Map map, Player player, DemoParser demoParser) {
+	public GameScreen(Game game, Camera2 camera, Map map, Player player, DemoParser demoParser, boolean recordDemos) {
 		
 		super(game);
 		this.glGraphics = ((GLGame)game).getGLGraphics();
@@ -86,6 +81,7 @@ public class GameScreen extends Screen {
 		this.player = player;
 		this.player.setGameScreen(this);
 		this.demoParser = demoParser;
+		this.recordDemos = recordDemos;
 		
 		GLTexture.APP_FOLDER = "racesow";
 		
@@ -298,18 +294,27 @@ public class GameScreen extends Screen {
 				return;
 			}
 			
-			this.map.appendToDemo(
-				this.frameTime + ":" +
-				this.player.getPosition().x + "," +
-				this.player.getPosition().y + "," +
-				this.player.activeAnimId + "," +
-				this.player.animDuration + "," +
-				(int)this.player.virtualSpeed + "," +
-				this.map.getCurrentTime() + "," +
-				this.player.frameSound + "," +
-				this.player.frameDecal +
-				";"
-			);
+			if (this.recordDemos) {
+				
+				this.map.appendToDemo(String.valueOf(this.frameTime));
+				this.map.appendToDemo(":");
+				this.map.appendToDemo(String.valueOf(this.player.getPosition().x));
+				this.map.appendToDemo(",");
+				this.map.appendToDemo(String.valueOf(this.player.getPosition().y));
+				this.map.appendToDemo(",");
+				this.map.appendToDemo(String.valueOf(this.player.activeAnimId));
+				this.map.appendToDemo(",");
+				this.map.appendToDemo(String.valueOf(this.player.animDuration));
+				this.map.appendToDemo(",");
+				this.map.appendToDemo(String.valueOf((int)this.player.virtualSpeed));
+				this.map.appendToDemo(",");
+				this.map.appendToDemo(String.valueOf(this.map.getCurrentTime()));
+				this.map.appendToDemo(",");
+				this.map.appendToDemo(String.valueOf(this.player.frameSound));
+				this.map.appendToDemo(",");
+				this.map.appendToDemo(this.player.frameDecal);
+				this.map.appendToDemo(";");
+			}
 			
 			// update the player
 			this.player.move(this.gravity, deltaTime, this.jumpPressed);

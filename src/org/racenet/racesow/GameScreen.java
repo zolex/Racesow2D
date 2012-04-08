@@ -298,10 +298,8 @@ public class GameScreen extends Screen {
 				return;
 			}
 			
-			
-			
 			this.map.appendToDemo(
-				deltaTime + ":" +
+				this.frameTime + ":" +
 				this.player.getPosition().x + "," +
 				this.player.getPosition().y + "," +
 				this.player.activeAnimId + "," +

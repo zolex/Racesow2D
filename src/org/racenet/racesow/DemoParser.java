@@ -51,12 +51,10 @@ public class DemoParser {
 	
 	public DemoKeyFrame getKeyFrame(float time) {
 		
-		@SuppressWarnings("unchecked")
 		Entry<Float, DemoKeyFrame> frame = this.demoParts.lowerEntry(time);
 		if (frame != null) {
 			
 			Log.d("DEBUG", "wanted " + time + " got " + frame.getKey() + " diff " + (time - frame.getKey()));
-			this.demoParts.remove(frame.getKey());
 			return frame.getValue();
 		}
 		

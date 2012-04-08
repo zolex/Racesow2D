@@ -296,24 +296,18 @@ public class GameScreen extends Screen {
 			
 			if (this.recordDemos) {
 				
-				this.map.appendToDemo(String.valueOf(this.frameTime));
-				this.map.appendToDemo(":");
-				this.map.appendToDemo(String.valueOf(this.player.getPosition().x));
-				this.map.appendToDemo(",");
-				this.map.appendToDemo(String.valueOf(this.player.getPosition().y));
-				this.map.appendToDemo(",");
-				this.map.appendToDemo(String.valueOf(this.player.activeAnimId));
-				this.map.appendToDemo(",");
-				this.map.appendToDemo(String.valueOf(this.player.animDuration));
-				this.map.appendToDemo(",");
-				this.map.appendToDemo(String.valueOf((int)this.player.virtualSpeed));
-				this.map.appendToDemo(",");
-				this.map.appendToDemo(String.valueOf(this.map.getCurrentTime()));
-				this.map.appendToDemo(",");
-				this.map.appendToDemo(String.valueOf(this.player.frameSound));
-				this.map.appendToDemo(",");
-				this.map.appendToDemo(this.player.frameDecal);
-				this.map.appendToDemo(";");
+				this.map.appendToDemo(
+					this.frameTime + ":" +
+					this.player.getPosition().x + "," +
+					this.player.getPosition().y + "," +
+					this.player.activeAnimId + "," +
+					this.player.animDuration + "," +
+					(int)this.player.virtualSpeed + "," +
+					this.map.getCurrentTime() + "," +
+					this.player.frameSound + "," +
+					this.player.frameDecal +
+					";"
+				);
 			}
 			
 			// update the player

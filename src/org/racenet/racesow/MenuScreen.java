@@ -16,6 +16,7 @@ import org.racenet.framework.interfaces.Screen;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Looper;
 import android.view.GestureDetector;
 
 /**
@@ -72,6 +73,16 @@ public class MenuScreen extends Screen {
 			public void handle() {
 				
 				Intent i = new Intent((Activity)game, OnlineScores.class);
+				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				((Activity)game).startActivity(i);
+			}
+		});
+		
+		menu.addItem("menu/demos.png", menu.new Callback() {
+			
+			public void handle() {
+				
+				Intent i = new Intent((Activity)game, DemoList.class);
 				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 				((Activity)game).startActivity(i);
 			}

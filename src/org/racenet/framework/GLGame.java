@@ -49,6 +49,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
     Object stateChanged = new Object();
     long startTime = System.nanoTime();
     WakeLock wakeLock;
+    float deltaRest = 0;
     
     @Override
     /**
@@ -117,7 +118,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
     public void onSurfaceChanged(GL10 gl, int width, int height) {   
     	
     }
-
+    
     /**
      * onDrawframe is being called by openGL and updates
      * the world and draws it accoring to the internal gamestate
@@ -139,8 +140,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
         	
             float deltaTime = (System.nanoTime()-startTime) / 1000000000.0f;
             startTime = System.nanoTime();
-            
-            screen.update(deltaTime);
+          	screen.update(deltaTime);
             screen.present(deltaTime);
         }
         

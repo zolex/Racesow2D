@@ -21,7 +21,7 @@ import android.os.Bundle;
  * @author so#zolex
  *
  */
-public class Racesow extends GLGame {	
+public class Racesow extends GLGame {
 	
 	public static boolean LOOPER_PREPARED = false;
 	
@@ -58,7 +58,17 @@ public class Racesow extends GLGame {
 	 */
     public Screen getStartScreen() {
     	
-        return new MenuScreen(this);
+    	String screen = getIntent().getStringExtra("screen");
+    	if (screen == null) {
+    	
+    		return new MenuScreen(this);
+    		
+    	} else if (screen.equals("demo")) {
+    		
+    		return new LoadingScreen(this, null, getIntent().getStringExtra("demo"));
+    	}
+    	
+    	return null;
     }
     
     /**
@@ -74,14 +84,24 @@ public class Racesow extends GLGame {
     		
     		GameScreen gameScreen = (GameScreen)screen;
     		
+    		if (gameScreen.demoParser != null) {
+    			
+    			super.onBackPressed();
+    		}
+    		
     		// restart the race
-    		if (gameScreen.map.inRace() || gameScreen.map.raceFinished()) {
+    		else if (gameScreen.map.inRace() || gameScreen.map.raceFinished()) {
     		
     			gameScreen.state = GameState.Running;
     			gameScreen.map.restartRace(gameScreen.player);
     			
     		// return to maps menu
     		} else {
+    			
+    			if (gameScreen.map.demoRecorder != null) {
+    			
+    				gameScreen.map.demoRecorder.cancelDemo();
+    			}
     			
     			this.glView.queueEvent(new Runnable() {
 

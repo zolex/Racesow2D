@@ -3,6 +3,7 @@ package org.racenet.racesow;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -16,6 +17,8 @@ import org.racenet.framework.TexturedShape;
 import org.racenet.framework.TexturedTriangle;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.XMLParser;
+import org.racenet.racesow.models.DemoKeyFrame;
+import org.racenet.racesow.threads.DemoRecorderThread;
 import org.racenet.racesow.threads.SubmitScoreThread;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -59,6 +62,10 @@ public class Map {
 	public String fileName;
 	private GLGame game;
 	public float pauseTime = 0;
+	String demo = "";
+	public DemoRecorderThread demoRecorder;
+	private HashMap<Float, DemoKeyFrame> demoParts = new HashMap<Float, DemoKeyFrame>();
+	boolean recordDemos;
 	
 	/**
 	 * Map constructor.
@@ -67,11 +74,12 @@ public class Map {
 	 * @param Camera2 camera
 	 * @param boolean drawOutlines
 	 */
-	public Map(GL10 gl, Camera2 camera, boolean drawOutlines) {
+	public Map(GL10 gl, Camera2 camera, boolean drawOutlines, boolean recordDemos) {
 		
 		this.gl = gl;
 		this.camera = camera;
 		this.drawOutlines = drawOutlines;
+		this.recordDemos = recordDemos;
 		
 		// decalTime -1 means there is no decal
 		for (int i = 0; i < MAX_DECALS; i++) {
@@ -88,7 +96,7 @@ public class Map {
 	 * @param String fileName
 	 * @return boolean
 	 */
-	public boolean load(GLGame game, String fileName) {
+	public boolean load(GLGame game, String fileName, boolean demoPlayback) {
 		
 		this.fileName = fileName;
 		this.game = game;
@@ -434,7 +442,24 @@ public class Map {
 			this.funcs.add(tutorial);
 		}
 		
+		if (!demoPlayback && this.recordDemos) {
+		
+			this.demoRecorder = new DemoRecorderThread(this.game.getFileIO(), this.fileName);
+			this.demoRecorder.start();
+		}
+		
 		return true;
+	}
+	
+	public void appendToDemo(String part) {
+		
+		if (this.recordDemos) {
+			
+			try {
+				this.demoRecorder.demoParts.put(part);
+			} catch (InterruptedException e) {
+			}
+		}
 	}
 	
 	/**
@@ -518,6 +543,11 @@ public class Map {
 	 * Get rid of the textures from the whole map
 	 */
 	public void dispose() {
+		
+		if (this.recordDemos && this.demoRecorder != null) {
+		
+			this.demoRecorder.stop = true;
+		}
 		
 		int length = this.ground.size();
 		for (int i = 0; i < length; i++) {
@@ -753,13 +783,17 @@ public class Map {
 	 */
 	public void restartRace(Player player) {
 		
-		this.pauseTime = 0;
+		if (this.recordDemos && !this.raceFinished) {
+		
+			this.demoRecorder.cancelDemo();
+		}
+		
+		this.demo = "";
 		this.startTime = 0;
 		this.stopTime = 0;
+		this.pauseTime = 0;
 		this.raceStarted = false;
 		this.raceFinished= false;
-		player.reset(this.playerX, this.playerY);
-		camera.setPosition(player.getPosition().x + 20, this.camera.frustumHeight / 2);
 		
 		int length = this.pickedUpItems.size();
 		for (int i = 0; i < length; i++) {
@@ -775,6 +809,14 @@ public class Map {
 		}
 		
 		this.pickedUpItems.clear();
+		
+		player.reset(this.playerX, this.playerY);
+		camera.setPosition(player.getPosition().x + 20, this.camera.frustumHeight / 2);
+		
+		if (this.recordDemos) {
+			
+			this.demoRecorder.newDemo();
+		}
 	}
 	
 	/**
@@ -820,9 +862,17 @@ public class Map {
 		this.raceStarted = false;
 		this.stopTime = System.nanoTime() / 1000000000.0f;
 		
+		if (this.recordDemos) {
+			
+			try {
+				this.demoRecorder.demoParts.put("save-demo");
+			} catch (InterruptedException e) {
+			}
+		}
+		
 		SharedPreferences prefs = this.game.getSharedPreferences("racesow", Context.MODE_PRIVATE);
-		SubmitScoreThread t = new SubmitScoreThread(this.fileName, prefs.getString("name", "player"), this.getCurrentTime());
-		t.start();
+		SubmitScoreThread t2 = new SubmitScoreThread(this.fileName, prefs.getString("name", "player"), this.getCurrentTime());
+		t2.start();
 	}
 	
 	/**

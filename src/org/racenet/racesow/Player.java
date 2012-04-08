@@ -32,7 +32,7 @@ import android.util.Log;
  * @author al
  *
  */
-class Player extends AnimatedBlock {
+public class Player extends AnimatedBlock {
 	
 	public final Vector2 velocity = new Vector2();
 	public final Vector2 accel = new Vector2();
@@ -60,7 +60,7 @@ class Player extends AnimatedBlock {
 	public static final short SOUND_PICKUP = 5;
 	public static final short SOUND_ROCKET = 6;
 	public static final short SOUND_PLASMA = 7;
-	private AndroidSound sounds[] = new AndroidSound[8];
+	public AndroidSound sounds[] = new AndroidSound[8];
 	
 	// firerates
 	private static final float FIRERATE_ROCKET = 1.75f;
@@ -73,17 +73,17 @@ class Player extends AnimatedBlock {
 	private boolean distanceRemembered = false;
 	public float virtualSpeed = 0;
 	private float startSpeed = 450;
-	private boolean enableAnimation = false;
+	public boolean enableAnimation = false;
 	private boolean isDead = false;
-	private float animDuration = 0;
+	public float animDuration = 0;
 	private TexturedBlock attachedItem;
 	private Camera2 camera;
 	private Random rGen;
-	private float volume = 0.1f;
+	public float volume = 0.1f;
 	private String model = "male";
 	private Map map;
-	private FifoPool<TexturedBlock> plasmaPool;
-	private FifoPool<TexturedBlock> rocketPool;
+	public FifoPool<TexturedBlock> plasmaPool;
+	public FifoPool<TexturedBlock> rocketPool;
 	private boolean soundEnabled;
 	private GameScreen gameScreen;
 	CameraText restartMessage;
@@ -94,6 +94,9 @@ class Player extends AnimatedBlock {
 	CameraText tutorialMessage1;
 	CameraText tutorialMessage2;
 	CameraText tutorialMessage3;
+	public String frameDecal = "";
+	public int frameSound = -1;
+	boolean recordDemos;
 	
 	private int frames = 0;
 	
@@ -107,7 +110,7 @@ class Player extends AnimatedBlock {
 	 * @param float y
 	 * @param boolean soundEnabled
 	 */
-	public Player(final GLGame game, Map map, Camera2 camera, float x, float y, boolean soundEnabled) {
+	public Player(final GLGame game, Map map, Camera2 camera, float x, float y, boolean soundEnabled, boolean recordDemos) {
 		
 		// create the TexturedShape with static width and height
 		super(game, new Vector2(x,y), new Vector2(x + 3.4f, y), new Vector2(x + 3.4f, y + 6.5f), new Vector2(x, y + 6.5f));
@@ -116,6 +119,7 @@ class Player extends AnimatedBlock {
 		this.rGen = new Random();
 		this.camera = camera;
 		this.map = map;
+		this.recordDemos = recordDemos;
 		
 		// load the sounds
 		AndroidAudio audio = (AndroidAudio)game.getAudio();
@@ -328,9 +332,10 @@ class Player extends AnimatedBlock {
 		
 			this.onFloor = false;
 			
+			int jumpSound = this.rGen.nextInt(SOUND_JUMP2 - SOUND_JUMP1 + 1) + SOUND_JUMP1;
+			this.frameSound = jumpSound;
 			if (this.soundEnabled) {
 				
-				int jumpSound = this.rGen.nextInt(SOUND_JUMP2 - SOUND_JUMP1 + 1) + SOUND_JUMP1;
 				this.sounds[jumpSound].play(this.volume);
 			}
 			
@@ -392,9 +397,10 @@ class Player extends AnimatedBlock {
 					CollisionInfo info = this.intersect(part);
 					if (info.collided) {
 						
+						int wjSound = this.rGen.nextInt(SOUND_WJ2 - SOUND_WJ1 + 1) + SOUND_WJ1;
+						this.frameSound = wjSound;
 						if (this.soundEnabled) {
 						
-							int wjSound = this.rGen.nextInt(SOUND_WJ2 - SOUND_WJ1 + 1) + SOUND_WJ1;
 							this.sounds[wjSound].play(this.volume);
 						}
 						
@@ -472,6 +478,7 @@ class Player extends AnimatedBlock {
 							this.velocity.set(this.velocity.x, this.velocity.y < 0 ? 30 : this.velocity.y + 20);
 							this.virtualSpeed += 200;
 							
+							this.frameSound = SOUND_ROCKET;
 							if (this.soundEnabled) {
 							
 								this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
@@ -481,6 +488,7 @@ class Player extends AnimatedBlock {
 							TexturedBlock decal = this.rocketPool.newObject();
 							decal.setPosition(new Vector2(impactX, impactY));
 							map.addDecal(decal, 0.25f);
+							if (this.recordDemos) this.frameDecal = "r#" + impactX + "#" + impactY + "#0.25";
 							
 							this.lastShot = currentTime;
 							break;
@@ -504,6 +512,7 @@ class Player extends AnimatedBlock {
 								this.onFloor = false;
 							}
 							
+							this.frameSound = SOUND_ROCKET;
 							if (this.soundEnabled) {
 							
 								this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
@@ -513,6 +522,8 @@ class Player extends AnimatedBlock {
 							TexturedBlock decal = this.rocketPool.newObject();
 							decal.setPosition(new Vector2(this.getPosition().x, impactY));
 							map.addDecal(decal, 0.25f);
+							
+							if (this.recordDemos) this.frameDecal = "r#" + this.getPosition().x + "#" + impactY + "#0.25";
 						}
 						
 						this.lastShot = currentTime;
@@ -540,6 +551,7 @@ class Player extends AnimatedBlock {
 							this.velocity.add(0, 2.5f);
 							this.virtualSpeed += 15;
 							
+							this.frameSound = SOUND_PLASMA;
 							if (this.soundEnabled) {
 							
 								this.sounds[SOUND_PLASMA].play(this.volume * 1.2f);
@@ -549,6 +561,7 @@ class Player extends AnimatedBlock {
 							TexturedBlock decal = (TexturedBlock)this.plasmaPool.newObject();
 							decal.setPosition(new Vector2(impactX, impactY));
 							map.addDecal(decal, 0.25f);
+							if (this.recordDemos) this.frameDecal = "p#" + impactX + "#" + impactY + "#0.25";
 							
 							this.lastShot = currentTime;
 							break;
@@ -559,6 +572,51 @@ class Player extends AnimatedBlock {
 				}
 				break;
 		}
+	}
+	
+	public void animate(float deltaTime) {
+		
+		// if enabled run a player animation
+				if (this.enableAnimation) {
+					
+					this.animTime += deltaTime;
+					if (this.animTime > this.animDuration) {
+						
+						this.enableAnimation = false;
+						this.animTime = 0;
+						
+						if (this.activeAnimId == Player.ANIM_BURN || this.activeAnimId == Player.ANIM_DROWN) {
+							
+							this.activeAnimId = Player.ANIM_INVISIBLE;
+						
+						// when the animation is over, choose
+						// the proper default animation
+						} else {
+						
+							if (this.attachedItem != null) {
+								
+								switch (this.attachedItem.func) {
+								
+									case GameObject.ITEM_ROCKET:
+										this.activeAnimId = Player.ANIM_ROCKET_RUN;
+										break;
+									
+									case GameObject.ITEM_PLASMA:
+										this.activeAnimId = Player.ANIM_PLASMA_RUN;
+										break;
+										
+									default:
+										this.activeAnimId = Player.ANIM_RUN;
+										break;
+								}
+								
+							} else {
+							
+								this.activeAnimId = Player.ANIM_RUN;
+							}
+						}
+					}
+				}
 	}
 	
 	/**
@@ -573,47 +631,10 @@ class Player extends AnimatedBlock {
 		 // workaround for initial loading
 		if (++frames < 3) return;
 		
-		// if enabled run a player animation
-		if (this.enableAnimation) {
-			
-			this.animTime += deltaTime;
-			if (this.animTime > this.animDuration) {
-				
-				this.enableAnimation = false;
-				this.animTime = 0;
-				
-				if (this.activeAnimId == Player.ANIM_BURN || this.activeAnimId == Player.ANIM_DROWN) {
-					
-					this.activeAnimId = Player.ANIM_INVISIBLE;
-				
-				// when the animation is over, choose
-				// the proper default animation
-				} else {
-				
-					if (this.attachedItem != null) {
-						
-						switch (this.attachedItem.func) {
-						
-							case GameObject.ITEM_ROCKET:
-								this.activeAnimId = Player.ANIM_ROCKET_RUN;
-								break;
-							
-							case GameObject.ITEM_PLASMA:
-								this.activeAnimId = Player.ANIM_PLASMA_RUN;
-								break;
-								
-							default:
-								this.activeAnimId = Player.ANIM_RUN;
-								break;
-						}
-						
-					} else {
-					
-						this.activeAnimId = Player.ANIM_RUN;
-					}
-				}
-			}
-		}
+		this.frameDecal = "";
+		this.frameSound = -1;
+		
+		this.animate(deltaTime);
 		
 		if (this.isDead) return;
 		
@@ -695,6 +716,7 @@ class Player extends AnimatedBlock {
 				this.lastShot = 0;
 				this.attachedItem = hudItem;
 				
+				this.frameSound = SOUND_PICKUP;
 				if (this.soundEnabled) {
 				
 					this.sounds[SOUND_PICKUP].play(this.volume);
@@ -820,6 +842,7 @@ class Player extends AnimatedBlock {
 	public void die() {
 		
 		this.virtualSpeed = 0;
+		this.frameSound = SOUND_DIE;
 		if (this.soundEnabled) {
 		
 			this.sounds[SOUND_DIE].play(this.volume);
@@ -980,6 +1003,9 @@ class Player extends AnimatedBlock {
 	public void reset(float x, float y) {
 				
 		this.updateTutorial("reset");
+		
+		this.gameScreen.frameTime = 0;
+		this.gameScreen.frames = 0;
 		
 		this.isDead = false;
 		this.onFloor = false;

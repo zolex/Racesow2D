@@ -17,10 +17,12 @@ import org.racenet.framework.Vector2;
 import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Screen;
 import org.racenet.framework.interfaces.Input.TouchEvent;
+import org.racenet.racesow.models.DemoKeyFrame;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 /**
  * Class which represents the racesow game itsself.
@@ -28,7 +30,7 @@ import android.content.SharedPreferences;
  * @author soh#zolex
  *
  */
-class GameScreen extends Screen {
+public class GameScreen extends Screen {
 		
 	public Player player;
 	CameraText ups, fps, timer;
@@ -44,11 +46,15 @@ class GameScreen extends Screen {
 	float shootPressedTime = 0;
 	SpriteBatcher batcher;
 	BitmapFont font;
+	public float frameTime = 0;
+	public DemoParser demoParser;
+	boolean recordDemos;
 	
 	boolean showFPS, showUPS;
 	
 	int fpsInterval = 5;
 	int frames = 10;
+	int demoFrames = 10;
 	float sumDelta = 0;
 	public GameState state = GameState.Running;
 	
@@ -66,14 +72,16 @@ class GameScreen extends Screen {
 	 * @param Map map
 	 * @param Player player
 	 */
-	public GameScreen(Game game, Camera2 camera, Map map, Player player) {
-			
+	public GameScreen(Game game, Camera2 camera, Map map, Player player, DemoParser demoParser, boolean recordDemos) {
+		
 		super(game);
 		this.glGraphics = ((GLGame)game).getGLGraphics();
 		this.camera = camera;
 		this.map = map;
 		this.player = player;
 		this.player.setGameScreen(this);
+		this.demoParser = demoParser;
+		this.recordDemos = recordDemos;
 		
 		GLTexture.APP_FOLDER = "racesow";
 		
@@ -160,96 +168,153 @@ class GameScreen extends Screen {
 	 */
 	public void update(float deltaTime) {
 		
-		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
-		int len = touchEvents.size();
-		for (int i = 0; i < len; i++) {
+		if (this.demoParser != null) {
 			
-			TouchEvent e = touchEvents.get(i);
+			DemoKeyFrame f = demoParser.getKeyFrame(this.frameTime);
+			if (f != null) {
 			
-			if (e.type == TouchEvent.TOUCH_DOWN) {
+				this.player.setPosition(f.playerPosition);
+				this.player.activeAnimId = f.playerAnimation;
+				this.player.animDuration = f.playerAnimDuration;
+				this.player.enableAnimation = true;
+				this.player.virtualSpeed = f.playerSpeed;
+				this.player.animate(deltaTime);
 				
-				// when touching the pause-button
-				if (e.y / (float)game.getScreenHeight() < 0.1f && e.x / (float)game.getScreenWidth() < 0.1f) {
-				
-					if (this.state == GameState.Running) {
-						
-						this.pauseGame();
-						
-					} else if (this.state == GameState.Paused) {
-						
-						this.resumeGame();
-					} 
+				if (f.playerSound != -1) {
+					
+					this.player.sounds[f.playerSound].play(player.volume);
 				}
 				
-				// when touching the jump-area on the screen
-				else if (e.x / (float)game.getScreenWidth() > 0.5f) {
-					
-					if (!this.jumpPressed) {
-						
-						this.jumpPressed = true;
-						this.jumpPressedTime = 0;
-					}
+				this.timer.text = "t " + String.format("%.4f", f.mapTime);
 				
-				// when touching the shoot-area on the screen
-				} else {
+				if (f.decalType != null) {
 					
-					if (!this.shootPressed) {
+					if (f.decalType.equals("r")) {
 						
-						this.shootPressed = true;
+						TexturedBlock decal = player.rocketPool.newObject();
+						decal.setPosition(new Vector2(f.decalX, f.decalY));
+						map.addDecal(decal, f.decalTime);
+						
+					} else if (f.decalType.equals("p")) {
+						
+						TexturedBlock decal = player.plasmaPool.newObject();
+						decal.setPosition(new Vector2(f.decalX, f.decalY));
+						map.addDecal(decal, f.decalTime);
+					}
+				}
+			}
+			
+		} else {
+			
+			List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+			int len = touchEvents.size();
+			for (int i = 0; i < len; i++) {
+				
+				TouchEvent e = touchEvents.get(i);
+				
+				if (e.type == TouchEvent.TOUCH_DOWN) {
+					
+					// when touching the pause-button
+					if (e.y / (float)game.getScreenHeight() < 0.1f && e.x / (float)game.getScreenWidth() < 0.1f) {
+					
+						if (this.state == GameState.Running) {
+							
+							this.pauseGame();
+							
+						} else if (this.state == GameState.Paused) {
+							
+							this.resumeGame();
+						} 
+					}
+					
+					// when touching the jump-area on the screen
+					else if (e.x / (float)game.getScreenWidth() > 0.5f) {
+						
+						if (!this.jumpPressed) {
+							
+							this.jumpPressed = true;
+							this.jumpPressedTime = 0;
+						}
+					
+					// when touching the shoot-area on the screen
+					} else {
+						
+						if (!this.shootPressed) {
+							
+							this.shootPressed = true;
+							this.shootPressedTime = 0;
+						}
+					}
+	
+				} else if (e.type == TouchEvent.TOUCH_UP) {
+					
+					// this is only for the tutorial
+					if (this.state == GameState.Paused) {
+						
+						this.player.updateTutorial("release");
+					}
+					
+					// when releasing the jump-button
+					if (e.x / (float)game.getScreenWidth() > 0.5f) {
+						
+						this.jumpPressed = false;
+						this.jumpPressedTime = 0;
+						
+					// when releasing the shoot-button
+					} else {
+						
+						this.shootPressed = false;
 						this.shootPressedTime = 0;
 					}
 				}
-
-			} else if (e.type == TouchEvent.TOUCH_UP) {
-				
-				// this is only for the tutorial
-				if (this.state == GameState.Paused) {
-					
-					this.player.updateTutorial("release");
-				}
-				
-				// when releasing the jump-button
-				if (e.x / (float)game.getScreenWidth() > 0.5f) {
-					
-					this.jumpPressed = false;
-					this.jumpPressedTime = 0;
-					
-				// when releasing the shoot-button
-				} else {
-					
-					this.shootPressed = false;
-					this.shootPressedTime = 0;
-				}
 			}
-		}
 		
-		// execute jump if requested
-		if (this.jumpPressed) {
-			
-			this.player.jump(this.jumpPressedTime);
-			this.jumpPressedTime += deltaTime;
-		}
-		
-		// execute shoot if requested
-		if (this.shootPressed) {
-			
-			this.player.shoot(this.shootPressedTime);
-			this.shootPressedTime += deltaTime;
-		}
-		
-		//  nothing more to do here when paused
-		if (this.state == GameState.Paused) {
-			
-			if (map.getCurrentTime() > 0 ) {
-			
-				this.map.pauseTime += deltaTime;
+			// execute jump if requested
+			if (this.jumpPressed) {
+				
+				this.player.jump(this.jumpPressedTime);
+				this.jumpPressedTime += deltaTime;
 			}
 			
-			return;
+			// execute shoot if requested
+			if (this.shootPressed) {
+				
+				this.player.shoot(this.shootPressedTime);
+				this.shootPressedTime += deltaTime;
+			}
+			
+			//  nothing more to do here when paused
+			if (this.state == GameState.Paused) {
+				
+				if (map.getCurrentTime() > 0 ) {
+				
+					this.map.pauseTime += deltaTime;
+				}
+				
+				return;
+			}
+			
+			if (this.recordDemos) {
+				
+				this.map.appendToDemo(
+					this.frameTime + ":" +
+					this.player.getPosition().x + "," +
+					this.player.getPosition().y + "," +
+					this.player.activeAnimId + "," +
+					this.player.animDuration + "," +
+					(int)this.player.virtualSpeed + "," +
+					this.map.getCurrentTime() + "," +
+					this.player.frameSound + "," +
+					this.player.frameDecal +
+					";"
+				);
+			}
+			
+			// update the player
+			this.player.move(this.gravity, deltaTime, this.jumpPressed);
 		}
 		
-		// update the player
-		this.player.move(this.gravity, deltaTime, this.jumpPressed);
+		this.frameTime += deltaTime;
 		
 		// move the camera upwards if the player goes to high
 		float camY = this.camera.frustumHeight / 2;
@@ -261,20 +326,6 @@ class GameScreen extends Screen {
 		this.camera.setPosition(this.player.getPosition().x + 20, camY);		
 		this.map.update(deltaTime);
 
-		if (this.showFPS) {
-			
-			// update HUD for frames per second
-			this.frames--;
-			this.sumDelta += deltaTime;
-			if (frames == 0) {
-			
-				this.fps.text = "fps " + String.valueOf(new Integer((int)(this.fpsInterval / this.sumDelta)));
-				this.frames = fpsInterval;
-				this.sumDelta = 0;
-				
-			}
-		}
-
 		if (this.showUPS) {
 		
 			// update HUD for player-speed
@@ -282,7 +333,10 @@ class GameScreen extends Screen {
 		}
 		
 		// update hud for time
-		this.timer.text = "t " + String.format("%.4f", map.getCurrentTime());
+		if (this.demoParser == null) {
+		
+			this.timer.text = "t " + String.format("%.4f", map.getCurrentTime());
+		}
 	}
 
 	/**
@@ -305,6 +359,20 @@ class GameScreen extends Screen {
 		
 		this.map.draw();
 		this.player.draw();
+		
+		if (this.showFPS) {
+			
+			// update HUD for frames per second
+			this.frames--;
+			this.sumDelta += deltaTime;
+			if (frames == 0) {
+			
+				this.fps.text = "fps " + String.valueOf(new Integer((int)(this.fpsInterval / this.sumDelta)));
+				this.frames = fpsInterval;
+				this.sumDelta = 0;
+				
+			}
+		}
 		
 		synchronized (this.player) {
 		
@@ -334,7 +402,7 @@ class GameScreen extends Screen {
 	 * Get rid of all textures when leaving the screen
 	 */
 	public void dispose() {
-
+		
 		this.camera.dispose();
 		this.map.dispose();
 		this.player.dispose();

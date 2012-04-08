@@ -25,6 +25,7 @@ import org.w3c.dom.NodeList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Looper;
 import android.view.GestureDetector;
 
 /**
@@ -171,7 +172,7 @@ public class MapsScreen extends Screen {
 				
 				public void handle() {
 					
-					game.setScreen(new LoadingScreen(game, item.filename));
+					game.setScreen(new LoadingScreen(game, item.filename, null));
 				}
 			});
 		}

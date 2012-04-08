@@ -71,6 +71,18 @@ public class AndroidFileIO implements FileIO {
 	}
 	
 	/**
+	 * Delete a file
+	 * 
+	 * @param String fileName
+	 * @return boolean
+	 */
+	public boolean deleteFile(String fileName) {
+		
+		File file = new File(externalStoragePath + fileName);
+		return file.delete();
+	}
+	
+	/**
 	 * Create a directory on the sd-card
 	 * 
 	 * @param String path

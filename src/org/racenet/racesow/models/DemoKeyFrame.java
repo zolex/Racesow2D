@@ -8,6 +8,8 @@ public class DemoKeyFrame {
 	public int playerAnimation;
 	public float playerAnimDuration;
 	public int playerSound;
+	public int playerSpeed;
+	public float mapTime;
 	public String decalType;
 	public float decalX;
 	public float decalY;

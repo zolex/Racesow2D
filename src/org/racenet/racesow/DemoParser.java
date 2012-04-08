@@ -21,15 +21,17 @@ public class DemoParser {
 			String[] info = part[1].split(",");
 			
 			DemoKeyFrame f = new DemoKeyFrame();
-			f.playerPosition.x = Float.parseFloat(info[0]);
-			f.playerPosition.y = Float.parseFloat(info[1]);
-			f.playerAnimation = Integer.parseInt(info[2]);
-			f.playerAnimDuration = Float.parseFloat(info[3]);
-			f.playerSound = Integer.parseInt(info[4]);
+			try { f.playerPosition.x = Float.parseFloat(info[0]); } catch (NumberFormatException e) {}
+			try { f.playerPosition.y = Float.parseFloat(info[1]); } catch (NumberFormatException e) {}
+			try { f.playerAnimation = Integer.parseInt(info[2]); } catch (NumberFormatException e) {}
+			try { f.playerAnimDuration = Float.parseFloat(info[3]); } catch (NumberFormatException e) {}
+			try { f.playerSpeed = Integer.parseInt(info[4]); } catch (NumberFormatException e) {}
+			try { f.mapTime = Float.parseFloat(info[5]); } catch (NumberFormatException e) {}
+			try { f.playerSound = Integer.parseInt(info[6]); } catch (NumberFormatException e) {}
 			
-			if (info.length > 5 && !info[5].equals("")) {
+			if (info.length > 7 && !info[7].equals("")) {
 				
-				String[] decal = info[5].split("#");
+				String[] decal = info[7].split("#");
 				f.decalType = decal[0];
 				f.decalX = Float.parseFloat(decal[1]);
 				f.decalY = Float.parseFloat(decal[2]);

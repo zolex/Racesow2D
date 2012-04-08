@@ -49,6 +49,12 @@ public class GameScreen extends Screen {
 	public float frameTime = 0;
 	public DemoParser demoParser;
 	
+	int lastDemoPlayerSpeed;
+	float lastDemoPlayerX;
+	float lastDemoPlayerY;
+	int lastDemoActiveAnim;
+	float lastDemoAnimDuration;
+	
 	boolean showFPS, showUPS;
 	
 	int fpsInterval = 5;
@@ -173,18 +179,19 @@ public class GameScreen extends Screen {
 			DemoKeyFrame f = demoParser.getKeyFrame(roundFrameTime);
 			if (f != null) {
 			
-				Log.d("DEBUG", "" + roundFrameTime);
-				
 				this.player.setPosition(f.playerPosition);
 				this.player.activeAnimId = f.playerAnimation;
 				this.player.animDuration = f.playerAnimDuration;
 				this.player.enableAnimation = true;
+				this.player.virtualSpeed = f.playerSpeed;
 				this.player.animate(deltaTime);
 				
 				if (f.playerSound != -1) {
 					
 					this.player.sounds[f.playerSound].play(player.volume);
 				}
+				
+				this.timer.text = "t " + String.format("%.4f", f.mapTime);
 				
 				if (f.decalType != null) {
 					
@@ -293,12 +300,16 @@ public class GameScreen extends Screen {
 				return;
 			}
 			
+			
+			
 			this.map.appendToDemo(
 				roundFrameTime + ":" +
 				this.player.getPosition().x + "," +
 				this.player.getPosition().y + "," +
 				this.player.activeAnimId + "," +
 				this.player.animDuration + "," +
+				(int)this.player.virtualSpeed + "," +
+				this.map.getCurrentTime() + "," +
 				this.player.frameSound + "," +
 				this.player.frameDecal +
 				";"
@@ -327,7 +338,10 @@ public class GameScreen extends Screen {
 		}
 		
 		// update hud for time
-		this.timer.text = "t " + String.format("%.4f", map.getCurrentTime());
+		if (this.demoParser == null) {
+		
+			this.timer.text = "t " + String.format("%.4f", map.getCurrentTime());
+		}
 	}
 
 	/**

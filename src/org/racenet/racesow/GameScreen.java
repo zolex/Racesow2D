@@ -110,22 +110,25 @@ public class GameScreen extends Screen {
 		this.timer = this.createCameraText(this.camera.frustumWidth / 2 - 45, this.camera.frustumHeight / 2 - 3);
 		this.camera.addHud(this.timer);
 		
-		this.pause = new TexturedBlock(
+		if (this.demoParser == null) {
+			
+			this.pause = new TexturedBlock(
+					(GLGame)this.game,
+					"hud/pause.png", GameObject.FUNC_NONE, -1, -1,
+					new Vector2(-this.camera.frustumWidth / 2 + 1 , this.camera.frustumHeight / 2 - 6),
+					new Vector2(-this.camera.frustumWidth / 2 + 6, 0));
+			
+			this.play = new TexturedBlock(
 				(GLGame)this.game,
-				"hud/pause.png", GameObject.FUNC_NONE, -1, -1,
+				"hud/play.png", GameObject.FUNC_NONE, -1, -1,
 				new Vector2(-this.camera.frustumWidth / 2 + 1 , this.camera.frustumHeight / 2 - 6),
 				new Vector2(-this.camera.frustumWidth / 2 + 6, 0));
-		
-		this.play = new TexturedBlock(
-			(GLGame)this.game,
-			"hud/play.png", GameObject.FUNC_NONE, -1, -1,
-			new Vector2(-this.camera.frustumWidth / 2 + 1 , this.camera.frustumHeight / 2 - 6),
-			new Vector2(-this.camera.frustumWidth / 2 + 6, 0));
-		
-		// add both, because somehow if play is added
-		// later it won't show up in the HUD
-		this.camera.addHud(play);
-		this.camera.addHud(pause);
+			
+			// add both, because somehow if play is added
+			// later it won't show up in the HUD
+			this.camera.addHud(play);
+			this.camera.addHud(pause);
+		}
 	}
 	
 	/**

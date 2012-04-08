@@ -577,46 +577,47 @@ public class Player extends AnimatedBlock {
 	public void animate(float deltaTime) {
 		
 		// if enabled run a player animation
-				if (this.enableAnimation) {
+		if (this.enableAnimation) {
+			
+			this.animTime += deltaTime;
+			if (this.animTime > this.animDuration) {
+				
+				this.enableAnimation = false;
+				this.animTime = 0;
+				this.animDuration = 0;
+				
+				if (this.activeAnimId == Player.ANIM_BURN || this.activeAnimId == Player.ANIM_DROWN) {
 					
-					this.animTime += deltaTime;
-					if (this.animTime > this.animDuration) {
+					this.activeAnimId = Player.ANIM_INVISIBLE;
+				
+				// when the animation is over, choose
+				// the proper default animation
+				} else {
+				
+					if (this.attachedItem != null) {
 						
-						this.enableAnimation = false;
-						this.animTime = 0;
+						switch (this.attachedItem.func) {
 						
-						if (this.activeAnimId == Player.ANIM_BURN || this.activeAnimId == Player.ANIM_DROWN) {
+							case GameObject.ITEM_ROCKET:
+								this.activeAnimId = Player.ANIM_ROCKET_RUN;
+								break;
 							
-							this.activeAnimId = Player.ANIM_INVISIBLE;
-						
-						// when the animation is over, choose
-						// the proper default animation
-						} else {
-						
-							if (this.attachedItem != null) {
+							case GameObject.ITEM_PLASMA:
+								this.activeAnimId = Player.ANIM_PLASMA_RUN;
+								break;
 								
-								switch (this.attachedItem.func) {
-								
-									case GameObject.ITEM_ROCKET:
-										this.activeAnimId = Player.ANIM_ROCKET_RUN;
-										break;
-									
-									case GameObject.ITEM_PLASMA:
-										this.activeAnimId = Player.ANIM_PLASMA_RUN;
-										break;
-										
-									default:
-										this.activeAnimId = Player.ANIM_RUN;
-										break;
-								}
-								
-							} else {
-							
+							default:
 								this.activeAnimId = Player.ANIM_RUN;
-							}
+								break;
 						}
+						
+					} else {
+					
+						this.activeAnimId = Player.ANIM_RUN;
 					}
 				}
+			}
+		}
 	}
 	
 	/**

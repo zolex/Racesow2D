@@ -25,7 +25,6 @@ import org.w3c.dom.NodeList;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Looper;
 import android.view.GestureDetector;
 
 /**

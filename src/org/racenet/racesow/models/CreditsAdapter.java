@@ -33,9 +33,8 @@ public class CreditsAdapter implements ListAdapter {
 	public CreditsAdapter(Context context) {
 		
 		this.context = context;
-		this.credits.add("Idea: Andreas Linden");
 		this.credits.add("Programming: Andreas Linden");
-		this.credits.add("GFX & Animation: ???????");
+		this.credits.add("Graphics: Benjamin Schmitt");
 	}
 
 	/**

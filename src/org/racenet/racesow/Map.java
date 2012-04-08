@@ -3,7 +3,6 @@ package org.racenet.racesow;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -17,7 +16,6 @@ import org.racenet.framework.TexturedShape;
 import org.racenet.framework.TexturedTriangle;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.XMLParser;
-import org.racenet.racesow.models.DemoKeyFrame;
 import org.racenet.racesow.threads.DemoRecorderThread;
 import org.racenet.racesow.threads.SubmitScoreThread;
 import org.w3c.dom.Element;
@@ -25,7 +23,6 @@ import org.w3c.dom.NodeList;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 /**
  * Class which mainly loads the map from an 
@@ -64,7 +61,6 @@ public class Map {
 	public float pauseTime = 0;
 	String demo = "";
 	public DemoRecorderThread demoRecorder;
-	private HashMap<Float, DemoKeyFrame> demoParts = new HashMap<Float, DemoKeyFrame>();
 	boolean recordDemos;
 	
 	/**
@@ -396,13 +392,6 @@ public class Map {
 				v3x = Float.valueOf(parser.getValue((Element)v3n.item(0), "x")).floatValue();
 				v3y = Float.valueOf(parser.getValue((Element)v3n.item(0), "y")).floatValue();
 			}
-			
-			Log.d("TRIANGLE", "v1x " + String.valueOf(new Float(v1x)) + 
-					" v1y " + String.valueOf(new Float(v1y)) +
-					" v2x " + String.valueOf(new Float(v2x)) +
-					" v2y " + String.valueOf(new Float(v2y)) +
-					" v3x " + String.valueOf(new Float(v3x)) + 
-					" v3y " + String.valueOf(new Float(v3y)));
 			
 			TexturedTriangle block = new TexturedTriangle(game,
 				parser.getValue(xmlblock, "texture"),

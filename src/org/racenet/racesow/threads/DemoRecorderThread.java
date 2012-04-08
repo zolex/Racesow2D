@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.racenet.framework.interfaces.FileIO;
 
 /**
- * Thread to save data to the internal scores database
+ * Thread to save the demo-data while playing
  * 
  * @author soh#zolex
  *
@@ -27,11 +27,8 @@ public class DemoRecorderThread extends Thread {
 	/**
 	 * Constructor
 	 * 
-	 * @param Context context
+	 * @param FileIO fileIO
 	 * @param String map
-	 * @param String player
-	 * @param float time
-	 * @param Handler handler
 	 */
 	public DemoRecorderThread(FileIO fileIO, String map) {
 		
@@ -44,6 +41,9 @@ public class DemoRecorderThread extends Thread {
 		this.newDemo();
 	}
 	
+	/**
+	 * Stop the recording of a demo and delete the file
+	 */
 	public void cancelDemo() {
 		
 		if (this.fos != null) {
@@ -64,6 +64,9 @@ public class DemoRecorderThread extends Thread {
 		}
 	}
 	
+	/**
+	 * Start recording a new demo
+	 */
 	public void newDemo() {
 		
 		this.fileName = this.demoFolder + this.map + "_" + (int)(System.nanoTime() / 1000000000.0f) + ".r2d";
@@ -80,7 +83,7 @@ public class DemoRecorderThread extends Thread {
 	
 	@Override
 	/**
-	 * Adds the race to the database
+	 * Keep writing to the demofile
 	 */
     public void run() {         
 		

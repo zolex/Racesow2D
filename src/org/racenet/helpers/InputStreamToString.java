@@ -5,8 +5,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+/**
+ * Converts an InputStream to a String
+ * 
+ * @author soh#zolex
+ *
+ */
 public class InputStreamToString {
 
+	/**
+	 * Convert it!
+	 * 
+	 * @param InputStream in
+	 * @return String
+	 * @throws IOException
+	 */
 	public static String convert (InputStream in) throws IOException {
 	    	
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));

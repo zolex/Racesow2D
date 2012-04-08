@@ -9,7 +9,6 @@ import org.racenet.racesow.R;
 
 import android.content.Context;
 import android.database.DataSetObserver;
-import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;

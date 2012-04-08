@@ -16,7 +16,6 @@ import org.racenet.framework.interfaces.Screen;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Looper;
 import android.view.GestureDetector;
 
 /**

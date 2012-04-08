@@ -2,9 +2,7 @@ package org.racenet.racesow;
 
 import org.racenet.framework.AndroidFileIO;
 import org.racenet.racesow.models.DemoAdapter;
-import org.racenet.racesow.models.LocalMapPagesAdapter;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;

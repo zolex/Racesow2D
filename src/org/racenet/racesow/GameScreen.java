@@ -22,7 +22,6 @@ import org.racenet.racesow.models.DemoKeyFrame;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 /**
  * Class which represents the racesow game itsself.

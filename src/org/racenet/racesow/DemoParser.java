@@ -1,21 +1,27 @@
 package org.racenet.racesow;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 
 import org.racenet.racesow.models.DemoKeyFrame;
 
-import android.util.Log;
-
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentSkipListMap;
 
+/**
+ * Class to parse r2d demo files
+ * 
+ * @author so#zolex
+ *
+ */
 public class DemoParser {
 
 	String map;
 	ConcurrentSkipListMap demoParts = new ConcurrentSkipListMap();
 	
+	/**
+	 * Parse the given demo string
+	 * 
+	 * @param String demo
+	 */
 	public void parse(String demo) {
 		
 		String[] meta = demo.split("/");
@@ -49,8 +55,15 @@ public class DemoParser {
 		}
 	}
 	
+	/**
+	 * Get the best matching keyframe for the given frameTime
+	 * 
+	 * @param float time
+	 * @return DemoKeyFrame
+	 */
 	public DemoKeyFrame getKeyFrame(float time) {
 		
+		@SuppressWarnings("unchecked")
 		Entry<Float, DemoKeyFrame> frame = this.demoParts.lowerEntry(time);
 		if (frame != null) {
 			

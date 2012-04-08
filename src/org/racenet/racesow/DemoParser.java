@@ -54,7 +54,6 @@ public class DemoParser {
 		Entry<Float, DemoKeyFrame> frame = this.demoParts.lowerEntry(time);
 		if (frame != null) {
 			
-			Log.d("DEBUG", "wanted " + time + " got " + frame.getKey() + " diff " + (time - frame.getKey()));
 			return frame.getValue();
 		}
 		

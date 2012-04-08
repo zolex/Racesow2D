@@ -366,11 +366,10 @@ public class GameScreen extends Screen {
 			this.frames--;
 			this.sumDelta += deltaTime;
 			if (frames == 0) {
-			
+
 				this.fps.text = "fps " + String.valueOf(new Integer((int)(this.fpsInterval / this.sumDelta)));
 				this.frames = fpsInterval;
 				this.sumDelta = 0;
-				
 			}
 		}
 		

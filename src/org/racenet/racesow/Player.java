@@ -1061,6 +1061,26 @@ public class Player extends AnimatedBlock {
 		}
 	}
 	
+	/**
+	 * Reload all textures for the player
+	 */
+	public void reloadTextures() {
+		
+		super.reloadTextures();
+		
+		int length = this.plasmaPool.pool.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.plasmaPool.pool.get(i).reloadTexture();
+		}
+		
+		length = this.rocketPool.pool.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.rocketPool.pool.get(i).reloadTexture();
+		}
+	}
+	
 	public void dispose() {
 		
 		super.dispose();

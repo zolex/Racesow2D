@@ -22,7 +22,7 @@ public class FifoPool<T> {
 		public T createObject();
 	}
 	
-	private final List<T> pool;
+	public final List<T> pool;
 	private final PoolObjectFactory<T> factory;
 	private final int maxSize;
 	private int reuseIndex = 0;

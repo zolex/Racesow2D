@@ -140,16 +140,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
         	
             float deltaTime = (System.nanoTime()-startTime) / 1000000000.0f;
             startTime = System.nanoTime();
-            
-            float dt = deltaTime + deltaRest;
-            while (dt - 0.01f > 0) {
-            
-            	screen.update(0.01f);
-            	dt -= 0.01f;
-            }
-            
-            deltaRest = dt;
-            
+          	screen.update(deltaTime);
             screen.present(deltaTime);
         }
         

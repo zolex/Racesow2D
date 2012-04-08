@@ -1,13 +1,20 @@
 package org.racenet.racesow;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 
 import org.racenet.racesow.models.DemoKeyFrame;
+
+import android.util.Log;
+
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentSkipListMap;
 
 public class DemoParser {
 
 	String map;
-	HashMap<Float, DemoKeyFrame> demoParts = new HashMap<Float, DemoKeyFrame>();
+	ConcurrentSkipListMap demoParts = new ConcurrentSkipListMap();
 	
 	public void parse(String demo) {
 		
@@ -44,9 +51,13 @@ public class DemoParser {
 	
 	public DemoKeyFrame getKeyFrame(float time) {
 		
-		if (this.demoParts.containsKey(time)) {
-				
-			return this.demoParts.get(time);
+		@SuppressWarnings("unchecked")
+		Entry<Float, DemoKeyFrame> frame = this.demoParts.lowerEntry(time);
+		if (frame != null) {
+			
+			Log.d("DEBUG", "wanted " + time + " got " + frame.getKey() + " diff " + (time - frame.getKey()));
+			this.demoParts.remove(frame.getKey());
+			return frame.getValue();
 		}
 		
 		return null;

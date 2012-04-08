@@ -172,11 +172,9 @@ public class GameScreen extends Screen {
 	 */
 	public void update(float deltaTime) {
 		
-		float roundFrameTime = (float)(((int)(this.frameTime*100.0f))/100.0f);
-		
 		if (this.demoParser != null) {
 			
-			DemoKeyFrame f = demoParser.getKeyFrame(roundFrameTime);
+			DemoKeyFrame f = demoParser.getKeyFrame(this.frameTime);
 			if (f != null) {
 			
 				this.player.setPosition(f.playerPosition);
@@ -303,7 +301,7 @@ public class GameScreen extends Screen {
 			
 			
 			this.map.appendToDemo(
-				roundFrameTime + ":" +
+				deltaTime + ":" +
 				this.player.getPosition().x + "," +
 				this.player.getPosition().y + "," +
 				this.player.activeAnimId + "," +

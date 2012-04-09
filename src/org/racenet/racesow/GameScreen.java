@@ -53,7 +53,7 @@ public class GameScreen extends Screen {
 	
 	int fpsInterval = 5;
 	int frames = 10;
-	int demoFrames = 10;
+	boolean waitForDemo = true;
 	float sumDelta = 0;
 	public GameState state = GameState.Running;
 	
@@ -317,7 +317,15 @@ public class GameScreen extends Screen {
 			this.player.move(this.gravity, deltaTime, this.jumpPressed);
 		}
 		
-		this.frameTime += deltaTime;
+		// when playing a demo wait one frame
+		if (this.demoParser != null && this.waitForDemo) {
+		
+			this.waitForDemo = false;
+				
+		} else {
+			
+			this.frameTime += deltaTime;
+		}		
 		
 		// move the camera upwards if the player goes to high
 		float camY = this.camera.frustumHeight / 2;

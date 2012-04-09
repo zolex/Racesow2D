@@ -337,15 +337,15 @@ public class GameScreen extends Screen {
 		}
 		
 
-		this.targetPlayerOffset =  Math.min(5000, Math.max(450, this.player.virtualSpeed)) / 256;
+		this.targetPlayerOffset =  Math.min(5000, Math.max(450, this.player.virtualSpeed)) / 192;
 		
 		if (this.currentPlayerOffset < this.targetPlayerOffset) {
 			
-			this.currentPlayerOffset += 0.1f;
+			this.currentPlayerOffset += ((this.targetPlayerOffset - this.currentPlayerOffset) / 10);
 			
 		} else if (this.currentPlayerOffset > this.targetPlayerOffset) {
 			
-			this.currentPlayerOffset -= 0.1f;
+			this.currentPlayerOffset -= ((this.currentPlayerOffset - this.targetPlayerOffset) / 10);
 		}
 
 		

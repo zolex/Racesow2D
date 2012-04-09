@@ -3,7 +3,7 @@
 	<name>000 Texture Shift</name>
 	<mapper>soh#zolex</mapper>
 	<levelshot>purple-sky/texture-shift.png</levelshot>
-	<player><x>10</x><y>20</y></player>
+	<player><x>10</x><y>30</y></player>
 	<starttimer><x>50</x></starttimer>
 	<stoptimer><x>4480</x></stoptimer>
 	<sky>
@@ -30,8 +30,8 @@
 		<width>40</width>
 		<height>2.5</height>
 		<texture>purple-sky/texture-shift.png</texture>
-		<texshiftx>4.4</texshiftx>
-		<texshifty>-2</texshifty>
+		<texshiftx>56</texshiftx>
+		<texshifty>-25</texshifty>
 	</block>
 	<block>
 		<level>ground</level>
@@ -40,8 +40,8 @@
 		<width>30</width>
 		<height>2.5</height>
 		<texture>purple-sky/texture-shift.png</texture>
-		<texshiftx>6.6</texshiftx>
-		<texshifty>-4</texshifty>
+		<texshiftx>84</texshiftx>
+		<texshifty>-50</texshifty>
 	</block>
 	<block>
 		<level>ground</level>
@@ -50,8 +50,8 @@
 		<width>20</width>
 		<height>2.5</height>
 		<texture>purple-sky/texture-shift.png</texture>
-		<texshiftx>8.75</texshiftx>
-		<texshifty>-5.9</texshifty>
+		<texshiftx>-16</texshiftx>
+		<texshifty>-75</texshifty>
 	</block>
 	<block>
 		<level>ground</level>
@@ -60,8 +60,8 @@
 		<width>10</width>
 		<height>2.5</height>
 		<texture>purple-sky/texture-shift.png</texture>
-		<texshiftx>10.9</texshiftx>
-		<texshifty>-7.9</texshifty>
+		<texshiftx>12</texshiftx>
+		<texshifty>-100</texshifty>
 	</block>
 	<block>
 		<level>ground</level>
@@ -70,8 +70,8 @@
 		<width>10</width>
 		<height>13</height>
 		<texture>purple-sky/texture-shift.png</texture>
-		<texshiftx>13.1</texshiftx>
-		<texshifty>-0.2</texshifty>
+		<texshiftx>40</texshiftx>
+		<texshifty>-2</texshifty>
 	</block>
 	<tri>
 		<level>ground</level>
@@ -79,8 +79,8 @@
 		<v2><x>175</x><y>13</y></v2>
 		<v3><x>175</x><y>23</y></v3>
 		<texture>purple-sky/texture-shift.png</texture>
-		<texshiftx>1.9</texshiftx>
-		<texshifty>2.3</texshifty>
+		<texshiftx>24</texshiftx>
+		<texshifty>29</texshifty>
 	</tri>
 	<tri>
 		<level>ground</level>
@@ -88,7 +88,7 @@
 		<v2><x>175</x><y>13</y></v2>
 		<v3><x>275</x><y>13</y></v3>
 		<texture>purple-sky/texture-shift.png</texture>
-		<texshiftx>3.3</texshiftx>
-		<texshifty>2.3</texshifty>
+		<texshiftx>42</texshiftx>
+		<texshifty>29</texshifty>
 	</tri>
 </map>

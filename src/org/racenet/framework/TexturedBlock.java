@@ -2,6 +2,8 @@ package org.racenet.framework;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.util.Log;
+
 /**
  * A drawable rectangle with a texture applied
  * 
@@ -54,11 +56,14 @@ public class TexturedBlock extends TexturedShape {
 		// default prodecure
 		} else {
 
+			this.texShiftX = 1 / (float)this.texture.width * this.texShiftX;
+			this.texShiftY = 1 / (float)this.texture.height * this.texShiftY;
+			
 			vertices = new float[] {
-					0,			0,				-this.texShiftX * this.texScaleWidth, this.height / (this.texture.height * this.texScaleHeight) + this.texShiftY * this.texScaleHeight,
-					this.width,	0,				this.width / (this.texture.width * this.texScaleWidth) - this.texShiftX * this.texScaleWidth, height / (this.texture.height * this.texScaleHeight) + this.texShiftY * this.texScaleHeight,
-					this.width,	this.height,	this.width / (this.texture.width * this.texScaleWidth) - this.texShiftX * this.texScaleWidth, + this.texShiftY * this.texScaleHeight,
-					0,			this.height,	-this.texShiftX * this.texScaleWidth, this.texShiftY * this.texScaleHeight };
+					0,			0,				-this.texShiftX, this.height / (this.texture.height * this.texScaleHeight) + this.texShiftY,
+					this.width,	0,				this.width / (this.texture.width * this.texScaleWidth) - this.texShiftX, height / (this.texture.height * this.texScaleHeight) + this.texShiftY,
+					this.width,	this.height,	this.width / (this.texture.width * this.texScaleWidth) - this.texShiftX, this.texShiftY,
+					0,			this.height,	-this.texShiftX, this.texShiftY };
 		}
 		
 		

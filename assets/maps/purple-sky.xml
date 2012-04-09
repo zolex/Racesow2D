@@ -11,7 +11,7 @@
 		<position>5</position>
 	</sky>
 	<background>
-		<texture>purple-sky/city.png</texture>
+		<texture>purple-sky/overlay.png</texture>
 		<position>10</position>
 		<speed>1.75</speed>
 	</background>

@@ -110,6 +110,7 @@ public class GameScreen extends Screen {
 		this.timer = this.createCameraText(this.camera.frustumWidth / 2 - 45, this.camera.frustumHeight / 2 - 3);
 		this.camera.addHud(this.timer);
 		
+		// don't show pause/play button when playing a demo
 		if (this.demoParser == null) {
 			
 			this.pause = new TexturedBlock(

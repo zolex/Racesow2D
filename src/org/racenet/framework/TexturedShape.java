@@ -14,7 +14,7 @@ public abstract class TexturedShape extends HudItem {
 	float texScaleWidth = 0.05f;
 	float texScaleHeight = 0.05f;
 	float texShiftX;
-	float texShiftY;
+	float texShiftY;	
 	
 	/**
 	 * Constructor 

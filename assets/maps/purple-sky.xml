@@ -11,10 +11,15 @@
 		<position>5</position>
 	</sky>
 	<background>
-		<texture>purple-sky/overlay.png</texture>
-		<position>10</position>
+		<texture>purple-sky/clouds.png</texture>
+		<position>8</position>
 		<speed>1.75</speed>
 	</background>
+	<background2>
+		<texture>purple-sky/overlay.png</texture>
+		<position>4</position>
+		<speed>3</speed>
+	</background2>
 	<block>
 		<level>ground</level>
 		<x>0</x>

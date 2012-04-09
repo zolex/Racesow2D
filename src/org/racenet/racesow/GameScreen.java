@@ -347,7 +347,6 @@ public class GameScreen extends Screen {
 			
 			this.currentPlayerOffset -= ((this.currentPlayerOffset - this.targetPlayerOffset) / 10);
 		}
-
 		
 		this.camera.setPosition(this.player.getPosition().x + 20 - this.currentPlayerOffset, camY);		
 		this.map.update(deltaTime);

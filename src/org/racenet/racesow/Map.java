@@ -23,6 +23,7 @@ import org.w3c.dom.NodeList;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 /**
  * Class which mainly loads the map from an 
@@ -45,6 +46,10 @@ public class Map {
 	private float skyPosition;
 	private TexturedBlock background;
 	private float backgroundSpeed = 2;
+	float backgroundPosition;
+	private TexturedBlock background2;
+	private float background2Speed = 2;
+	float background2Position;
 	private SpatialHashGrid groundGrid;
 	private SpatialHashGrid wallGrid;
 	private List<GameObject> funcs = new ArrayList<GameObject>();
@@ -248,28 +253,85 @@ public class Map {
 				this.backgroundSpeed = 2;
 			}
 			
-			float backgroundPosition;
 			try {
 				
-				backgroundPosition = Float.valueOf(parser.getValue((Element)backgroundN.item(0), "position")).floatValue();
+				this.backgroundPosition = Float.valueOf(parser.getValue((Element)backgroundN.item(0), "position")).floatValue();
+				
+			} catch (NumberFormatException e) {
+				
+				this.backgroundPosition = 0;
+			}
+			
+			float backgroundHeight;
+			try {
+				
+				backgroundHeight = Float.valueOf(parser.getValue((Element)backgroundN.item(0), "height")).floatValue();
 			
 			} catch (NumberFormatException e) {
 				
-				backgroundPosition = 0;
+				backgroundHeight = worldHeight;
 			}
 			
 			this.background = new TexturedBlock(game,
-					parser.getValue((Element)backgroundN.item(0), "texture"),
-					GameObject.FUNC_NONE,
-					0.25f,
-					0.25f,
-					0,
-					0,
-					new Vector2(backgroundPosition, 0),
-					new Vector2(worldWidth, 0),
-					new Vector2(worldWidth, worldHeight + backgroundPosition),
-					new Vector2(backgroundPosition, worldHeight + backgroundPosition)
-				);
+				parser.getValue((Element)backgroundN.item(0), "texture"),
+				GameObject.FUNC_NONE,
+				0.1f,
+				0.1f,
+				0,
+				0,
+				new Vector2(0, 0),
+				new Vector2(worldWidth, 0),
+				new Vector2(worldWidth, backgroundHeight),
+				new Vector2(0, backgroundHeight)
+			);
+		}
+		
+		// parse the background2 from the map (a slowly moving background layer)
+		NodeList background2N = parser.doc.getElementsByTagName("background2");
+		if (background2N.getLength() == 1) {
+			
+			Log.d("DEBUG", "background2");
+			
+			try {
+				
+				this.background2Speed = Float.valueOf(parser.getValue((Element)background2N.item(0), "speed")).floatValue();
+				
+			} catch (NumberFormatException e) {
+				
+				this.background2Speed = 2;
+			}
+			
+			try {
+				
+				this.background2Position = Float.valueOf(parser.getValue((Element)background2N.item(0), "position")).floatValue();
+				
+			} catch (NumberFormatException e) {
+				
+				this.background2Position = 0;
+			}
+			
+			float background2Height;
+			try {
+				
+				background2Height = Float.valueOf(parser.getValue((Element)backgroundN.item(0), "height")).floatValue();
+			
+			} catch (NumberFormatException e) {
+				
+				background2Height = worldHeight;
+			}
+			
+			this.background2 = new TexturedBlock(game,
+				parser.getValue((Element)background2N.item(0), "texture"),
+				GameObject.FUNC_NONE,
+				0.1f,
+				0.1f,
+				0,
+				0,
+				new Vector2(0, 0),
+				new Vector2(worldWidth, 0),
+				new Vector2(worldWidth, background2Height),
+				new Vector2(0, background2Height)
+			);
 		}
 		
 		// parse the blocks from the map
@@ -513,7 +575,16 @@ public class Map {
 			
 			this.background.setPosition(new Vector2(
 				this.camera.position.x / this.backgroundSpeed,
-				(this.camera.position.y - this.camera.frustumHeight / 2) / 1.5f
+				this.backgroundPosition + (this.camera.position.y - this.camera.frustumHeight / 2) / 1.5f
+			));
+		}
+		
+		// move the background layer
+		if (this.background2 != null) {
+			
+			this.background2.setPosition(new Vector2(
+				this.camera.position.x / this.background2Speed,
+				this.background2Position + (this.camera.position.y - this.camera.frustumHeight / 2) / 1.75f
 			));
 		}
 		
@@ -733,6 +804,12 @@ public class Map {
 		if (this.background != null) {
 			
 			this.background.draw();
+		}
+		
+		if (this.background2 != null) {
+			
+			Log.d("DEBUG", "draw bg2");
+			this.background2.draw();
 		}
 		
 		int length;

@@ -14,9 +14,9 @@ public class CameraText extends HudItem {
 	GL10 gl;
 	BitmapFont font;
 	public String text = "empty";
-	public float red = 0;
+	public float red = 1;
 	public float green = 1;
-	public float blue = 0;
+	public float blue = 1;
 	public float alpha = 1;
 	public float scale = 0.075f;
 	public float space = 0.06f;

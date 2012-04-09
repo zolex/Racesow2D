@@ -3,7 +3,7 @@
 	<name>Purple Sky</name>
 	<mapper>soh#zolex</mapper>
 	<levelshot>purple-sky/levelshot.png</levelshot>
-	<player><x>40</x><y>12</y></player>
+	<player><x>50</x><y>12</y></player>
 	<starttimer><x>50</x></starttimer>
 	<stoptimer><x>4480</x></stoptimer>
 	<sky>
@@ -27,8 +27,10 @@
 		<level>ground</level>
 		<v1><x>100</x><y>10</y></v1>
 		<v2><x>175</x><y>10</y></v2>
-		<v3><x>175</x><y>20.1</y></v3>
+		<v3><x>175</x><y>20</y></v3>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>24</texshiftx>
+		<texshifty>29</texshifty>
 	</tri>
 	<block>
 		<level>ground</level>
@@ -37,6 +39,8 @@
 		<width>100</width>
 		<height>10</height>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>42</texshiftx>
+		<texshifty>29</texshifty>
 	</block>
 	<block>
 		<level>ground</level>
@@ -66,6 +70,8 @@
 		<width>100</width>
 		<height>10</height>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>-50</texshiftx>
+		<texshifty>29</texshifty>
 	</block>
 	<tri>
 		<level>ground</level>
@@ -73,6 +79,8 @@
 		<v2><x>425</x><y>10</y></v2>
 		<v3><x>500</x><y>10</y></v3>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>-26</texshiftx>
+		<texshifty>29</texshifty>
 	</tri>
 	<block>
 		<level>ground</level>
@@ -81,6 +89,8 @@
 		<width>160</width>
 		<height>2.5</height>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>16</texshiftx>
+		<texshifty>-25</texshifty>
 	</block>
 	<block>
 		<level>ground</level>
@@ -89,6 +99,8 @@
 		<width>140</width>
 		<height>2.5</height>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>44</texshiftx>
+		<texshifty>-50</texshifty>
 	</block>
 	<block>
 		<level>ground</level>
@@ -97,6 +109,8 @@
 		<width>120</width>
 		<height>2.5</height>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>-56</texshiftx>
+		<texshifty>-75</texshifty>
 	</block>
 	<block>
 		<level>ground</level>
@@ -105,6 +119,8 @@
 		<width>100</width>
 		<height>2.5</height>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>-28</texshiftx>
+		<texshifty>-100</texshifty>
 	</block>
 	<block>
 		<level>ground</level>
@@ -113,6 +129,8 @@
 		<width>80</width>
 		<height>2.5</height>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>0</texshiftx>
+		<texshifty>-125</texshifty>
 	</block>
 	<block>
 		<level>ground</level>
@@ -121,6 +139,8 @@
 		<width>60</width>
 		<height>2.5</height>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>28</texshiftx>
+		<texshifty>-150</texshifty>
 	</block>
 	<block>
 		<level>wall</level>
@@ -162,6 +182,8 @@
 		<v2><x>1050</x><y>10</y></v2>
 		<v3><x>1050</x><y>30</y></v3>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>18</texshiftx>
+		<texshifty>-70</texshifty>
 	</tri>
 	<block>
 		<level>ground</level>
@@ -189,6 +211,8 @@
 		<width>200</width>
 		<height>10</height>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>36</texshiftx>
+		<texshifty>-28</texshifty>
 	</block>
 	<tri>
 		<level>ground</level>
@@ -196,6 +220,8 @@
 		<v2><x>1450</x><y>10</y></v2>
 		<v3><x>1650</x><y>10</y></v3>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>36</texshiftx>
+		<texshifty>0</texshifty>
 	</tri>
 	<block>
 		<level>ground</level>
@@ -276,6 +302,8 @@
 		<width>50</width>
 		<height>2.5</height>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>-44</texshiftx>
+		<texshifty>-25</texshifty>
 	</block>
 	<block>
 		<level>ground</level>
@@ -284,6 +312,8 @@
 		<width>40</width>
 		<height>2.5</height>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>-16</texshiftx>
+		<texshifty>-50</texshifty>
 	</block>
 	<block>
 		<level>ground</level>
@@ -292,6 +322,8 @@
 		<width>30</width>
 		<height>2.5</height>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>12</texshiftx>
+		<texshifty>-75</texshifty>
 	</block>
 	<block>
 		<level>ground</level>
@@ -300,6 +332,8 @@
 		<width>20</width>
 		<height>2.5</height>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>40</texshiftx>
+		<texshifty>-100</texshifty>
 	</block>
 	<block>
 		<level>ground</level>
@@ -308,6 +342,8 @@
 		<width>10</width>
 		<height>2.5</height>
 		<texture>purple-sky/stone.png</texture>
+		<texshiftx>68</texshiftx>
+		<texshifty>-125</texshifty>
 	</block>
 	<block>
 		<level>ground</level>

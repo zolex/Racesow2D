@@ -48,6 +48,8 @@ public class GameScreen extends Screen {
 	public float frameTime = 0;
 	public DemoParser demoParser;
 	boolean recordDemos;
+	private float currentPlayerOffset = 0;
+	private float targetPlayerOffset = 0;
 	
 	boolean showFPS, showUPS;
 	
@@ -334,7 +336,20 @@ public class GameScreen extends Screen {
 			camY = this.player.getPosition().y - this.camera.frustumHeight / 2 + 12;
 		}
 		
-		this.camera.setPosition(this.player.getPosition().x + 20, camY);		
+
+		this.targetPlayerOffset =  Math.min(5000, Math.max(450, this.player.virtualSpeed)) / 256;
+		
+		if (this.currentPlayerOffset < this.targetPlayerOffset) {
+			
+			this.currentPlayerOffset += 0.1f;
+			
+		} else if (this.currentPlayerOffset > this.targetPlayerOffset) {
+			
+			this.currentPlayerOffset -= 0.1f;
+		}
+
+		
+		this.camera.setPosition(this.player.getPosition().x + 20 - this.currentPlayerOffset, camY);		
 		this.map.update(deltaTime);
 
 		if (this.showUPS) {

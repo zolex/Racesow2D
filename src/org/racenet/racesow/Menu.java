@@ -66,7 +66,7 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 */
 	public void addItem(String texture, Callback callback) {
 		
-		TexturedBlock item = new TexturedBlock(this.game, texture, TexturedBlock.FUNC_NONE, -1, -1, new Vector2(0, 0), new Vector2(this.viewWidth / 3, 0));
+		TexturedBlock item = new TexturedBlock(this.game, texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(this.viewWidth / 3, 0));
 		
 		float posX = 0;
 		int length = this.items.size();

@@ -65,7 +65,7 @@ public class MapsScreen extends Screen {
 			texture = "racesow_small.jpg";
 		}
 		
-		this.header = new TexturedBlock((GLGame)game, texture, TexturedBlock.FUNC_NONE, -1, -1,
+		this.header = new TexturedBlock((GLGame)game, texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0,
 				new Vector2(0, 0), new Vector2(this.camera.frustumWidth, 0));
 		this.header.setPosition(new Vector2(0, this.camera.frustumHeight - this.header.height));
 		this.header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);

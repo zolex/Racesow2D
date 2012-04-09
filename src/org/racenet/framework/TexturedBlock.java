@@ -20,9 +20,9 @@ public class TexturedBlock extends TexturedShape {
 	 * @param float texScaleHeight
 	 * @param Vector2 ... vertices
 	 */
-	public TexturedBlock(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, Vector2 ... vertices) {
+	public TexturedBlock(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
 		
-		super(game, texture, func, texScaleWidth, texScaleHeight, vertices);
+		super(game, texture, func, texScaleWidth, texScaleHeight, texShiftX, texShiftY, vertices);
 	}
 	
 	/**
@@ -55,10 +55,10 @@ public class TexturedBlock extends TexturedShape {
 		} else {
 
 			vertices = new float[] {
-					0,			0,				0, this.height / (this.texture.height * this.texScaleHeight),
-					this.width,	0,				this.width / (this.texture.width * this.texScaleWidth), height / (this.texture.height * this.texScaleHeight),
-					this.width,	this.height,	this.width / (this.texture.width * this.texScaleWidth), 0,
-					0,			this.height,	0, 0 };
+					0,			0,				-this.texShiftX * this.texScaleWidth, this.height / (this.texture.height * this.texScaleHeight) + this.texShiftY * this.texScaleHeight,
+					this.width,	0,				this.width / (this.texture.width * this.texScaleWidth) - this.texShiftX * this.texScaleWidth, height / (this.texture.height * this.texScaleHeight) + this.texShiftY * this.texScaleHeight,
+					this.width,	this.height,	this.width / (this.texture.width * this.texScaleWidth) - this.texShiftX * this.texScaleWidth, + this.texShiftY * this.texScaleHeight,
+					0,			this.height,	-this.texShiftX * this.texScaleWidth, this.texShiftY * this.texScaleHeight };
 		}
 		
 		

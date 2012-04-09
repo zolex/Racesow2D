@@ -146,6 +146,8 @@ public class Player extends AnimatedBlock {
 						GameObject.FUNC_NONE,
 						-1,
 						-1,
+						0,
+						0,
 						new Vector2(-1, 0),
 						new Vector2(2, 0)
 						);
@@ -163,6 +165,8 @@ public class Player extends AnimatedBlock {
         				GameObject.FUNC_NONE,
         				-1,
         				-1,
+        				0,
+        				0,
         				new Vector2(-3, 0),
         				new Vector2(5, 0)
         			);
@@ -698,6 +702,8 @@ public class Player extends AnimatedBlock {
 					item.func,
 					-1,
 					-1,
+					0,
+					0,
 					new Vector2(-(this.camera.frustumWidth / 2) + 1, -(this.camera.frustumHeight / 2) + 1),
 					new Vector2(-(this.camera.frustumWidth / 2) + 10, -(this.camera.frustumHeight / 2) + 10)
 				);

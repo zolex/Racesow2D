@@ -115,13 +115,13 @@ public class GameScreen extends Screen {
 			
 			this.pause = new TexturedBlock(
 					(GLGame)this.game,
-					"hud/pause.png", GameObject.FUNC_NONE, -1, -1,
+					"hud/pause.png", GameObject.FUNC_NONE, -1, -1, 0, 0,
 					new Vector2(-this.camera.frustumWidth / 2 + 1 , this.camera.frustumHeight / 2 - 6),
 					new Vector2(-this.camera.frustumWidth / 2 + 6, 0));
 			
 			this.play = new TexturedBlock(
 				(GLGame)this.game,
-				"hud/play.png", GameObject.FUNC_NONE, -1, -1,
+				"hud/play.png", GameObject.FUNC_NONE, -1, -1, 0, 0,
 				new Vector2(-this.camera.frustumWidth / 2 + 1 , this.camera.frustumHeight / 2 - 6),
 				new Vector2(-this.camera.frustumWidth / 2 + 6, 0));
 			

@@ -13,6 +13,8 @@ public abstract class TexturedShape extends HudItem {
 	public GLTexture texture = null;
 	float texScaleWidth = 0.05f;
 	float texScaleHeight = 0.05f;
+	float texShiftX;
+	float texShiftY;
 	
 	/**
 	 * Constructor 
@@ -24,11 +26,11 @@ public abstract class TexturedShape extends HudItem {
 	 * @param float texScaleHeight
 	 * @param Vectro2 ... vertices
 	 */
-	public TexturedShape(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, Vector2 ... vertices) {
+	public TexturedShape(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
 		
 		super(vertices);
 		this.game = game;
-		this.setupTexture(texture, texScaleWidth, texScaleHeight);
+		this.setupTexture(texture, texScaleWidth, texScaleHeight, texShiftX, texShiftY);
 		this.setupVertices();
 		this.func = func;
 	}
@@ -40,11 +42,13 @@ public abstract class TexturedShape extends HudItem {
 	 * @param float scaleWidth
 	 * @param float scaleHeight
 	 */
-	public void setupTexture(String fileName, float scaleWidth, float scaleHeight) {
+	public void setupTexture(String fileName, float scaleWidth, float scaleHeight, float texShiftX, float texShiftY) {
 		
 		this.texture = new GLTexture(this.game, fileName);
 		this.texScaleWidth = scaleWidth == 0 ? 0.1f : scaleWidth;
 		this.texScaleHeight = scaleHeight == 0 ? 0.1f : scaleHeight;
+		this.texShiftX = texShiftX;
+		this.texShiftY = texShiftY;
 	}
 	
 	/**

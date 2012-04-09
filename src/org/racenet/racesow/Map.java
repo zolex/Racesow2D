@@ -178,6 +178,8 @@ public class Map {
 				func,
 				-1,
 				-1,
+				0,
+				0,
 				new Vector2(itemX, itemY),
 				new Vector2(itemX + 3, itemY + 3)
 			);
@@ -226,6 +228,8 @@ public class Map {
 					GameObject.FUNC_NONE,
 					-1,
 					-1,
+					0,
+					0,
 					new Vector2(0,skyPosition),
 					new Vector2(this.camera.frustumWidth, skyPosition)
 					);
@@ -259,6 +263,8 @@ public class Map {
 					GameObject.FUNC_NONE,
 					0.25f,
 					0.25f,
+					0,
+					0,
 					new Vector2(backgroundPosition, 0),
 					new Vector2(worldWidth, 0),
 					new Vector2(worldWidth, worldHeight + backgroundPosition),
@@ -285,7 +291,7 @@ public class Map {
 			try {
 				
 				texSX = Float.valueOf(parser.getValue(xmlblock, "texsx")).floatValue();
-						
+				
 			} catch (NumberFormatException e) {
 				
 				texSX = 0;
@@ -295,10 +301,30 @@ public class Map {
 			try {
 				
 				texSY = Float.valueOf(parser.getValue(xmlblock, "texsy")).floatValue();
-						
+				
 			} catch (NumberFormatException e) {
 				
 				texSY = 0;
+			}
+			
+			float texShiftX;
+			try {
+				
+				texShiftX = Float.valueOf(parser.getValue(xmlblock, "texshiftx")).floatValue();
+						
+			} catch (NumberFormatException e) {
+				
+				texShiftX = 0;
+			}
+			
+			float texShiftY;
+			try {
+				
+				texShiftY = Float.valueOf(parser.getValue(xmlblock, "texshifty")).floatValue();
+						
+			} catch (NumberFormatException e) {
+				
+				texShiftY = 0;
 			}
 			
 			float x = Float.valueOf(parser.getValue(xmlblock, "x")).floatValue();
@@ -311,6 +337,8 @@ public class Map {
 				func,
 				texSX,
 				texSY,
+				texShiftX,
+				texShiftY,
 				new Vector2(x,y),
 				new Vector2(x + width, y),
 				new Vector2(x + width, y + height),
@@ -393,11 +421,33 @@ public class Map {
 				v3y = Float.valueOf(parser.getValue((Element)v3n.item(0), "y")).floatValue();
 			}
 			
+			float texShiftX;
+			try {
+				
+				texShiftX = Float.valueOf(parser.getValue(xmlblock, "texshiftx")).floatValue();
+						
+			} catch (NumberFormatException e) {
+				
+				texShiftX = 0;
+			}
+			
+			float texShiftY;
+			try {
+				
+				texShiftY = Float.valueOf(parser.getValue(xmlblock, "texshifty")).floatValue();
+						
+			} catch (NumberFormatException e) {
+				
+				texShiftY = 0;
+			}
+			
 			TexturedTriangle block = new TexturedTriangle(game,
 				parser.getValue(xmlblock, "texture"),
 				func,
 				texSX,
 				texSY,
+				texShiftX,
+				texShiftY,
 				new Vector2(v1x, v1y),
 				new Vector2(v2x, v2y),
 				new Vector2(v3x, v3y)

@@ -20,9 +20,9 @@ public class TexturedTriangle extends TexturedShape {
 	 * @param float texScaleHeight
 	 * @param Vector2 ... vertices
 	 */
-	public TexturedTriangle(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, Vector2 ... vertices) {
+	public TexturedTriangle(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
 		
-		super(game, texture, func, texScaleWidth, texScaleHeight, vertices);
+		super(game, texture, func, texScaleWidth, texScaleHeight, texShiftX, texShiftY, vertices);
 	}
 
 	/**
@@ -36,17 +36,17 @@ public class TexturedTriangle extends TexturedShape {
 		if (this.vertices[1].x == this.vertices[2].x) {
 		
 			glVertices = new float[] {
-				this.vertices[0].x, this.vertices[0].y,	0, this.height / (this.texture.height * this.texScaleHeight),
-				this.vertices[1].x, this.vertices[1].y,	this.width / (this.texture.width * this.texScaleWidth), height / (this.texture.height * this.texScaleHeight),
-				this.vertices[2].x, this.vertices[2].y,	this.width / (this.texture.width * this.texScaleWidth), 0 };
+				this.vertices[0].x, this.vertices[0].y,	-this.texShiftX * this.texScaleWidth, this.height / (this.texture.height * this.texScaleHeight) + this.texShiftY * this.texScaleHeight,
+				this.vertices[1].x, this.vertices[1].y,	this.width / (this.texture.width * this.texScaleWidth) - this.texShiftX * this.texScaleWidth, height / (this.texture.height * this.texScaleHeight) + this.texShiftY * this.texScaleHeight,
+				this.vertices[2].x, this.vertices[2].y,	this.width / (this.texture.width * this.texScaleWidth) - this.texShiftX * this.texScaleWidth, this.texShiftY * this.texScaleHeight };
 			
 		// if the trianlge is a "ramp-down"
 		} else {
 			
 			glVertices = new float[] {
-					this.vertices[0].x, this.vertices[0].y,	this.width / (this.texture.width * this.texScaleWidth), 0,
-					this.vertices[1].x, this.vertices[1].y,	this.width / (this.texture.width * this.texScaleWidth), height / (this.texture.height * this.texScaleHeight),
-					this.vertices[2].x, this.vertices[2].y,	0, this.height / (this.texture.height * this.texScaleHeight) };
+					this.vertices[0].x, this.vertices[0].y,	-this.texShiftX * this.texScaleWidth, this.texShiftY * this.texScaleHeight,
+					this.vertices[1].x, this.vertices[1].y,	-this.texShiftX * this.texScaleWidth, height / (this.texture.height * this.texScaleHeight) + this.texShiftY * this.texScaleHeight,
+					this.vertices[2].x, this.vertices[2].y,	this.width / (this.texture.width * this.texScaleWidth) - this.texShiftX * this.texScaleWidth, this.height / (this.texture.height * this.texScaleHeight) + this.texShiftY * this.texScaleHeight };
 		}
 		
 		

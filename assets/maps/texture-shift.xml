@@ -21,7 +21,7 @@
 		<y>0</y>
 		<width>300</width>
 		<height>13</height>
-		<texture>purple-sky/stone.png</texture>
+		<texture>purple-sky/texture-shift.png</texture>
 	</block>
 	<block>
 		<level>ground</level>
@@ -29,7 +29,7 @@
 		<y>13</y>
 		<width>40</width>
 		<height>2.5</height>
-		<texture>purple-sky/stone.png</texture>
+		<texture>purple-sky/texture-shift.png</texture>
 		<texshiftx>4.4</texshiftx>
 		<texshifty>-2</texshifty>
 	</block>
@@ -39,7 +39,7 @@
 		<y>15.5</y>
 		<width>30</width>
 		<height>2.5</height>
-		<texture>purple-sky/stone.png</texture>
+		<texture>purple-sky/texture-shift.png</texture>
 		<texshiftx>6.6</texshiftx>
 		<texshifty>-4</texshifty>
 	</block>
@@ -49,7 +49,7 @@
 		<y>18</y>
 		<width>20</width>
 		<height>2.5</height>
-		<texture>purple-sky/stone.png</texture>
+		<texture>purple-sky/texture-shift.png</texture>
 		<texshiftx>8.75</texshiftx>
 		<texshifty>-5.9</texshifty>
 	</block>
@@ -59,7 +59,7 @@
 		<y>20.5</y>
 		<width>10</width>
 		<height>2.5</height>
-		<texture>purple-sky/stone.png</texture>
+		<texture>purple-sky/texture-shift.png</texture>
 		<texshiftx>10.9</texshiftx>
 		<texshifty>-7.9</texshifty>
 	</block>
@@ -69,7 +69,7 @@
 		<y>13</y>
 		<width>10</width>
 		<height>13</height>
-		<texture>purple-sky/stone.png</texture>
+		<texture>purple-sky/texture-shift.png</texture>
 		<texshiftx>13.1</texshiftx>
 		<texshifty>-0.2</texshifty>
 	</block>
@@ -78,7 +78,7 @@
 		<v1><x>100</x><y>13</y></v1>
 		<v2><x>175</x><y>13</y></v2>
 		<v3><x>175</x><y>23</y></v3>
-		<texture>purple-sky/stone.png</texture>
+		<texture>purple-sky/texture-shift.png</texture>
 		<texshiftx>1.9</texshiftx>
 		<texshifty>2.3</texshifty>
 	</tri>
@@ -87,7 +87,7 @@
 		<v1><x>175</x><y>23</y></v1>
 		<v2><x>175</x><y>13</y></v2>
 		<v3><x>275</x><y>13</y></v3>
-		<texture>purple-sky/stone.png</texture>
+		<texture>purple-sky/texture-shift.png</texture>
 		<texshiftx>3.3</texshiftx>
 		<texshifty>2.3</texshifty>
 	</tri>

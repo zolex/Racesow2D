@@ -97,7 +97,8 @@ public class Menu implements GestureDetector.OnGestureListener {
 				
 		if (velocityX > 0 && velocityX < 250 || velocityX < 0 && velocityX > -250) {
 			
-			this.onSingleTapUp(e2);
+			//this.onSingleTapUp(e2);
+			return false;
 		}
 		
 		if (!this.allowMoveMenu(velocityX)) {

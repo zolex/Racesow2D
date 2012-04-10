@@ -3,10 +3,12 @@ package org.racenet.racesow.threads;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.racenet.framework.AndroidFileIO;
 import org.racenet.framework.interfaces.FileIO;
 
 /**
@@ -70,8 +72,8 @@ public class DemoRecorderThread extends Thread {
 	 */
 	public void newDemo() {
 		
-		int demoNum = this.fileIO.listFiles(this.demoFolder, AndroidFileIO.ORDER_NAME).length + 1;
-		this.fileName = this.demoFolder + demoNum + "_" + this.map.replace(".xml", "") + ".r2d";
+		String date = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+		this.fileName = this.demoFolder + this.map.replace(".xml", "") + "_" + date + ".r2d";
 		try {
 			this.fos = (FileOutputStream)this.fileIO.writeFile(this.fileName);
 		} catch (IOException e) {

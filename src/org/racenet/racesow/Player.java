@@ -574,14 +574,19 @@ public class Player extends AnimatedBlock {
 	
 	public void animate(float deltaTime) {
 		
+		// if it's a real animation, not a static image
 		if (this.animPresets[this.activeAnimId].duration != 0) {
 		
+			// increase the internal time of AnimatedBlock
 			this.animTime += deltaTime;
+			
+			// when the animation has reached the end
 			if (this.animTime > this.animPresets[this.activeAnimId].duration) {
 				
+				// reset animation to the beginning
 				this.animTime = 0;
 				
-				// after death anomaiton make the player invisible
+				// after death animation make the player invisible
 				if (this.activeAnimId == Player.ANIM_BURN || this.activeAnimId == Player.ANIM_DROWN) {
 					
 					this.activeAnimId = Player.ANIM_INVISIBLE;

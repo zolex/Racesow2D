@@ -86,7 +86,8 @@ public class Racesow extends GLGame {
     		
     		if (gameScreen.demoParser != null) {
     			
-    			super.onBackPressed();
+    			this.finish();
+    	    	this.overridePendingTransition(0, 0);
     		}
     		
     		// restart the race
@@ -127,7 +128,8 @@ public class Racesow extends GLGame {
     	} else {
     		
     		LOOPER_PREPARED = false; // just to be sure...
-    		super.onBackPressed();
+    		this.finish();
+        	this.overridePendingTransition(0, 0);
     	}
     }
 }

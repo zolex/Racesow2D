@@ -35,11 +35,11 @@ public class DemoAdapter extends BaseAdapter {
 	 * @param Context context
 	 * @param List<MapItem> mapList
 	 */
-	public DemoAdapter(Context context, FileIO fileIO) {
+	public DemoAdapter(Context context, FileIO fileIO, short orderBy) {
 		
 		this.context = context;
 		
-		String[] demos = fileIO.listFiles("racesow" + File.separator + "demos", AndroidFileIO.ORDER_CREATED);
+		String[] demos = fileIO.listFiles("racesow" + File.separator + "demos", orderBy);
 		if (demos != null) {
 
 			for (int i = 0; i < demos.length; i++) {
@@ -48,7 +48,10 @@ public class DemoAdapter extends BaseAdapter {
 			}
 		}
 		
-		Collections.reverse(this.demos);
+		if (orderBy == AndroidFileIO.ORDER_CREATED) {
+		
+			Collections.reverse(this.demos);
+		}
 	}
 	
 	/**

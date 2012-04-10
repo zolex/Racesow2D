@@ -17,6 +17,9 @@ import android.os.PowerManager.WakeLock;
 import android.support.v4.view.ViewPager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -37,6 +40,7 @@ public class DemoList extends ListActivity {
 	ViewPager viewPager;
 	DemoAdapter adapter;
 	AndroidFileIO fileIO;
+	short orderBy = AndroidFileIO.ORDER_CREATED;
 	
     @Override
     /**
@@ -51,7 +55,7 @@ public class DemoList extends ListActivity {
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
     	
     	this.fileIO = new AndroidFileIO(getAssets());
-    	this.adapter = new DemoAdapter(this, this.fileIO);
+    	this.adapter = new DemoAdapter(this, this.fileIO, this.orderBy);
     	
     	setListAdapter(this.adapter);
         setContentView(R.layout.listview);
@@ -113,7 +117,7 @@ public class DemoList extends ListActivity {
 						if (DemoList.this.fileIO.deleteFile(demoDir + fileName)) {
 							
 							message = "Deleted demo '" + fileName + "'";
-							DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO);
+							DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO, DemoList.this.orderBy);
 							DemoList.this.getListView().setAdapter(DemoList.this.adapter);
 							DemoList.this.getListView().setSelection(info.position > 0 ? info.position - 1 : 0);
 
@@ -156,7 +160,7 @@ public class DemoList extends ListActivity {
 								
 								message = "Demo renamed to '" + newName + "'";
 
-								DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO);
+								DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO, DemoList.this.orderBy);
 								DemoList.this.getListView().setAdapter(DemoList.this.adapter);
 								int newPosition = DemoList.this.adapter.demos.indexOf(newName);
 								DemoList.this.getListView().setSelection(newPosition);
@@ -176,6 +180,62 @@ public class DemoList extends ListActivity {
       }
       return true;
     }
+    
+    @Override
+	/**
+	 * Show options for the demo list
+	 */
+	public boolean onCreateOptionsMenu(Menu menu) {
+		
+		MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.demos, menu);
+	    
+	    menu.getItem(0).setOnMenuItemClickListener(new OnMenuItemClickListener() {
+	    	
+	    	public boolean onMenuItemClick(MenuItem arg0) {
+	    		
+	    		new AlertDialog.Builder(DemoList.this)
+	            .setMessage("Do you really want to delete all your demos?")
+	            .setPositiveButton("Yes", new OnClickListener() {
+					
+					public void onClick(DialogInterface arg0, int arg1) {
+						
+						DemoList.this.fileIO.deleteFile("racesow" + File.separator + "demos");
+						DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO, DemoList.this.orderBy);
+						DemoList.this.getListView().setAdapter(DemoList.this.adapter);
+					}
+				})
+				.setNegativeButton("No", null)
+	            .show();
+	    		
+	    		return true;
+	    	}
+	    });
+	    
+	    menu.getItem(1).setOnMenuItemClickListener(new OnMenuItemClickListener() {
+	    	
+	    	public boolean onMenuItemClick(MenuItem arg0) {
+	    		
+	    		DemoList.this.orderBy = AndroidFileIO.ORDER_NAME;
+	    		DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO, DemoList.this.orderBy);
+				DemoList.this.getListView().setAdapter(DemoList.this.adapter);
+	    		return true;
+	    	}
+	    });
+	    
+	    menu.getItem(2).setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			public boolean onMenuItemClick(MenuItem arg0) {
+				
+				DemoList.this.orderBy = AndroidFileIO.ORDER_CREATED;
+	    		DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO, DemoList.this.orderBy);
+				DemoList.this.getListView().setAdapter(DemoList.this.adapter);
+	    		return true;
+			}
+		});
+	    
+		return true;
+	}
     
     /**
 	 * Acquire the wakelock on resume

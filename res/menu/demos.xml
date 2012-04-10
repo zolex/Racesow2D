@@ -1,0 +1,10 @@
+    <menu xmlns:android="http://schemas.android.com/apk/res/android">
+        <item android:id="@+id/delete" android:title="Delete all demos"></item>
+        <item android:id="@+id/orderName" android:title="Order by name"></item>
+        <item android:id="@+id/orderDate" android:title="Order by date"></item>
+        
+        
+        
+        
+        
+    </menu>

@@ -57,6 +57,11 @@ public class DemoList extends ListActivity {
     	this.fileIO = new AndroidFileIO(getAssets());
     	this.adapter = new DemoAdapter(this, this.fileIO, this.orderBy);
     	
+    	if (this.adapter.isEmpty()) {
+    		
+    		Toast.makeText(this, "No demos recorded yet.", Toast.LENGTH_LONG).show();
+    	}
+    	
     	setListAdapter(this.adapter);
         setContentView(R.layout.listview);
         
@@ -200,7 +205,13 @@ public class DemoList extends ListActivity {
 					
 					public void onClick(DialogInterface arg0, int arg1) {
 						
-						DemoList.this.fileIO.deleteFile("racesow" + File.separator + "demos");
+						String[] demos = DemoList.this.fileIO.listFiles("racesow" + File.separator + "demos", AndroidFileIO.ORDER_NAME);
+						int length = demos.length;
+						for (int i = 0; i < length; i++) {
+						
+							DemoList.this.fileIO.deleteFile("racesow" + File.separator + "demos" + File.separator + demos[i]);
+						}						
+						
 						DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO, DemoList.this.orderBy);
 						DemoList.this.getListView().setAdapter(DemoList.this.adapter);
 					}

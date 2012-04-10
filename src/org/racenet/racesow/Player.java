@@ -51,7 +51,7 @@ public class Player extends AnimatedBlock {
 	public static final short ANIM_PLASMA_JUMP = 9;
 	public static final short ANIM_PLASMA_WALLJUMP = 10;
 	public static final short ANIM_DROWN = 11;
-	AnimationPreset[] animPresets = new AnimationPreset[12];
+	public AnimationPreset[] animPresets = new AnimationPreset[12];
 	
 	// sounds
 	public static final short SOUND_JUMP1 = 0;
@@ -76,7 +76,6 @@ public class Player extends AnimatedBlock {
 	public float virtualSpeed = 0;
 	private float startSpeed = 450;
 	private boolean isDead = false;
-	public float animDuration = 0;
 	private TexturedBlock attachedItem;
 	private Camera2 camera;
 	private Random rGen;

@@ -6,7 +6,6 @@ public class DemoKeyFrame {
 
 	public Vector2 playerPosition = new Vector2();
 	public int playerAnimation;
-	public float playerAnimDuration;
 	public int playerSound;
 	public int playerSpeed;
 	public float mapTime;

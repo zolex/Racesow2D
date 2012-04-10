@@ -37,14 +37,13 @@ public class DemoParser {
 			try { f.playerPosition.x = Float.parseFloat(info[0]); } catch (NumberFormatException e) {}
 			try { f.playerPosition.y = Float.parseFloat(info[1]); } catch (NumberFormatException e) {}
 			try { f.playerAnimation = Integer.parseInt(info[2]); } catch (NumberFormatException e) {}
-			try { f.playerAnimDuration = Float.parseFloat(info[3]); } catch (NumberFormatException e) {}
-			try { f.playerSpeed = Integer.parseInt(info[4]); } catch (NumberFormatException e) {}
-			try { f.mapTime = Float.parseFloat(info[5]); } catch (NumberFormatException e) {}
-			try { f.playerSound = Integer.parseInt(info[6]); } catch (NumberFormatException e) {}
+			try { f.playerSpeed = Integer.parseInt(info[3]); } catch (NumberFormatException e) {}
+			try { f.mapTime = Float.parseFloat(info[4]); } catch (NumberFormatException e) {}
+			try { f.playerSound = Integer.parseInt(info[5]); } catch (NumberFormatException e) {}
 			
-			if (info.length > 7 && !info[7].equals("")) {
+			if (info.length > 6 && !info[6].equals("")) {
 				
-				String[] decal = info[7].split("#");
+				String[] decal = info[6].split("#");
 				f.decalType = decal[0];
 				f.decalX = Float.parseFloat(decal[1]);
 				f.decalY = Float.parseFloat(decal[2]);

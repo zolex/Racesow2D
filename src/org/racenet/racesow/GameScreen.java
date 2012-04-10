@@ -180,8 +180,6 @@ public class GameScreen extends Screen {
 			
 				this.player.setPosition(f.playerPosition);
 				this.player.activeAnimId = f.playerAnimation;
-				this.player.animDuration = f.playerAnimDuration;
-				this.player.enableAnimation = (f.playerAnimation != Player.ANIM_RUN && f.playerAnimation != Player.ANIM_PLASMA_RUN && f.playerAnimation != Player.ANIM_ROCKET_RUN);
 				this.player.virtualSpeed = f.playerSpeed;
 				this.player.animate(deltaTime);
 				
@@ -306,7 +304,6 @@ public class GameScreen extends Screen {
 					this.player.getPosition().x + "," +
 					this.player.getPosition().y + "," +
 					this.player.activeAnimId + "," +
-					this.player.animDuration + "," +
 					(int)this.player.virtualSpeed + "," +
 					this.map.getCurrentTime() + "," +
 					this.player.frameSound + "," +

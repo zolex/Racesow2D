@@ -84,6 +84,8 @@ public class Player extends AnimatedBlock {
 	private Map map;
 	public FifoPool<TexturedBlock> plasmaPool;
 	public FifoPool<TexturedBlock> rocketPool;
+	public static float rocketDecalTime = 0.25f;
+	public static float plasmaDecalTime = 0.25f;
 	private boolean soundEnabled;
 	private GameScreen gameScreen;
 	CameraText restartMessage;
@@ -484,8 +486,8 @@ public class Player extends AnimatedBlock {
 							// show the rocket explosion
 							TexturedBlock decal = this.rocketPool.newObject();
 							decal.setPosition(new Vector2(impactX, impactY));
-							map.addDecal(decal, 0.25f);
-							if (this.recordDemos) this.frameDecal = "r#" + impactX + "#" + impactY + "#0.25";
+							map.addDecal(decal, rocketDecalTime);
+							if (this.recordDemos) this.frameDecal = "r#" + impactX + "#" + impactY;
 							
 							this.lastShot = currentTime;
 							break;
@@ -518,9 +520,9 @@ public class Player extends AnimatedBlock {
 							// show the rocket explosion
 							TexturedBlock decal = this.rocketPool.newObject();
 							decal.setPosition(new Vector2(this.getPosition().x, impactY));
-							map.addDecal(decal, 0.25f);
+							map.addDecal(decal, plasmaDecalTime);
 							
-							if (this.recordDemos) this.frameDecal = "r#" + this.getPosition().x + "#" + impactY + "#0.25";
+							if (this.recordDemos) this.frameDecal = "r#" + this.getPosition().x + "#" + impactY;
 						}
 						
 						this.lastShot = currentTime;
@@ -557,8 +559,8 @@ public class Player extends AnimatedBlock {
 							// show the plasma impact
 							TexturedBlock decal = (TexturedBlock)this.plasmaPool.newObject();
 							decal.setPosition(new Vector2(impactX, impactY));
-							map.addDecal(decal, 0.25f);
-							if (this.recordDemos) this.frameDecal = "p#" + impactX + "#" + impactY + "#0.25";
+							map.addDecal(decal, plasmaDecalTime);
+							if (this.recordDemos) this.frameDecal = "p#" + impactX + "#" + impactY;
 							
 							this.lastShot = currentTime;
 							break;

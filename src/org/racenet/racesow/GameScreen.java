@@ -196,13 +196,13 @@ public class GameScreen extends Screen {
 						
 						TexturedBlock decal = player.rocketPool.newObject();
 						decal.setPosition(new Vector2(f.decalX, f.decalY));
-						map.addDecal(decal, f.decalTime);
+						map.addDecal(decal, Player.rocketDecalTime);
 						
 					} else if (f.decalType.equals("p")) {
 						
 						TexturedBlock decal = player.plasmaPool.newObject();
 						decal.setPosition(new Vector2(f.decalX, f.decalY));
-						map.addDecal(decal, f.decalTime);
+						map.addDecal(decal, Player.plasmaDecalTime);
 					}
 				}
 			}
@@ -305,9 +305,9 @@ public class GameScreen extends Screen {
 					this.player.getPosition().y + "," +
 					this.player.activeAnimId + "," +
 					(int)this.player.virtualSpeed + "," +
-					this.map.getCurrentTime() + "," +
-					(this.player.frameSound == -1 ? "" : this.player.frameSound) + "," +
-					this.player.frameDecal +
+					this.map.getCurrentTime() + 
+					(this.player.frameSound == -1 ? "" : "," + this.player.frameSound) +
+					(this.player.frameDecal.equals("") ? "" : "," + this.player.frameDecal) +
 					";"
 				);
 			}

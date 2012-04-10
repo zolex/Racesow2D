@@ -12,5 +12,4 @@ public class DemoKeyFrame {
 	public String decalType;
 	public float decalX;
 	public float decalY;
-	public float decalTime;
 }

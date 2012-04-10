@@ -56,7 +56,6 @@ public class DemoParser {
 				f.decalType = decal[0];
 				f.decalX = Float.parseFloat(decal[1]);
 				f.decalY = Float.parseFloat(decal[2]);
-				f.decalTime = Float.parseFloat(decal[3]);
 			}
 			
 			this.demoParts.put(time, f);

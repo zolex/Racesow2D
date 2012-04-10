@@ -421,7 +421,8 @@ public class GameScreen extends Screen {
 	}
 
 	/**
-	 * Get rid of all textures when leaving the screen
+	 * Get rid of all textures and cancel the
+	 * current demo when leaving the screen
 	 */
 	public void dispose() {
 		

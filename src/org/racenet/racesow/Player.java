@@ -86,7 +86,7 @@ public class Player extends AnimatedBlock {
 	public FifoPool<TexturedBlock> rocketPool;
 	public static float rocketDecalTime = 0.25f;
 	public static float plasmaDecalTime = 0.25f;
-	private boolean soundEnabled;
+	public boolean soundEnabled;
 	private GameScreen gameScreen;
 	CameraText restartMessage;
 	CameraText timeMessage;

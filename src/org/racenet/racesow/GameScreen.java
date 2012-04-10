@@ -183,7 +183,7 @@ public class GameScreen extends Screen {
 				this.player.virtualSpeed = f.playerSpeed;
 				this.player.animate(deltaTime);
 				
-				if (f.playerSound != -1) {
+				if (this.player.soundEnabled && f.playerSound != -1) {
 					
 					this.player.sounds[f.playerSound].play(player.volume);
 				}

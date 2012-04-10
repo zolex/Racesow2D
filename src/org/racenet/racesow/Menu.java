@@ -8,7 +8,6 @@ import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 
 import android.os.Looper;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 

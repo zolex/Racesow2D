@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import org.racenet.framework.AndroidInput;
 import org.racenet.framework.BitmapFont;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.CameraText;
@@ -85,6 +86,9 @@ public class GameScreen extends Screen {
 		this.recordDemos = recordDemos;
 		
 		GLTexture.APP_FOLDER = "racesow";
+		
+		// restore framework touchHandler as menus use a separate one
+		glGraphics.getView().setOnTouchListener(((AndroidInput)((GLGame)game).getInput()).touchHandler);
 		
 		// for bitmap-font rendering
 		this.batcher = new SpriteBatcher(this.glGraphics, 96);

@@ -17,7 +17,7 @@ import android.view.View;
  */
 public class AndroidInput implements Input {
 
-	private TouchHandler touchHandler;
+	public TouchHandler touchHandler;
 	
 	/**
 	 * Constructor 

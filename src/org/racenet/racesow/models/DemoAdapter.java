@@ -11,6 +11,7 @@ import android.content.Context;
 import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
@@ -21,7 +22,7 @@ import android.widget.TextView;
  * @author soh#zolex
  *
  */
-public class DemoAdapter implements ListAdapter {
+public class DemoAdapter extends BaseAdapter {
 	
 	private Context context;
 	private List<String> demos = new ArrayList<String>();
@@ -46,6 +47,20 @@ public class DemoAdapter implements ListAdapter {
 		}
 	}
 
+	/**
+	 * Remove a demo from the list
+	 * 
+	 * @param String item
+	 */
+	public void removeItem(String item) {
+		
+		if (this.demos.contains(item)) {
+		
+			this.demos.remove(item);
+			this.notifyDataSetChanged();
+		}
+	}
+	
 	/**
 	 * Get the number of available maps
 	 * 

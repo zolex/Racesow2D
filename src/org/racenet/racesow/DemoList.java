@@ -1,5 +1,7 @@
 package org.racenet.racesow;
 
+import java.io.File;
+
 import org.racenet.framework.AndroidFileIO;
 import org.racenet.racesow.models.DemoAdapter;
 
@@ -34,6 +36,7 @@ public class DemoList extends ListActivity {
 	WakeLock wakeLock;
 	ViewPager viewPager;
 	DemoAdapter adapter;
+	AndroidFileIO fileIO;
 	
     @Override
     /**
@@ -47,13 +50,15 @@ public class DemoList extends ListActivity {
     	PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
     	
-    	AndroidFileIO fileIO = new AndroidFileIO(getAssets());
-    	this.adapter = new DemoAdapter(this, fileIO);
+    	this.fileIO = new AndroidFileIO(getAssets());
+    	this.adapter = new DemoAdapter(this, this.fileIO);
+    	
     	setListAdapter(this.adapter);
         setContentView(R.layout.listview);
         
         ListView list = getListView();
         registerForContextMenu(list);
+        
         list.setOnItemClickListener(new OnItemClickListener() {
 
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
@@ -100,7 +105,19 @@ public class DemoList extends ListActivity {
 				
 				public void onClick(DialogInterface arg0, int arg1) {
 					
-					Toast.makeText(DemoList.this, "Deleted demo " + (String)DemoList.this.adapter.getItem(info.position), Toast.LENGTH_SHORT).show();
+					String message;
+					String fileName = (String)DemoList.this.adapter.getItem(info.position);
+					if (DemoList.this.fileIO.deleteFile("racesow" + File.separator + "demos" + File.separator + fileName)) {
+						
+						message = "Deleted demo '" + fileName + "'";
+						
+					} else {
+						
+						message = "Could not delete '" + fileName + "'";
+					}
+					
+					DemoList.this.adapter.removeItem(fileName);
+					Toast.makeText(DemoList.this, message, Toast.LENGTH_SHORT).show();
 				}
 			})
 			.setNegativeButton("No", null)

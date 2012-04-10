@@ -37,6 +37,7 @@ public class Map {
 	private GL10 gl;
 	private List<TexturedShape> ground = new ArrayList<TexturedShape>();
 	private List<TexturedShape> walls = new ArrayList<TexturedShape>();
+	private List<TexturedShape> front = new ArrayList<TexturedShape>();
 	public List<TexturedShape> items = new ArrayList<TexturedShape>();
 	public List<TexturedShape> pickedUpItems = new ArrayList<TexturedShape>();
 	private TexturedShape[] decals = new TexturedShape[MAX_DECALS];
@@ -415,6 +416,10 @@ public class Map {
 			} else if (level.equals("wall")) {
 				
 				this.addWall(block);
+			
+			} else if (level.equals("front")) {
+				
+				this.front.add(block);
 			}
 		}
 
@@ -523,6 +528,10 @@ public class Map {
 			} else if (level.equals("wall")) {
 				
 				this.addWall(block);
+			
+			} else if (level.equals("front")) {
+				
+				this.front.add(block);
 			}
 		}
 		
@@ -887,6 +896,25 @@ public class Map {
 			if (this.decals[i] != null) {
 			
 				this.decals[i].draw();
+			}
+		}
+	}
+	
+	public void drawFront() {
+		
+		float fromX = this.camera.position.x - this.camera.frustumWidth / 2;
+		float toX = this.camera.position.x + this.camera.frustumWidth / 2;
+		
+		int length = this.front.size();
+		for (int i = 0; i < length; i++) {
+			
+			TexturedShape shape = this.front.get(i);
+			Vector2 shapePos = shape.getPosition();
+			if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
+				(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
+				(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
+				
+				shape.draw();
 			}
 		}
 	}

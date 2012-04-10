@@ -384,6 +384,7 @@ public class GameScreen extends Screen {
 		
 		this.map.draw();
 		this.player.draw();
+		this.map.drawFront();
 		
 		if (this.showFPS) {
 			

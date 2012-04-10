@@ -262,6 +262,16 @@ public class Map {
 				this.backgroundPosition = 0;
 			}
 			
+			float backgroundScale;
+			try {
+				
+				backgroundScale = Float.valueOf(parser.getValue((Element)backgroundN.item(0), "scale")).floatValue();
+				
+			} catch (NumberFormatException e) {
+				
+				backgroundScale = 0.25f;
+			}
+			
 			float backgroundHeight;
 			try {
 				
@@ -275,8 +285,8 @@ public class Map {
 			this.background = new TexturedBlock(game,
 				parser.getValue((Element)backgroundN.item(0), "texture"),
 				GameObject.FUNC_NONE,
-				0.1f,
-				0.1f,
+				backgroundScale,
+				backgroundScale,
 				0,
 				0,
 				new Vector2(0, 0),
@@ -308,6 +318,16 @@ public class Map {
 				this.background2Position = 0;
 			}
 			
+			float backgroundScale;
+			try {
+				
+				backgroundScale = Float.valueOf(parser.getValue((Element)background2N.item(0), "scale")).floatValue();
+				
+			} catch (NumberFormatException e) {
+				
+				backgroundScale = 0.25f;
+			}
+			
 			float background2Height;
 			try {
 				
@@ -321,8 +341,8 @@ public class Map {
 			this.background2 = new TexturedBlock(game,
 				parser.getValue((Element)background2N.item(0), "texture"),
 				GameObject.FUNC_NONE,
-				0.1f,
-				0.1f,
+				backgroundScale,
+				backgroundScale,
 				0,
 				0,
 				new Vector2(0, 0),

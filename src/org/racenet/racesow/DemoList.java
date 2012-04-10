@@ -21,6 +21,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -63,7 +64,7 @@ public class DemoList extends ListActivity {
 
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			
-				final String demo = (String)getListAdapter().getItem(arg2);
+				final String demo = (String)DemoList.this.adapter.getItem(arg2);
 				new AlertDialog.Builder(DemoList.this)
 		            .setMessage("Do you want to play the demo '" + demo +"'?")
 		            .setPositiveButton("Play", new OnClickListener() {
@@ -88,7 +89,8 @@ public class DemoList extends ListActivity {
     	
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
         menu.setHeaderTitle((String)this.adapter.getItem(info.position));
-        menu.add("Delete demo");
+        menu.add(0, 0, 0, "Delete Demo");
+        menu.add(0, 1, 1, "Rename Demo");
     }
     
     @Override
@@ -96,41 +98,82 @@ public class DemoList extends ListActivity {
     	
       final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
       int menuItemIndex = item.getItemId();
-     
-      if (menuItemIndex == 0) {
-    	  
-    	  new AlertDialog.Builder(this)
-	        .setMessage("Do you really want to delete this demo?")
-	        .setPositiveButton("Yes", new OnClickListener() {
-				
-				public void onClick(DialogInterface arg0, int arg1) {
+      final String fileName = (String)DemoList.this.adapter.getItem(info.position);
+      final String demoDir = "racesow" + File.separator + "demos" + File.separator;
+      
+      switch (menuItemIndex) {
+   
+      	  case 0:
+	    	  new AlertDialog.Builder(this)
+		        .setMessage("Do you really want to delete this demo?")
+		        .setPositiveButton("Yes", new OnClickListener() {
 					
-					String message;
-					final String fileName = (String)DemoList.this.adapter.getItem(info.position);
-					if (DemoList.this.fileIO.deleteFile("racesow" + File.separator + "demos" + File.separator + fileName)) {
+					public void onClick(DialogInterface arg0, int arg1) {
 						
-						message = "Deleted demo '" + fileName + "'";
-						
-						runOnUiThread(new Runnable() {
+						String message;
+						if (DemoList.this.fileIO.deleteFile(demoDir + fileName)) {
 							
-							public void run() {
+							message = "Deleted demo '" + fileName + "'";
+							DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO);
+							DemoList.this.getListView().setAdapter(DemoList.this.adapter);
+							DemoList.this.getListView().setSelection(info.position > 0 ? info.position - 1 : 0);
+
+						} else {
+							
+							message = "Could not delete '" + fileName + "'";
+						}
+						
+						Toast.makeText(DemoList.this, message, Toast.LENGTH_SHORT).show();
+					}
+				})
+				.setNegativeButton("No", null)
+		        .show();
+	    	  break;
+	    	  
+      	  case 1:
+      		  final EditText input = new EditText(DemoList.this);
+      		  input.setText(fileName);
+      		  new AlertDialog.Builder(this)
+      		      .setMessage("Rename '"+ fileName + "'")
+      		  	  .setView(input)
+      		  	  .setPositiveButton("OK", new OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int which) {
 								
+						String message;
+						String newName = input.getText().toString();
+						if (!newName.endsWith(".r2d")) {
+							
+							newName += ".r2d";
+						}
+						
+						if (newName.contains("/") || newName.contains("\\")) {
+							
+							message = "Invalid filename";
+							
+						} else {
+						
+							if (DemoList.this.fileIO.renameFile(demoDir + fileName, demoDir + newName)) {
+								
+								message = "Demo renamed to '" + newName + "'";
+
 								DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO);
 								DemoList.this.getListView().setAdapter(DemoList.this.adapter);
-								DemoList.this.getListView().setSelection(info.position > 0 ? info.position - 1 : 0);
+								int newPosition = DemoList.this.adapter.demos.indexOf(newName);
+								DemoList.this.getListView().setSelection(newPosition);
+								
+							} else {
+								
+								message = "Could not rename demo to '" + newName +"'";
 							}
-						});
+						}
 						
-					} else {
-						
-						message = "Could not delete '" + fileName + "'";
+						Toast.makeText(DemoList.this, message, Toast.LENGTH_SHORT).show();
 					}
-					
-					Toast.makeText(DemoList.this, message, Toast.LENGTH_SHORT).show();
-				}
-			})
-			.setNegativeButton("No", null)
-	        .show();
+				})
+				.setNegativeButton("Cancel", null)
+				.show();
+      		  break;
       }
       return true;
     }

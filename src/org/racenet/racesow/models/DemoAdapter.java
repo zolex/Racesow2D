@@ -7,6 +7,8 @@ import java.util.List;
 import org.racenet.framework.interfaces.FileIO;
 import org.racenet.racesow.R;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.view.View;
@@ -25,7 +27,7 @@ import android.widget.TextView;
 public class DemoAdapter extends BaseAdapter {
 	
 	private Context context;
-	private List<String> demos = new ArrayList<String>();
+	public List<String> demos = new ArrayList<String>();
 	
 	/**
 	 * Constructor
@@ -45,6 +47,8 @@ public class DemoAdapter extends BaseAdapter {
 				this.demos.add(demos[i]);
 			}
 		}
+		
+		Collections.reverse(this.demos);
 	}
 	
 	/**

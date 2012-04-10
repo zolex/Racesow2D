@@ -69,7 +69,8 @@ public class DemoRecorderThread extends Thread {
 	 */
 	public void newDemo() {
 		
-		this.fileName = this.demoFolder + this.map + "_" + (int)(System.nanoTime() / 1000000000.0f) + ".r2d";
+		int demoNum = this.fileIO.listFiles(this.demoFolder).length + 1;
+		this.fileName = this.demoFolder + demoNum + "_" + this.map.replace(".xml", "") + ".r2d";
 		try {
 			this.fos = (FileOutputStream)this.fileIO.writeFile(this.fileName);
 		} catch (IOException e) {

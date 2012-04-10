@@ -9,6 +9,8 @@ import java.io.OutputStream;
 
 import org.racenet.framework.interfaces.FileIO;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
+
 import android.content.res.AssetManager;
 import android.os.Environment;
 
@@ -83,6 +85,19 @@ public class AndroidFileIO implements FileIO {
 	}
 	
 	/**
+	 * Rename a file
+	 * 
+	 * @param String fileName
+	 * @return boolean
+	 */
+	public boolean renameFile(String fileName, String newName) {
+		
+		File file = new File(externalStoragePath + fileName);
+		File newFile = new File(externalStoragePath + newName);
+		return file.renameTo(newFile);
+	}
+	
+	/**
 	 * Create a directory on the sd-card
 	 * 
 	 * @param String path
@@ -120,6 +135,8 @@ public class AndroidFileIO implements FileIO {
 	 */
 	public String[] listFiles(String dir) {
 		
-		return new File(externalStoragePath + dir).list();
+		String[] files = new File(externalStoragePath + dir).list();
+		Arrays.sort(files, String.CASE_INSENSITIVE_ORDER);
+		return files;
 	}
 }

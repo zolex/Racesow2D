@@ -20,6 +20,8 @@ public interface FileIO {
 	
 	public boolean deleteFile(String fileName) throws IOException;
 	
+	public boolean renameFile(String fileName, String newName) throws IOException;
+	
 	public boolean createDirectory(String path);
 	
 	public String[] listAssets(String dir);

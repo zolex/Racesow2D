@@ -23,7 +23,6 @@ import org.w3c.dom.NodeList;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 /**
  * Class which mainly loads the map from an 
@@ -290,8 +289,6 @@ public class Map {
 		// parse the background2 from the map (a slowly moving background layer)
 		NodeList background2N = parser.doc.getElementsByTagName("background2");
 		if (background2N.getLength() == 1) {
-			
-			Log.d("DEBUG", "background2");
 			
 			try {
 				
@@ -817,7 +814,6 @@ public class Map {
 		
 		if (this.background2 != null) {
 			
-			Log.d("DEBUG", "draw bg2");
 			this.background2.draw();
 		}
 		

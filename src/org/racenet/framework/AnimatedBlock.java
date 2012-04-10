@@ -36,13 +36,13 @@ public class AnimatedBlock extends GameObject {
 	 * 
 	 * @param String[] ... animations
 	 */
-	protected void setAnimations(String[] ... animations) {
+	protected void setAnimations(AnimationPreset ... animations) {
 		
 		this.numAnims = animations.length;
 		this.anims = new Animation[this.numAnims];
 		for (int i = 0; i < this.numAnims; i++) {
-		
-			this.setupKeyFrames(0.1f, i, animations[i]);
+			
+			this.setupKeyFrames(animations[i].frameDuration, i, animations[i].keyFrames);
 		}
 	}
 	

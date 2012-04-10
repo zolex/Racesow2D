@@ -31,8 +31,16 @@ public class Animation {
 	 */
 	public GLTexture getKeyFrame(float stateTime) {
 		
-		int frameNumber = (int)(stateTime / frameDuration);
-		frameNumber = frameNumber % keyFrames.length;
+		int frameNumber;
+		if (frameDuration == 0) {
+			
+			frameNumber = 0;
+			
+		} else {
+		
+			frameNumber = (int)(stateTime / this.frameDuration) % keyFrames.length;
+		}
+		
 		return keyFrames[frameNumber];
 	}
 	

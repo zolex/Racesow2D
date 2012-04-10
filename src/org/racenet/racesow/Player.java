@@ -6,6 +6,7 @@ import java.util.Random;
 import org.racenet.framework.AndroidAudio;
 import org.racenet.framework.AndroidSound;
 import org.racenet.framework.AnimatedBlock;
+import org.racenet.framework.AnimationPreset;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.CameraText;
 import org.racenet.framework.FifoPool;
@@ -50,6 +51,7 @@ public class Player extends AnimatedBlock {
 	public static final short ANIM_PLASMA_JUMP = 9;
 	public static final short ANIM_PLASMA_WALLJUMP = 10;
 	public static final short ANIM_DROWN = 11;
+	AnimationPreset[] animPresets = new AnimationPreset[12];
 	
 	// sounds
 	public static final short SOUND_JUMP1 = 0;
@@ -73,7 +75,6 @@ public class Player extends AnimatedBlock {
 	private boolean distanceRemembered = false;
 	public float virtualSpeed = 0;
 	private float startSpeed = 450;
-	public boolean enableAnimation = false;
 	private boolean isDead = false;
 	public float animDuration = 0;
 	private TexturedBlock attachedItem;
@@ -189,75 +190,73 @@ public class Player extends AnimatedBlock {
 	 */
 	public void loadAnimations() {
 		
-		String[][] animations = new String[12][];
-		
-		animations[ANIM_RUN] = new String[] {
+		this.animPresets[ANIM_RUN] = new AnimationPreset(0, new String[] {
 			"player/" + this.model + "/default.png"
-		};
+		});
 		
-		animations[ANIM_JUMP] = new String[] {
+		this.animPresets[ANIM_JUMP] = new AnimationPreset(0.3f, new String[] {
 			"player/" + this.model + "/jump_f1.png",
 			"player/" + this.model + "/jump_f2.png",
 			"player/" + this.model + "/jump_f1.png"
-		};
+		});
 		
-		animations[ANIM_ROCKET_RUN] = new String[] {
+		this.animPresets[ANIM_ROCKET_RUN] = new AnimationPreset(0, new String[] {
 			"player/" + this.model + "/rocket_run.png"
-		};
+		});
 		
-		animations[ANIM_ROCKET_JUMP] = new String[] {
+		this.animPresets[ANIM_ROCKET_JUMP] = new AnimationPreset(0.3f, new String[] {
 			"player/" + this.model + "/rocket_jump_f1.png",
 			"player/" + this.model + "/rocket_jump_f2.png",
 			"player/" + this.model + "/rocket_jump_f1.png"
-		};
+		});
 		
-		animations[ANIM_ROCKET_WALLJUMP] = new String[] {
+		this.animPresets[ANIM_ROCKET_WALLJUMP] = new AnimationPreset(0.3f, new String[] {
 			"player/" + this.model + "/rocket_walljump_f1.png",
 			"player/" + this.model + "/rocket_walljump_f2.png",
 			"player/" + this.model + "/rocket_walljump_f1.png"
-		};
+		});
 		
-		animations[ANIM_PLASMA_RUN] = new String[] {
+		this.animPresets[ANIM_PLASMA_RUN] = new AnimationPreset(0, new String[] {
 			"player/" + this.model + "/plasma_run.png"
-		};
+		});
 		
-		animations[ANIM_PLASMA_JUMP] = new String[] {
+		this.animPresets[ANIM_PLASMA_JUMP] = new AnimationPreset(0.3f, new String[] {
 			"player/" + this.model + "/plasma_jump_f1.png",
 			"player/" + this.model + "/plasma_jump_f2.png",
 			"player/" + this.model + "/plasma_jump_f1.png"
-		};
+		});
 		
-		animations[ANIM_PLASMA_WALLJUMP] = new String[] {
+		this.animPresets[ANIM_PLASMA_WALLJUMP] = new AnimationPreset(0.3f, new String[] {
 			"player/" + this.model + "/plasma_walljump_f1.png",
 			"player/" + this.model + "/plasma_walljump_f2.png",
 			"player/" + this.model + "/plasma_walljump_f1.png"
-		};
+		});
 		
-		animations[ANIM_WALLJUMP] = new String[] {
+		this.animPresets[ANIM_WALLJUMP] = new AnimationPreset(0.3f, new String[] {
 			"player/" + this.model + "/walljump_f1.png",
 			"player/" + this.model + "/walljump_f2.png",
 			"player/" + this.model + "/walljump_f1.png"
-		};
+		});
 		
-		animations[ANIM_BURN] = new String[] {
+		this.animPresets[ANIM_BURN] = new AnimationPreset(0.4f, new String[] {
 			"player/" + this.model + "/burn_f1.png",
 			"player/" + this.model + "/burn_f2.png",
 			"player/" + this.model + "/burn_f3.png",
 			"player/" + this.model + "/burn_f4.png"
-		};
+		});
 		
-		animations[ANIM_DROWN] = new String[] {
+		this.animPresets[ANIM_DROWN] = new AnimationPreset(0.4f, new String[] {
 			"player/" + this.model + "/drown_f1.png",
 			"player/" + this.model + "/drown_f2.png",
 			"player/" + this.model + "/drown_f3.png",
 			"player/" + this.model + "/drown_f4.png"
-		};
+		});
 		
-		animations[ANIM_INVISIBLE] = new String[] {
+		this.animPresets[ANIM_INVISIBLE] = new AnimationPreset(0, new String[] {
 			"player/" + this.model + "/invisible.png"
-		};
+		});
 	
-		this.setAnimations(animations);
+		this.setAnimations(this.animPresets);
 	}
 	
 	/**
@@ -383,9 +382,6 @@ public class Player extends AnimatedBlock {
 			
 				this.activeAnimId = Player.ANIM_JUMP;
 			}
-			
-			this.enableAnimation = true;
-			this.animDuration = 0.3f;
 		
 		// when in the air check for walls to perform a walljump
 		} else {
@@ -436,8 +432,6 @@ public class Player extends AnimatedBlock {
 						
 							this.activeAnimId = Player.ANIM_WALLJUMP;
 						}
-						this.enableAnimation = true;
-						this.animDuration = 0.3f;
 					}
 				}
 			}
@@ -580,16 +574,14 @@ public class Player extends AnimatedBlock {
 	
 	public void animate(float deltaTime) {
 		
-		// if enabled run a player animation
-		if (this.enableAnimation) {
-			
+		if (this.animPresets[this.activeAnimId].duration != 0) {
+		
 			this.animTime += deltaTime;
-			if (this.animTime > this.animDuration) {
+			if (this.animTime > this.animPresets[this.activeAnimId].duration) {
 				
-				this.enableAnimation = false;
 				this.animTime = 0;
-				this.animDuration = 0;
 				
+				// after death anomaiton make the player invisible
 				if (this.activeAnimId == Player.ANIM_BURN || this.activeAnimId == Player.ANIM_DROWN) {
 					
 					this.activeAnimId = Player.ANIM_INVISIBLE;
@@ -770,15 +762,11 @@ public class Player extends AnimatedBlock {
 					
 						case GameObject.FUNC_LAVA:
 							this.activeAnimId = Player.ANIM_BURN;
-							this.enableAnimation = true;
-							this.animDuration = 0.4f;						
 							this.die();
 							return;
 							
 						case GameObject.FUNC_WATER:
 							this.activeAnimId = Player.ANIM_DROWN;
-							this.enableAnimation = true;
-							this.animDuration = 0.4f;						
 							this.die();
 							return;
 					}

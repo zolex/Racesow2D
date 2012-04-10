@@ -95,9 +95,9 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 */
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 				
-		if (velocityX > 0 && velocityX < 250 || velocityX < 0 && velocityX > -250) {
+		if (velocityX > 0 && velocityX < 100 || velocityX < 0 && velocityX > -100) {
 			
-			//this.onSingleTapUp(e2);
+			this.onSingleTapUp(e2);
 			return false;
 		}
 		

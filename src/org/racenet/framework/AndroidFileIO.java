@@ -6,14 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.racenet.framework.interfaces.FileIO;
 import org.racenet.helpers.FileCreatedComperator;
-import org.racenet.helpers.MapComperator;
-
 import edu.emory.mathcs.backport.java.util.Arrays;
 
 import android.content.res.AssetManager;
@@ -151,6 +148,7 @@ public class AndroidFileIO implements FileIO {
 			
 		} else if (orderBy == ORDER_CREATED) {
 		
+			@SuppressWarnings("unchecked")
 			List<File> fileList = Arrays.asList(new File(externalStoragePath + dir).listFiles());
 			Collections.sort(fileList, new FileCreatedComperator());
 			int numFiles = fileList.size();

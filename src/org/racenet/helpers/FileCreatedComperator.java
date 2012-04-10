@@ -3,8 +3,6 @@ package org.racenet.helpers;
 import java.io.File;
 import java.util.Comparator;
 
-import org.racenet.racesow.models.MapItem;
-
 /**
  * Compares two mapItems
  * 

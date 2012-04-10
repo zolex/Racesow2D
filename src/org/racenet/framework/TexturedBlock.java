@@ -2,8 +2,6 @@ package org.racenet.framework;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.util.Log;
-
 /**
  * A drawable rectangle with a texture applied
  * 

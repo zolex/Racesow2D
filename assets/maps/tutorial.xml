@@ -11,11 +11,18 @@
 		<position>5</position>
 	</sky>
 	<background>
-		<texture>purple-sky/city.png</texture>
-		<position>10</position>
+		<texture>purple-sky/clouds.png</texture>
+		<position>8</position>
 		<speed>1.75</speed>
+		<scale>0.1</scale>
 	</background>
-		<tutorial>
+	<background2>
+		<texture>purple-sky/overlay.png</texture>
+		<position>4</position>
+		<speed>3</speed>
+		<scale>0.1</scale>
+	</background2>
+	<tutorial>
 	    <x>40</x>
 	    <info1>Read the follwing statements</info1>
 	    <info2>and act as they determine: Touch</info2>

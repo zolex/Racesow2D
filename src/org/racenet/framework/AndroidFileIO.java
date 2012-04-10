@@ -6,8 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.racenet.framework.interfaces.FileIO;
+import org.racenet.helpers.FileCreatedComperator;
+import org.racenet.helpers.MapComperator;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 
@@ -127,16 +132,36 @@ public class AndroidFileIO implements FileIO {
 		}
 	}
 
+	public static short ORDER_NAME = 0;
+	public static short ORDER_CREATED = 1;
+	
 	/**
 	 * Get a list of files on the sd-card
 	 * 
 	 * @param String dir
 	 * @return String[]
 	 */
-	public String[] listFiles(String dir) {
+	public String[] listFiles(String dir, short orderBy) {
 		
-		String[] files = new File(externalStoragePath + dir).list();
-		Arrays.sort(files, String.CASE_INSENSITIVE_ORDER);
-		return files;
+		if (orderBy == ORDER_NAME) {
+			
+			String[] files = new File(externalStoragePath + dir).list();
+			Arrays.sort(files, String.CASE_INSENSITIVE_ORDER);
+			return files;
+			
+		} else if (orderBy == ORDER_CREATED) {
+		
+			List<File> fileList = Arrays.asList(new File(externalStoragePath + dir).listFiles());
+			Collections.sort(fileList, new FileCreatedComperator());
+			int numFiles = fileList.size();
+			String[] files = new String[numFiles];
+			for (int i = 0; i < numFiles; i++) {
+				
+				files[i] = fileList.get(i).getName();
+			}
+			
+			return files;
+			
+		} else return new String[0];
 	}
 }

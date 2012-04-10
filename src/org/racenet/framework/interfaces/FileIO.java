@@ -26,5 +26,5 @@ public interface FileIO {
 	
 	public String[] listAssets(String dir);
 	
-	public String[] listFiles(String dir);
+	public String[] listFiles(String dir, short orderBy);
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.racenet.framework.AndroidFileIO;
 import org.racenet.framework.interfaces.FileIO;
 import org.racenet.racesow.R;
 
@@ -39,7 +40,7 @@ public class DemoAdapter extends BaseAdapter {
 		
 		this.context = context;
 		
-		String[] demos = fileIO.listFiles("racesow" + File.separator + "demos");
+		String[] demos = fileIO.listFiles("racesow" + File.separator + "demos", AndroidFileIO.ORDER_CREATED);
 		if (demos != null) {
 
 			for (int i = 0; i < demos.length; i++) {

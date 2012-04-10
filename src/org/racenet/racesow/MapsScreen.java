@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import org.racenet.framework.AndroidFileIO;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
@@ -123,7 +124,7 @@ public class MapsScreen extends Screen {
 		}
 		
 		// lod the available maps from the sd-card
-		String[] externalMaps = game.getFileIO().listFiles("racesow" + File.separator + "maps");
+		String[] externalMaps = game.getFileIO().listFiles("racesow" + File.separator + "maps", AndroidFileIO.ORDER_NAME);
 		if (externalMaps != null) {
 			for (int i = 0; i < externalMaps.length; i++) {
 				

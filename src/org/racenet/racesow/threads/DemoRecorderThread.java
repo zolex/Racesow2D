@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.racenet.framework.AndroidFileIO;
 import org.racenet.framework.interfaces.FileIO;
 
 /**
@@ -69,7 +70,7 @@ public class DemoRecorderThread extends Thread {
 	 */
 	public void newDemo() {
 		
-		int demoNum = this.fileIO.listFiles(this.demoFolder).length + 1;
+		int demoNum = this.fileIO.listFiles(this.demoFolder, AndroidFileIO.ORDER_NAME).length + 1;
 		this.fileName = this.demoFolder + demoNum + "_" + this.map.replace(".xml", "") + ".r2d";
 		try {
 			this.fos = (FileOutputStream)this.fileIO.writeFile(this.fileName);

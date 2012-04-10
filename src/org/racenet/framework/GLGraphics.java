@@ -26,6 +26,16 @@ public class GLGraphics {
 	}
 	
 	/**
+	 * Get the GL view
+	 * 
+	 * @return GLSurfaceView
+	 */
+	public GLSurfaceView getView() {
+		
+		return this.glView;
+	}
+	
+	/**
 	 * Get the openGL base class
 	 * 
 	 * @return GL10

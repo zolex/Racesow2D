@@ -39,7 +39,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
         Idle
     }
     
-    protected GLSurfaceView glView;    
+    public GLSurfaceView glView;    
     GLGraphics glGraphics;
     Audio audio;
     Input input;

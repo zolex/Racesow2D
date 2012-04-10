@@ -22,7 +22,6 @@ public interface Input {
 		public int x;
 		public int y;
 		public int pointer;
-		public MotionEvent source;
 	}
 	
 	public List<TouchEvent> getTouchEvents();

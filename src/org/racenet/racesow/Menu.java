@@ -8,6 +8,7 @@ import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 
 import android.os.Looper;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
@@ -95,7 +96,7 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 */
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 		
-		if (velocityX > 0 && velocityX < 300 || velocityX < 0 && velocityX > -300) {
+		if (Math.abs(e1.getX() - e2.getX()) < 50) {
 			
 			return false;
 		}
@@ -121,6 +122,11 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 * When the user scrolls the menu
 	 */
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+		
+		if (Math.abs(e1.getX() - e2.getX()) < 50) {
+			
+			return false;
+		}
 		
 		return this.moveMenu(distanceX);
 	}

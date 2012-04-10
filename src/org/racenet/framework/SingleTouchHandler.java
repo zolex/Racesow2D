@@ -80,7 +80,6 @@ public class SingleTouchHandler implements TouchHandler {
 			
 			touchEvent.x = (int)(e.getX() * scaleX);
 			touchEvent.y = (int)(e.getY() * scaleY);
-			touchEvent.source = e;
 			
 			touchEventsBuffer.add(touchEvent);
 			

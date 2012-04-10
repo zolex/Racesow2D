@@ -17,7 +17,6 @@ import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.XMLParser;
 import org.racenet.framework.interfaces.Game;
-import org.racenet.framework.interfaces.Input.TouchEvent;
 import org.racenet.framework.interfaces.Screen;
 import org.racenet.helpers.MapComperator;
 import org.racenet.racesow.models.MapItem;
@@ -27,6 +26,9 @@ import org.w3c.dom.NodeList;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 
 /**
  * Display a list of available maps to play
@@ -34,7 +36,7 @@ import android.view.GestureDetector;
  * @author soh#zolex
  *
  */
-public class MapsScreen extends Screen {
+public class MapsScreen extends Screen implements OnTouchListener {
 	
 	public TexturedBlock header;
 	Camera2 camera;
@@ -82,6 +84,8 @@ public class MapsScreen extends Screen {
 		
 			this.menu.dispose();
 		}
+		
+		this.glGraphics.getView().setOnTouchListener(this);
 		
 		this.menu = new Menu((GLGame)this.game, this.camera.frustumWidth, this.camera.frustumHeight);
 		this.gestures = new GestureDetector(this.menu);
@@ -172,7 +176,13 @@ public class MapsScreen extends Screen {
 				
 				public void handle() {
 					
-					game.setScreen(new LoadingScreen(game, item.filename, null));
+					glGraphics.getView().queueEvent(new Runnable() {
+
+	                    public void run() {
+					
+	                    	game.setScreen(new LoadingScreen(game, item.filename, null));
+	                    }
+					});
 				}
 			});
 		}
@@ -189,19 +199,22 @@ public class MapsScreen extends Screen {
 		});
 	}
 
+	/**
+	 * Handle view touch events
+	 */
+	public boolean onTouch(View v, MotionEvent event) {
+		
+		this.gestures.onTouchEvent(event);
+		return true;
+	}
+	
 	@Override
 	/**
-	 * Update the menu according to the users input (gestures)
+	 * Clear framework touchEvent buffer and update the menu
 	 */
 	public void update(float deltaTime) {
 
-		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
-		int length = touchEvents.size();
-		for (int i = 0; i < length; i++) {
-			
-			gestures.onTouchEvent(touchEvents.get(i).source);  
-		}
-		
+		game.getInput().getTouchEvents();
 		this.menu.update(deltaTime);
 	}
 

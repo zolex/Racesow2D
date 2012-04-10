@@ -1,7 +1,5 @@
 package org.racenet.racesow;
 
-import java.util.List;
-
 import javax.microedition.khronos.opengles.GL10;
 
 import org.racenet.framework.Camera2;
@@ -11,12 +9,14 @@ import org.racenet.framework.GLTexture;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.interfaces.Game;
-import org.racenet.framework.interfaces.Input.TouchEvent;
 import org.racenet.framework.interfaces.Screen;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 
 /**
  * The game's main menu
@@ -24,7 +24,7 @@ import android.view.GestureDetector;
  * @author soh#zolex
  *
  */
-public class MenuScreen extends Screen {
+public class MenuScreen extends Screen implements OnTouchListener {
 	
 	public TexturedBlock header;
 	Camera2 camera;
@@ -46,6 +46,8 @@ public class MenuScreen extends Screen {
 		
 		camera = new Camera2(glGraphics, (float)game.getScreenWidth(), (float)game.getScreenHeight());
 		
+		glGraphics.getView().setOnTouchListener(this);
+		
 		menu = new Menu((GLGame)game, camera.frustumWidth, camera.frustumHeight);
 		gestures = new GestureDetector(menu);
 		
@@ -53,7 +55,13 @@ public class MenuScreen extends Screen {
 			
 			public void handle() {
 				
-				game.setScreen(new MapsScreen(game));
+				glGraphics.getView().queueEvent(new Runnable() {
+
+                    public void run() {
+                       
+                    	game.setScreen(new MapsScreen(game));
+                    }
+                });
 			}
 		});
 		
@@ -121,20 +129,22 @@ public class MenuScreen extends Screen {
 		header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
 	}
 
+	/**
+	 * Handle view touch events
+	 */
+	public boolean onTouch(View v, MotionEvent event) {
+		
+		this.gestures.onTouchEvent(event);
+		return true;
+	}
+	
 	@Override
 	/**
-	 * Get touch events and update the menu
+	 * Clear framework touchEvent buffer and update the menu
 	 */
 	public void update(float deltaTime) {
 
-		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
-		int length = touchEvents.size();
-		
-		for (int i = 0; i < length; i++) {
-			
-			gestures.onTouchEvent(touchEvents.get(i).source); // FIXME: may cause IndexOutOfBoundsException
-		}
-		
+		game.getInput().getTouchEvents();		
 		this.menu.update(deltaTime);
 	}
 

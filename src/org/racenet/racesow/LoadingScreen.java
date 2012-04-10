@@ -34,7 +34,8 @@ class LoadingScreen extends Screen {
 	GLGraphics glGraphics;
 	TexturedBlock header;
 	SpriteBatcher batcher;
-	String mapName, demoFile;
+	String mapName;
+	public String demoFile;
 	BitmapFont loading;
 	int frames = 0;
 	

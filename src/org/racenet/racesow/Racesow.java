@@ -125,6 +125,29 @@ public class Racesow extends GLGame {
             });
     	
 		// quit the application
+    	} else if (screenName.endsWith("LoadingScreen")) {
+    		
+    		// if no demo is loading we come from the mapsScreen
+    		if (((LoadingScreen)screen).demoFile == null) {
+    			
+				this.glView.queueEvent(new Runnable() {
+	
+	                public void run() {
+	                   
+	                	Racesow.this.setScreen(new MapsScreen(Racesow.this));
+	                }
+	            });
+			
+			// if a demoFile is loading, quit the activity
+			// as it was started additionally to the main instance.
+			// will return to the previous activity = DemoList
+    		} else {
+					
+    			this.finish();
+            	this.overridePendingTransition(0, 0);
+    		}
+    	
+		// quit the application
     	} else {
     		
     		LOOPER_PREPARED = false; // just to be sure...

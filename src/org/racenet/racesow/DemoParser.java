@@ -39,7 +39,16 @@ public class DemoParser {
 			try { f.playerAnimation = Integer.parseInt(info[2]); } catch (NumberFormatException e) {}
 			try { f.playerSpeed = Integer.parseInt(info[3]); } catch (NumberFormatException e) {}
 			try { f.mapTime = Float.parseFloat(info[4]); } catch (NumberFormatException e) {}
-			try { f.playerSound = Integer.parseInt(info[5]); } catch (NumberFormatException e) {}
+			
+			if (info.length > 5 && !info[5].equals("")) {
+			
+				try { f.playerSound = Integer.parseInt(info[5]); } catch (NumberFormatException e) {}
+				
+			} else {
+				
+				f.playerSound = -1;
+			}
+			
 			
 			if (info.length > 6 && !info[6].equals("")) {
 				

@@ -306,7 +306,7 @@ public class GameScreen extends Screen {
 					this.player.activeAnimId + "," +
 					(int)this.player.virtualSpeed + "," +
 					this.map.getCurrentTime() + "," +
-					this.player.frameSound + "," +
+					(this.player.frameSound == -1 ? "" : this.player.frameSound) + "," +
 					this.player.frameDecal +
 					";"
 				);

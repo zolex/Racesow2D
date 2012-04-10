@@ -99,11 +99,6 @@ public class Racesow extends GLGame {
     		// return to maps menu
     		} else {
     			
-    			if (gameScreen.map.demoRecorder != null) {
-    			
-    				gameScreen.map.demoRecorder.cancelDemo();
-    			}
-    			
     			this.glView.queueEvent(new Runnable() {
 
                     public void run() {

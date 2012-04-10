@@ -106,17 +106,26 @@ public class DemoList extends ListActivity {
 				public void onClick(DialogInterface arg0, int arg1) {
 					
 					String message;
-					String fileName = (String)DemoList.this.adapter.getItem(info.position);
+					final String fileName = (String)DemoList.this.adapter.getItem(info.position);
 					if (DemoList.this.fileIO.deleteFile("racesow" + File.separator + "demos" + File.separator + fileName)) {
 						
 						message = "Deleted demo '" + fileName + "'";
+						
+						runOnUiThread(new Runnable() {
+							
+							public void run() {
+								
+								DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO);
+								DemoList.this.getListView().setAdapter(DemoList.this.adapter);
+								DemoList.this.getListView().setSelection(info.position > 0 ? info.position - 1 : 0);
+							}
+						});
 						
 					} else {
 						
 						message = "Could not delete '" + fileName + "'";
 					}
 					
-					DemoList.this.adapter.removeItem(fileName);
 					Toast.makeText(DemoList.this, message, Toast.LENGTH_SHORT).show();
 				}
 			})

@@ -46,20 +46,6 @@ public class DemoAdapter extends BaseAdapter {
 			}
 		}
 	}
-
-	/**
-	 * Remove a demo from the list
-	 * 
-	 * @param String item
-	 */
-	public void removeItem(String item) {
-		
-		if (this.demos.contains(item)) {
-		
-			this.demos.remove(item);
-			this.notifyDataSetChanged();
-		}
-	}
 	
 	/**
 	 * Get the number of available maps
@@ -90,7 +76,7 @@ public class DemoAdapter extends BaseAdapter {
 	 */
 	public long getItemId(int pos) {
 		
-		return 0;
+		return pos;
 	}
 
 	/**

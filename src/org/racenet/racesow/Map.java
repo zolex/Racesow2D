@@ -686,9 +686,20 @@ public class Map {
 			this.demoRecorder.stop = true;
 		}
 		
-		this.background.dispose();
-		this.background2.dispose();
-		this.sky.dispose();
+		if (this.sky != null) {
+			
+			this.sky.dispose();
+		}
+		
+		if (this.background != null) {
+		
+			this.background.dispose();
+		}
+		
+		if (this.background2 != null) {
+		
+			this.background2.dispose();
+		}
 		
 		int length = this.ground.size();
 		for (int i = 0; i < length; i++) {

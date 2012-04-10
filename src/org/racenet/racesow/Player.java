@@ -1085,7 +1085,19 @@ public class Player extends AnimatedBlock {
 		
 		super.dispose();
 		
-		int length = this.sounds.length;
+		int length = this.rocketPool.pool.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.rocketPool.pool.get(i).dispose();
+		}
+		
+		length = this.plasmaPool.pool.size();
+		for (int i = 0; i < length; i++) {
+		
+			this.plasmaPool.pool.get(i).dispose();
+		}
+		
+		length = this.sounds.length;
 		for (int i = 0; i < length; i++) {
 			
 			this.sounds[i].dispose();

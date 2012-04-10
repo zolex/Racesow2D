@@ -682,8 +682,13 @@ public class Map {
 		
 		if (this.recordDemos && this.demoRecorder != null) {
 		
+			this.demoRecorder.cancelDemo();
 			this.demoRecorder.stop = true;
 		}
+		
+		this.background.dispose();
+		this.background2.dispose();
+		this.sky.dispose();
 		
 		int length = this.ground.size();
 		for (int i = 0; i < length; i++) {
@@ -695,6 +700,12 @@ public class Map {
 		for (int i = 0; i < length; i++) {
 			
 			this.walls.get(i).dispose();
+		}
+		
+		length = this.front.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.front.get(i).dispose();
 		}
 		
 		for (int i = 0; i < MAX_DECALS; i++) {

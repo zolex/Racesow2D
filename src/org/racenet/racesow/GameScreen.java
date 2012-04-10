@@ -426,11 +426,6 @@ public class GameScreen extends Screen {
 	 */
 	public void dispose() {
 		
-		if (this.map.demoRecorder != null) {
-		
-			this.map.demoRecorder.cancelDemo();
-		}
-		
 		this.camera.dispose();
 		this.map.dispose();
 		this.player.dispose();

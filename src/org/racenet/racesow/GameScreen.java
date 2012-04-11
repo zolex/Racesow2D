@@ -182,61 +182,61 @@ public class GameScreen extends Screen implements OnTouchListener {
 			case MotionEvent.ACTION_DOWN:
 			case MotionEvent.ACTION_POINTER_DOWN:
 		
-			// when touching the pause-button
-			if (e.getY(pointerIndex) / (float)game.getScreenHeight() < 0.1f && e.getX(pointerIndex) / (float)game.getScreenWidth() < 0.1f) {
-			
-				if (this.state == GameState.Running) {
-					
-					this.pauseGame();
-					
-				} else if (this.state == GameState.Paused) {
-					
-					this.resumeGame();
-				} 
-			}
-			
-			// when touching the jump-area on the screen
-			else if (e.getX(pointerIndex) / (float)game.getScreenWidth() > 0.5f) {
+				// when touching the pause-button
+				if (e.getY(pointerIndex) / (float)game.getScreenHeight() < 0.1f && e.getX(pointerIndex) / (float)game.getScreenWidth() < 0.1f) {
 				
-				if (!this.jumpPressed) {
-					
-					this.jumpPressed = true;
-					this.jumpPressedTime = 0;
+					if (this.state == GameState.Running) {
+						
+						this.pauseGame();
+						
+					} else if (this.state == GameState.Paused) {
+						
+						this.resumeGame();
+					} 
 				}
-			
-			// when touching the shoot-area on the screen
-			} else {
 				
-				if (!this.shootPressed) {
+				// when touching the jump-area on the screen
+				else if (e.getX(pointerIndex) / (float)game.getScreenWidth() > 0.5f) {
 					
-					this.shootPressed = true;
+					if (!this.jumpPressed) {
+						
+						this.jumpPressed = true;
+						this.jumpPressedTime = 0;
+					}
+				
+				// when touching the shoot-area on the screen
+				} else {
+					
+					if (!this.shootPressed) {
+						
+						this.shootPressed = true;
+						this.shootPressedTime = 0;
+					}
+				}
+				break;
+				
+			case MotionEvent.ACTION_UP:
+	        case MotionEvent.ACTION_POINTER_UP:
+	        case MotionEvent.ACTION_CANCEL:
+				// this is only for the tutorial
+				if (this.state == GameState.Paused) {
+					
+					this.player.updateTutorial("release");
+				}
+				
+				// when releasing the jump-button
+				if (e.getX(pointerIndex) / (float)game.getScreenWidth() > 0.5f) {
+					
+					this.jumpPressed = false;
+					this.jumpPressedTime = 0;
+					
+				// when releasing the shoot-button
+				} else {
+					
+					this.shootPressed = false;
 					this.shootPressedTime = 0;
 				}
-			}
-			break;
-			
-		case MotionEvent.ACTION_UP:
-        case MotionEvent.ACTION_POINTER_UP:
-        case MotionEvent.ACTION_CANCEL:
-			// this is only for the tutorial
-			if (this.state == GameState.Paused) {
-				
-				this.player.updateTutorial("release");
-			}
-			
-			// when releasing the jump-button
-			if (e.getX(pointerIndex) / (float)game.getScreenWidth() > 0.5f) {
-				
-				this.jumpPressed = false;
-				this.jumpPressedTime = 0;
-				
-			// when releasing the shoot-button
-			} else {
-				
-				this.shootPressed = false;
-				this.shootPressedTime = 0;
-			}
-			break;
+				break;
 		}
 		
 		return true;

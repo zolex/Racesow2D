@@ -89,7 +89,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 		
 		// for bitmap-font rendering
 		this.batcher = new SpriteBatcher(this.glGraphics, 96);
-		GLTexture texture = new GLTexture(game, "font.png");
+		GLTexture texture = new GLTexture(game.getGLGraphics().getGL(), game.getFileIO(), "font.png");
 		this.font = new BitmapFont(texture, 0, 0, 17, 30, 50);
 		
 		// user settings
@@ -117,13 +117,13 @@ public class GameScreen extends Screen implements OnTouchListener {
 		if (this.demoParser == null) {
 			
 			this.pause = new TexturedBlock(
-					this.game,
+					this.game.getGLGraphics().getGL(), this.game.getFileIO(),
 					"hud/pause.png", GameObject.FUNC_NONE, -1, -1, 0, 0,
 					new Vector2(-this.camera.frustumWidth / 2 + 1 , this.camera.frustumHeight / 2 - 6),
 					new Vector2(-this.camera.frustumWidth / 2 + 6, 0));
 			
 			this.play = new TexturedBlock(
-				this.game,
+				this.game.getGLGraphics().getGL(), this.game.getFileIO(),
 				"hud/play.png", GameObject.FUNC_NONE, -1, -1, 0, 0,
 				new Vector2(-this.camera.frustumWidth / 2 + 1 , this.camera.frustumHeight / 2 - 6),
 				new Vector2(-this.camera.frustumWidth / 2 + 6, 0));

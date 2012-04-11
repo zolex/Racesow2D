@@ -122,8 +122,8 @@ public class MenuScreen extends Screen implements OnTouchListener {
 			texture = "racesow_small.jpg";
 		}
 		
-		header = new TexturedBlock(game, texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0,
-				new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
+		header = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(), texture,
+				TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
 		header.setPosition(new Vector2(0, camera.frustumHeight - header.height));
 		header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
 	}

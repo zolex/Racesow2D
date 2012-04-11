@@ -20,9 +20,9 @@ public class TexturedBlock extends TexturedShape {
 	 * @param float texScaleHeight
 	 * @param Vector2 ... vertices
 	 */
-	public TexturedBlock(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
+	public TexturedBlock(GL10 gl, FileIO fileIO, String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
 		
-		super(game, texture, func, texScaleWidth, texScaleHeight, texShiftX, texShiftY, vertices);
+		super(gl, fileIO, texture, func, texScaleWidth, texScaleHeight, texShiftX, texShiftY, vertices);
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public class TexturedBlock extends TexturedShape {
 		}
 		
 		
-		this.glVertices = new GLVertices(this.game.getGLGraphics(), 4, 6 , false, true);
+		this.glVertices = new GLVertices(this.gl, 4, 6 , false, true);
 		this.glVertices.setVertices(vertices, 0, 16);
 		this.glVertices.setIndices(new short[] {0, 1, 2, 0, 2, 3}, 0, 6);
 	}
@@ -75,15 +75,13 @@ public class TexturedBlock extends TexturedShape {
 	 */
 	public void draw() {
 		
-		GL10 gl = this.game.getGLGraphics().getGL();
-		
-		gl.glPushMatrix();
-		gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
+		this.gl.glPushMatrix();
+		this.gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
 		this.texture.bind();
 		this.glVertices.bind();
 		this.glVertices.draw(GL10.GL_TRIANGLES, 0, 6);
 		this.glVertices.unbind();
-		gl.glPopMatrix();
+		this.gl.glPopMatrix();
 	}
 	
 	/**
@@ -91,13 +89,11 @@ public class TexturedBlock extends TexturedShape {
 	 */
 	public void drawOutline() {
 		
-		GL10 gl = this.game.getGLGraphics().getGL();
-		
-		gl.glPushMatrix();
-		gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
+		this.gl.glPushMatrix();
+		this.gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
 		this.glVertices.bind();
 		this.glVertices.draw(GL10.GL_LINE_LOOP, 0, 6);
 		this.glVertices.unbind();
-		gl.glPopMatrix();
+		this.gl.glPopMatrix();
 	}
 }

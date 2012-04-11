@@ -178,7 +178,7 @@ public class Map {
 			if (type.equals("rocket")) func = GameObject.ITEM_ROCKET; 
 			else if (type.equals("plasma")) func = GameObject.ITEM_PLASMA; 
 			
-			TexturedBlock item = new TexturedBlock(game,
+			TexturedBlock item = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
 				"items/" + type + ".png",
 				func,
 				-1,
@@ -228,7 +228,7 @@ public class Map {
 				this.skyPosition = 0;
 			}
 			
-			this.sky = new TexturedBlock(game,
+			this.sky = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
 					parser.getValue((Element)skyN.item(0), "texture"),
 					GameObject.FUNC_NONE,
 					-1,
@@ -282,7 +282,7 @@ public class Map {
 				backgroundHeight = worldHeight;
 			}
 			
-			this.background = new TexturedBlock(game,
+			this.background = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
 				parser.getValue((Element)backgroundN.item(0), "texture"),
 				GameObject.FUNC_NONE,
 				backgroundScale,
@@ -338,7 +338,7 @@ public class Map {
 				background2Height = worldHeight;
 			}
 			
-			this.background2 = new TexturedBlock(game,
+			this.background2 = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
 				parser.getValue((Element)background2N.item(0), "texture"),
 				GameObject.FUNC_NONE,
 				backgroundScale,
@@ -412,7 +412,7 @@ public class Map {
 			float width = Float.valueOf(parser.getValue(xmlblock, "width")).floatValue();
 			float height = Float.valueOf(parser.getValue(xmlblock, "height")).floatValue();
 			
-			TexturedBlock block = new TexturedBlock(game,
+			TexturedBlock block = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
 				parser.getValue(xmlblock, "texture"),
 				func,
 				texSX,
@@ -525,7 +525,7 @@ public class Map {
 				texShiftY = 0;
 			}
 			
-			TexturedTriangle block = new TexturedTriangle(game,
+			TexturedTriangle block = new TexturedTriangle(game.getGLGraphics().getGL(), game.getFileIO(),
 				parser.getValue(xmlblock, "texture"),
 				func,
 				texSX,

@@ -20,9 +20,9 @@ public class TexturedTriangle extends TexturedShape {
 	 * @param float texScaleHeight
 	 * @param Vector2 ... vertices
 	 */
-	public TexturedTriangle(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
+	public TexturedTriangle(GL10 gl, FileIO fileIO, String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
 		
-		super(game, texture, func, texScaleWidth, texScaleHeight, texShiftX, texShiftY, vertices);
+		super(gl, fileIO, texture, func, texScaleWidth, texScaleHeight, texShiftX, texShiftY, vertices);
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class TexturedTriangle extends TexturedShape {
 		}
 		
 		
-		this.glVertices = new GLVertices(this.game.getGLGraphics(), 3, 0 , false, true);
+		this.glVertices = new GLVertices(this.gl, 3, 0 , false, true);
 		this.glVertices.setVertices(glVertices, 0, 12);
 	}
 	

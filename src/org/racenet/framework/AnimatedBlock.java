@@ -10,7 +10,9 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class AnimatedBlock extends GameObject {
 
-	protected GLGame game = null;
+	protected GLGame game;
+	protected GL10 gl;
+	protected FileIO fileIO;
 	public float animTime = 0;
 	public GLVertices vertices = null;
 	public Animation anims[];
@@ -29,6 +31,8 @@ public class AnimatedBlock extends GameObject {
 		
 		super(vertices);
 		this.game = game;
+		this.gl = game.getGLGraphics().getGL();
+		this.fileIO = game.getFileIO();
 	}
 	
 	/**
@@ -58,7 +62,7 @@ public class AnimatedBlock extends GameObject {
 		GLTexture[] frames = new GLTexture[keyFrames.length];
 		for (int i = 0; i < keyFrames.length; i++) {
 			
-			frames[i] = new GLTexture(this.game, keyFrames[i]);
+			frames[i] = new GLTexture(this.gl, this.fileIO, keyFrames[i]);
 		}
 		
 		this.anims[animId] = new Animation(frameDuration, frames);
@@ -70,7 +74,7 @@ public class AnimatedBlock extends GameObject {
 	protected void setupVertices() {
 		
 		GLTexture firstFrame = this.anims[0].getKeyFrame(0); // TODO: choose proper frame
-		this.vertices = new GLVertices(this.game.getGLGraphics(), 4, 6 , false, true);
+		this.vertices = new GLVertices(this.gl, 4, 6 , false, true);
 		this.vertices.setVertices(new float[] {
 				0,			0,	  			0, this.height / (firstFrame.height * this.texScaleHeight),
 				this.width,	0,				this.width / (firstFrame.width * this.texScaleWidth), this.height / (firstFrame.height * this.texScaleHeight),
@@ -84,15 +88,13 @@ public class AnimatedBlock extends GameObject {
 	 */
 	public void draw() {
 		
-		GL10 gl = this.game.getGLGraphics().getGL();
-		
-		gl.glPushMatrix();
-		gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
-		this.anims[this.activeAnimId].getKeyFrame(animTime).bind();
+		this.gl.glPushMatrix();
+		this.gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
+		this.anims[this.activeAnimId].getKeyFrame(this.animTime).bind();
 		this.vertices.bind();
 		this.vertices.draw(GL10.GL_TRIANGLES, 0, 6);
 		this.vertices.unbind();
-		gl.glPopMatrix();
+		this.gl.glPopMatrix();
 	}
 	
 	/**

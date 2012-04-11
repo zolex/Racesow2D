@@ -54,7 +54,7 @@ class LoadingScreen extends Screen {
 		this.camera = new Camera2(glGraphics, 80,  80 * (float)game.getScreenHeight() / (float)game.getScreenWidth());
 		
 		this.batcher = new SpriteBatcher(this.glGraphics, 96);
-		GLTexture font = new GLTexture(game, "font.png");
+		GLTexture font = new GLTexture(game.getGLGraphics().getGL(), game.getFileIO(), "font.png");
 		this.loading = new BitmapFont(font, 0, 0, 17, 30, 50);
 		
 		GLTexture.APP_FOLDER = "racesow";
@@ -64,7 +64,7 @@ class LoadingScreen extends Screen {
 			texture = "racesow_small.jpg";
 		}
 		
-		header = new TexturedBlock(game, texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0,
+		header = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(), texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0,
 				new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
 		header.setPosition(new Vector2(0, camera.frustumHeight - header.height));
 		header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);

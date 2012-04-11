@@ -1,5 +1,7 @@
 package org.racenet.framework;
 
+import javax.microedition.khronos.opengles.GL10;
+
 /**
  * Base Class for TexturedTriangle and TexturedRectangle
  * 
@@ -8,7 +10,8 @@ package org.racenet.framework;
  */
 public abstract class TexturedShape extends HudItem {
 	
-	GLGame game = null;
+	GL10 gl;
+	FileIO fileIO;
 	public GLVertices glVertices = null;
 	public GLTexture texture = null;
 	float texScaleWidth = 0.05f;
@@ -26,10 +29,11 @@ public abstract class TexturedShape extends HudItem {
 	 * @param float texScaleHeight
 	 * @param Vectro2 ... vertices
 	 */
-	public TexturedShape(GLGame game, String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
+	public TexturedShape(GL10 gl, FileIO fileIO, String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
 		
 		super(vertices);
-		this.game = game;
+		this.gl = gl;
+		this.fileIO = fileIO;
 		this.setupTexture(texture, texScaleWidth, texScaleHeight, texShiftX, texShiftY);
 		this.setupVertices();
 		this.func = func;
@@ -44,7 +48,7 @@ public abstract class TexturedShape extends HudItem {
 	 */
 	public void setupTexture(String fileName, float scaleWidth, float scaleHeight, float texShiftX, float texShiftY) {
 		
-		this.texture = new GLTexture(this.game, fileName);
+		this.texture = new GLTexture(this.gl, this.fileIO, fileName);
 		this.texScaleWidth = scaleWidth == 0 ? 0.1f : scaleWidth;
 		this.texScaleHeight = scaleHeight == 0 ? 0.1f : scaleHeight;
 		this.texShiftX = texShiftX;

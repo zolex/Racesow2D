@@ -26,7 +26,7 @@ public class SpriteBatcher {
     public SpriteBatcher(GLGraphics glGraphics, int maxSprites) {   
     	
         this.verticesBuffer = new float[maxSprites*4*4];        
-        this.vertices = new GLVertices(glGraphics, maxSprites*4, maxSprites*6, false, true);
+        this.vertices = new GLVertices(glGraphics.getGL(), maxSprites*4, maxSprites*6, false, true);
         this.bufferIndex = 0;
         this.numSprites = 0;
         

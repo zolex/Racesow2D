@@ -143,7 +143,7 @@ public class Player extends AnimatedBlock {
 			public TexturedBlock createObject() {
 				
 				return new TexturedBlock(
-						game,
+						Player.this.gl, Player.this.fileIO,
 						"decals/plasma_hit.png",
 						GameObject.FUNC_NONE,
 						-1,
@@ -162,7 +162,7 @@ public class Player extends AnimatedBlock {
             public TexturedBlock createObject() {
             	
             	return new TexturedBlock(
-        				game,
+        				Player.this.gl, Player.this.fileIO,
         				"decals/rocket_hit.png",
         				GameObject.FUNC_NONE,
         				-1,
@@ -695,7 +695,7 @@ public class Player extends AnimatedBlock {
 				
 				// show a weapon icon in the HUD
 				TexturedBlock hudItem = new TexturedBlock(
-					this.game,
+					this.gl, this.fileIO,
 					texture,
 					item.func,
 					-1,

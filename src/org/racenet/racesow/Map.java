@@ -201,7 +201,7 @@ public class Map {
 			Element xmlStartTimer = (Element)startTimerN.item(0);
 			float startTimerX = Float.valueOf(parser.getValue(xmlStartTimer, "x")).floatValue();
 			//GameObject startTimer = new Func(Func.START_TIMER, startTimerX, 0, 1, worldHeight);
-			GameObject startTimer = new GameObject(new Vector2(startTimerX, 0), new Vector2(startTimerX + 1, 0), new Vector2(startTimerX + 1, worldHeight), new Vector2(startTimerX, worldHeight));
+			GameObject startTimer = new GameObject(new Vector2(startTimerX, 0), new Vector2(startTimerX + 10, 0), new Vector2(startTimerX + 10, worldHeight), new Vector2(startTimerX, worldHeight));
 			startTimer.func = GameObject.FUNC_START_TIMER;
 			this.funcs.add(startTimer);
 		}
@@ -212,7 +212,7 @@ public class Map {
 			
 			Element xmlStopTimer = (Element)stopTimerN.item(0);
 			float stopTimerX = Float.valueOf(parser.getValue(xmlStopTimer, "x")).floatValue();
-			GameObject stopTimer = new GameObject(new Vector2(stopTimerX, 0), new Vector2(stopTimerX + 1, 0), new Vector2(stopTimerX + 1, worldHeight), new Vector2(stopTimerX, worldHeight));
+			GameObject stopTimer = new GameObject(new Vector2(stopTimerX, 0), new Vector2(stopTimerX + 10, 0), new Vector2(stopTimerX + 10, worldHeight), new Vector2(stopTimerX, worldHeight));
 			stopTimer.func = GameObject.FUNC_STOP_TIMER;
 			this.funcs.add(stopTimer);
 		}

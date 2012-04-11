@@ -31,7 +31,7 @@
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>0</x>
 		<y>7.5</y>
 		<width>88</width>
@@ -39,7 +39,7 @@
 		<texture>purple-sky/border_t.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>88</x>
 		<y>7.5</y>
 		<width>12</width>
@@ -66,7 +66,7 @@
 		<texshifty>29</texshifty>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>175</x>
 		<y>17.5</y>
 		<width>12</width>
@@ -74,7 +74,7 @@
 		<texture>purple-sky/border_tel.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>187</x>
 		<y>17.5</y>
 		<width>88</width>
@@ -113,7 +113,7 @@
 		<texshifty>29</texshifty>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>325</x>
 		<y>17.5</y>
 		<width>88</width>
@@ -121,7 +121,7 @@
 		<texture>purple-sky/border_t.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>413</x>
 		<y>17.5</y>
 		<width>12</width>
@@ -138,7 +138,7 @@
 		<texshifty>29</texshifty>
 	</tri>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>500</x>
 		<y>7.5</y>
 		<width>12</width>
@@ -146,7 +146,7 @@
 		<texture>purple-sky/border_tel.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>512</x>
 		<y>7.5</y>
 		<width>75</width>
@@ -154,7 +154,7 @@
 		<texture>purple-sky/border_t.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>587</x>
 		<y>7.5</y>
 		<width>12</width>
@@ -172,7 +172,7 @@
 		<texshifty>-25</texshifty>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>600</x>
 		<y>10</y>
 		<width>10</width>
@@ -180,7 +180,7 @@
 		<texture>purple-sky/border_tsl.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>750</x>
 		<y>10</y>
 		<width>10</width>
@@ -199,7 +199,7 @@
 		<texshifty>-50</texshifty>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>610</x>
 		<y>12.5</y>
 		<width>10</width>
@@ -207,7 +207,7 @@
 		<texture>purple-sky/border_tsl.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>740</x>
 		<y>12.5</y>
 		<width>10</width>
@@ -226,7 +226,7 @@
 		<texshifty>-75</texshifty>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>620</x>
 		<y>15</y>
 		<width>10</width>
@@ -234,7 +234,7 @@
 		<texture>purple-sky/border_tsl.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>730</x>
 		<y>15</y>
 		<width>10</width>
@@ -253,7 +253,7 @@
 		<texshifty>-100</texshifty>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>630</x>
 		<y>17.5</y>
 		<width>10</width>
@@ -261,7 +261,7 @@
 		<texture>purple-sky/border_tsl.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>720</x>
 		<y>17.5</y>
 		<width>10</width>
@@ -280,7 +280,7 @@
 		<texshifty>-125</texshifty>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>640</x>
 		<y>20</y>
 		<width>10</width>
@@ -288,7 +288,7 @@
 		<texture>purple-sky/border_tsl.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>710</x>
 		<y>20</y>
 		<width>10</width>
@@ -307,7 +307,7 @@
 		<texshifty>-150</texshifty>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>650</x>
 		<y>22.5</y>
 		<width>12</width>
@@ -315,7 +315,7 @@
 		<texture>purple-sky/border_tsfl.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>662</x>
 		<y>22.5</y>
 		<width>36</width>
@@ -323,7 +323,7 @@
 		<texture>purple-sky/border_t.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>698</x>
 		<y>22.5</y>
 		<width>12</width>
@@ -332,7 +332,7 @@
 		<texture>purple-sky/border_tsfr.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>760</x>
 		<y>7.5</y>
 		<width>12</width>
@@ -340,7 +340,7 @@
 		<texture>purple-sky/border_tel.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>772</x>
 		<y>7.5</y>
 		<width>78</width>
@@ -382,7 +382,7 @@
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>925</x>
 		<y>7.5</y>
 		<width>63</width>
@@ -390,7 +390,7 @@
 		<texture>purple-sky/border_t.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>988</x>
 		<y>7.5</y>
 		<width>12</width>
@@ -426,7 +426,7 @@
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>1300</x>
 		<y>17.5</y>
 		<width>138</width>
@@ -434,7 +434,7 @@
 		<texture>purple-sky/border_t.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>1438</x>
 		<y>17.5</y>
 		<width>12</width>
@@ -480,7 +480,7 @@
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>1725</x>
 		<y>7.5</y>
 		<width>75</width>
@@ -512,7 +512,7 @@
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>1875</x>
 		<y>7.5</y>
 		<width>225</width>
@@ -549,7 +549,7 @@
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>2700</x>
 		<y>7.5</y>
 		<width>338</width>
@@ -557,7 +557,7 @@
 		<texture>purple-sky/border_t.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>3038</x>
 		<y>7.5</y>
 		<width>12</width>
@@ -575,7 +575,7 @@
 		<texshifty>-25</texshifty>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>3050</x>
 		<y>10</y>
 		<width>10</width>
@@ -593,7 +593,7 @@
 		<texshifty>-50</texshifty>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>3060</x>
 		<y>12.5</y>
 		<width>10</width>
@@ -611,7 +611,7 @@
 		<texshifty>-75</texshifty>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>3070</x>
 		<y>15</y>
 		<width>10</width>
@@ -629,7 +629,7 @@
 		<texshifty>-100</texshifty>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>3080</x>
 		<y>17.5</y>
 		<width>10</width>
@@ -647,7 +647,7 @@
 		<texshifty>-125</texshifty>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>3090</x>
 		<y>20</y>
 		<width>10</width>
@@ -674,7 +674,7 @@
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>3300</x>
 		<y>7.5</y>
 		<width>500</width>
@@ -711,7 +711,7 @@
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<block>
-		<level>front</level>
+		<level>highlight</level>
 		<x>4300</x>
 		<y>7.5</y>
 		<width>200</width>

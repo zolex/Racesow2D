@@ -36,6 +36,7 @@ public class Map {
 	private GL10 gl;
 	private List<TexturedShape> ground = new ArrayList<TexturedShape>();
 	private List<TexturedShape> walls = new ArrayList<TexturedShape>();
+	private List<TexturedShape> highlights = new ArrayList<TexturedShape>();
 	private List<TexturedShape> front = new ArrayList<TexturedShape>();
 	public List<TexturedShape> items = new ArrayList<TexturedShape>();
 	public List<TexturedShape> pickedUpItems = new ArrayList<TexturedShape>();
@@ -435,7 +436,11 @@ public class Map {
 				
 				this.addWall(block);
 			
-			} else if (level.equals("front") && this.gfxHighlights) {
+			} else if (level.equals("highlight") && this.gfxHighlights) {
+				
+				this.highlights.add(block);
+				
+			} else if (level.equals("front")) {
 				
 				this.front.add(block);
 			}
@@ -547,7 +552,11 @@ public class Map {
 				
 				this.addWall(block);
 			
-			} else if (level.equals("front") && this.gfxHighlights) {
+			} else if (level.equals("hightlight") && this.gfxHighlights) {
+				
+				this.highlights.add(block);
+				
+			} else if (level.equals("front")) {
 				
 				this.front.add(block);
 			}
@@ -687,12 +696,18 @@ public class Map {
 			this.walls.get(i).reloadTexture();
 		}
 		
+		length = this.front.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.front.get(i).reloadTexture();
+		}
+		
 		if (this.gfxHighlights) {
 			
-			length = this.front.size();
+			length = this.highlights.size();
 			for (int i = 0; i < length; i++) {
 				
-				this.front.get(i).reloadTexture();
+				this.highlights.get(i).reloadTexture();
 			}
 		}
 	}
@@ -735,12 +750,18 @@ public class Map {
 			this.walls.get(i).dispose();
 		}
 		
+		length = this.front.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.front.get(i).dispose();
+		}
+		
 		if (this.gfxHighlights) {
 			
-			length = this.front.size();
+			length = this.highlights.size();
 			for (int i = 0; i < length; i++) {
 				
-				this.front.get(i).dispose();
+				this.highlights.get(i).dispose();
 			}
 		}
 		
@@ -948,24 +969,12 @@ public class Map {
 			}
 		}
 		
-		length = this.items.size();
-		for (int i = 0; i < length; i++) {
-			
-			this.items.get(i).draw();
-		}
-	}
-	
-	public void drawFront() {
-		
-		float fromX = this.camera.position.x - this.camera.frustumWidth / 2;
-		float toX = this.camera.position.x + this.camera.frustumWidth / 2;
-		
 		if (this.gfxHighlights) {
 			
-			int length = this.front.size();
+			length = this.highlights.size();
 			for (int i = 0; i < length; i++) {
 				
-				TexturedShape shape = this.front.get(i);
+				TexturedShape shape = this.highlights.get(i);
 				Vector2 shapePos = shape.getPosition();
 				if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
 					(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
@@ -976,11 +985,36 @@ public class Map {
 			}
 		}
 		
+		length = this.items.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.items.get(i).draw();
+		}
+		
 		for (int i = 0; i < MAX_DECALS; i++) {
 			
 			if (this.decals[i] != null) {
 			
 				this.decals[i].draw();
+			}
+		}
+	}
+	
+	public void drawFront() {
+		
+		float fromX = this.camera.position.x - this.camera.frustumWidth / 2;
+		float toX = this.camera.position.x + this.camera.frustumWidth / 2;
+		
+		int length = this.front.size();
+		for (int i = 0; i < length; i++) {
+			
+			TexturedShape shape = this.front.get(i);
+			Vector2 shapePos = shape.getPosition();
+			if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
+				(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
+				(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
+				
+				shape.draw();
 			}
 		}
 	}

@@ -357,7 +357,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 			this.currentPlayerOffset -= ((this.currentPlayerOffset - this.targetPlayerOffset) / 10);
 		}
 		
-		this.camera.setPosition(this.player.getPosition().x + 20 - this.currentPlayerOffset, camY);		
+		this.camera.setPosition(this.player.getPosition().x + 27.5f - this.currentPlayerOffset, camY);		
 		this.map.update(deltaTime);
 
 		if (this.showUPS) {

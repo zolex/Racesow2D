@@ -46,15 +46,9 @@ public class Settings extends PreferenceActivity {
 					
 					prefs.edit().putBoolean("sound", value.toString().equals("true") ? true : false).commit();
 
-				} else if (pref.getKey().equals("celshading")) {
+				} else if (pref.getKey().equals("gfx")) {
 					
-					prefs.edit().putBoolean("celshading", value.toString().equals("true") ? true : false).commit();
-					if (value.toString().equals("true")) {
-						new AlertDialog.Builder(Settings.this)
-	        		        .setMessage("Toon-Shading reduces the perfomance.")
-	        		        .setNeutralButton("OK", null)
-	        		        .show();
-					}
+					prefs.edit().putBoolean("gfx", value.toString().equals("true") ? true : false).commit();
 					
 				} else if (pref.getKey().equals("name")) {
 					
@@ -80,7 +74,7 @@ public class Settings extends PreferenceActivity {
 		findPreference("name").setOnPreferenceChangeListener(listener);
 		findPreference("demos").setOnPreferenceChangeListener(listener);
 		findPreference("sound").setOnPreferenceChangeListener(listener);
-		findPreference("celshading").setOnPreferenceChangeListener(listener);
+		findPreference("gfx").setOnPreferenceChangeListener(listener);
 		findPreference("ups").setOnPreferenceChangeListener(listener);
 		findPreference("fps").setOnPreferenceChangeListener(listener);
     }

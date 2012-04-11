@@ -60,6 +60,7 @@ public class Map {
 	private float startTime = 0;
 	private float stopTime = 0;
 	private boolean drawOutlines = false;
+	private boolean gfxHighlights = true;
 	private Camera2 camera;
 	public String fileName;
 	private GLGame game;
@@ -75,11 +76,11 @@ public class Map {
 	 * @param Camera2 camera
 	 * @param boolean drawOutlines
 	 */
-	public Map(GL10 gl, Camera2 camera, boolean drawOutlines, boolean recordDemos) {
+	public Map(GL10 gl, Camera2 camera, boolean gfxHighlights, boolean recordDemos) {
 		
 		this.gl = gl;
 		this.camera = camera;
-		this.drawOutlines = drawOutlines;
+		this.gfxHighlights = gfxHighlights;
 		this.recordDemos = recordDemos;
 		
 		// decalTime -1 means there is no decal
@@ -434,7 +435,7 @@ public class Map {
 				
 				this.addWall(block);
 			
-			} else if (level.equals("front")) {
+			} else if (level.equals("front") && this.gfxHighlights) {
 				
 				this.front.add(block);
 			}
@@ -546,7 +547,7 @@ public class Map {
 				
 				this.addWall(block);
 			
-			} else if (level.equals("front")) {
+			} else if (level.equals("front") && this.gfxHighlights) {
 				
 				this.front.add(block);
 			}
@@ -686,10 +687,13 @@ public class Map {
 			this.walls.get(i).reloadTexture();
 		}
 		
-		length = this.front.size();
-		for (int i = 0; i < length; i++) {
+		if (this.gfxHighlights) {
 			
-			this.front.get(i).reloadTexture();
+			length = this.front.size();
+			for (int i = 0; i < length; i++) {
+				
+				this.front.get(i).reloadTexture();
+			}
 		}
 	}
 	
@@ -731,10 +735,13 @@ public class Map {
 			this.walls.get(i).dispose();
 		}
 		
-		length = this.front.size();
-		for (int i = 0; i < length; i++) {
+		if (this.gfxHighlights) {
 			
-			this.front.get(i).dispose();
+			length = this.front.size();
+			for (int i = 0; i < length; i++) {
+				
+				this.front.get(i).dispose();
+			}
 		}
 		
 		for (int i = 0; i < MAX_DECALS; i++) {
@@ -946,14 +953,6 @@ public class Map {
 			
 			this.items.get(i).draw();
 		}
-		
-		for (int i = 0; i < MAX_DECALS; i++) {
-			
-			if (this.decals[i] != null) {
-			
-				this.decals[i].draw();
-			}
-		}
 	}
 	
 	public void drawFront() {
@@ -961,16 +960,27 @@ public class Map {
 		float fromX = this.camera.position.x - this.camera.frustumWidth / 2;
 		float toX = this.camera.position.x + this.camera.frustumWidth / 2;
 		
-		int length = this.front.size();
-		for (int i = 0; i < length; i++) {
+		if (this.gfxHighlights) {
 			
-			TexturedShape shape = this.front.get(i);
-			Vector2 shapePos = shape.getPosition();
-			if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
-				(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
-				(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
+			int length = this.front.size();
+			for (int i = 0; i < length; i++) {
 				
-				shape.draw();
+				TexturedShape shape = this.front.get(i);
+				Vector2 shapePos = shape.getPosition();
+				if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
+					(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
+					(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
+					
+					shape.draw();
+				}
+			}
+		}
+		
+		for (int i = 0; i < MAX_DECALS; i++) {
+			
+			if (this.decals[i] != null) {
+			
+				this.decals[i].draw();
 			}
 		}
 	}

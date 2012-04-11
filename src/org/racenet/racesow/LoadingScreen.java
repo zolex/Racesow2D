@@ -97,7 +97,7 @@ class LoadingScreen extends Screen {
 			
 			// right after drawing the loading screen load
 			// the map and player and pass it to the GameScreen
-			Map map = new Map(glGraphics.getGL(), this.camera, prefs.getBoolean("celshading", false), recordDemos);
+			Map map = new Map(glGraphics.getGL(), this.camera, prefs.getBoolean("gfx", true), recordDemos);
 			map.load(game, this.mapName, this.demoFile != null);
 			Player player = new Player(game, map, this.camera, map.playerX, map.playerY, prefs.getBoolean("sound", true), recordDemos);
 			

@@ -18,8 +18,8 @@
 	</background>
 	<background2>
 		<texture>purple-sky/overlay.png</texture>
-		<position>4</position>
-		<speed>3</speed>
+		<position>2</position>
+		<speed>2.25</speed>
 		<scale>0.1</scale>
 	</background2>
 	<block>
@@ -29,6 +29,22 @@
 		<width>850</width>
 		<height>10</height>
 		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>0</x>
+		<y>7.5</y>
+		<width>88</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_t.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>88</x>
+		<y>7.5</y>
+		<width>12</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_ter.png</texture>
 	</block>
 	<tri>
 		<level>ground</level>
@@ -48,6 +64,22 @@
 		<texture>purple-sky/stone.png</texture>
 		<texshiftx>42</texshiftx>
 		<texshifty>29</texshifty>
+	</block>
+	<block>
+		<level>front</level>
+		<x>175</x>
+		<y>17.5</y>
+		<width>12</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_tel.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>187</x>
+		<y>17.5</y>
+		<width>88</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_t.png</texture>
 	</block>
 	<block>
 		<level>ground</level>
@@ -80,6 +112,22 @@
 		<texshiftx>-50</texshiftx>
 		<texshifty>29</texshifty>
 	</block>
+	<block>
+		<level>front</level>
+		<x>325</x>
+		<y>17.5</y>
+		<width>88</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_t.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>413</x>
+		<y>17.5</y>
+		<width>12</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_ter.png</texture>
+	</block>
 	<tri>
 		<level>ground</level>
 		<v1><x>425</x><y>20</y></v1>
@@ -90,6 +138,30 @@
 		<texshifty>29</texshifty>
 	</tri>
 	<block>
+		<level>front</level>
+		<x>500</x>
+		<y>7.5</y>
+		<width>12</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_tel.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>512</x>
+		<y>7.5</y>
+		<width>75</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_t.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>587</x>
+		<y>7.5</y>
+		<width>12</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_ter.png</texture>
+	</block>
+	<block>
 		<level>ground</level>
 		<x>600</x>
 		<y>10</y>
@@ -98,6 +170,23 @@
 		<texture>purple-sky/stone.png</texture>
 		<texshiftx>16</texshiftx>
 		<texshifty>-25</texshifty>
+	</block>
+	<block>
+		<level>front</level>
+		<x>600</x>
+		<y>10</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_tsl.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>750</x>
+		<y>10</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texshiftx>-28</texshiftx>
+		<texture>purple-sky/border_tsr.png</texture>
 	</block>
 	<block>
 		<level>ground</level>
@@ -110,6 +199,23 @@
 		<texshifty>-50</texshifty>
 	</block>
 	<block>
+		<level>front</level>
+		<x>610</x>
+		<y>12.5</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_tsl.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>740</x>
+		<y>12.5</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texshiftx>-28</texshiftx>
+		<texture>purple-sky/border_tsr.png</texture>
+	</block>
+	<block>
 		<level>ground</level>
 		<x>620</x>
 		<y>15</y>
@@ -118,6 +224,23 @@
 		<texture>purple-sky/stone.png</texture>
 		<texshiftx>-56</texshiftx>
 		<texshifty>-75</texshifty>
+	</block>
+	<block>
+		<level>front</level>
+		<x>620</x>
+		<y>15</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_tsl.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>730</x>
+		<y>15</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texshiftx>-28</texshiftx>
+		<texture>purple-sky/border_tsr.png</texture>
 	</block>
 	<block>
 		<level>ground</level>
@@ -130,6 +253,23 @@
 		<texshifty>-100</texshifty>
 	</block>
 	<block>
+		<level>front</level>
+		<x>630</x>
+		<y>17.5</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_tsl.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>720</x>
+		<y>17.5</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texshiftx>-28</texshiftx>
+		<texture>purple-sky/border_tsr.png</texture>
+	</block>
+	<block>
 		<level>ground</level>
 		<x>640</x>
 		<y>20</y>
@@ -140,6 +280,23 @@
 		<texshifty>-125</texshifty>
 	</block>
 	<block>
+		<level>front</level>
+		<x>640</x>
+		<y>20</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_tsl.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>710</x>
+		<y>20</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texshiftx>-28</texshiftx>
+		<texture>purple-sky/border_tsr.png</texture>
+	</block>
+	<block>
 		<level>ground</level>
 		<x>650</x>
 		<y>22.5</y>
@@ -148,6 +305,47 @@
 		<texture>purple-sky/stone.png</texture>
 		<texshiftx>28</texshiftx>
 		<texshifty>-150</texshifty>
+	</block>
+	<block>
+		<level>front</level>
+		<x>650</x>
+		<y>22.5</y>
+		<width>12</width>
+		<height>2.5</height>
+		<texshiftx>-16</texshiftx>
+		<texture>purple-sky/border_tsfl.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>662</x>
+		<y>22.5</y>
+		<width>36</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_t.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>698</x>
+		<y>22.5</y>
+		<width>12</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_tsfr.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>760</x>
+		<y>7.5</y>
+		<width>12</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_tel.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>772</x>
+		<y>7.5</y>
+		<width>78</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_t.png</texture>
 	</block>
 	<block>
 		<level>wall</level>
@@ -182,6 +380,22 @@
 		<width>125</width>
 		<height>10</height>
 		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>925</x>
+		<y>7.5</y>
+		<width>63</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_t.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>988</x>
+		<y>7.5</y>
+		<width>12</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_ter.png</texture>
 	</block>
 	<tri>
 		<level>ground</level>

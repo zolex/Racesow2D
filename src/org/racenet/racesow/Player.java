@@ -503,7 +503,7 @@ public class Player extends AnimatedBlock {
 						if (ground != null) {
 							
 							float impactY = ground.getPosition().y + ground.getHeightAt(this.getPosition().x) - 4;
-							float distance = this.getPosition().y - impactY;
+							float distance = Math.max(0.1f, this.getPosition().y - impactY);
 							
 							// only allow to hit blocks without functionality (ie. no lava)
 							if (ground.func == GameObject.FUNC_NONE) {

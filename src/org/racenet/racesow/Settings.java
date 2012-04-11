@@ -2,7 +2,6 @@ package org.racenet.racesow;
 
 import org.racenet.racesow.R;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;

@@ -15,6 +15,7 @@ public class GameObject extends Polygon implements Drawable {
 	public static final short FUNC_STOP_TIMER = 3;
 	public static final short FUNC_WATER = 4;
 	public static final short FUNC_TUTORIAL = 5;
+	public static final short FUNC_DRIFTSAND = 6;
 	
 	// item functions
 	public static final short ITEM_NONE = 100;

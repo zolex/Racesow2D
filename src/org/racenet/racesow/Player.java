@@ -50,7 +50,8 @@ public class Player extends AnimatedBlock {
 	public static final short ANIM_PLASMA_JUMP = 9;
 	public static final short ANIM_PLASMA_WALLJUMP = 10;
 	public static final short ANIM_DROWN = 11;
-	public AnimationPreset[] animPresets = new AnimationPreset[12];
+	public static final short ANIM_DRIFTSAND = 12;
+	public AnimationPreset[] animPresets = new AnimationPreset[13];
 	
 	// sounds
 	public static final short SOUND_JUMP1 = 0;
@@ -248,10 +249,17 @@ public class Player extends AnimatedBlock {
 		});
 		
 		this.animPresets[ANIM_DROWN] = new AnimationPreset(0.4f, new String[] {
-			"player/" + this.model + "/drown_f1.png",
-			"player/" + this.model + "/drown_f2.png",
-			"player/" + this.model + "/drown_f3.png",
-			"player/" + this.model + "/drown_f4.png"
+				"player/" + this.model + "/drown_f1.png",
+				"player/" + this.model + "/drown_f2.png",
+				"player/" + this.model + "/drown_f3.png",
+				"player/" + this.model + "/drown_f4.png"
+		});
+		
+		this.animPresets[ANIM_DRIFTSAND] = new AnimationPreset(0.4f, new String[] {
+			"player/" + this.model + "/sand_f1.png",
+			"player/" + this.model + "/sand_f2.png",
+			"player/" + this.model + "/sand_f3.png",
+			"player/" + this.model + "/sand_f4.png"
 		});
 		
 		this.animPresets[ANIM_INVISIBLE] = new AnimationPreset(0, new String[] {
@@ -589,7 +597,9 @@ public class Player extends AnimatedBlock {
 				this.animTime = 0;
 				
 				// after death animation make the player invisible
-				if (this.activeAnimId == Player.ANIM_BURN || this.activeAnimId == Player.ANIM_DROWN) {
+				if (this.activeAnimId == Player.ANIM_BURN ||
+					this.activeAnimId == Player.ANIM_DROWN ||
+					this.activeAnimId == Player.ANIM_DRIFTSAND) {
 					
 					this.activeAnimId = Player.ANIM_INVISIBLE;
 				
@@ -774,6 +784,11 @@ public class Player extends AnimatedBlock {
 							
 						case GameObject.FUNC_WATER:
 							this.activeAnimId = Player.ANIM_DROWN;
+							this.die();
+							return;
+							
+						case GameObject.FUNC_DRIFTSAND:
+							this.activeAnimId = Player.ANIM_DRIFTSAND;
 							this.die();
 							return;
 					}

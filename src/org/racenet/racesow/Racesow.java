@@ -46,6 +46,7 @@ public class Racesow extends GLGame {
 						
 						Intent i = new Intent((Activity)Racesow.this, Settings.class);
 						i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+						i.putExtra("setNick", true);
 					    ((Activity)Racesow.this).startActivity(i);
 					}
 				})

@@ -2,12 +2,17 @@ package org.racenet.racesow;
 
 import org.racenet.racesow.R;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 
@@ -35,6 +40,12 @@ public class Settings extends PreferenceActivity {
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
     	this.wakeLock.acquire();
         
+    	if (getIntent().getBooleanExtra("setNick", false)) {
+    		
+    		editNick();
+    	}
+    	
+    	
         OnPreferenceChangeListener listener = new OnPreferenceChangeListener() {
 			
 			public boolean onPreferenceChange(Preference pref, Object value) {
@@ -51,7 +62,13 @@ public class Settings extends PreferenceActivity {
 					
 				} else if (pref.getKey().equals("name")) {
 					
-					prefs.edit().putString("name", value.toString()).commit();
+					String nick = value.toString().trim();
+					if (nick.equals("")) {
+				
+						askEditNick();
+					}
+					
+					prefs.edit().putString("name", nick).commit();
 				
 				} else if (pref.getKey().equals("ups")) {
 					
@@ -79,6 +96,33 @@ public class Settings extends PreferenceActivity {
     }
     
     /**
+     * Ask the user to set his nickname
+     */
+    private void askEditNick() {
+    	
+    	new AlertDialog.Builder(Settings.this)
+        .setMessage("Nickname must not be blank")
+        .setPositiveButton("OK", new OnClickListener() {
+			
+			public void onClick(DialogInterface arg0, int arg1) {
+				
+				editNick();
+			}
+		})
+        .show();
+    }
+    
+    /**
+     * Show the edit nickname preference
+     */
+    private void editNick() {
+    	
+    	PreferenceScreen screen = (PreferenceScreen)findPreference("settings");
+		int itemPos = findPreference("name").getOrder();
+		screen.onItemClick(null, null, itemPos, 0);
+    }
+    
+    /**
      * Acquire the wakelock on resume
      */
     public void onResume() {
@@ -101,7 +145,14 @@ public class Settings extends PreferenceActivity {
      */
     public void onBackPressed() {
     	
-    	this.finish();
-    	this.overridePendingTransition(0, 0);
+    	if (((EditTextPreference)findPreference("name")).getText().trim().equals("")) {
+    	
+    		askEditNick();
+    		
+    	} else {
+    	
+	    	this.finish();
+	    	this.overridePendingTransition(0, 0);
+    	}
     }
 }

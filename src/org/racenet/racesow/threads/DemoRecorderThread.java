@@ -93,7 +93,7 @@ public class DemoRecorderThread extends Thread {
 			while (!this.stop) {
 				
 				item = this.demoParts.take();
-				if (item == "save-demo") {
+				if (item.equals("save-demo")) {
 					
 					if (this.fos != null) {
 						
@@ -101,6 +101,11 @@ public class DemoRecorderThread extends Thread {
 						this.fos = null;
 						this.fileName = null;
 					}
+					
+				} else if (item.equals("cancel")) {
+					
+					this.cancelDemo();
+					break;
 					
 				} else {
 					

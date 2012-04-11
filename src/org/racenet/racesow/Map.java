@@ -721,6 +721,8 @@ public class Map {
 		
 			this.demoRecorder.cancelDemo();
 			this.demoRecorder.stop = true;
+			this.demoRecorder.demoParts.add("cancel");
+			this.demoRecorder.interrupt();
 		}
 		
 		if (this.sky != null) {

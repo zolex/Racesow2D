@@ -3,7 +3,7 @@
 	<name>Purple Sky</name>
 	<mapper>soh#zolex</mapper>
 	<levelshot>purple-sky/levelshot.png</levelshot>
-	<player><x>40</x><y>12</y></player>
+	<player><x>40</x><y>10</y></player>
 	<starttimer><x>50</x></starttimer>
 	<stoptimer><x>4480</x></stoptimer>
 	<sky>

@@ -3,8 +3,8 @@ package org.racenet.racesow;
 import java.util.List;
 import java.util.Random;
 
-import org.racenet.framework.AndroidAudio;
-import org.racenet.framework.AndroidSound;
+import org.racenet.framework.Audio;
+import org.racenet.framework.Sound;
 import org.racenet.framework.AnimatedBlock;
 import org.racenet.framework.AnimationPreset;
 import org.racenet.framework.Camera2;
@@ -62,7 +62,7 @@ public class Player extends AnimatedBlock {
 	public static final short SOUND_PICKUP = 5;
 	public static final short SOUND_ROCKET = 6;
 	public static final short SOUND_PLASMA = 7;
-	public AndroidSound sounds[] = new AndroidSound[8];
+	public Sound sounds[] = new Sound[8];
 	
 	// firerates
 	private static final float FIRERATE_ROCKET = 1.75f;
@@ -124,15 +124,15 @@ public class Player extends AnimatedBlock {
 		this.recordDemos = recordDemos;
 		
 		// load the sounds
-		AndroidAudio audio = (AndroidAudio)game.getAudio();
-		this.sounds[SOUND_JUMP1] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/jump_1.ogg");
-		this.sounds[SOUND_JUMP2] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/jump_2.ogg");
-		this.sounds[SOUND_WJ1] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/wj_1.ogg");
-		this.sounds[SOUND_WJ2] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/wj_2.ogg");
-		this.sounds[SOUND_DIE] = (AndroidSound)audio.newSound("sounds/player/" + this.model + "/death.ogg");
-		this.sounds[SOUND_PICKUP] = (AndroidSound)audio.newSound("sounds/weapon_pickup.ogg");
-		this.sounds[SOUND_ROCKET] = (AndroidSound)audio.newSound("sounds/rocket_explosion.ogg");
-		this.sounds[SOUND_PLASMA] = (AndroidSound)audio.newSound("sounds/plasmagun.ogg");
+		Audio audio = (Audio)game.getAudio();
+		this.sounds[SOUND_JUMP1] = (Sound)audio.newSound("sounds/player/" + this.model + "/jump_1.ogg");
+		this.sounds[SOUND_JUMP2] = (Sound)audio.newSound("sounds/player/" + this.model + "/jump_2.ogg");
+		this.sounds[SOUND_WJ1] = (Sound)audio.newSound("sounds/player/" + this.model + "/wj_1.ogg");
+		this.sounds[SOUND_WJ2] = (Sound)audio.newSound("sounds/player/" + this.model + "/wj_2.ogg");
+		this.sounds[SOUND_DIE] = (Sound)audio.newSound("sounds/player/" + this.model + "/death.ogg");
+		this.sounds[SOUND_PICKUP] = (Sound)audio.newSound("sounds/weapon_pickup.ogg");
+		this.sounds[SOUND_ROCKET] = (Sound)audio.newSound("sounds/rocket_explosion.ogg");
+		this.sounds[SOUND_PLASMA] = (Sound)audio.newSound("sounds/plasmagun.ogg");
 		
 		this.loadAnimations();
 		this.setupVertices();

@@ -1,6 +1,6 @@
 package org.racenet.racesow;
 
-import org.racenet.framework.AndroidFileIO;
+import org.racenet.framework.FileIO;
 import org.racenet.racesow.models.LocalMapPagesAdapter;
 
 import android.app.Activity;
@@ -33,7 +33,7 @@ public class LocalScores extends Activity {
     	PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
     	
-    	AndroidFileIO fileIO = new AndroidFileIO(getAssets());
+    	FileIO fileIO = new FileIO(getAssets());
         setContentView(R.layout.viewpager);
         viewPager = (ViewPager)findViewById(R.id.pager);
     	viewPager.setAdapter(new LocalMapPagesAdapter(getApplicationContext(), fileIO));

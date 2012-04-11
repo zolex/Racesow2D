@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.racenet.framework.AndroidFileIO;
+import org.racenet.framework.FileIO;
 import org.racenet.framework.XMLParser;
-import org.racenet.framework.interfaces.FileIO;
 import org.racenet.helpers.MapComperator;
 import org.racenet.racesow.R;
 import org.w3c.dom.Element;
@@ -74,7 +73,7 @@ public class LocalMapPagesAdapter extends PagerAdapter {
 		}
 		
 		// read all maps from the sd-card
-		String[] externalMaps = fileIO.listFiles("racesow" + File.separator + "maps", AndroidFileIO.ORDER_NAME);
+		String[] externalMaps = fileIO.listFiles("racesow" + File.separator + "maps", FileIO.ORDER_NAME);
 		if (externalMaps != null) {
 			for (int i = 0; i < externalMaps.length; i++) {
 				

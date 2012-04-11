@@ -1,7 +1,5 @@
 package org.racenet.framework;
 
-import org.racenet.framework.interfaces.Sound;
-
 import android.media.SoundPool;
 
 /**
@@ -10,7 +8,7 @@ import android.media.SoundPool;
  * @author soh#zolex
  *
  */
-public class AndroidSound implements Sound {
+public class Sound {
 
 	private int soundId;
 	private SoundPool soundPool;
@@ -20,7 +18,7 @@ public class AndroidSound implements Sound {
 	 * @param SoundPool sp
 	 * @param int sid
 	 */
-	public AndroidSound(SoundPool sp, int sid) {
+	public Sound(SoundPool sp, int sid) {
 		
 		soundPool = sp;
 		soundId = sid;

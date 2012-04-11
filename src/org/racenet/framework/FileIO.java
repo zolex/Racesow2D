@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 
-import org.racenet.framework.interfaces.FileIO;
 import org.racenet.helpers.FileCreatedComperator;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
@@ -22,7 +21,7 @@ import android.os.Environment;
  * @author so#zolex
  *
  */
-public class AndroidFileIO implements FileIO {
+public class FileIO {
 
 	private AssetManager assetManager;
 	public static String externalStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
@@ -32,7 +31,7 @@ public class AndroidFileIO implements FileIO {
 	 * 
 	 * @param AssetManager am
 	 */
-	public AndroidFileIO(AssetManager am) {
+	public FileIO(AssetManager am) {
 		
 		assetManager = am;
 	}

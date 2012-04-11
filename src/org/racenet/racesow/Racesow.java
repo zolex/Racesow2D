@@ -3,7 +3,7 @@ package org.racenet.racesow;
 import java.io.File;
 
 import org.racenet.framework.GLGame;
-import org.racenet.framework.interfaces.Screen;
+import org.racenet.framework.Screen;
 import org.racenet.racesow.GameScreen.GameState;
 
 import android.app.Activity;

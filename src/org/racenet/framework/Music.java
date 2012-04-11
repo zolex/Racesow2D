@@ -2,8 +2,6 @@ package org.racenet.framework;
 
 import java.io.IOException;
 
-import org.racenet.framework.interfaces.Music;
-
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -14,7 +12,7 @@ import android.media.MediaPlayer.OnCompletionListener;
  * @author soh#zolex
  *
  */
-public class AndroidMusic implements Music, OnCompletionListener {
+public class Music implements OnCompletionListener {
 
 	private MediaPlayer mediaPlayer;
 	private boolean isPrepared = false;
@@ -24,7 +22,7 @@ public class AndroidMusic implements Music, OnCompletionListener {
 	 * 
 	 * @param AssetFileDescriptor assetDescriptor
 	 */
-	public AndroidMusic(AssetFileDescriptor assetDescriptor) {
+	public Music(AssetFileDescriptor assetDescriptor) {
 		
 		mediaPlayer = new MediaPlayer();
 		try {

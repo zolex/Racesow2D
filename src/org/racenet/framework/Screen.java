@@ -1,18 +1,18 @@
-package org.racenet.framework.interfaces;
+package org.racenet.framework;
 
 /**
- * Interface for game screens
+ * Base class for game screens
  * 
  * @author soh#zolex
  *
  */
 public abstract class Screen {
 
-	protected final Game game;
+	protected final GLGame game;
 	
-	public Screen(Game g) {
+	public Screen(GLGame game) {
 		
-		game = g;
+		this.game = game;
 	}
 	
 	public abstract void update(float deltaTime);

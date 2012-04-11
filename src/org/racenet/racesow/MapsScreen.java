@@ -8,16 +8,15 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import org.racenet.framework.AndroidFileIO;
+import org.racenet.framework.FileIO;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
 import org.racenet.framework.GLTexture;
+import org.racenet.framework.Screen;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.XMLParser;
-import org.racenet.framework.interfaces.Game;
-import org.racenet.framework.interfaces.Screen;
 import org.racenet.helpers.MapComperator;
 import org.racenet.racesow.models.MapItem;
 import org.w3c.dom.Element;
@@ -50,11 +49,11 @@ public class MapsScreen extends Screen implements OnTouchListener {
 	 * 
 	 * @param Game game
 	 */
-	public MapsScreen(final Game game) {
+	public MapsScreen(final GLGame game) {
 		
 		super(game);
 		
-		glGraphics = ((GLGame)game).getGLGraphics();
+		glGraphics = game.getGLGraphics();
 		
 		this.camera = new Camera2(glGraphics, (float)game.getScreenWidth(), (float)game.getScreenHeight());
 		
@@ -68,7 +67,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 			texture = "racesow_small.jpg";
 		}
 		
-		this.header = new TexturedBlock((GLGame)game, texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0,
+		this.header = new TexturedBlock(game, texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0,
 				new Vector2(0, 0), new Vector2(this.camera.frustumWidth, 0));
 		this.header.setPosition(new Vector2(0, this.camera.frustumHeight - this.header.height));
 		this.header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
@@ -87,7 +86,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 		
 		this.glGraphics.getView().setOnTouchListener(this);
 		
-		this.menu = new Menu((GLGame)this.game, this.camera.frustumWidth, this.camera.frustumHeight);
+		this.menu = new Menu(this.game, this.camera.frustumWidth, this.camera.frustumHeight);
 		this.gestures = new GestureDetector(this.menu);
 		
 		List<MapItem> mapList = new ArrayList<MapItem>();
@@ -128,7 +127,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 		}
 		
 		// lod the available maps from the sd-card
-		String[] externalMaps = game.getFileIO().listFiles("racesow" + File.separator + "maps", AndroidFileIO.ORDER_NAME);
+		String[] externalMaps = game.getFileIO().listFiles("racesow" + File.separator + "maps", FileIO.ORDER_NAME);
 		if (externalMaps != null) {
 			for (int i = 0; i < externalMaps.length; i++) {
 				

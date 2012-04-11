@@ -6,10 +6,9 @@ import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
 import org.racenet.framework.GLTexture;
+import org.racenet.framework.Screen;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
-import org.racenet.framework.interfaces.Game;
-import org.racenet.framework.interfaces.Screen;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -38,17 +37,17 @@ public class MenuScreen extends Screen implements OnTouchListener {
 	 * 
 	 * @param GLGame game
 	 */
-	public MenuScreen(final Game game) {
+	public MenuScreen(final GLGame game) {
 		
 		super(game);
 		
-		glGraphics = ((GLGame)game).getGLGraphics();
+		glGraphics = game.getGLGraphics();
 		
 		camera = new Camera2(glGraphics, (float)game.getScreenWidth(), (float)game.getScreenHeight());
 		
 		glGraphics.getView().setOnTouchListener(this);
 		
-		menu = new Menu((GLGame)game, camera.frustumWidth, camera.frustumHeight);
+		menu = new Menu(game, camera.frustumWidth, camera.frustumHeight);
 		gestures = new GestureDetector(menu);
 		
 		menu.addItem("menu/play.png", menu.new Callback() {
@@ -123,7 +122,7 @@ public class MenuScreen extends Screen implements OnTouchListener {
 			texture = "racesow_small.jpg";
 		}
 		
-		header = new TexturedBlock((GLGame)game, texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0,
+		header = new TexturedBlock(game, texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0,
 				new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
 		header.setPosition(new Vector2(0, camera.frustumHeight - header.height));
 		header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);

@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.racenet.framework.AndroidFileIO;
+import org.racenet.framework.FileIO;
 import org.racenet.framework.XMLParser;
 import org.racenet.racesow.models.DownloadMapsAdapter;
 import org.racenet.racesow.models.MapItem;
@@ -49,7 +49,7 @@ public class DownloadMaps extends XMLListActivity {
 	DownloadMapsAdapter mAdapter;
 	WakeLock wakeLock;
 	ProgressDialog pd;
-	String racesowPath = AndroidFileIO.externalStoragePath + "racesow" + File.separator;
+	String racesowPath = FileIO.externalStoragePath + "racesow" + File.separator;
 	
     @Override
     /**
@@ -122,7 +122,7 @@ public class DownloadMaps extends XMLListActivity {
      */
     public void refreshMapList() {
     	
-    	final String racesowPath = AndroidFileIO.externalStoragePath + "racesow" + File.separator;
+    	final String racesowPath = FileIO.externalStoragePath + "racesow" + File.separator;
     	
     	pd = new ProgressDialog(DownloadMaps.this);
 		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);

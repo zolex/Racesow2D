@@ -2,7 +2,7 @@ package org.racenet.racesow;
 
 import java.io.File;
 
-import org.racenet.framework.AndroidFileIO;
+import org.racenet.framework.FileIO;
 import org.racenet.racesow.models.DemoAdapter;
 
 import android.app.AlertDialog;
@@ -39,8 +39,8 @@ public class DemoList extends ListActivity {
 	WakeLock wakeLock;
 	ViewPager viewPager;
 	DemoAdapter adapter;
-	AndroidFileIO fileIO;
-	short orderBy = AndroidFileIO.ORDER_CREATED;
+	FileIO fileIO;
+	short orderBy = FileIO.ORDER_CREATED;
 	
     @Override
     /**
@@ -54,7 +54,7 @@ public class DemoList extends ListActivity {
     	PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
     	
-    	this.fileIO = new AndroidFileIO(getAssets());
+    	this.fileIO = new FileIO(getAssets());
     	this.adapter = new DemoAdapter(this, this.fileIO, this.orderBy);
     	
     	if (this.adapter.isEmpty()) {
@@ -205,7 +205,7 @@ public class DemoList extends ListActivity {
 					
 					public void onClick(DialogInterface arg0, int arg1) {
 						
-						String[] demos = DemoList.this.fileIO.listFiles("racesow" + File.separator + "demos", AndroidFileIO.ORDER_NAME);
+						String[] demos = DemoList.this.fileIO.listFiles("racesow" + File.separator + "demos", FileIO.ORDER_NAME);
 						int length = demos.length;
 						for (int i = 0; i < length; i++) {
 						
@@ -227,7 +227,7 @@ public class DemoList extends ListActivity {
 	    	
 	    	public boolean onMenuItemClick(MenuItem arg0) {
 	    		
-	    		DemoList.this.orderBy = AndroidFileIO.ORDER_NAME;
+	    		DemoList.this.orderBy = FileIO.ORDER_NAME;
 	    		DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO, DemoList.this.orderBy);
 				DemoList.this.getListView().setAdapter(DemoList.this.adapter);
 	    		return true;
@@ -238,7 +238,7 @@ public class DemoList extends ListActivity {
 			
 			public boolean onMenuItemClick(MenuItem arg0) {
 				
-				DemoList.this.orderBy = AndroidFileIO.ORDER_CREATED;
+				DemoList.this.orderBy = FileIO.ORDER_CREATED;
 	    		DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO, DemoList.this.orderBy);
 				DemoList.this.getListView().setAdapter(DemoList.this.adapter);
 	    		return true;

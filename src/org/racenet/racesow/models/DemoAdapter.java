@@ -4,8 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.racenet.framework.AndroidFileIO;
-import org.racenet.framework.interfaces.FileIO;
+import org.racenet.framework.FileIO;
 import org.racenet.racesow.R;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -48,7 +47,7 @@ public class DemoAdapter extends BaseAdapter {
 			}
 		}
 		
-		if (orderBy == AndroidFileIO.ORDER_CREATED) {
+		if (orderBy == FileIO.ORDER_CREATED) {
 		
 			Collections.reverse(this.demos);
 		}

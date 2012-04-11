@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.racenet.framework.interfaces.FileIO;
+import org.racenet.framework.FileIO;
 
 /**
  * Thread to save the demo-data while playing
@@ -59,10 +59,7 @@ public class DemoRecorderThread extends Thread {
 		
 		if (this.fileName != null) {
 			
-			try {
-				this.fileIO.deleteFile(this.fileName);
-			} catch (IOException e) {
-			}
+			this.fileIO.deleteFile(this.fileName);
 		}
 	}
 	

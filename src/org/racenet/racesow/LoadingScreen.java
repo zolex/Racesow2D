@@ -11,11 +11,10 @@ import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
 import org.racenet.framework.GLTexture;
+import org.racenet.framework.Screen;
 import org.racenet.framework.SpriteBatcher;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
-import org.racenet.framework.interfaces.Game;
-import org.racenet.framework.interfaces.Screen;
 import org.racenet.helpers.InputStreamToString;
 
 import android.app.Activity;
@@ -45,17 +44,17 @@ class LoadingScreen extends Screen {
 	 * @param GLGame game
 	 * @param String mapName
 	 */
-	public LoadingScreen(Game game, String mapName, String demoFile) {
+	public LoadingScreen(GLGame game, String mapName, String demoFile) {
 			
 		super(game);
-		this.glGraphics = ((GLGame)game).getGLGraphics();
+		this.glGraphics = game.getGLGraphics();
 		this.mapName = mapName;
 		this.demoFile = demoFile;
 		
 		this.camera = new Camera2(glGraphics, 80,  80 * (float)game.getScreenHeight() / (float)game.getScreenWidth());
 		
 		this.batcher = new SpriteBatcher(this.glGraphics, 96);
-		GLTexture font = new GLTexture((GLGame)game, "font.png");
+		GLTexture font = new GLTexture(game, "font.png");
 		this.loading = new BitmapFont(font, 0, 0, 17, 30, 50);
 		
 		GLTexture.APP_FOLDER = "racesow";
@@ -65,7 +64,7 @@ class LoadingScreen extends Screen {
 			texture = "racesow_small.jpg";
 		}
 		
-		header = new TexturedBlock((GLGame)game, texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0,
+		header = new TexturedBlock(game, texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0,
 				new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
 		header.setPosition(new Vector2(0, camera.frustumHeight - header.height));
 		header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
@@ -99,8 +98,8 @@ class LoadingScreen extends Screen {
 			// right after drawing the loading screen load
 			// the map and player and pass it to the GameScreen
 			Map map = new Map(glGraphics.getGL(), this.camera, prefs.getBoolean("celshading", false), recordDemos);
-			map.load((GLGame)game, this.mapName, this.demoFile != null);
-			Player player = new Player((GLGame)game, map, this.camera, map.playerX, map.playerY, prefs.getBoolean("sound", true), recordDemos);
+			map.load(game, this.mapName, this.demoFile != null);
+			Player player = new Player(game, map, this.camera, map.playerX, map.playerY, prefs.getBoolean("sound", true), recordDemos);
 			
 			game.setScreen(new GameScreen(this.game, this.camera, map, player, parser, recordDemos));
 		}

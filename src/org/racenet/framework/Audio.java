@@ -2,10 +2,6 @@ package org.racenet.framework;
 
 import java.io.IOException;
 
-import org.racenet.framework.interfaces.Audio;
-import org.racenet.framework.interfaces.Music;
-import org.racenet.framework.interfaces.Sound;
-
 import android.app.Activity;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -18,7 +14,7 @@ import android.media.SoundPool;
  * @author soh#zolex
  *
  */
-public class AndroidAudio implements Audio {
+public class Audio {
 
 	public static final int MAX_SIMULTANEOUS_SOUNDS = 20;
 	public static final int SOURCE_QUALITY = 0;
@@ -31,7 +27,7 @@ public class AndroidAudio implements Audio {
 	 * 
 	 * @param Activity activity
 	 */
-	public AndroidAudio(Activity activity) {
+	public Audio(Activity activity) {
 		
 		activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		assetManager = activity.getAssets();
@@ -49,7 +45,7 @@ public class AndroidAudio implements Audio {
 		try {
 			
 			AssetFileDescriptor assetDescriptor = assetManager.openFd(fileName);
-			return new AndroidMusic(assetDescriptor);
+			return new Music(assetDescriptor);
 			
 		} catch (IOException e) {
 			
@@ -69,7 +65,7 @@ public class AndroidAudio implements Audio {
 			
 			AssetFileDescriptor assetDescriptor = assetManager.openFd(fileName);
 			int soundId = soundPool.load(assetDescriptor, 0);
-			return new AndroidSound(soundPool, soundId);
+			return new Sound(soundPool, soundId);
 			
 		} catch(IOException e) {
 			

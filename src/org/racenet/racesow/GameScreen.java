@@ -9,11 +9,10 @@ import org.racenet.framework.GLGame;
 import org.racenet.framework.GLGraphics;
 import org.racenet.framework.GLTexture;
 import org.racenet.framework.GameObject;
+import org.racenet.framework.Screen;
 import org.racenet.framework.SpriteBatcher;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
-import org.racenet.framework.interfaces.Game;
-import org.racenet.framework.interfaces.Screen;
 import org.racenet.racesow.models.DemoKeyFrame;
 
 import android.app.Activity;
@@ -73,10 +72,10 @@ public class GameScreen extends Screen implements OnTouchListener {
 	 * @param Map map
 	 * @param Player player
 	 */
-	public GameScreen(Game game, Camera2 camera, Map map, Player player, DemoParser demoParser, boolean recordDemos) {
+	public GameScreen(GLGame game, Camera2 camera, Map map, Player player, DemoParser demoParser, boolean recordDemos) {
 		
 		super(game);
-		this.glGraphics = ((GLGame)game).getGLGraphics();
+		this.glGraphics = game.getGLGraphics();
 		this.camera = camera;
 		this.map = map;
 		this.player = player;
@@ -90,7 +89,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 		
 		// for bitmap-font rendering
 		this.batcher = new SpriteBatcher(this.glGraphics, 96);
-		GLTexture texture = new GLTexture((GLGame)game, "font.png");
+		GLTexture texture = new GLTexture(game, "font.png");
 		this.font = new BitmapFont(texture, 0, 0, 17, 30, 50);
 		
 		// user settings
@@ -118,13 +117,13 @@ public class GameScreen extends Screen implements OnTouchListener {
 		if (this.demoParser == null) {
 			
 			this.pause = new TexturedBlock(
-					(GLGame)this.game,
+					this.game,
 					"hud/pause.png", GameObject.FUNC_NONE, -1, -1, 0, 0,
 					new Vector2(-this.camera.frustumWidth / 2 + 1 , this.camera.frustumHeight / 2 - 6),
 					new Vector2(-this.camera.frustumWidth / 2 + 6, 0));
 			
 			this.play = new TexturedBlock(
-				(GLGame)this.game,
+				this.game,
 				"hud/play.png", GameObject.FUNC_NONE, -1, -1, 0, 0,
 				new Vector2(-this.camera.frustumWidth / 2 + 1 , this.camera.frustumHeight / 2 - 6),
 				new Vector2(-this.camera.frustumWidth / 2 + 6, 0));

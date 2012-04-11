@@ -3,12 +3,6 @@ package org.racenet.framework;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import org.racenet.framework.interfaces.Audio;
-import org.racenet.framework.interfaces.FileIO;
-import org.racenet.framework.interfaces.Game;
-import org.racenet.framework.interfaces.Graphics;
-import org.racenet.framework.interfaces.Screen;
-
 import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -25,12 +19,12 @@ import android.view.WindowManager;
  * @author soh#zolex
  *
  */
-public abstract class GLGame extends Activity implements Game, Renderer {
+public abstract class GLGame extends Activity implements Renderer {
 	
 	/**
 	 * Internal states of the game
 	 */
-    enum GLGameState {
+    public enum GLGameState {
         Initialized,
         Running,
         Paused,
@@ -64,8 +58,8 @@ public abstract class GLGame extends Activity implements Game, Renderer {
         setContentView(glView);
         
         glGraphics = new GLGraphics(glView);
-        fileIO = new AndroidFileIO(getAssets());
-        audio = new AndroidAudio(this);
+        fileIO = new FileIO(getAssets());
+        audio = new Audio(this);
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
         wakeLock.acquire();
@@ -104,6 +98,13 @@ public abstract class GLGame extends Activity implements Game, Renderer {
             startTime = System.nanoTime();
         }        
     }
+    
+    /**
+     * Must be implemented by a derivative game
+     * 
+     * @return Screen
+     */
+    public abstract Screen getStartScreen();
     
     /**
      * Nothing to do on surfaceChanged
@@ -208,16 +209,6 @@ public abstract class GLGame extends Activity implements Game, Renderer {
     public FileIO getFileIO() {
     	
         return fileIO;
-    }
-
-    /**
-     * Must be implemented for the Game interface
-     * 
-     * @throws IllegalStateException
-     */
-    public Graphics getGraphics() {
-    	
-        throw new IllegalStateException("We are using OpenGL!");
     }
 
     /**

@@ -312,7 +312,6 @@
 		<y>22.5</y>
 		<width>12</width>
 		<height>2.5</height>
-		<texshiftx>-16</texshiftx>
 		<texture>purple-sky/border_tsfl.png</texture>
 	</block>
 	<block>
@@ -329,6 +328,7 @@
 		<y>22.5</y>
 		<width>12</width>
 		<height>2.5</height>
+		<texshiftx>-8</texshiftx>
 		<texture>purple-sky/border_tsfr.png</texture>
 	</block>
 	<block>
@@ -426,6 +426,22 @@
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<block>
+		<level>front</level>
+		<x>1300</x>
+		<y>17.5</y>
+		<width>138</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_t.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>1438</x>
+		<y>17.5</y>
+		<width>12</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_ter.png</texture>
+	</block>
+	<block>
 		<level>ground</level>
 		<x>1450</x>
 		<y>0</y>
@@ -464,6 +480,14 @@
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<block>
+		<level>front</level>
+		<x>1725</x>
+		<y>7.5</y>
+		<width>75</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_t.png</texture>
+	</block>	
+	<block>
 		<level>ground</level>
 		<x>1800</x>
 		<y>0</y>
@@ -487,6 +511,14 @@
 		<height>10</height>
 		<texture>purple-sky/stone.png</texture>
 	</block>
+	<block>
+		<level>front</level>
+		<x>1875</x>
+		<y>7.5</y>
+		<width>225</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_t.png</texture>
+	</block>	
 	<block>
 		<level>wall</level>
 		<x>2097.5</x>
@@ -517,6 +549,22 @@
 		<texture>purple-sky/stone.png</texture>
 	</block>
 	<block>
+		<level>front</level>
+		<x>2700</x>
+		<y>7.5</y>
+		<width>338</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_t.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>3038</x>
+		<y>7.5</y>
+		<width>12</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_ter.png</texture>
+	</block>
+	<block>
 		<level>ground</level>
 		<x>3050</x>
 		<y>10</y>
@@ -525,6 +573,14 @@
 		<texture>purple-sky/stone.png</texture>
 		<texshiftx>-44</texshiftx>
 		<texshifty>-25</texshifty>
+	</block>
+	<block>
+		<level>front</level>
+		<x>3050</x>
+		<y>10</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_tsl.png</texture>
 	</block>
 	<block>
 		<level>ground</level>
@@ -537,6 +593,14 @@
 		<texshifty>-50</texshifty>
 	</block>
 	<block>
+		<level>front</level>
+		<x>3060</x>
+		<y>12.5</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_tsl.png</texture>
+	</block>
+	<block>
 		<level>ground</level>
 		<x>3070</x>
 		<y>15</y>
@@ -545,6 +609,14 @@
 		<texture>purple-sky/stone.png</texture>
 		<texshiftx>12</texshiftx>
 		<texshifty>-75</texshifty>
+	</block>
+	<block>
+		<level>front</level>
+		<x>3070</x>
+		<y>15</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_tsl.png</texture>
 	</block>
 	<block>
 		<level>ground</level>
@@ -557,6 +629,14 @@
 		<texshifty>-100</texshifty>
 	</block>
 	<block>
+		<level>front</level>
+		<x>3080</x>
+		<y>17.5</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_tsl.png</texture>
+	</block>
+	<block>
 		<level>ground</level>
 		<x>3090</x>
 		<y>20</y>
@@ -565,6 +645,14 @@
 		<texture>purple-sky/stone.png</texture>
 		<texshiftx>68</texshiftx>
 		<texshifty>-125</texshifty>
+	</block>
+	<block>
+		<level>front</level>
+		<x>3090</x>
+		<y>20</y>
+		<width>10</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_tsfl.png</texture>
 	</block>
 	<block>
 		<level>ground</level>
@@ -584,6 +672,14 @@
 		<width>500</width>
 		<height>10</height>
 		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>3300</x>
+		<y>7.5</y>
+		<width>500</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_t.png</texture>
 	</block>
 	<block>
 		<level>wall</level>
@@ -613,6 +709,14 @@
 		<width>200</width>
 		<height>10</height>
 		<texture>purple-sky/stone.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>4300</x>
+		<y>7.5</y>
+		<width>200</width>
+		<height>2.5</height>
+		<texture>purple-sky/border_t.png</texture>
 	</block>
 	<block>
 		<level>ground</level>

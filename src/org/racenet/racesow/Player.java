@@ -505,7 +505,7 @@ public class Player extends AnimatedBlock {
 							float impactY = ground.getPosition().y + ground.getHeightAt(this.getPosition().x) - 4;
 							float distance = Math.max(0.1f, this.getPosition().y - impactY);
 							
-							// only allow to hit blocks without functionality (ie. no lava)
+							// only allow boost from blocks without functionality (ie. no lava)
 							if (ground.func == GameObject.FUNC_NONE) {
 								
 								this.addToPosition(0, 1);
@@ -804,6 +804,7 @@ public class Player extends AnimatedBlock {
 							
 						} else {
 						
+							this.addToPosition(0, 1);
 							this.velocity.set(this.velocity.x, 0);
 							this.onFloor = true;
 						}

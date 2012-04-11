@@ -8,8 +8,6 @@ package org.racenet.framework.interfaces;
  */
 public interface Game {
 
-	public Input getInput();
-	
 	public FileIO getFileIO();
 	
 	public Graphics getGraphics();

@@ -1,10 +1,7 @@
 package org.racenet.racesow;
 
-import java.util.List;
-
 import javax.microedition.khronos.opengles.GL10;
 
-import org.racenet.framework.AndroidInput;
 import org.racenet.framework.BitmapFont;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.CameraText;
@@ -17,12 +14,14 @@ import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Screen;
-import org.racenet.framework.interfaces.Input.TouchEvent;
 import org.racenet.racesow.models.DemoKeyFrame;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 
 /**
  * Class which represents the racesow game itsself.
@@ -30,7 +29,7 @@ import android.content.SharedPreferences;
  * @author soh#zolex
  *
  */
-public class GameScreen extends Screen {
+public class GameScreen extends Screen implements OnTouchListener {
 		
 	public Player player;
 	CameraText ups, fps, timer;
@@ -87,8 +86,7 @@ public class GameScreen extends Screen {
 		
 		GLTexture.APP_FOLDER = "racesow";
 		
-		// restore framework touchHandler as menus use a separate one
-		glGraphics.getView().setOnTouchListener(((AndroidInput)((GLGame)game).getInput()).touchHandler);
+		glGraphics.getView().setOnTouchListener(this);
 		
 		// for bitmap-font rendering
 		this.batcher = new SpriteBatcher(this.glGraphics, 96);
@@ -172,6 +170,80 @@ public class GameScreen extends Screen {
 	}
 	
 	/**
+	 * Handle view touch events
+	 */
+	public boolean onTouch(View v, MotionEvent e) {
+		
+		int action = e.getAction() & MotionEvent.ACTION_MASK;
+		int pointerIndex = (e.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
+        int pointerId = e.getPointerId(pointerIndex);
+        
+		switch (action) {
+
+			case MotionEvent.ACTION_DOWN:
+			case MotionEvent.ACTION_POINTER_DOWN:
+		
+			// when touching the pause-button
+			if (e.getY(pointerIndex) / (float)game.getScreenHeight() < 0.1f && e.getX(pointerIndex) / (float)game.getScreenWidth() < 0.1f) {
+			
+				if (this.state == GameState.Running) {
+					
+					this.pauseGame();
+					
+				} else if (this.state == GameState.Paused) {
+					
+					this.resumeGame();
+				} 
+			}
+			
+			// when touching the jump-area on the screen
+			else if (e.getX(pointerIndex) / (float)game.getScreenWidth() > 0.5f) {
+				
+				if (!this.jumpPressed) {
+					
+					this.jumpPressed = true;
+					this.jumpPressedTime = 0;
+				}
+			
+			// when touching the shoot-area on the screen
+			} else {
+				
+				if (!this.shootPressed) {
+					
+					this.shootPressed = true;
+					this.shootPressedTime = 0;
+				}
+			}
+			break;
+			
+		case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_POINTER_UP:
+        case MotionEvent.ACTION_CANCEL:
+			// this is only for the tutorial
+			if (this.state == GameState.Paused) {
+				
+				this.player.updateTutorial("release");
+			}
+			
+			// when releasing the jump-button
+			if (e.getX(pointerIndex) / (float)game.getScreenWidth() > 0.5f) {
+				
+				this.jumpPressed = false;
+				this.jumpPressedTime = 0;
+				
+			// when releasing the shoot-button
+			} else {
+				
+				this.shootPressed = false;
+				this.shootPressedTime = 0;
+			}
+			break;
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * Update player, map and camera.
 	 * Called each frame from GLGame.
 	 */
@@ -213,69 +285,6 @@ public class GameScreen extends Screen {
 			
 		} else {
 			
-			List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
-			int len = touchEvents.size();
-			for (int i = 0; i < len; i++) {
-				
-				TouchEvent e = touchEvents.get(i);
-				
-				if (e.type == TouchEvent.TOUCH_DOWN) {
-					
-					// when touching the pause-button
-					if (e.y / (float)game.getScreenHeight() < 0.1f && e.x / (float)game.getScreenWidth() < 0.1f) {
-					
-						if (this.state == GameState.Running) {
-							
-							this.pauseGame();
-							
-						} else if (this.state == GameState.Paused) {
-							
-							this.resumeGame();
-						} 
-					}
-					
-					// when touching the jump-area on the screen
-					else if (e.x / (float)game.getScreenWidth() > 0.5f) {
-						
-						if (!this.jumpPressed) {
-							
-							this.jumpPressed = true;
-							this.jumpPressedTime = 0;
-						}
-					
-					// when touching the shoot-area on the screen
-					} else {
-						
-						if (!this.shootPressed) {
-							
-							this.shootPressed = true;
-							this.shootPressedTime = 0;
-						}
-					}
-	
-				} else if (e.type == TouchEvent.TOUCH_UP) {
-					
-					// this is only for the tutorial
-					if (this.state == GameState.Paused) {
-						
-						this.player.updateTutorial("release");
-					}
-					
-					// when releasing the jump-button
-					if (e.x / (float)game.getScreenWidth() > 0.5f) {
-						
-						this.jumpPressed = false;
-						this.jumpPressedTime = 0;
-						
-					// when releasing the shoot-button
-					} else {
-						
-						this.shootPressed = false;
-						this.shootPressedTime = 0;
-					}
-				}
-			}
-		
 			// execute jump if requested
 			if (this.jumpPressed) {
 				

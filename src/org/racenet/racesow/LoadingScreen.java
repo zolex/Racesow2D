@@ -76,8 +76,6 @@ class LoadingScreen extends Screen {
 	 */
 	public void update(float deltaTime) {
 		
-		this.game.getInput().getTouchEvents();
-		
 		if (this.frames++ == 2) {
 			
 			SharedPreferences prefs = ((Activity)this.game).getSharedPreferences("racesow", Context.MODE_PRIVATE);

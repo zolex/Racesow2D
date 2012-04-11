@@ -214,7 +214,6 @@ public class MapsScreen extends Screen implements OnTouchListener {
 	 */
 	public void update(float deltaTime) {
 
-		game.getInput().getTouchEvents();
 		this.menu.update(deltaTime);
 	}
 

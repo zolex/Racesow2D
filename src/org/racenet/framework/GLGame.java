@@ -7,7 +7,6 @@ import org.racenet.framework.interfaces.Audio;
 import org.racenet.framework.interfaces.FileIO;
 import org.racenet.framework.interfaces.Game;
 import org.racenet.framework.interfaces.Graphics;
-import org.racenet.framework.interfaces.Input;
 import org.racenet.framework.interfaces.Screen;
 
 import android.app.Activity;
@@ -42,7 +41,6 @@ public abstract class GLGame extends Activity implements Game, Renderer {
     public GLSurfaceView glView;    
     GLGraphics glGraphics;
     Audio audio;
-    Input input;
     FileIO fileIO;
     Screen screen;
     GLGameState state = GLGameState.Initialized;
@@ -68,7 +66,6 @@ public abstract class GLGame extends Activity implements Game, Renderer {
         glGraphics = new GLGraphics(glView);
         fileIO = new AndroidFileIO(getAssets());
         audio = new AndroidAudio(this);
-        input = new AndroidInput(this, glView, 1, 1);
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
         wakeLock.acquire();
@@ -202,16 +199,6 @@ public abstract class GLGame extends Activity implements Game, Renderer {
     	
         return glGraphics;
     }  
-    
-    /**
-     * Get the user input
-     * 
-     * @return Input
-     */
-    public Input getInput() {
-    	
-        return input;
-    }
 
     /**
      * Get the FileIO object

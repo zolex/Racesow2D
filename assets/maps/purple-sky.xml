@@ -87,10 +87,8 @@
 		<y>10</y>
 		<width>50</width>
 		<height>5</height>
-		<texture>purple-sky/lava.jpg</texture>
-		<func>1</func>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
+		<texture>purple-sky/sand.jpg</texture>
+		<func>6</func>
 	</block>
 	<block>
 		<level>wall</level>
@@ -363,10 +361,8 @@
 		<y>0</y>
 		<width>75</width>
 		<height>5</height>
-		<texture>purple-sky/lava.jpg</texture>
-		<func>1</func>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
+		<texture>purple-sky/sand.jpg</texture>
+		<func>6</func>
 	</block>
 	<item>
 		<type>rocket</type>
@@ -412,10 +408,8 @@
 		<y>0</y>
 		<width>250</width>
 		<height>5</height>
-		<texture>purple-sky/lava.jpg</texture>
-		<func>1</func>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
+		<texture>purple-sky/sand.jpg</texture>
+		<func>6</func>
 	</block>
 	<block>
 		<level>ground</level>
@@ -466,10 +460,8 @@
 		<y>0</y>
 		<width>75</width>
 		<height>5</height>
-		<texture>purple-sky/lava.jpg</texture>
-		<func>1</func>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
+		<texture>purple-sky/sand.jpg</texture>
+		<func>6</func>
 	</block>
 	<block>
 		<level>ground</level>
@@ -493,10 +485,8 @@
 		<y>0</y>
 		<width>75</width>
 		<height>5</height>
-		<texture>purple-sky/lava.jpg</texture>
-		<func>1</func>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
+		<texture>purple-sky/sand.jpg</texture>
+		<func>6</func>
 	</block>
 	<item>
 		<type>plasma</type>
@@ -535,10 +525,8 @@
 		<y>0</y>
 		<width>600</width>
 		<height>5</height>
-		<texture>purple-sky/lava.jpg</texture>
-		<func>1</func>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
+		<texture>purple-sky/sand.jpg</texture>
+		<func>6</func>
 	</block>
 	<block>
 		<level>ground</level>
@@ -660,10 +648,8 @@
 		<y>0</y>
 		<width>200</width>
 		<height>5</height>
-		<texture>purple-sky/lava.jpg</texture>
-		<func>1</func>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
+		<texture>purple-sky/sand.jpg</texture>
+		<func>6</func>
 	</block>
 	<block>
 		<level>ground</level>
@@ -697,10 +683,8 @@
 		<y>0</y>
 		<width>500</width>
 		<height>5</height>
-		<texture>purple-sky/lava.jpg</texture>
-		<func>1</func>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
+		<texture>purple-sky/sand.jpg</texture>
+		<func>6</func>
 	</block>
 	<block>
 		<level>ground</level>

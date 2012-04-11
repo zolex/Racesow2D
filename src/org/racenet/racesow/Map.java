@@ -63,7 +63,6 @@ public class Map {
 	private boolean raceFinished = false;
 	private float startTime = 0;
 	private float stopTime = 0;
-	private boolean drawOutlines = false;
 	private boolean gfxHighlights = true;
 	private Camera2 camera;
 	public String fileName;

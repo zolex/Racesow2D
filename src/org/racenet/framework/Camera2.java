@@ -12,7 +12,7 @@ import javax.microedition.khronos.opengles.GL10;
  * @author soh#zolex
  *
  */
-public class Camera2 {
+public class Camera2 implements Drawable {
 	
     public final Vector2 position;
     public float zoom;
@@ -117,7 +117,7 @@ public class Camera2 {
     /**
      * Draw all HUD items attached to the camera
      */
-    public void drawHud() {
+    public void draw() {
     	
 		for (int i = 0; i < hudItems.size(); i++) {
 			
@@ -140,7 +140,7 @@ public class Camera2 {
     /**
      * Reload the HUD textures
      */
-    public void reloadTextures() {
+    public void reloadTexture() {
     	
     	for (int i = 0; i < hudItems.size(); i++) {
     		

@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import org.racenet.framework.AnimatedBlock;
+import org.racenet.framework.AnimationPreset;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
@@ -34,12 +36,13 @@ import android.content.SharedPreferences;
 public class Map {
 	
 	private GL10 gl;
-	private List<TexturedShape> ground = new ArrayList<TexturedShape>();
-	private List<TexturedShape> walls = new ArrayList<TexturedShape>();
-	private List<TexturedShape> highlights = new ArrayList<TexturedShape>();
-	private List<TexturedShape> front = new ArrayList<TexturedShape>();
-	public List<TexturedShape> items = new ArrayList<TexturedShape>();
-	public List<TexturedShape> pickedUpItems = new ArrayList<TexturedShape>();
+	private List<GameObject> ground = new ArrayList<GameObject>();
+	private List<GameObject> walls = new ArrayList<GameObject>();
+	private List<GameObject> highlights = new ArrayList<GameObject>();
+	private List<GameObject> front = new ArrayList<GameObject>();
+	public List<GameObject> items = new ArrayList<GameObject>();
+	public List<GameObject> pickedUpItems = new ArrayList<GameObject>();
+	public List<AnimatedBlock> animations = new ArrayList<AnimatedBlock>();
 	private TexturedShape[] decals = new TexturedShape[MAX_DECALS];
 	private static final short MAX_DECALS = 64;
 	private float[] decalTime = new float[MAX_DECALS];
@@ -414,18 +417,60 @@ public class Map {
 			float width = Float.valueOf(parser.getValue(xmlblock, "width")).floatValue();
 			float height = Float.valueOf(parser.getValue(xmlblock, "height")).floatValue();
 			
-			TexturedBlock block = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
-				parser.getValue(xmlblock, "texture"),
-				func,
-				texSX,
-				texSY,
-				texShiftX,
-				texShiftY,
-				new Vector2(x,y),
-				new Vector2(x + width, y),
-				new Vector2(x + width, y + height),
-				new Vector2(x, y + height)
-			);
+			NodeList textures = xmlblock.getElementsByTagName("texture");
+			GameObject block;
+			int numTextures = textures.getLength();
+			if (numTextures == 1) {
+				
+				block = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
+					parser.getNodeValue((Element)textures.item(0)),
+					func,
+					texSX,
+					texSY,
+					texShiftX,
+					texShiftY,
+					new Vector2(x,y),
+					new Vector2(x + width, y),
+					new Vector2(x + width, y + height),
+					new Vector2(x, y + height)
+				);
+				
+			} else {
+				
+				float animDuration;
+				try {
+					
+					animDuration = Float.valueOf(parser.getValue(xmlblock, "duration")).floatValue();
+							
+				} catch (NumberFormatException e) {
+					
+					animDuration = 1;
+				}
+				
+				block = new AnimatedBlock(game,
+					new Vector2(x,y),
+					new Vector2(x + width, y),
+					new Vector2(x + width, y + height),
+					new Vector2(x, y + height)
+				);
+				
+				block.func = func;
+				
+				String[] textureList = new String[numTextures];
+				for (int j = 0; j < numTextures; j++) {
+					
+					textureList[j] = parser.getNodeValue((Element)textures.item(j));
+				}
+				
+				((AnimatedBlock)block).setAnimations(new AnimationPreset(animDuration, textureList));
+				((AnimatedBlock)block).setupVertices();
+				((AnimatedBlock)block).texScaleHeight = texSY;
+				((AnimatedBlock)block).texScaleWidth = texSX;
+				((AnimatedBlock)block).texShiftX = texShiftX;
+				((AnimatedBlock)block).texShiftY = texShiftY;
+				
+				this.animations.add((AnimatedBlock)block);
+			}
 
 			String level = parser.getValue(xmlblock, "level");
 			if (level.equals("ground")) {
@@ -648,6 +693,12 @@ public class Map {
 				}
 			}
 		}
+		
+		int length = this.animations.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.animations.get(i).animate(deltaTime);
+		}
 	}
 	
 	/**
@@ -781,7 +832,7 @@ public class Map {
 	 * 
 	 * @param TexturedShape block
 	 */
-	public void addGround(TexturedShape block) {
+	public void addGround(GameObject block) {
 		
 		this.ground.add(block);
 		this.groundGrid.insertStaticObject(block);
@@ -792,7 +843,7 @@ public class Map {
 	 * 
 	 * @param TexturedShape block
 	 */
-	public void addWall(TexturedShape block) {
+	public void addWall(GameObject block) {
 		
 		this.walls.add(block);
 		this.wallGrid.insertStaticObject(block);
@@ -823,7 +874,7 @@ public class Map {
 	 * @param GameObject o
 	 * @return TetxuredShape
 	 */
-	public TexturedShape getGround(GameObject o) {
+	public GameObject getGround(GameObject o) {
 		
 		int highestPart = 0;
 		float maxHeight = 0;
@@ -845,7 +896,7 @@ public class Map {
 			}
 		}
 		
-		return (TexturedShape)colliders.get(highestPart);
+		return colliders.get(highestPart);
 	}
 	
 	/**
@@ -907,48 +958,12 @@ public class Map {
 			this.background2.draw();
 		}
 		
-		int length;
-		if (this.drawOutlines) {
-			
-			gl.glLineWidth(10);
-			gl.glDisable(GL10.GL_TEXTURE_2D);
-			gl.glColor4f(0.2f, 0.2f, 0.2f, 1);
-			
-			length = this.ground.size();
-			for (int i = 0; i < length; i++) {
-				
-				TexturedShape shape = this.ground.get(i);
-				Vector2 shapePos = shape.getPosition();
-				if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
-					(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
-					(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
-					
-					shape.drawOutline();
-				}
-			}
-			
-			length = this.walls.size();
-			for (int i = 0; i < length; i++) {
-				
-				TexturedShape shape = this.walls.get(i);
-				Vector2 shapePos = shape.getPosition();
-				if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
-					(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
-					(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
-					
-					shape.drawOutline();
-				}
-			}
-			
-			gl.glColor4f(1, 1, 1, 1);
-		}
-		
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
-		length = this.walls.size();
+		int length = this.walls.size();
 		for (int i = 0; i < length; i++) {
 			
-			TexturedShape shape = this.walls.get(i);
+			GameObject shape = this.walls.get(i);
 			Vector2 shapePos = shape.getPosition();
 			if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
 				(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
@@ -961,7 +976,7 @@ public class Map {
 		length = this.ground.size();
 		for (int i = 0; i < length; i++) {
 			
-			TexturedShape shape = this.ground.get(i);
+			GameObject shape = this.ground.get(i);
 			Vector2 shapePos = shape.getPosition();
 			if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
 				(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
@@ -976,7 +991,7 @@ public class Map {
 			length = this.highlights.size();
 			for (int i = 0; i < length; i++) {
 				
-				TexturedShape shape = this.highlights.get(i);
+				GameObject shape = this.highlights.get(i);
 				Vector2 shapePos = shape.getPosition();
 				if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
 					(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
@@ -1010,7 +1025,7 @@ public class Map {
 		int length = this.front.size();
 		for (int i = 0; i < length; i++) {
 			
-			TexturedShape shape = this.front.get(i);
+			GameObject shape = this.front.get(i);
 			Vector2 shapePos = shape.getPosition();
 			if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
 				(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
@@ -1044,7 +1059,7 @@ public class Map {
 		int length = this.pickedUpItems.size();
 		for (int i = 0; i < length; i++) {
 			
-			TexturedShape item = this.pickedUpItems.get(i);
+			GameObject item = this.pickedUpItems.get(i);
 			this.items.add(item);
 		}
 		

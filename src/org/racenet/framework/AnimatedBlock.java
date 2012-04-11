@@ -8,7 +8,7 @@ import javax.microedition.khronos.opengles.GL10;
  * @author soh#zolex
  *
  */
-public class AnimatedBlock extends GameObject {
+public class AnimatedBlock extends GameObject implements Drawable {
 
 	protected GL10 gl;
 	protected FileIO fileIO;
@@ -17,8 +17,10 @@ public class AnimatedBlock extends GameObject {
 	public Animation anims[];
 	public int numAnims;
 	public int activeAnimId = 0;
-	float texScaleWidth = 0.05f;
-	float texScaleHeight = 0.05f;
+	public float texScaleWidth = 0.05f;
+	public float texScaleHeight = 0.05f;
+	public float texShiftX = 0;
+	public float texShiftY = 0;
 	
 	/**
 	 * Constructor 
@@ -38,7 +40,7 @@ public class AnimatedBlock extends GameObject {
 	 * 
 	 * @param String[] ... animations
 	 */
-	protected void setAnimations(AnimationPreset ... animations) {
+	public void setAnimations(AnimationPreset ... animations) {
 		
 		this.numAnims = animations.length;
 		this.anims = new Animation[this.numAnims];
@@ -69,15 +71,15 @@ public class AnimatedBlock extends GameObject {
 	/**
 	 * Prepare the vertices for the openGL renderer
 	 */
-	protected void setupVertices() {
+	public void setupVertices() {
 		
 		GLTexture firstFrame = this.anims[0].getKeyFrame(0); // TODO: choose proper frame
 		this.vertices = new GLVertices(this.gl, 4, 6 , false, true);
 		this.vertices.setVertices(new float[] {
-				0,			0,	  			0, this.height / (firstFrame.height * this.texScaleHeight),
-				this.width,	0,				this.width / (firstFrame.width * this.texScaleWidth), this.height / (firstFrame.height * this.texScaleHeight),
-				this.width,	this.height,	this.width / (firstFrame.width * this.texScaleWidth), 0,
-				0,			this.height,	0, 0 }, 0, 16);
+				0,			0,				-this.texShiftX, this.height / (firstFrame.height * this.texScaleHeight) + this.texShiftY,
+				this.width,	0,				this.width / (firstFrame.width * this.texScaleWidth) - this.texShiftX, height / (firstFrame.height * this.texScaleHeight) + this.texShiftY,
+				this.width,	this.height,	this.width / (firstFrame.width * this.texScaleWidth) - this.texShiftX, this.texShiftY,
+				0,			this.height,	-this.texShiftX, this.texShiftY }, 0, 16);
 		this.vertices.setIndices(new short[] {0, 1, 2, 0, 2, 3}, 0, 6);
 	}
 	
@@ -96,18 +98,6 @@ public class AnimatedBlock extends GameObject {
 	}
 	
 	/**
-	 * Reload all textures of all animations
-	 */
-	public void reloadTextures() {
-		
-		int length = this.anims.length;
-		for (int i = 0; i < length; i++) {
-			
-			this.anims[i].reloadTextures();
-		}
-	}
-	
-	/**
 	 * Get rid of all textures of all animations
 	 */
 	public void dispose() {
@@ -117,5 +107,19 @@ public class AnimatedBlock extends GameObject {
 			
 			this.anims[i].dispose();
 		}
+	}
+
+	public void reloadTexture() {
+		
+		int length = this.anims.length;
+		for (int i = 0; i < length; i++) {
+			
+			this.anims[i].reloadTextures();
+		}
+	}
+	
+	public void animate(float deltaTime) {
+		
+		this.animTime += deltaTime;
 	}
 }

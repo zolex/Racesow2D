@@ -8,7 +8,7 @@ import javax.microedition.khronos.opengles.GL10;
  * @author soh#zolex
  *
  */
-public abstract class TexturedShape extends HudItem {
+public abstract class TexturedShape extends HudItem implements Drawable {
 	
 	GL10 gl;
 	FileIO fileIO;
@@ -81,6 +81,5 @@ public abstract class TexturedShape extends HudItem {
 	 * These methods must be implemented by derivatives
 	 */
 	public abstract void draw();
-	public abstract void drawOutline();
 	protected abstract void setupVertices();
 }

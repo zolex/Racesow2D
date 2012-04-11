@@ -8,7 +8,7 @@ import javax.microedition.khronos.opengles.GL10;
  * @author al
  *
  */
-public class TexturedBlock extends TexturedShape {
+public class TexturedBlock extends TexturedShape implements Drawable {
 
 	/**
 	 * Constructor 

@@ -410,7 +410,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 		
 		synchronized (this.player) {
 		
-			this.camera.drawHud();
+			this.camera.draw();
 		}
 	}
 
@@ -427,9 +427,9 @@ public class GameScreen extends Screen implements OnTouchListener {
 	 */
 	public void resume() {
 
-		this.camera.reloadTextures();
+		this.camera.reloadTexture();
 		this.map.reloadTextures();
-		this.player.reloadTextures();
+		this.player.reloadTexture();
 	}
 
 	/**

@@ -6,7 +6,7 @@ package org.racenet.framework;
  * @author soh#zolex
  *
  */
-public class GameObject extends Polygon {
+public class GameObject extends Polygon implements Drawable {
 
 	// object functions
 	public static final short FUNC_NONE = 0;
@@ -41,4 +41,8 @@ public class GameObject extends Polygon {
 		super(vertices);
 		this.func = FUNC_NONE;
 	}
+	
+	public void draw() {};
+	public void reloadTexture() {};
+	public void dispose() {};
 }

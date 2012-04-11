@@ -324,7 +324,7 @@ public class Player extends AnimatedBlock {
 		// remember the distance to the ground when falling and pressing jump
 		if (!this.distanceRemembered && this.velocity.y < 0) {
 			
-			TexturedShape ground = this.map.getGround(this);
+			GameObject ground = this.map.getGround(this);
 			if (ground != null) {
 				
 				this.distanceOnJump = Math.max(0.32f,
@@ -499,7 +499,7 @@ public class Player extends AnimatedBlock {
 					// if we didn't hit a wall then hit the ground
 					if (!hitWall) {
 						
-						TexturedShape ground = map.getGround(this);
+						GameObject ground = map.getGround(this);
 						if (ground != null) {
 							
 							float impactY = ground.getPosition().y + ground.getHeightAt(this.getPosition().x) - 4;
@@ -676,7 +676,7 @@ public class Player extends AnimatedBlock {
 		length = this.map.items.size();
 		for (int i = 0; i < length; i++) {
 			
-			TexturedShape item = this.map.items.get(i);
+			GameObject item = this.map.items.get(i);
 			float playerX = this.getPosition().x;
 			float itemX = item.getPosition().x;
 			if (playerX >= itemX && playerX <= itemX + item.width) {
@@ -1067,9 +1067,9 @@ public class Player extends AnimatedBlock {
 	/**
 	 * Reload all textures for the player
 	 */
-	public void reloadTextures() {
+	public void reloadTexture() {
 		
-		super.reloadTextures();
+		super.reloadTexture();
 		
 		int length = this.plasmaPool.pool.size();
 		for (int i = 0; i < length; i++) {

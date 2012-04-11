@@ -9,10 +9,6 @@ import javax.microedition.khronos.opengles.GL10;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
-
-import org.racenet.framework.GLGame;
-import org.racenet.framework.GLGraphics;
-
 /**
  * Class which represents an openGL ES texture
  * 

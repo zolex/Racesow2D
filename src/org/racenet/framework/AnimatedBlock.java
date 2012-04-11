@@ -10,7 +10,6 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class AnimatedBlock extends GameObject {
 
-	protected GLGame game;
 	protected GL10 gl;
 	protected FileIO fileIO;
 	public float animTime = 0;
@@ -30,7 +29,6 @@ public class AnimatedBlock extends GameObject {
 	public AnimatedBlock(GLGame game, Vector2 ... vertices) {
 		
 		super(vertices);
-		this.game = game;
 		this.gl = game.getGLGraphics().getGL();
 		this.fileIO = game.getFileIO();
 	}

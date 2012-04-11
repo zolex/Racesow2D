@@ -99,6 +99,7 @@ public class Player extends AnimatedBlock {
 	public String frameDecal = "";
 	public int frameSound = -1;
 	boolean recordDemos;
+	private GLGame game;
 	
 	private int frames = 0;
 	
@@ -117,6 +118,7 @@ public class Player extends AnimatedBlock {
 		// create the TexturedShape with static width and height
 		super(game, new Vector2(x,y), new Vector2(x + 3.4f, y), new Vector2(x + 3.4f, y + 6.5f), new Vector2(x, y + 6.5f));
 		
+		this.game = game;
 		this.soundEnabled = soundEnabled;
 		this.rGen = new Random();
 		this.camera = camera;

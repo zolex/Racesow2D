@@ -645,8 +645,20 @@ public class Map {
 	 */
 	public void reloadTextures() {
 		
-		this.sky.reloadTexture();
-		this.background.reloadTexture();
+		if (this.sky != null) {
+		
+			this.sky.reloadTexture();
+		}
+		
+		if (this.background != null) {
+		
+			this.background.reloadTexture();
+		}
+		
+		if (this.background2 != null) {
+		
+			this.background2.reloadTexture();
+		}
 		
 		int length;
 		
@@ -672,6 +684,12 @@ public class Map {
 		for (int i = 0; i < length; i++) {
 			
 			this.walls.get(i).reloadTexture();
+		}
+		
+		length = this.front.size();
+		for (int i = 0; i < length; i++) {
+			
+			this.front.get(i).reloadTexture();
 		}
 	}
 	

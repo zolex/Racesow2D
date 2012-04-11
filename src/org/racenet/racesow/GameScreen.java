@@ -241,7 +241,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 		
 		return true;
 	}
-	
+
 	/**
 	 * Update player, map and camera.
 	 * Called each frame from GLGame.

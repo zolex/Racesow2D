@@ -1098,6 +1098,9 @@ public class Player extends AnimatedBlock {
 		}
 	}
 	
+	/**
+	 * Get rid of loaded resources
+	 */
 	public void dispose() {
 		
 		super.dispose();

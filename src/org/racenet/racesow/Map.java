@@ -693,6 +693,7 @@ public class Map {
 			}
 		}
 		
+		// run animations
 		int length = this.animations.size();
 		for (int i = 0; i < length; i++) {
 			

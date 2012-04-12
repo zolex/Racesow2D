@@ -442,6 +442,8 @@ public class Player extends AnimatedBlock {
 						
 							this.activeAnimId = Player.ANIM_WALLJUMP;
 						}
+						
+						break;
 					}
 				}
 			}

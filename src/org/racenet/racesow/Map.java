@@ -3,6 +3,7 @@ package org.racenet.racesow;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -11,6 +12,7 @@ import org.racenet.framework.AnimatedBlock;
 import org.racenet.framework.AnimationPreset;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
+import org.racenet.framework.GLTexture;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.SpatialHashGrid;
@@ -43,6 +45,7 @@ public class Map {
 	public List<GameObject> items = new ArrayList<GameObject>();
 	public List<GameObject> pickedUpItems = new ArrayList<GameObject>();
 	public List<AnimatedBlock> animations = new ArrayList<AnimatedBlock>();
+	private HashMap<String, GLTexture> textures = new HashMap<String, GLTexture>();
 	private TexturedShape[] decals = new TexturedShape[MAX_DECALS];
 	private static final short MAX_DECALS = 64;
 	private float[] decalTime = new float[MAX_DECALS];
@@ -421,18 +424,40 @@ public class Map {
 			int numTextures = textures.getLength();
 			if (numTextures == 1) {
 				
-				block = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
-					parser.getNodeValue((Element)textures.item(0)),
-					func,
-					texSX,
-					texSY,
-					texShiftX,
-					texShiftY,
-					new Vector2(x,y),
-					new Vector2(x + width, y),
-					new Vector2(x + width, y + height),
-					new Vector2(x, y + height)
-				);
+				String texture = parser.getNodeValue((Element)textures.item(0));
+				if(this.textures.containsKey(texture)) {
+					
+					block = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
+						this.textures.get(texture),
+						func,
+						texSX,
+						texSY,
+						texShiftX,
+						texShiftY,
+						new Vector2(x,y),
+						new Vector2(x + width, y),
+						new Vector2(x + width, y + height),
+						new Vector2(x, y + height)
+					);
+				} else {
+					
+					block = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
+						texture,
+						func,
+						texSX,
+						texSY,
+						texShiftX,
+						texShiftY,
+						new Vector2(x,y),
+						new Vector2(x + width, y),
+						new Vector2(x + width, y + height),
+						new Vector2(x, y + height)
+					);
+					
+					this.textures.put(texture, ((TexturedBlock)block).texture);
+				}
+				
+				
 				
 			} else {
 				
@@ -575,17 +600,38 @@ public class Map {
 				texShiftY = 0;
 			}
 			
-			TexturedTriangle block = new TexturedTriangle(game.getGLGraphics().getGL(), game.getFileIO(),
-				parser.getValue(xmlblock, "texture"),
-				func,
-				texSX,
-				texSY,
-				texShiftX,
-				texShiftY,
-				new Vector2(v1x, v1y),
-				new Vector2(v2x, v2y),
-				new Vector2(v3x, v3y)
-			);
+			TexturedTriangle block;
+			String texture = parser.getValue(xmlblock, "texture");
+			if (this.textures.containsKey(texture)) {
+				
+				block = new TexturedTriangle(game.getGLGraphics().getGL(), game.getFileIO(),
+					this.textures.get(texture),
+					func,
+					texSX,
+					texSY,
+					texShiftX,
+					texShiftY,
+					new Vector2(v1x, v1y),
+					new Vector2(v2x, v2y),
+					new Vector2(v3x, v3y)
+				);
+				
+			} else {
+			
+				block = new TexturedTriangle(game.getGLGraphics().getGL(), game.getFileIO(),
+					texture,
+					func,
+					texSX,
+					texSY,
+					texShiftX,
+					texShiftY,
+					new Vector2(v1x, v1y),
+					new Vector2(v2x, v2y),
+					new Vector2(v3x, v3y)
+				);
+				
+				this.textures.put(texture, block.texture);
+			}
 		
 			String level = parser.getValue(xmlblock, "level");
 			if (level.equals("ground")) {

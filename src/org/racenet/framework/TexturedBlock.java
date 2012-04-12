@@ -26,6 +26,21 @@ public class TexturedBlock extends TexturedShape implements Drawable {
 	}
 	
 	/**
+	 * Constructor 
+	 * 
+	 * @param GLGame game
+	 * @param GLTexture texture
+	 * @param short func
+	 * @param float texScaleWidth
+	 * @param float texScaleHeight
+	 * @param Vector2 ... vertices
+	 */
+	public TexturedBlock(GL10 gl, FileIO fileIO, GLTexture texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
+		
+		super(gl, fileIO, texture, func, texScaleWidth, texScaleHeight, texShiftX, texShiftY, vertices);
+	}
+	
+	/**
 	 * Setup the vertices and texture coordinates for the rectangle
 	 */
 	protected void setupVertices() {

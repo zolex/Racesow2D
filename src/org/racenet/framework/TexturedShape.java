@@ -34,9 +34,37 @@ public abstract class TexturedShape extends HudItem implements Drawable {
 		super(vertices);
 		this.gl = gl;
 		this.fileIO = fileIO;
-		this.setupTexture(texture, texScaleWidth, texScaleHeight, texShiftX, texShiftY);
-		this.setupVertices();
 		this.func = func;
+		this.texScaleWidth = texScaleWidth == 0 ? 0.1f : texScaleWidth;
+		this.texScaleHeight = texScaleHeight == 0 ? 0.1f : texScaleHeight;
+		this.texShiftX = texShiftX;
+		this.texShiftY = texShiftY;
+		this.setupTexture(texture);
+		this.setupVertices();
+	}
+	
+	/**
+	 * Constructor 
+	 * 
+	 * @param GLGame game
+	 * @param GLTexture texture
+	 * @param short func
+	 * @param float texScaleWidth
+	 * @param float texScaleHeight
+	 * @param Vectro2 ... vertices
+	 */
+	public TexturedShape(GL10 gl, FileIO fileIO, GLTexture texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
+		
+		super(vertices);
+		this.gl = gl;
+		this.fileIO = fileIO;
+		this.func = func;
+		this.texScaleWidth = texScaleWidth == 0 ? 0.1f : texScaleWidth;
+		this.texScaleHeight = texScaleHeight == 0 ? 0.1f : texScaleHeight;
+		this.texShiftX = texShiftX;
+		this.texShiftY = texShiftY;
+		this.texture = texture;
+		this.setupVertices();
 	}
 	
 	/**
@@ -46,13 +74,9 @@ public abstract class TexturedShape extends HudItem implements Drawable {
 	 * @param float scaleWidth
 	 * @param float scaleHeight
 	 */
-	public void setupTexture(String fileName, float scaleWidth, float scaleHeight, float texShiftX, float texShiftY) {
+	public void setupTexture(String fileName) {
 		
 		this.texture = new GLTexture(this.gl, this.fileIO, fileName);
-		this.texScaleWidth = scaleWidth == 0 ? 0.1f : scaleWidth;
-		this.texScaleHeight = scaleHeight == 0 ? 0.1f : scaleHeight;
-		this.texShiftX = texShiftX;
-		this.texShiftY = texShiftY;
 	}
 	
 	/**

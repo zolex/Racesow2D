@@ -462,11 +462,11 @@ public class Map {
 				}
 				
 				((AnimatedBlock)block).setAnimations(new AnimationPreset(animDuration, textureList));
-				((AnimatedBlock)block).setupVertices();
 				((AnimatedBlock)block).texScaleHeight = texSY;
 				((AnimatedBlock)block).texScaleWidth = texSX;
 				((AnimatedBlock)block).texShiftX = texShiftX;
 				((AnimatedBlock)block).texShiftY = texShiftY;
+				((AnimatedBlock)block).setupVertices();
 				
 				this.animations.add((AnimatedBlock)block);
 			}
@@ -484,7 +484,7 @@ public class Map {
 				
 				this.highlights.add(block);
 				
-			} else if (level.equals("front")) {
+			} else if (level.equals("front") && this.gfxHighlights) {
 				
 				this.front.add(block);
 			}
@@ -600,7 +600,7 @@ public class Map {
 				
 				this.highlights.add(block);
 				
-			} else if (level.equals("front")) {
+			} else if (level.equals("front") && this.gfxHighlights) {
 				
 				this.front.add(block);
 			}
@@ -747,13 +747,13 @@ public class Map {
 			this.walls.get(i).reloadTexture();
 		}
 		
-		length = this.front.size();
-		for (int i = 0; i < length; i++) {
-			
-			this.front.get(i).reloadTexture();
-		}
-		
 		if (this.gfxHighlights) {
+			
+			length = this.front.size();
+			for (int i = 0; i < length; i++) {
+				
+				this.front.get(i).reloadTexture();
+			}
 			
 			length = this.highlights.size();
 			for (int i = 0; i < length; i++) {
@@ -803,13 +803,13 @@ public class Map {
 			this.walls.get(i).dispose();
 		}
 		
-		length = this.front.size();
-		for (int i = 0; i < length; i++) {
-			
-			this.front.get(i).dispose();
-		}
-		
 		if (this.gfxHighlights) {
+			
+			length = this.front.size();
+			for (int i = 0; i < length; i++) {
+				
+				this.front.get(i).dispose();
+			}
 			
 			length = this.highlights.size();
 			for (int i = 0; i < length; i++) {
@@ -1019,19 +1019,22 @@ public class Map {
 	
 	public void drawFront() {
 		
-		float fromX = this.camera.position.x - this.camera.frustumWidth / 2;
-		float toX = this.camera.position.x + this.camera.frustumWidth / 2;
-		
-		int length = this.front.size();
-		for (int i = 0; i < length; i++) {
+		if (this.gfxHighlights) {
 			
-			GameObject shape = this.front.get(i);
-			Vector2 shapePos = shape.getPosition();
-			if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
-				(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
-				(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
+			float fromX = this.camera.position.x - this.camera.frustumWidth / 2;
+			float toX = this.camera.position.x + this.camera.frustumWidth / 2;
+			
+			int length = this.front.size();
+			for (int i = 0; i < length; i++) {
 				
-				shape.draw();
+				GameObject shape = this.front.get(i);
+				Vector2 shapePos = shape.getPosition();
+				if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
+					(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
+					(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
+					
+					shape.draw();
+				}
 			}
 		}
 	}

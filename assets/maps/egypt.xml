@@ -3,7 +3,7 @@
 	<name>Egypt</name>
 	<mapper>soh#zolex</mapper>
 	<levelshot>egypt/levelshot.png</levelshot>
-	<player><x>2710</x><y>10</y></player>
+	<player><x>40</x><y>10</y></player>
 	<starttimer><x>50</x></starttimer>
 	<stoptimer><x>4480</x></stoptimer>
 	<sky>

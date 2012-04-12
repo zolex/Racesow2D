@@ -3,7 +3,7 @@
 	<name>Egypt</name>
 	<mapper>soh#zolex</mapper>
 	<levelshot>egypt/levelshot.png</levelshot>
-	<player><x>40</x><y>10</y></player>
+	<player><x>2710</x><y>10</y></player>
 	<starttimer><x>50</x></starttimer>
 	<stoptimer><x>4480</x></stoptimer>
 	<sky>
@@ -56,6 +56,14 @@
 	</block>
 	<block>
 		<level>highlight</level>
+		<x>49</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
 		<x>55</x>
 		<y>10</y>
 		<width>12.8</width>
@@ -86,6 +94,14 @@
 		<height>25.6</height>
 		<texture>egypt/palm.png</texture>
 	</block>
+	<block>
+		<level>highlight</level>
+		<x>110</x>
+		<y>11.6</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
 	<tri>
 		<level>ground</level>
 		<v1><x>100</x><y>10</y></v1>
@@ -104,6 +120,14 @@
 		<texture>egypt/stone.png</texture>
 		<texshiftx>42</texshiftx>
 		<texshifty>29</texshifty>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>180</x>
+		<y>20</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
 	</block>
 	<block>
 		<level>front</level>
@@ -168,6 +192,14 @@
 		<width>12.8</width>
 		<height>25.6</height>
 		<texture>egypt/palm.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>245</x>
+		<y>20</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
 	</block>
 	<block>
 		<level>ground</level>
@@ -250,6 +282,14 @@
 	</block>
 	<block>
 		<level>highlight</level>
+		<x>328</x>
+		<y>20</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
 		<x>335</x>
 		<y>20</y>
 		<width>12.8</width>
@@ -304,6 +344,14 @@
 		<height>2.5</height>
 		<texture>egypt/border_ter.png</texture>
 	</block>
+	<block>
+		<level>highlight</level>
+		<x>410</x>
+		<y>20</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
 	<tri>
 		<level>ground</level>
 		<v1><x>425</x><y>20</y></v1>
@@ -313,6 +361,14 @@
 		<texshiftx>-26</texshiftx>
 		<texshifty>29</texshifty>
 	</tri>
+	<block>
+		<level>highlight</level>
+		<x>450</x>
+		<y>16</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
 	<block>
 		<level>highlight</level>
 		<x>510</x>
@@ -336,6 +392,14 @@
 		<width>12.8</width>
 		<height>6.4</height>
 		<texture>egypt/rail_r.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>528</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
 	</block>
 	<block>
 		<level>highlight</level>
@@ -376,6 +440,14 @@
 		<width>12.8</width>
 		<height>25.6</height>
 		<texture>egypt/palm.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>580</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
 	</block>
 	<block>
 		<level>ground</level>
@@ -539,6 +611,14 @@
 		<texture>egypt/border_tsfl.png</texture>
 	</block>
 	<block>
+		<level>highlight</level>
+		<x>668</x>
+		<y>25</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
 		<level>front</level>
 		<x>680</x>
 		<y>25</y>
@@ -581,6 +661,14 @@
 	</block>
 	<block>
 		<level>highlight</level>
+		<x>768</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
 		<x>780</x>
 		<y>10</y>
 		<width>12.8</width>
@@ -610,6 +698,14 @@
 		<width>12.8</width>
 		<height>25.6</height>
 		<texture>egypt/palm.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>825</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
 	</block>
 	<block>
 		<level>highlight</level>
@@ -749,6 +845,14 @@
 		<height>2.5</height>
 		<texture>egypt/border_ter.png</texture>
 	</block>
+	<block>
+		<level>highlight</level>
+		<x>984</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
 	<tri>
 		<level>ground</level>
 		<v1><x>1000</x><y>10</y></v1>
@@ -796,6 +900,14 @@
 		<texture>egypt/stone.png</texture>
 	</block>
 	<block>
+		<level>highlight</level>
+		<x>1304</x>
+		<y>20</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
 		<level>front</level>
 		<x>1350</x>
 		<y>20</y>
@@ -826,6 +938,14 @@
 		<width>12.8</width>
 		<height>6.4</height>
 		<texture>egypt/rail_r.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>1365</x>
+		<y>20</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
 	</block>
 	<block>
 		<level>highlight</level>
@@ -863,9 +983,33 @@
 		<texshifty>0</texshifty>
 	</tri>
 	<block>
+		<level>highlight</level>
+		<x>1465</x>
+		<y>19</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
 		<level>front</level>
 		<x>1500</x>
 		<y>17</y>
+		<width>12.8</width>
+		<height>25.6</height>
+		<texture>egypt/palm.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>1575</x>
+		<y>13.1</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>1625</x>
+		<y>10.9</y>
 		<width>12.8</width>
 		<height>25.6</height>
 		<texture>egypt/palm.png</texture>
@@ -898,6 +1042,14 @@
 		<width>75</width>
 		<height>10</height>
 		<texture>egypt/stone.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>1740</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
 	</block>
 	<block>
 		<level>front</level>
@@ -967,6 +1119,14 @@
 	</block>
 	<block>
 		<level>highlight</level>
+		<x>1892</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
 		<x>1900</x>
 		<y>10</y>
 		<width>12.8</width>
@@ -999,6 +1159,14 @@
 	</block>
 	<block>
 		<level>highlight</level>
+		<x>1940</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
 		<x>1875</x>
 		<y>7.5</y>
 		<width>225</width>
@@ -1020,6 +1188,14 @@
 		<width>12.8</width>
 		<height>25.6</height>
 		<texture>egypt/palm.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>2075</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
 	</block>
 	<block>
 		<level>highlight</level>
@@ -1108,6 +1284,14 @@
 	</block>
 	<block>
 		<level>highlight</level>
+		<x>2715</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
 		<x>2750</x>
 		<y>10</y>
 		<width>12.8</width>
@@ -1129,6 +1313,14 @@
 		<width>12.8</width>
 		<height>6.4</height>
 		<texture>egypt/rail_r.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>2770</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
 	</block>
 	<block>
 		<level>highlight</level>
@@ -1163,6 +1355,14 @@
 		<texture>egypt/rail_r.png</texture>
 	</block>
 	<block>
+		<level>highlight</level>
+		<x>2890</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
 		<level>front</level>
 		<x>2900</x>
 		<y>10</y>
@@ -1193,6 +1393,14 @@
 		<width>12.8</width>
 		<height>6.4</height>
 		<texture>egypt/rail_r.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>3025</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
 	</block>
 	<block>
 		<level>highlight</level>
@@ -1347,6 +1555,14 @@
 	</block>
 	<block>
 		<level>highlight</level>
+		<x>3310</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
 		<x>3330</x>
 		<y>10</y>
 		<width>12.8</width>
@@ -1376,6 +1592,22 @@
 		<width>12.8</width>
 		<height>25.6</height>
 		<texture>egypt/palm.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>3375</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>3405</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
 	</block>
 	<block>
 		<level>front</level>
@@ -1408,6 +1640,22 @@
 		<width>12.8</width>
 		<height>6.4</height>
 		<texture>egypt/rail_r.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>3530</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>3600</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
 	</block>
 	<block>
 		<level>highlight</level>
@@ -1543,8 +1791,32 @@
 		<texture>egypt/stone.png</texture>
 	</block>
 	<block>
+		<level>highlight</level>
+		<x>4315</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
 		<level>front</level>
-		<x>4400</x>
+		<x>4360</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>25.6</height>
+		<texture>egypt/palm.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>4375</x>
+		<y>10</y>
+		<width>6.4</width>
+		<height>6.4</height>
+		<texture>egypt/plant.png</texture>
+	</block>
+	<block>
+		<level>front</level>
+		<x>4415</x>
 		<y>10</y>
 		<width>12.8</width>
 		<height>25.6</height>

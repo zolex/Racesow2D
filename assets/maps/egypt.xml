@@ -56,6 +56,30 @@
 	</block>
 	<block>
 		<level>highlight</level>
+		<x>55</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_l.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>67.8</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_m.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>80.6</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_r.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
 		<x>120</x>
 		<y>13.4</y>
 		<width>12.8</width>
@@ -88,6 +112,30 @@
 		<width>12.8</width>
 		<height>25.6</height>
 		<texture>egypt/palm.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>210</x>
+		<y>20</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_l.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>222.8</x>
+		<y>20</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_m.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>235.6</x>
+		<y>20</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_r.png</texture>
 	</block>
 	<block>
 		<level>highlight</level>
@@ -201,6 +249,30 @@
 		<texshifty>29</texshifty>
 	</block>
 	<block>
+		<level>highlight</level>
+		<x>335</x>
+		<y>20</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_l.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>347.8</x>
+		<y>20</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_m.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>360.6</x>
+		<y>20</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_r.png</texture>
+	</block>
+	<block>
 		<level>front</level>
 		<x>380</x>
 		<y>20</y>
@@ -241,6 +313,30 @@
 		<texshiftx>-26</texshiftx>
 		<texshifty>29</texshifty>
 	</tri>
+	<block>
+		<level>highlight</level>
+		<x>510</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_l.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>522.8</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_m.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>535.6</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_r.png</texture>
+	</block>
 	<block>
 		<level>highlight</level>
 		<x>475</x>
@@ -485,6 +581,30 @@
 	</block>
 	<block>
 		<level>highlight</level>
+		<x>780</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_l.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>792.8</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_m.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>805.6</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_r.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
 		<x>800</x>
 		<y>10</y>
 		<width>12.8</width>
@@ -574,6 +694,30 @@
 		<y>10.1</y>
 	</item>
 	<block>
+		<level>highlight</level>
+		<x>935</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_l.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>947.9</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_m.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>960.7</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_r.png</texture>
+	</block>
+	<block>
 		<level>ground</level>
 		<x>925</x>
 		<y>0</y>
@@ -658,6 +802,30 @@
 		<width>12.8</width>
 		<height>25.6</height>
 		<texture>egypt/palm.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>1320</x>
+		<y>20</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_l.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>1332.8</x>
+		<y>20</y>
+		<width>51.2</width>
+		<height>6.4</height>
+		<texture>egypt/rail_m.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>1383.6</x>
+		<y>20</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_r.png</texture>
 	</block>
 	<block>
 		<level>highlight</level>
@@ -798,6 +966,30 @@
 		<texture>egypt/stone.png</texture>
 	</block>
 	<block>
+		<level>highlight</level>
+		<x>1900</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_l.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>1912.8</x>
+		<y>10</y>
+		<width>102.4</width>
+		<height>6.4</height>
+		<texture>egypt/rail_m.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>2015.2</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_r.png</texture>
+	</block>
+	<block>
 		<level>front</level>
 		<x>1925</x>
 		<y>10</y>
@@ -916,11 +1108,59 @@
 	</block>
 	<block>
 		<level>highlight</level>
+		<x>2750</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_l.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>2762.8</x>
+		<y>10</y>
+		<width>25.6</width>
+		<height>6.4</height>
+		<texture>egypt/rail_m.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>2788.4</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_r.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
 		<x>2800</x>
 		<y>10</y>
 		<width>12.8</width>
 		<height>25.6</height>
 		<texture>egypt/palm.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>2850</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_l.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>2862.8</x>
+		<y>10</y>
+		<width>25.6</width>
+		<height>6.4</height>
+		<texture>egypt/rail_m.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>2888.4</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_r.png</texture>
 	</block>
 	<block>
 		<level>front</level>
@@ -929,6 +1169,30 @@
 		<width>12.8</width>
 		<height>25.6</height>
 		<texture>egypt/palm.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>2950</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_l.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>2962.8</x>
+		<y>10</y>
+		<width>25.6</width>
+		<height>6.4</height>
+		<texture>egypt/rail_m.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>2988.4</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_r.png</texture>
 	</block>
 	<block>
 		<level>highlight</level>
@@ -1082,6 +1346,30 @@
 		<texture>egypt/stone.png</texture>
 	</block>
 	<block>
+		<level>highlight</level>
+		<x>3330</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_l.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>3342.8</x>
+		<y>10</y>
+		<width>51.2</width>
+		<height>6.4</height>
+		<texture>egypt/rail_m.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>3394</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_r.png</texture>
+	</block>
+	<block>
 		<level>front</level>
 		<x>3350</x>
 		<y>10</y>
@@ -1096,6 +1384,54 @@
 		<width>12.8</width>
 		<height>25.6</height>
 		<texture>egypt/palm.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>3500</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_l.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>3512.8</x>
+		<y>10</y>
+		<width>51.2</width>
+		<height>6.4</height>
+		<texture>egypt/rail_m.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>3564</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_r.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>3650</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_l.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>3662.8</x>
+		<y>10</y>
+		<width>51.2</width>
+		<height>6.4</height>
+		<texture>egypt/rail_m.png</texture>
+	</block>
+	<block>
+		<level>highlight</level>
+		<x>3714</x>
+		<y>10</y>
+		<width>12.8</width>
+		<height>6.4</height>
+		<texture>egypt/rail_r.png</texture>
 	</block>
 	<block>
 		<level>highlight</level>

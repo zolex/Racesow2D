@@ -49,6 +49,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 	boolean recordDemos;
 	private float currentPlayerOffset = 0;
 	private float targetPlayerOffset = 0;
+	float playerBlur = 0;
 	
 	boolean showFPS, showUPS;
 	
@@ -346,11 +347,13 @@ public class GameScreen extends Screen implements OnTouchListener {
 		}
 		
 
+		this.playerBlur = 0;
 		this.targetPlayerOffset =  Math.min(5000, Math.max(450, this.player.virtualSpeed)) / 128;
-		
 		if (this.currentPlayerOffset < this.targetPlayerOffset) {
 			
-			this.currentPlayerOffset += ((this.targetPlayerOffset - this.currentPlayerOffset) / 10);
+			float diff = (this.targetPlayerOffset - this.currentPlayerOffset);
+			this.currentPlayerOffset += diff / 10;
+			this.playerBlur = diff / 1.5f;
 			
 		} else if (this.currentPlayerOffset > this.targetPlayerOffset) {
 			
@@ -392,7 +395,8 @@ public class GameScreen extends Screen implements OnTouchListener {
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		
 		this.map.draw();
-		this.player.draw();
+		this.player.draw(this.playerBlur);
+		
 		this.map.drawFront();
 		
 		if (this.showFPS) {

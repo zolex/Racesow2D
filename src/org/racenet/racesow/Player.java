@@ -3,6 +3,8 @@ package org.racenet.racesow;
 import java.util.List;
 import java.util.Random;
 
+import javax.microedition.khronos.opengles.GL10;
+
 import org.racenet.framework.Audio;
 import org.racenet.framework.Sound;
 import org.racenet.framework.AnimatedBlock;
@@ -1124,5 +1126,24 @@ public class Player extends AnimatedBlock {
 			
 			this.sounds[i].dispose();
 		}
+	}
+	
+	/**
+	 * Draw the Player with a motionBlur effect
+	 * 
+	 * @param float blur
+	 */
+	public void draw(float blur) {
+		
+		super.draw();
+		
+		gl.glPushMatrix();
+		gl.glTranslatef(this.getPosition().x - blur, this.getPosition().y, 0);
+		this.anims[this.activeAnimId].getKeyFrame(this.animTime).bind();
+		gl.glColor4f(1, 1, 1, 0.2f);
+		this.vertices.bind();
+		this.vertices.draw(GL10.GL_TRIANGLES, 0, 6);
+		this.vertices.unbind();
+		gl.glPopMatrix();
 	}
 }

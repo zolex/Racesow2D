@@ -119,7 +119,9 @@ public class Player extends AnimatedBlock {
 	public Player(final GLGame game, Map map, Camera2 camera, float x, float y, boolean soundEnabled, boolean blurEnabled, boolean recordDemos) {
 		
 		// create the TexturedShape with static width and height
-		super(game, new Vector2(x,y), new Vector2(x + 6.4f, y), new Vector2(x + 6.4f, y + 6.4f), new Vector2(x, y + 6.4f));
+		super(game, new Vector2(x,y), new Vector2(x + 9.6f, y), new Vector2(x + 9.6f, y + 9.6f), new Vector2(x, y + 9.6f));
+		this.texScaleHeight = 0.075f;
+		this.texScaleWidth = 0.075f;
 		
 		this.game = game;
 		this.soundEnabled = soundEnabled;
@@ -1148,6 +1150,7 @@ public class Player extends AnimatedBlock {
 			this.vertices.bind();
 			this.vertices.draw(GL10.GL_TRIANGLES, 0, 6);
 			this.vertices.unbind();
+			this.gl.glColor4f(1, 1, 1, 1);
 			this.gl.glPopMatrix();
 		}
 	}

@@ -1003,8 +1003,6 @@ public class Map {
 			this.background2.draw();
 		}
 		
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		
 		int length = this.walls.size();
 		for (int i = 0; i < length; i++) {
 			

@@ -1,10 +1,7 @@
 package org.racenet.racesow;
 
-import javax.microedition.khronos.opengles.GL10;
-
 import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
-import org.racenet.framework.GLGraphics;
 import org.racenet.framework.GLTexture;
 import org.racenet.framework.Screen;
 import org.racenet.framework.TexturedBlock;
@@ -12,6 +9,7 @@ import org.racenet.framework.Vector2;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.opengl.GLES10;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,7 +25,6 @@ public class MenuScreen extends Screen implements OnTouchListener {
 	
 	public TexturedBlock header;
 	Camera2 camera;
-	GLGraphics glGraphics;
 	GestureDetector gestures;
 	float menuVelocity = 0;
 	Menu menu;
@@ -41,11 +38,9 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		
 		super(game);
 		
-		glGraphics = game.getGLGraphics();
+		camera = new Camera2((float)game.getScreenWidth(), (float)game.getScreenHeight());
 		
-		camera = new Camera2(glGraphics, (float)game.getScreenWidth(), (float)game.getScreenHeight());
-		
-		glGraphics.getView().setOnTouchListener(this);
+		game.glView.setOnTouchListener(this);
 		
 		menu = new Menu(game, camera.frustumWidth, camera.frustumHeight);
 		gestures = new GestureDetector(menu);
@@ -54,7 +49,7 @@ public class MenuScreen extends Screen implements OnTouchListener {
 			
 			public void handle() {
 				
-				glGraphics.getView().queueEvent(new Runnable() {
+				game.glView.queueEvent(new Runnable() {
 
                     public void run() {
                        
@@ -122,10 +117,10 @@ public class MenuScreen extends Screen implements OnTouchListener {
 			texture = "racesow_small.jpg";
 		}
 		
-		header = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(), texture,
+		header = new TexturedBlock(texture,
 				TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
 		header.setPosition(new Vector2(0, camera.frustumHeight - header.height));
-		header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
+		header.texture.setFilters(GLES10.GL_LINEAR, GLES10.GL_LINEAR);
 	}
 
 	/**
@@ -152,18 +147,17 @@ public class MenuScreen extends Screen implements OnTouchListener {
 	 */
 	public void present(float deltaTime) {
 		
-		GL10 gl = glGraphics.getGL();
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		GLES10.glClear(GLES10.GL_COLOR_BUFFER_BIT);
 		
-		gl.glFrontFace(GL10.GL_CCW);
-		gl.glEnable(GL10.GL_CULL_FACE);
-		gl.glCullFace(GL10.GL_BACK);
+		GLES10.glFrontFace(GLES10.GL_CCW);
+		GLES10.glEnable(GLES10.GL_CULL_FACE);
+		GLES10.glCullFace(GLES10.GL_BACK);
 		
-		this.camera.setViewportAndMatrices();
+		this.camera.setViewportAndMatrices(this.game.glView.getWidth(), this.game.glView.getHeight());
 		
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glEnable(GL10.GL_BLEND);
-		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		GLES10.glEnable(GLES10.GL_TEXTURE_2D);
+		GLES10.glEnable(GLES10.GL_BLEND);
+		GLES10.glBlendFunc(GLES10.GL_SRC_ALPHA, GLES10.GL_ONE_MINUS_SRC_ALPHA);
 		
 		this.header.draw();
 		this.menu.draw();

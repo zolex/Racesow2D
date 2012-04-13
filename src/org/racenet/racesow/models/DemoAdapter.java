@@ -34,11 +34,11 @@ public class DemoAdapter extends BaseAdapter {
 	 * @param Context context
 	 * @param List<MapItem> mapList
 	 */
-	public DemoAdapter(Context context, FileIO fileIO, short orderBy) {
+	public DemoAdapter(Context context, short orderBy) {
 		
 		this.context = context;
 		
-		String[] demos = fileIO.listFiles("racesow" + File.separator + "demos", orderBy);
+		String[] demos = FileIO.getInstance().listFiles("racesow" + File.separator + "demos", orderBy);
 		if (demos != null) {
 
 			for (int i = 0; i < demos.length; i++) {

@@ -39,7 +39,6 @@ public class DemoList extends ListActivity {
 	WakeLock wakeLock;
 	ViewPager viewPager;
 	DemoAdapter adapter;
-	FileIO fileIO;
 	short orderBy = FileIO.ORDER_CREATED;
 	
     @Override
@@ -54,8 +53,8 @@ public class DemoList extends ListActivity {
     	PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
     	
-    	this.fileIO = new FileIO(getAssets());
-    	this.adapter = new DemoAdapter(this, this.fileIO, this.orderBy);
+    	FileIO.setupInstance(getAssets());
+    	this.adapter = new DemoAdapter(this, this.orderBy);
     	
     	if (this.adapter.isEmpty()) {
     		
@@ -119,10 +118,10 @@ public class DemoList extends ListActivity {
 					public void onClick(DialogInterface arg0, int arg1) {
 						
 						String message;
-						if (DemoList.this.fileIO.deleteFile(demoDir + fileName)) {
+						if (FileIO.getInstance().deleteFile(demoDir + fileName)) {
 							
 							message = "Deleted demo '" + fileName + "'";
-							DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO, DemoList.this.orderBy);
+							DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.orderBy);
 							DemoList.this.getListView().setAdapter(DemoList.this.adapter);
 							DemoList.this.getListView().setSelection(info.position > 0 ? info.position - 1 : 0);
 
@@ -161,11 +160,11 @@ public class DemoList extends ListActivity {
 							
 						} else {
 						
-							if (DemoList.this.fileIO.renameFile(demoDir + fileName, demoDir + newName)) {
+							if (FileIO.getInstance().renameFile(demoDir + fileName, demoDir + newName)) {
 								
 								message = "Demo renamed to '" + newName + "'";
 
-								DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO, DemoList.this.orderBy);
+								DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.orderBy);
 								DemoList.this.getListView().setAdapter(DemoList.this.adapter);
 								int newPosition = DemoList.this.adapter.demos.indexOf(newName);
 								DemoList.this.getListView().setSelection(newPosition);
@@ -205,14 +204,14 @@ public class DemoList extends ListActivity {
 					
 					public void onClick(DialogInterface arg0, int arg1) {
 						
-						String[] demos = DemoList.this.fileIO.listFiles("racesow" + File.separator + "demos", FileIO.ORDER_NAME);
+						String[] demos = FileIO.getInstance().listFiles("racesow" + File.separator + "demos", FileIO.ORDER_NAME);
 						int length = demos.length;
 						for (int i = 0; i < length; i++) {
 						
-							DemoList.this.fileIO.deleteFile("racesow" + File.separator + "demos" + File.separator + demos[i]);
+							FileIO.getInstance().deleteFile("racesow" + File.separator + "demos" + File.separator + demos[i]);
 						}						
 						
-						DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO, DemoList.this.orderBy);
+						DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.orderBy);
 						DemoList.this.getListView().setAdapter(DemoList.this.adapter);
 					}
 				})
@@ -228,7 +227,7 @@ public class DemoList extends ListActivity {
 	    	public boolean onMenuItemClick(MenuItem arg0) {
 	    		
 	    		DemoList.this.orderBy = FileIO.ORDER_NAME;
-	    		DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO, DemoList.this.orderBy);
+	    		DemoList.this.adapter = new DemoAdapter(DemoList.this,DemoList.this.orderBy);
 				DemoList.this.getListView().setAdapter(DemoList.this.adapter);
 	    		return true;
 	    	}
@@ -239,7 +238,7 @@ public class DemoList extends ListActivity {
 			public boolean onMenuItemClick(MenuItem arg0) {
 				
 				DemoList.this.orderBy = FileIO.ORDER_CREATED;
-	    		DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.fileIO, DemoList.this.orderBy);
+	    		DemoList.this.adapter = new DemoAdapter(DemoList.this, DemoList.this.orderBy);
 				DemoList.this.getListView().setAdapter(DemoList.this.adapter);
 	    		return true;
 			}

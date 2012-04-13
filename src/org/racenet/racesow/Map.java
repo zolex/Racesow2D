@@ -7,11 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import javax.microedition.khronos.opengles.GL10;
-
 import org.racenet.framework.AnimatedBlock;
 import org.racenet.framework.AnimationPreset;
 import org.racenet.framework.Camera2;
+import org.racenet.framework.FileIO;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLTexture;
 import org.racenet.framework.GameObject;
@@ -38,7 +37,6 @@ import android.content.SharedPreferences;
  */
 public class Map {
 	
-	private GL10 gl;
 	private List<GameObject> ground = new ArrayList<GameObject>();
 	private List<GameObject> walls = new ArrayList<GameObject>();
 	private List<GameObject> highlights = new ArrayList<GameObject>();
@@ -79,13 +77,11 @@ public class Map {
 	/**
 	 * Map constructor.
 	 * 
-	 * @param GL10 gl
 	 * @param Camera2 camera
 	 * @param boolean drawOutlines
 	 */
-	public Map(GL10 gl, Camera2 camera, boolean gfxHighlights, boolean recordDemos) {
+	public Map(Camera2 camera, boolean gfxHighlights, boolean recordDemos) {
 		
-		this.gl = gl;
 		this.camera = camera;
 		this.gfxHighlights = gfxHighlights;
 		this.recordDemos = recordDemos;
@@ -114,14 +110,14 @@ public class Map {
 		// try to read the map from the assets
 		try {
 			
-			parser.read(game.getFileIO().readAsset("maps" + File.separator + fileName));
+			parser.read(FileIO.getInstance().readAsset("maps" + File.separator + fileName));
 			
 		} catch (IOException e) {
 			
 			// if not found in assets, try to read from sd-card
 			try {
 				
-				parser.read(game.getFileIO().readFile("racesow" + File.separator + "maps" + File.separator + fileName));
+				parser.read(FileIO.getInstance().readFile("racesow" + File.separator + "maps" + File.separator + fileName));
 				
 			} catch (IOException e2) {
 				
@@ -186,7 +182,7 @@ public class Map {
 			if (type.equals("rocket")) func = GameObject.ITEM_ROCKET; 
 			else if (type.equals("plasma")) func = GameObject.ITEM_PLASMA; 
 			
-			TexturedBlock item = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
+			TexturedBlock item = new TexturedBlock(
 				"items/" + type + ".png",
 				func,
 				-1,
@@ -236,7 +232,7 @@ public class Map {
 				this.skyPosition = 0;
 			}
 			
-			this.sky = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
+			this.sky = new TexturedBlock(
 					parser.getValue((Element)skyN.item(0), "texture"),
 					GameObject.FUNC_NONE,
 					-1,
@@ -290,7 +286,7 @@ public class Map {
 				backgroundHeight = worldHeight;
 			}
 			
-			this.background = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
+			this.background = new TexturedBlock(
 				parser.getValue((Element)backgroundN.item(0), "texture"),
 				GameObject.FUNC_NONE,
 				backgroundScale,
@@ -346,7 +342,7 @@ public class Map {
 				background2Height = worldHeight;
 			}
 			
-			this.background2 = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
+			this.background2 = new TexturedBlock(
 				parser.getValue((Element)background2N.item(0), "texture"),
 				GameObject.FUNC_NONE,
 				backgroundScale,
@@ -428,7 +424,7 @@ public class Map {
 				String texture = parser.getNodeValue((Element)textures.item(0));
 				if(this.textures.containsKey(texture)) {
 					
-					block = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
+					block = new TexturedBlock(
 						this.textures.get(texture),
 						func,
 						texSX,
@@ -442,7 +438,7 @@ public class Map {
 					);
 				} else {
 					
-					block = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(),
+					block = new TexturedBlock(
 						texture,
 						func,
 						texSX,
@@ -472,7 +468,7 @@ public class Map {
 					animDuration = 1;
 				}
 				
-				block = new AnimatedBlock(game,
+				block = new AnimatedBlock(
 					new Vector2(x,y),
 					new Vector2(x + width, y),
 					new Vector2(x + width, y + height),
@@ -626,7 +622,7 @@ public class Map {
 			String texture = parser.getValue(xmlblock, "texture");
 			if (this.textures.containsKey(texture)) {
 				
-				block = new TexturedTriangle(game.getGLGraphics().getGL(), game.getFileIO(),
+				block = new TexturedTriangle(
 					this.textures.get(texture),
 					func,
 					texSX,
@@ -640,7 +636,7 @@ public class Map {
 				
 			} else {
 			
-				block = new TexturedTriangle(game.getGLGraphics().getGL(), game.getFileIO(),
+				block = new TexturedTriangle(
 					texture,
 					func,
 					texSX,
@@ -693,7 +689,7 @@ public class Map {
 		
 		if (!demoPlayback && this.recordDemos) {
 		
-			this.demoRecorder = new DemoRecorderThread(this.game.getFileIO(), this.fileName);
+			this.demoRecorder = new DemoRecorderThread(this.fileName);
 			this.demoRecorder.start();
 		}
 		

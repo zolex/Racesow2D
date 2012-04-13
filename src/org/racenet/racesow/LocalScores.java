@@ -33,10 +33,10 @@ public class LocalScores extends Activity {
     	PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
     	
-    	FileIO fileIO = new FileIO(getAssets());
+    	FileIO.setupInstance(getAssets());
         setContentView(R.layout.viewpager);
         viewPager = (ViewPager)findViewById(R.id.pager);
-    	viewPager.setAdapter(new LocalMapPagesAdapter(getApplicationContext(), fileIO));
+    	viewPager.setAdapter(new LocalMapPagesAdapter(getApplicationContext()));
     }
     
     /**

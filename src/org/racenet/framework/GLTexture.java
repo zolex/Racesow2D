@@ -4,10 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.microedition.khronos.opengles.GL10;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.opengl.GLES10;
 import android.opengl.GLUtils;
 /**
  * Class which represents an openGL ES texture
@@ -17,8 +16,6 @@ import android.opengl.GLUtils;
  */
 public class GLTexture {
 	
-    GL10 gl;
-    FileIO fileIO;
     String fileName;
     int textureId;
     int minFilter;
@@ -33,10 +30,8 @@ public class GLTexture {
      * @param GLGame glGame
      * @param String fileName
      */
-    public GLTexture(GL10 gl, FileIO fileIO, String fileName) {
+    public GLTexture(String fileName) {
     	
-        this.gl = gl;
-        this.fileIO = fileIO;
         this.fileName = fileName;
         load();
     }
@@ -59,19 +54,19 @@ public class GLTexture {
     private boolean load() {
     	
         int[] textureIds = new int[1];
-        this.gl.glGenTextures(1, textureIds, 0);
+        GLES10.glGenTextures(1, textureIds, 0);
         this.textureId = textureIds[0];
         
         InputStream in = null;
         // try loading from assets
         try {
         	
-            in = this.fileIO.readAsset("textures" + File.separator + this.fileName);
+            in = FileIO.getInstance().readAsset("textures" + File.separator + this.fileName);
             Bitmap bitmap = BitmapFactory.decodeStream(in);
-            this.gl.glBindTexture(GL10.GL_TEXTURE_2D, this.textureId);
-            GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
-            this.setFilters(GL10.GL_NEAREST, GL10.GL_NEAREST);            
-            this.gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
+            GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, this.textureId);
+            GLUtils.texImage2D(GLES10.GL_TEXTURE_2D, 0, bitmap, 0);
+            this.setFilters(GLES10.GL_NEAREST, GLES10.GL_NEAREST);            
+            GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, 0);
             this.width = bitmap.getWidth();
             this.height = bitmap.getHeight();
             bitmap.recycle();
@@ -81,12 +76,12 @@ public class GLTexture {
         	// if not found in assets try loading from sd-card
             try {
             	
-            	in = this.fileIO.readFile(APP_FOLDER + File.separator + "textures" + File.separator + this.fileName);
+            	in = FileIO.getInstance().readFile(APP_FOLDER + File.separator + "textures" + File.separator + this.fileName);
                 Bitmap bitmap = BitmapFactory.decodeStream(in);
-                this.gl.glBindTexture(GL10.GL_TEXTURE_2D, this.textureId);
-                GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
-                this.setFilters(GL10.GL_NEAREST, GL10.GL_NEAREST);            
-                this.gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
+                GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, this.textureId);
+                GLUtils.texImage2D(GLES10.GL_TEXTURE_2D, 0, bitmap, 0);
+                this.setFilters(GLES10.GL_NEAREST, GLES10.GL_NEAREST);            
+                GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, 0);
                 this.width = bitmap.getWidth();
                 this.height = bitmap.getHeight();
                 bitmap.recycle();
@@ -122,7 +117,7 @@ public class GLTexture {
         this.load();
         this.bind();
         this.setFilters(minFilter, magFilter);        
-        this.gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
+        GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, 0);
     }
     
     /**
@@ -135,8 +130,8 @@ public class GLTexture {
     	
     	this.minFilter = min;
     	this.magFilter = mag;
-    	this.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, this.minFilter);
-    	this.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, this.magFilter);
+    	GLES10.glTexParameterf(GLES10.GL_TEXTURE_2D, GLES10.GL_TEXTURE_MIN_FILTER, this.minFilter);
+    	GLES10.glTexParameterf(GLES10.GL_TEXTURE_2D, GLES10.GL_TEXTURE_MAG_FILTER, this.magFilter);
     }    
     
     /**
@@ -144,7 +139,7 @@ public class GLTexture {
      */
     public void bind() {
     	
-    	this.gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId);
+    	GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, textureId);
     }
     
     /**
@@ -152,8 +147,8 @@ public class GLTexture {
      */
     public void dispose() {
     	
-    	this.gl.glBindTexture(GL10.GL_TEXTURE_2D, this.textureId);
+    	GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, this.textureId);
         int[] textureIds = {textureId};
-        this.gl.glDeleteTextures(1, textureIds, 0);
+        GLES10.glDeleteTextures(1, textureIds, 0);
     }
 }

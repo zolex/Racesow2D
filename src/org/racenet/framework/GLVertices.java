@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 /**
  * Class to manage and draw openGL ES vertices
@@ -15,7 +15,6 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class GLVertices {
 	
-    final GL10 gl;
     final boolean hasColor;
     final boolean hasTexCoords;
     final int vertexSize;
@@ -31,9 +30,8 @@ public class GLVertices {
      * @param boolean hasColor
      * @param boolean hasTexCoords
      */
-    public GLVertices (GL10 gl, int maxVertices, int maxIndices, boolean hasColor, boolean hasTexCoords) {
+    public GLVertices (int maxVertices, int maxIndices, boolean hasColor, boolean hasTexCoords) {
     	
-        this.gl = gl;
         this.hasColor = hasColor;
         this.hasTexCoords = hasTexCoords;
         this.vertexSize = (2 + (hasColor?4:0) + (hasTexCoords?2:0)) * 4;
@@ -88,22 +86,22 @@ public class GLVertices {
      */
     public void bind() {
     	
-        this.gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+    	GLES10.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
         this.vertices.position(0);
-        this.gl.glVertexPointer(2, GL10.GL_FLOAT, this.vertexSize, this.vertices);
+        GLES10.glVertexPointer(2, GLES10.GL_FLOAT, this.vertexSize, this.vertices);
         
         if (this.hasColor) {
         	
-        	this.gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+        	GLES10.glEnableClientState(GLES10.GL_COLOR_ARRAY);
         	this.vertices.position(2);
-            this.gl.glColorPointer(4, GL10.GL_FLOAT, this.vertexSize, this.vertices);
+        	GLES10.glColorPointer(4, GLES10.GL_FLOAT, this.vertexSize, this.vertices);
         }
         
         if (this.hasTexCoords) {
         	
-        	this.gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+        	GLES10.glEnableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
         	this.vertices.position(hasColor?6:2);
-            this.gl.glTexCoordPointer(2, GL10.GL_FLOAT, this.vertexSize, this.vertices);
+        	GLES10.glTexCoordPointer(2, GLES10.GL_FLOAT, this.vertexSize, this.vertices);
         }
     }
 
@@ -119,11 +117,11 @@ public class GLVertices {
         if (this.indices != null) {
         	
         	this.indices.position(offset);
-            this.gl.glDrawElements(primitiveType, numVertices, GL10.GL_UNSIGNED_SHORT, this.indices);
+        	GLES10.glDrawElements(primitiveType, numVertices, GLES10.GL_UNSIGNED_SHORT, this.indices);
             
         } else {
         	
-        	this.gl.glDrawArrays(primitiveType, offset, numVertices);
+        	GLES10.glDrawArrays(primitiveType, offset, numVertices);
         }        
     }
 
@@ -134,12 +132,12 @@ public class GLVertices {
     	
         if (this.hasTexCoords) {
             
-        	this.gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+        	GLES10.glDisableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
         }
 
         if (this.hasColor) {
             
-        	this.gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+        	GLES10.glDisableClientState(GLES10.GL_COLOR_ARRAY);
         }
     }
 }

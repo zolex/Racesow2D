@@ -1,7 +1,6 @@
 package org.racenet.framework;
 
-import javax.microedition.khronos.opengles.GL10;
-
+import android.opengl.GLES10;
 import android.util.FloatMath;
 
 /**
@@ -23,10 +22,10 @@ public class SpriteBatcher {
      * @param GLGraphics glGraphics
      * @param int maxSprites
      */
-    public SpriteBatcher(GLGraphics glGraphics, int maxSprites) {   
+    public SpriteBatcher(int maxSprites) {   
     	
-        this.verticesBuffer = new float[maxSprites*4*4];        
-        this.vertices = new GLVertices(glGraphics.getGL(), maxSprites*4, maxSprites*6, false, true);
+        this.verticesBuffer = new float[maxSprites*4*4];       
+        this.vertices = new GLVertices(maxSprites*4, maxSprites*6, false, true);
         this.bufferIndex = 0;
         this.numSprites = 0;
         
@@ -62,7 +61,7 @@ public class SpriteBatcher {
     public void endBatch() {
         vertices.setVertices(verticesBuffer, 0, bufferIndex);
         vertices.bind();
-        vertices.draw(GL10.GL_TRIANGLES, 0, numSprites * 6);
+        vertices.draw(GLES10.GL_TRIANGLES, 0, numSprites * 6);
         vertices.unbind();
     }
     

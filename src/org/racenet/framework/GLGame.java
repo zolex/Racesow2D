@@ -32,10 +32,8 @@ public abstract class GLGame extends Activity implements Renderer {
         Idle
     }
     
-    public GLSurfaceView glView;    
-    GLGraphics glGraphics;
+    public GLSurfaceView glView;
     Audio audio;
-    FileIO fileIO;
     Screen screen;
     GLGameState state = GLGameState.Initialized;
     Object stateChanged = new Object();
@@ -57,8 +55,8 @@ public abstract class GLGame extends Activity implements Renderer {
         glView.setRenderer(this);
         setContentView(glView);
         
-        glGraphics = new GLGraphics(glView);
-        fileIO = new FileIO(getAssets());
+        FileIO.setupInstance(getAssets());
+        
         audio = new Audio(this);
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
@@ -79,13 +77,11 @@ public abstract class GLGame extends Activity implements Renderer {
      * Get the startScreen for the game when
      * the openGL surface is being created
      * 
-     * @param GL10 gl
+     * @param GL10 unused
      * @param EGLConfig config
      */
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {   
+    public void onSurfaceCreated(GL10 unused, EGLConfig config) {   
     	
-        glGraphics.setGL(gl);
-        
         synchronized (stateChanged) {
         	
             if(state == GLGameState.Initialized) {
@@ -109,11 +105,11 @@ public abstract class GLGame extends Activity implements Renderer {
     /**
      * Nothing to do on surfaceChanged
      * 
-     * @param GL10 gl
+     * @param GL10 unused
      * @param int width
      * @param int height
      */
-    public void onSurfaceChanged(GL10 gl, int width, int height) {   
+    public void onSurfaceChanged(GL10 unused, int width, int height) {   
     	
     }
     
@@ -121,9 +117,9 @@ public abstract class GLGame extends Activity implements Renderer {
      * onDrawframe is being called by openGL and updates
      * the world and draws it accoring to the internal gamestate
      * 
-     * @param GL10 gl
+     * @param GL10 unused
      */
-    public void onDrawFrame(GL10 gl) {     
+    public void onDrawFrame(GL10 unused) {     
     	
         GLGameState state = null;
         
@@ -190,26 +186,6 @@ public abstract class GLGame extends Activity implements Renderer {
         glView.onPause();  
         super.onPause();
     }    
-    
-    /**
-     * Get the openGL graphics
-     * 
-     * @return GLGraphics
-     */
-    public GLGraphics getGLGraphics() {
-    	
-        return glGraphics;
-    }  
-
-    /**
-     * Get the FileIO object
-     * 
-     * @return FileIO
-     */
-    public FileIO getFileIO() {
-    	
-        return fileIO;
-    }
 
     /**
      * Get the audio interface

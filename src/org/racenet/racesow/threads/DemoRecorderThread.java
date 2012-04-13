@@ -18,7 +18,6 @@ import org.racenet.framework.FileIO;
  */
 public class DemoRecorderThread extends Thread {
 	
-	private FileIO fileIO;
 	private String map;
 	public BlockingQueue<String> demoParts = new LinkedBlockingQueue<String>();
 	private FileOutputStream fos;
@@ -32,13 +31,12 @@ public class DemoRecorderThread extends Thread {
 	 * @param FileIO fileIO
 	 * @param String map
 	 */
-	public DemoRecorderThread(FileIO fileIO, String map) {
-		
-		this.fileIO = fileIO;
+	public DemoRecorderThread(String map) {
+
 		this.map = map;
 		
 		this.demoFolder = "racesow" + File.separator + "demos" + File.separator;
-		this.fileIO.createDirectory(demoFolder);
+		FileIO.getInstance().createDirectory(demoFolder);
 		
 		this.newDemo();
 	}
@@ -59,7 +57,7 @@ public class DemoRecorderThread extends Thread {
 		
 		if (this.fileName != null) {
 			
-			this.fileIO.deleteFile(this.fileName);
+			FileIO.getInstance().deleteFile(this.fileName);
 		}
 	}
 	
@@ -71,7 +69,7 @@ public class DemoRecorderThread extends Thread {
 		String date = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
 		this.fileName = this.demoFolder + this.map.replace(".xml", "") + "_" + date + ".r2d";
 		try {
-			this.fos = (FileOutputStream)this.fileIO.writeFile(this.fileName);
+			this.fos = (FileOutputStream)FileIO.getInstance().writeFile(this.fileName);
 		} catch (IOException e) {
 		}
 		

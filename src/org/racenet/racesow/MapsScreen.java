@@ -6,12 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.microedition.khronos.opengles.GL10;
-
 import org.racenet.framework.FileIO;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
-import org.racenet.framework.GLGraphics;
 import org.racenet.framework.GLTexture;
 import org.racenet.framework.Screen;
 import org.racenet.framework.TexturedBlock;
@@ -24,6 +21,7 @@ import org.w3c.dom.NodeList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.opengl.GLES10;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,7 +37,6 @@ public class MapsScreen extends Screen implements OnTouchListener {
 	
 	public TexturedBlock header;
 	Camera2 camera;
-	GLGraphics glGraphics;
 	GestureDetector gestures;
 	float menuVelocity = 0;
 	Menu menu;
@@ -52,10 +49,8 @@ public class MapsScreen extends Screen implements OnTouchListener {
 	public MapsScreen(final GLGame game) {
 		
 		super(game);
-		
-		glGraphics = game.getGLGraphics();
-		
-		this.camera = new Camera2(glGraphics, (float)game.getScreenWidth(), (float)game.getScreenHeight());
+
+		this.camera = new Camera2((float)game.getScreenWidth(), (float)game.getScreenHeight());
 		
 		this.refreshMapList();
 		
@@ -67,10 +62,10 @@ public class MapsScreen extends Screen implements OnTouchListener {
 			texture = "racesow_small.jpg";
 		}
 		
-		this.header = new TexturedBlock(game.getGLGraphics().getGL(), game.getFileIO(), texture,
+		this.header = new TexturedBlock(texture,
 				TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(this.camera.frustumWidth, 0));
 		this.header.setPosition(new Vector2(0, this.camera.frustumHeight - this.header.height));
-		this.header.texture.setFilters(GL10.GL_LINEAR, GL10.GL_LINEAR);
+		this.header.texture.setFilters(GLES10.GL_LINEAR, GLES10.GL_LINEAR);
 	}
 	
 	/**
@@ -84,7 +79,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 			this.menu.dispose();
 		}
 		
-		this.glGraphics.getView().setOnTouchListener(this);
+		this.game.glView.setOnTouchListener(this);
 		
 		this.menu = new Menu(this.game, this.camera.frustumWidth, this.camera.frustumHeight);
 		this.gestures = new GestureDetector(this.menu);
@@ -92,7 +87,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 		List<MapItem> mapList = new ArrayList<MapItem>();
 		
 		// load the available maps from the assets
-		String[] maps = game.getFileIO().listAssets("maps");
+		String[] maps = FileIO.getInstance().listAssets("maps");
 		for (int i = 0; i < maps.length; i++) {
 			
 			final String mapName = maps[i];
@@ -102,7 +97,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 			XMLParser parser = new XMLParser();
 			try {
 				
-				parser.read(game.getFileIO().readAsset("maps" + File.separator + mapName));
+				parser.read(FileIO.getInstance().readAsset("maps" + File.separator + mapName));
 				
 			} catch (IOException e) {
 				
@@ -127,7 +122,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 		}
 		
 		// lod the available maps from the sd-card
-		String[] externalMaps = game.getFileIO().listFiles("racesow" + File.separator + "maps", FileIO.ORDER_NAME);
+		String[] externalMaps = FileIO.getInstance().listFiles("racesow" + File.separator + "maps", FileIO.ORDER_NAME);
 		if (externalMaps != null) {
 			for (int i = 0; i < externalMaps.length; i++) {
 				
@@ -138,7 +133,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 				XMLParser parser = new XMLParser();
 				try {
 					
-					parser.read(game.getFileIO().readFile("racesow" + File.separator + "maps" + File.separator + mapName));
+					parser.read(FileIO.getInstance().readFile("racesow" + File.separator + "maps" + File.separator + mapName));
 					
 				} catch (IOException e) {
 					
@@ -175,7 +170,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 				
 				public void handle() {
 					
-					glGraphics.getView().queueEvent(new Runnable() {
+					game.glView.queueEvent(new Runnable() {
 
 	                    public void run() {
 					
@@ -222,18 +217,17 @@ public class MapsScreen extends Screen implements OnTouchListener {
 	 */
 	public void present(float deltaTime) {
 		
-		GL10 gl = glGraphics.getGL();
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		GLES10.glClear(GLES10.GL_COLOR_BUFFER_BIT);
 		
-		gl.glFrontFace(GL10.GL_CCW);
-		gl.glEnable(GL10.GL_CULL_FACE);
-		gl.glCullFace(GL10.GL_BACK);
+		GLES10.glFrontFace(GLES10.GL_CCW);
+		GLES10.glEnable(GLES10.GL_CULL_FACE);
+		GLES10.glCullFace(GLES10.GL_BACK);
 		
-		this.camera.setViewportAndMatrices();
+		this.camera.setViewportAndMatrices(this.game.glView.getWidth(), this.game.glView.getHeight());
 		
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glEnable(GL10.GL_BLEND);
-		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		GLES10.glEnable(GLES10.GL_TEXTURE_2D);
+		GLES10.glEnable(GLES10.GL_BLEND);
+		GLES10.glBlendFunc(GLES10.GL_SRC_ALPHA, GLES10.GL_ONE_MINUS_SRC_ALPHA);
 		
 		this.header.draw();
 		this.menu.draw();

@@ -1,6 +1,6 @@
 package org.racenet.framework;
 
-import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 /**
  * A text assigned to the Camera2 class
@@ -11,7 +11,6 @@ import javax.microedition.khronos.opengles.GL10;
 public class CameraText extends HudItem {
 
 	SpriteBatcher batcher;
-	GL10 gl;
 	BitmapFont font;
 	public String text = "empty";
 	public float red = 1;
@@ -26,15 +25,13 @@ public class CameraText extends HudItem {
 	 * 
 	 * @param SpriteBatcher batcher
 	 * @param BitmapFont font
-	 * @param GL10 gl
 	 * @param float cameraX
 	 * @param float cameraY
 	 */
-	public CameraText(SpriteBatcher batcher, BitmapFont font, GL10 gl, float cameraX, float cameraY) {
+	public CameraText(SpriteBatcher batcher, BitmapFont font, float cameraX, float cameraY) {
 		
 		super(new Vector2(cameraX, cameraY));
 		this.batcher = batcher;
-		this.gl = gl;
 		this.font = font;
 	}
 
@@ -44,9 +41,9 @@ public class CameraText extends HudItem {
 	 */
 	public void draw() {
 		
-		this.gl.glColor4f(this.red, this.green, this.blue, this.alpha);
+		GLES10.glColor4f(this.red, this.green, this.blue, this.alpha);
 		this.font.draw(batcher, this.text, this.scale, this.space, this.getPosition().x, this.getPosition().y);
-		this.gl.glColor4f(1, 1, 1, 1);
+		GLES10.glColor4f(1, 1, 1, 1);
 	}
 
 	@Override

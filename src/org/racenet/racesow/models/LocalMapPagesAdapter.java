@@ -38,12 +38,12 @@ public class LocalMapPagesAdapter extends PagerAdapter {
 	 * @param Context context
 	 * @param FileIO fileIO
 	 */
-	public LocalMapPagesAdapter(Context context, FileIO fileIO) {
+	public LocalMapPagesAdapter(Context context) {
 		
 		this.context = context;
 
 		// read all maps from the assets
-		String[] maps = fileIO.listAssets("maps");
+		String[] maps = FileIO.getInstance().listAssets("maps");
 		for (int i = 0; i < maps.length; i++) {
 			
 			final String mapName = maps[i];
@@ -54,7 +54,7 @@ public class LocalMapPagesAdapter extends PagerAdapter {
 			XMLParser parser = new XMLParser();
 			try {
 				
-				parser.read(fileIO.readAsset("maps" + File.separator + mapName));
+				parser.read(FileIO.getInstance().readAsset("maps" + File.separator + mapName));
 				
 			} catch (IOException e) {
 				
@@ -73,7 +73,7 @@ public class LocalMapPagesAdapter extends PagerAdapter {
 		}
 		
 		// read all maps from the sd-card
-		String[] externalMaps = fileIO.listFiles("racesow" + File.separator + "maps", FileIO.ORDER_NAME);
+		String[] externalMaps = FileIO.getInstance().listFiles("racesow" + File.separator + "maps", FileIO.ORDER_NAME);
 		if (externalMaps != null) {
 			for (int i = 0; i < externalMaps.length; i++) {
 				
@@ -85,7 +85,7 @@ public class LocalMapPagesAdapter extends PagerAdapter {
 				XMLParser parser = new XMLParser();
 				try {
 					
-					parser.read(fileIO.readFile("racesow" + File.separator + "maps" + File.separator + mapName));
+					parser.read(FileIO.getInstance().readFile("racesow" + File.separator + "maps" + File.separator + mapName));
 					
 				} catch (IOException e) {
 					

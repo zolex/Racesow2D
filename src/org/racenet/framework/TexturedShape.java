@@ -1,7 +1,5 @@
 package org.racenet.framework;
 
-import javax.microedition.khronos.opengles.GL10;
-
 /**
  * Base Class for TexturedTriangle and TexturedRectangle
  * 
@@ -10,8 +8,6 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public abstract class TexturedShape extends HudItem implements Drawable {
 	
-	GL10 gl;
-	FileIO fileIO;
 	public GLVertices glVertices = null;
 	public GLTexture texture = null;
 	float texScaleWidth = 0.05f;
@@ -29,11 +25,9 @@ public abstract class TexturedShape extends HudItem implements Drawable {
 	 * @param float texScaleHeight
 	 * @param Vectro2 ... vertices
 	 */
-	public TexturedShape(GL10 gl, FileIO fileIO, String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
+	public TexturedShape(String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
 		
 		super(vertices);
-		this.gl = gl;
-		this.fileIO = fileIO;
 		this.func = func;
 		this.texScaleWidth = texScaleWidth == 0 ? 0.1f : texScaleWidth;
 		this.texScaleHeight = texScaleHeight == 0 ? 0.1f : texScaleHeight;
@@ -53,11 +47,9 @@ public abstract class TexturedShape extends HudItem implements Drawable {
 	 * @param float texScaleHeight
 	 * @param Vectro2 ... vertices
 	 */
-	public TexturedShape(GL10 gl, FileIO fileIO, GLTexture texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
+	public TexturedShape(GLTexture texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
 		
 		super(vertices);
-		this.gl = gl;
-		this.fileIO = fileIO;
 		this.func = func;
 		this.texScaleWidth = texScaleWidth == 0 ? 0.1f : texScaleWidth;
 		this.texScaleHeight = texScaleHeight == 0 ? 0.1f : texScaleHeight;
@@ -76,7 +68,7 @@ public abstract class TexturedShape extends HudItem implements Drawable {
 	 */
 	public void setupTexture(String fileName) {
 		
-		this.texture = new GLTexture(this.gl, this.fileIO, fileName);
+		this.texture = new GLTexture(fileName);
 	}
 	
 	/**

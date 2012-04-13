@@ -25,15 +25,39 @@ public class FileIO {
 
 	private AssetManager assetManager;
 	public static String externalStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
+	private static FileIO __instance;
 	
 	/**
 	 * Constructor
 	 * 
 	 * @param AssetManager am
 	 */
-	public FileIO(AssetManager am) {
+	private FileIO(AssetManager am) {
 		
 		assetManager = am;
+	}
+	
+	/**
+	 * Setup the singleton
+	 * 
+	 * @param AssetManager am
+	 */
+	public static void setupInstance(AssetManager am) {
+		
+		if (__instance == null) {
+			
+			__instance = new FileIO(am);
+		}
+	}
+	
+	/**
+	 * Singleton getter
+	 * 
+	 * @return FileIO
+	 */
+	public static FileIO getInstance() {
+		
+		return __instance;
 	}
 	
 	/**

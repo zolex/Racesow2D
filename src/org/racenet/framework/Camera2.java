@@ -3,7 +3,7 @@ package org.racenet.framework;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 /**
  * A camera which represents the two dimensional
@@ -18,7 +18,6 @@ public class Camera2 implements Drawable {
     public float zoom;
     public final float frustumWidth;
     public final float frustumHeight;
-    final GLGraphics glGraphics;
     protected List<HudItem> hudItems = new ArrayList<HudItem>();
     
     /**
@@ -28,9 +27,8 @@ public class Camera2 implements Drawable {
      * @param float frustumWidth
      * @param float frustumHeight
      */
-    public Camera2(GLGraphics glGraphics, float frustumWidth, float frustumHeight) {
+    public Camera2(float frustumWidth, float frustumHeight) {
     	
-        this.glGraphics = glGraphics;
         this.frustumWidth = frustumWidth;
         this.frustumHeight = frustumHeight;
         this.position = new Vector2(frustumWidth / 2, frustumHeight / 2);
@@ -99,19 +97,19 @@ public class Camera2 implements Drawable {
     /**
      * Setup openGL ES internals
      */
-    public void setViewportAndMatrices() {
+    public void setViewportAndMatrices(int width, int height) {
     	
-        GL10 gl = glGraphics.getGL();
-        gl.glViewport(0, 0, glGraphics.getWidth(), glGraphics.getHeight());
-        gl.glMatrixMode(GL10.GL_PROJECTION);
-        gl.glLoadIdentity();
-        gl.glOrthof(position.x - frustumWidth * zoom / 2, 
-                    position.x + frustumWidth * zoom/ 2, 
-                    position.y - frustumHeight * zoom / 2, 
-                    position.y + frustumHeight * zoom/ 2, 
-                    1, -1);
-        gl.glMatrixMode(GL10.GL_MODELVIEW);
-        gl.glLoadIdentity();
+        GLES10.glViewport(0, 0, width, height);
+        GLES10.glMatrixMode(GLES10.GL_PROJECTION);
+        GLES10.glLoadIdentity();
+        GLES10.glOrthof(
+        	position.x - frustumWidth * zoom / 2, 
+	        position.x + frustumWidth * zoom / 2, 
+	        position.y - frustumHeight * zoom / 2, 
+	        position.y + frustumHeight * zoom / 2, 
+	        1, -1);
+        GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
+        GLES10.glLoadIdentity();
     }
     
     /**
@@ -123,18 +121,6 @@ public class Camera2 implements Drawable {
 			
 			hudItems.get(i).draw();
 		}
-    }
-    
-    /**
-     * Assign the touch coordinates to the viewed area
-     * 
-     * @param Vector2 touch
-     */
-    public void touchToWorld(Vector2 touch) {
-    	
-    	touch.x = (touch.x / (float) glGraphics.getWidth()) * frustumWidth * zoom;
-    	touch.y = (1 - touch.y / (float) glGraphics.getHeight()) * frustumHeight * zoom;
-    	touch.add(position).subtract(frustumWidth * zoom / 2, frustumHeight * zoom / 2);
     }
     
     /**

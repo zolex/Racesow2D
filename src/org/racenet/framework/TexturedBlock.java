@@ -1,6 +1,6 @@
 package org.racenet.framework;
 
-import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 /**
  * A drawable rectangle with a texture applied
@@ -20,9 +20,9 @@ public class TexturedBlock extends TexturedShape implements Drawable {
 	 * @param float texScaleHeight
 	 * @param Vector2 ... vertices
 	 */
-	public TexturedBlock(GL10 gl, FileIO fileIO, String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
+	public TexturedBlock(String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
 		
-		super(gl, fileIO, texture, func, texScaleWidth, texScaleHeight, texShiftX, texShiftY, vertices);
+		super(texture, func, texScaleWidth, texScaleHeight, texShiftX, texShiftY, vertices);
 	}
 	
 	/**
@@ -35,9 +35,9 @@ public class TexturedBlock extends TexturedShape implements Drawable {
 	 * @param float texScaleHeight
 	 * @param Vector2 ... vertices
 	 */
-	public TexturedBlock(GL10 gl, FileIO fileIO, GLTexture texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
+	public TexturedBlock(GLTexture texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
 		
-		super(gl, fileIO, texture, func, texScaleWidth, texScaleHeight, texShiftX, texShiftY, vertices);
+		super(texture, func, texScaleWidth, texScaleHeight, texShiftX, texShiftY, vertices);
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public class TexturedBlock extends TexturedShape implements Drawable {
 		}
 		
 		
-		this.glVertices = new GLVertices(this.gl, 4, 6 , false, true);
+		this.glVertices = new GLVertices(4, 6 , false, true);
 		this.glVertices.setVertices(vertices, 0, 16);
 		this.glVertices.setIndices(new short[] {0, 1, 2, 0, 2, 3}, 0, 6);
 	}
@@ -90,25 +90,12 @@ public class TexturedBlock extends TexturedShape implements Drawable {
 	 */
 	public void draw() {
 		
-		this.gl.glPushMatrix();
-		this.gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
+		GLES10.glPushMatrix();
+		GLES10.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
 		this.texture.bind();
 		this.glVertices.bind();
-		this.glVertices.draw(GL10.GL_TRIANGLES, 0, 6);
+		this.glVertices.draw(GLES10.GL_TRIANGLES, 0, 6);
 		this.glVertices.unbind();
-		this.gl.glPopMatrix();
-	}
-	
-	/**
-	 * Draw the outlines of the rectangle
-	 */
-	public void drawOutline() {
-		
-		this.gl.glPushMatrix();
-		this.gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
-		this.glVertices.bind();
-		this.glVertices.draw(GL10.GL_LINE_LOOP, 0, 6);
-		this.glVertices.unbind();
-		this.gl.glPopMatrix();
+		GLES10.glPopMatrix();
 	}
 }

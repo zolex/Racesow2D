@@ -1,12 +1,9 @@
 package org.racenet.racesow;
 
-import javax.microedition.khronos.opengles.GL10;
-
 import org.racenet.framework.BitmapFont;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.CameraText;
 import org.racenet.framework.GLGame;
-import org.racenet.framework.GLGraphics;
 import org.racenet.framework.GLTexture;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.Screen;
@@ -18,6 +15,7 @@ import org.racenet.racesow.models.DemoKeyFrame;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.opengl.GLES10;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -36,7 +34,6 @@ public class GameScreen extends Screen implements OnTouchListener {
 	
 	Vector2 gravity = new Vector2(0, -30);
 	public Camera2 camera;
-	GLGraphics glGraphics;
 	TexturedBlock pause, play;
 	boolean jumpPressed = false;
 	float jumpPressedTime = 0;
@@ -76,7 +73,6 @@ public class GameScreen extends Screen implements OnTouchListener {
 	public GameScreen(GLGame game, Camera2 camera, Map map, Player player, DemoParser demoParser, boolean recordDemos) {
 		
 		super(game);
-		this.glGraphics = game.getGLGraphics();
 		this.camera = camera;
 		this.map = map;
 		this.player = player;
@@ -86,11 +82,11 @@ public class GameScreen extends Screen implements OnTouchListener {
 		
 		GLTexture.APP_FOLDER = "racesow";
 		
-		glGraphics.getView().setOnTouchListener(this);
+		game.glView.setOnTouchListener(this);
 		
 		// for bitmap-font rendering
-		this.batcher = new SpriteBatcher(this.glGraphics, 96);
-		GLTexture texture = new GLTexture(game.getGLGraphics().getGL(), game.getFileIO(), "font.png");
+		this.batcher = new SpriteBatcher(96);
+		GLTexture texture = new GLTexture("font.png");
 		this.font = new BitmapFont(texture, 0, 0, 17, 30, 50);
 		
 		// user settings
@@ -118,13 +114,11 @@ public class GameScreen extends Screen implements OnTouchListener {
 		if (this.demoParser == null) {
 			
 			this.pause = new TexturedBlock(
-					this.game.getGLGraphics().getGL(), this.game.getFileIO(),
 					"hud/pause.png", GameObject.FUNC_NONE, -1, -1, 0, 0,
 					new Vector2(-this.camera.frustumWidth / 2 + 1 , this.camera.frustumHeight / 2 - 6),
 					new Vector2(-this.camera.frustumWidth / 2 + 6, 0));
 			
 			this.play = new TexturedBlock(
-				this.game.getGLGraphics().getGL(), this.game.getFileIO(),
 				"hud/play.png", GameObject.FUNC_NONE, -1, -1, 0, 0,
 				new Vector2(-this.camera.frustumWidth / 2 + 1 , this.camera.frustumHeight / 2 - 6),
 				new Vector2(-this.camera.frustumWidth / 2 + 6, 0));
@@ -146,7 +140,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 	 */
 	public CameraText createCameraText(float cameraX, float cameraY) {
 		
-		return new CameraText(this.batcher, this.font, this.glGraphics.getGL(), cameraX, cameraY);
+		return new CameraText(this.batcher, this.font, cameraX, cameraY);
 	}
 	
 	/**
@@ -380,18 +374,17 @@ public class GameScreen extends Screen implements OnTouchListener {
 	 */
 	public void present(float deltaTime) {
 		
-		GL10 gl = this.glGraphics.getGL();
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		GLES10.glClear(GLES10.GL_COLOR_BUFFER_BIT);
 		
-		gl.glFrontFace(GL10.GL_CCW);
-		gl.glEnable(GL10.GL_CULL_FACE);
-		gl.glCullFace(GL10.GL_BACK);
+		GLES10.glFrontFace(GLES10.GL_CCW);
+		GLES10.glEnable(GLES10.GL_CULL_FACE);
+		GLES10.glCullFace(GLES10.GL_BACK);
 		
-		this.camera.setViewportAndMatrices();
+		this.camera.setViewportAndMatrices(this.game.glView.getWidth(), this.game.glView.getHeight());
 		
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glEnable(GL10.GL_BLEND);
-		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		GLES10.glEnable(GLES10.GL_TEXTURE_2D);
+		GLES10.glEnable(GLES10.GL_BLEND);
+		GLES10.glBlendFunc(GLES10.GL_SRC_ALPHA, GLES10.GL_ONE_MINUS_SRC_ALPHA);
 		
 		this.map.draw();
 		this.player.draw(this.playerBlur);

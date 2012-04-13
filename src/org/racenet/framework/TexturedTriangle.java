@@ -1,6 +1,6 @@
 package org.racenet.framework;
 
-import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 /**
  * A drawable triangle with a texture applied
@@ -20,9 +20,9 @@ public class TexturedTriangle extends TexturedShape implements Drawable {
 	 * @param float texScaleHeight
 	 * @param Vector2 ... vertices
 	 */
-	public TexturedTriangle(GL10 gl, FileIO fileIO, String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
+	public TexturedTriangle(String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
 		
-		super(gl, fileIO, texture, func, texScaleWidth, texScaleHeight, texShiftX, texShiftY, vertices);
+		super(texture, func, texScaleWidth, texScaleHeight, texShiftX, texShiftY, vertices);
 	}
 	/**
 	 * Constructor 
@@ -34,9 +34,9 @@ public class TexturedTriangle extends TexturedShape implements Drawable {
 	 * @param float texScaleHeight
 	 * @param Vector2 ... vertices
 	 */
-	public TexturedTriangle(GL10 gl, FileIO fileIO, GLTexture texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
+	public TexturedTriangle(GLTexture texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
 		
-		super(gl, fileIO, texture, func, texScaleWidth, texScaleHeight, texShiftX, texShiftY, vertices);
+		super(texture, func, texScaleWidth, texScaleHeight, texShiftX, texShiftY, vertices);
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class TexturedTriangle extends TexturedShape implements Drawable {
 		}
 		
 		
-		this.glVertices = new GLVertices(this.gl, 3, 0 , false, true);
+		this.glVertices = new GLVertices(3, 0 , false, true);
 		this.glVertices.setVertices(glVertices, 0, 12);
 	}
 	
@@ -78,7 +78,7 @@ public class TexturedTriangle extends TexturedShape implements Drawable {
 		
 		this.texture.bind();
 		this.glVertices.bind();
-		this.glVertices.draw(GL10.GL_TRIANGLES, 0, 3);
+		this.glVertices.draw(GLES10.GL_TRIANGLES, 0, 3);
 		this.glVertices.unbind();
 	}
 	
@@ -88,7 +88,7 @@ public class TexturedTriangle extends TexturedShape implements Drawable {
 	public void drawOutline() {
 		
 		this.glVertices.bind();
-		this.glVertices.draw(GL10.GL_LINE_LOOP, 0, 3);
+		this.glVertices.draw(GLES10.GL_LINE_LOOP, 0, 3);
 		this.glVertices.unbind();
 	}
 }

@@ -1,6 +1,6 @@
 package org.racenet.framework;
 
-import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 /**
  * Class which can render an animated rectangle
@@ -10,8 +10,6 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class AnimatedBlock extends GameObject implements Drawable {
 
-	protected GL10 gl;
-	protected FileIO fileIO;
 	public float animTime = 0;
 	public GLVertices vertices = null;
 	public Animation anims[];
@@ -28,11 +26,9 @@ public class AnimatedBlock extends GameObject implements Drawable {
 	 * @param GLGame game
 	 * @param Vector2 ... vertices
 	 */
-	public AnimatedBlock(GLGame game, Vector2 ... vertices) {
+	public AnimatedBlock(Vector2 ... vertices) {
 		
 		super(vertices);
-		this.gl = game.getGLGraphics().getGL();
-		this.fileIO = game.getFileIO();
 	}
 	
 	/**
@@ -75,7 +71,7 @@ public class AnimatedBlock extends GameObject implements Drawable {
 		GLTexture[] frames = new GLTexture[keyFrames.length];
 		for (int i = 0; i < keyFrames.length; i++) {
 			
-			frames[i] = new GLTexture(this.gl, this.fileIO, keyFrames[i]);
+			frames[i] = new GLTexture(keyFrames[i]);
 		}
 		
 		this.anims[animId] = new Animation(frameDuration, frames);
@@ -87,7 +83,7 @@ public class AnimatedBlock extends GameObject implements Drawable {
 	public void setupVertices() {
 		
 		GLTexture firstFrame = this.anims[0].getKeyFrame(0); // TODO: choose proper frame
-		this.vertices = new GLVertices(this.gl, 4, 6 , false, true);
+		this.vertices = new GLVertices(4, 6 , false, true);
 		this.vertices.setVertices(new float[] {
 				0,			0,				-this.texShiftX, this.height / (firstFrame.height * this.texScaleHeight) + this.texShiftY,
 				this.width,	0,				this.width / (firstFrame.width * this.texScaleWidth) - this.texShiftX, height / (firstFrame.height * this.texScaleHeight) + this.texShiftY,
@@ -101,13 +97,13 @@ public class AnimatedBlock extends GameObject implements Drawable {
 	 */
 	public void draw() {
 		
-		this.gl.glPushMatrix();
-		this.gl.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
+		GLES10.glPushMatrix();
+		GLES10.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
 		this.anims[this.activeAnimId].getKeyFrame(this.animTime).bind();
 		this.vertices.bind();
-		this.vertices.draw(GL10.GL_TRIANGLES, 0, 6);
+		this.vertices.draw(GLES10.GL_TRIANGLES, 0, 6);
 		this.vertices.unbind();
-		this.gl.glPopMatrix();
+		GLES10.glPopMatrix();
 	}
 	
 	/**

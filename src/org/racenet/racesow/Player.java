@@ -3,8 +3,6 @@ package org.racenet.racesow;
 import java.util.List;
 import java.util.Random;
 
-import javax.microedition.khronos.opengles.GL10;
-
 import org.racenet.framework.Audio;
 import org.racenet.framework.Sound;
 import org.racenet.framework.AnimatedBlock;
@@ -22,6 +20,7 @@ import org.racenet.racesow.threads.InternalScoresThread;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.opengl.GLES10;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -119,7 +118,7 @@ public class Player extends AnimatedBlock {
 	public Player(final GLGame game, Map map, Camera2 camera, float x, float y, boolean soundEnabled, boolean blurEnabled, boolean recordDemos) {
 		
 		// create the TexturedShape with static width and height
-		super(game, new Vector2(x,y), new Vector2(x + 9.6f, y), new Vector2(x + 9.6f, y + 9.6f), new Vector2(x, y + 9.6f));
+		super(new Vector2(x,y), new Vector2(x + 9.6f, y), new Vector2(x + 9.6f, y + 9.6f), new Vector2(x, y + 9.6f));
 		this.texScaleHeight = 0.075f;
 		this.texScaleWidth = 0.075f;
 		
@@ -151,7 +150,6 @@ public class Player extends AnimatedBlock {
 			public TexturedBlock createObject() {
 				
 				return new TexturedBlock(
-						Player.this.gl, Player.this.fileIO,
 						"decals/plasma_hit.png",
 						GameObject.FUNC_NONE,
 						-1,
@@ -170,7 +168,6 @@ public class Player extends AnimatedBlock {
             public TexturedBlock createObject() {
             	
             	return new TexturedBlock(
-        				Player.this.gl, Player.this.fileIO,
         				"decals/rocket_hit.png",
         				GameObject.FUNC_NONE,
         				-1,
@@ -714,7 +711,6 @@ public class Player extends AnimatedBlock {
 				
 				// show a weapon icon in the HUD
 				TexturedBlock hudItem = new TexturedBlock(
-					this.gl, this.fileIO,
 					texture,
 					item.func,
 					-1,
@@ -1143,15 +1139,15 @@ public class Player extends AnimatedBlock {
 		
 		if (this.blurEnabled) {
 			
-			this.gl.glPushMatrix();
-			this.gl.glTranslatef(this.getPosition().x - blur, this.getPosition().y, 0);
+			GLES10.glPushMatrix();
+			GLES10.glTranslatef(this.getPosition().x - blur, this.getPosition().y, 0);
 			this.anims[this.activeAnimId].getKeyFrame(this.animTime).bind();
-			this.gl.glColor4f(1, 1, 1, 0.2f);
+			GLES10.glColor4f(1, 1, 1, 0.2f);
 			this.vertices.bind();
-			this.vertices.draw(GL10.GL_TRIANGLES, 0, 6);
+			this.vertices.draw(GLES10.GL_TRIANGLES, 0, 6);
 			this.vertices.unbind();
-			this.gl.glColor4f(1, 1, 1, 1);
-			this.gl.glPopMatrix();
+			GLES10.glColor4f(1, 1, 1, 1);
+			GLES10.glPopMatrix();
 		}
 	}
 }

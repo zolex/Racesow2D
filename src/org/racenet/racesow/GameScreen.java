@@ -346,7 +346,6 @@ public class GameScreen extends Screen implements OnTouchListener {
 			camY = this.player.getPosition().y - this.camera.frustumHeight / 2 + 12;
 		}
 		
-
 		this.playerBlur = 0;
 		this.targetPlayerOffset =  Math.min(5000, Math.max(450, this.player.virtualSpeed)) / 128;
 		if (this.currentPlayerOffset < this.targetPlayerOffset) {

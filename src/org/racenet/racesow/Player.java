@@ -101,6 +101,7 @@ public class Player extends AnimatedBlock {
 	public String frameDecal = "";
 	public int frameSound = -1;
 	boolean recordDemos;
+	boolean blurEnabled;
 	private GLGame game;
 	
 	private int frames = 0;
@@ -115,10 +116,10 @@ public class Player extends AnimatedBlock {
 	 * @param float y
 	 * @param boolean soundEnabled
 	 */
-	public Player(final GLGame game, Map map, Camera2 camera, float x, float y, boolean soundEnabled, boolean recordDemos) {
+	public Player(final GLGame game, Map map, Camera2 camera, float x, float y, boolean soundEnabled, boolean blurEnabled, boolean recordDemos) {
 		
 		// create the TexturedShape with static width and height
-		super(game, new Vector2(x,y), new Vector2(x + 3.4f, y), new Vector2(x + 3.4f, y + 6.5f), new Vector2(x, y + 6.5f));
+		super(game, new Vector2(x,y), new Vector2(x + 6.4f, y), new Vector2(x + 6.4f, y + 6.4f), new Vector2(x, y + 6.4f));
 		
 		this.game = game;
 		this.soundEnabled = soundEnabled;
@@ -126,6 +127,7 @@ public class Player extends AnimatedBlock {
 		this.camera = camera;
 		this.map = map;
 		this.recordDemos = recordDemos;
+		this.blurEnabled = blurEnabled;
 		
 		// load the sounds
 		Audio audio = (Audio)game.getAudio();
@@ -1137,13 +1139,16 @@ public class Player extends AnimatedBlock {
 		
 		super.draw();
 		
-		gl.glPushMatrix();
-		gl.glTranslatef(this.getPosition().x - blur, this.getPosition().y, 0);
-		this.anims[this.activeAnimId].getKeyFrame(this.animTime).bind();
-		gl.glColor4f(1, 1, 1, 0.2f);
-		this.vertices.bind();
-		this.vertices.draw(GL10.GL_TRIANGLES, 0, 6);
-		this.vertices.unbind();
-		gl.glPopMatrix();
+		if (this.blurEnabled) {
+			
+			this.gl.glPushMatrix();
+			this.gl.glTranslatef(this.getPosition().x - blur, this.getPosition().y, 0);
+			this.anims[this.activeAnimId].getKeyFrame(this.animTime).bind();
+			this.gl.glColor4f(1, 1, 1, 0.2f);
+			this.vertices.bind();
+			this.vertices.draw(GL10.GL_TRIANGLES, 0, 6);
+			this.vertices.unbind();
+			this.gl.glPopMatrix();
+		}
 	}
 }

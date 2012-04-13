@@ -60,6 +60,10 @@ public class Settings extends PreferenceActivity {
 					
 					prefs.edit().putBoolean("gfx", value.toString().equals("true") ? true : false).commit();
 					
+				} else if (pref.getKey().equals("blur")) {
+					
+					prefs.edit().putBoolean("blur", value.toString().equals("true") ? true : false).commit();
+					
 				} else if (pref.getKey().equals("name")) {
 					
 					String nick = value.toString().trim();
@@ -91,6 +95,7 @@ public class Settings extends PreferenceActivity {
 		findPreference("demos").setOnPreferenceChangeListener(listener);
 		findPreference("sound").setOnPreferenceChangeListener(listener);
 		findPreference("gfx").setOnPreferenceChangeListener(listener);
+		findPreference("blur").setOnPreferenceChangeListener(listener);
 		findPreference("ups").setOnPreferenceChangeListener(listener);
 		findPreference("fps").setOnPreferenceChangeListener(listener);
     }

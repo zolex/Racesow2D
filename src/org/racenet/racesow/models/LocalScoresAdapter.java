@@ -32,7 +32,7 @@ public class LocalScoresAdapter implements ListAdapter {
 	public LocalScoresAdapter(Context context, String map) {
 		
 		this.context = context;
-		this.scores = Database.getInstance(context).getScores(map);
+		this.scores = Database.getInstance().getScores(map);
 	}
 
 	/**

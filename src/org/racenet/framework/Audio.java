@@ -19,15 +19,39 @@ public class Audio {
 	public static final int MAX_SIMULTANEOUS_SOUNDS = 20;
 	public static final int SOURCE_QUALITY = 0;
 	
+	private static Audio __instance;
 	private AssetManager assetManager;
 	private SoundPool soundPool;
+	
+	/**
+	 * Setup the singleton instance
+	 * 
+	 * @param Activity activity
+	 */
+	public static void setupInstance(Activity activity) {
+		
+		if (__instance == null) {
+			
+			__instance = new Audio(activity);
+		}
+	}
+	
+	/**
+	 * Get the singleton instance
+	 * 
+	 * @return Audio
+	 */
+	public static Audio getInstance() {
+		
+		return __instance;
+	}
 	
 	/**
 	 * Constructor
 	 * 
 	 * @param Activity activity
 	 */
-	public Audio(Activity activity) {
+	private Audio(Activity activity) {
 		
 		activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		assetManager = activity.getAssets();

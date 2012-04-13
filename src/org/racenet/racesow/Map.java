@@ -11,7 +11,6 @@ import org.racenet.framework.AnimatedBlock;
 import org.racenet.framework.AnimationPreset;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.FileIO;
-import org.racenet.framework.GLGame;
 import org.racenet.framework.GLTexture;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.TexturedBlock;
@@ -21,12 +20,8 @@ import org.racenet.framework.TexturedTriangle;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.XMLParser;
 import org.racenet.racesow.threads.DemoRecorderThread;
-import org.racenet.racesow.threads.SubmitScoreThread;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import android.content.Context;
-import android.content.SharedPreferences;
 
 /**
  * Class which mainly loads the map from an 
@@ -68,7 +63,6 @@ public class Map {
 	private boolean gfxHighlights = true;
 	private Camera2 camera;
 	public String fileName;
-	private GLGame game;
 	public float pauseTime = 0;
 	String demo = "";
 	public DemoRecorderThread demoRecorder;
@@ -101,10 +95,9 @@ public class Map {
 	 * @param String fileName
 	 * @return boolean
 	 */
-	public boolean load(GLGame game, String fileName, boolean demoPlayback) {
+	public boolean load(String fileName, boolean demoPlayback) {
 		
 		this.fileName = fileName;
-		this.game = game;
 		XMLParser parser = new XMLParser();
 		
 		// try to read the map from the assets
@@ -1172,10 +1165,6 @@ public class Map {
 			} catch (InterruptedException e) {
 			}
 		}
-		
-		SharedPreferences prefs = this.game.getSharedPreferences("racesow", Context.MODE_PRIVATE);
-		SubmitScoreThread t2 = new SubmitScoreThread(this.fileName, prefs.getString("name", "player"), this.getCurrentTime());
-		t2.start();
 	}
 	
 	/**

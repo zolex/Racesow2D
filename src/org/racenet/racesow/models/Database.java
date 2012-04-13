@@ -37,17 +37,24 @@ public final class Database extends SQLiteOpenHelper {
     private static Database __instance;
     
     /**
-     * Singleton getter
+     * Setup the singleton instance
      * 
      * @param Context context
-     * @return Database
      */
-    public static Database getInstance(Context context) {
+    public static void setupInstance(Context context) {
     	
     	if (__instance == null) {
     		
     		__instance = new Database(context);
     	}
+    }
+    
+    /**
+     * Singleton getter
+     * 
+     * @return Database
+     */
+    public static Database getInstance() {
     	
     	return __instance;
     }

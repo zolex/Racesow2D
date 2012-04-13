@@ -6,6 +6,7 @@ import org.racenet.framework.FileIO;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.Screen;
 import org.racenet.racesow.GameScreen.GameState;
+import org.racenet.racesow.models.Database;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,6 +34,7 @@ public class Racesow extends GLGame {
 		
 		super.onCreate(savedInstanceState);
 
+		Database.setupInstance(this.getApplicationContext());
 		FileIO.getInstance().createDirectory("racesow" + File.separator + "downloads");
 		
 		// when no nickname ist set, ask the user to do so

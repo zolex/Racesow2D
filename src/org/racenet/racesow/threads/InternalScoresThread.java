@@ -2,7 +2,6 @@ package org.racenet.racesow.threads;
 
 import org.racenet.racesow.models.Database;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,20 +18,17 @@ public class InternalScoresThread extends Thread {
 	private String map;
 	private String player;
 	private float time;
-	private Context context;
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param Context context
 	 * @param String map
 	 * @param String player
 	 * @param float time
 	 * @param Handler handler
 	 */
-	public InternalScoresThread(Context context, String map, String player, float time, Handler handler) {
+	public InternalScoresThread(String map, String player, float time, Handler handler) {
 		
-		this.context = context;
 		this.handler = handler;
 		this.map = map;
 		this.player = player;
@@ -45,7 +41,7 @@ public class InternalScoresThread extends Thread {
 	 */
     public void run() {         
 
-	    Database db = Database.getInstance(this.context);
+	    Database db = Database.getInstance();
 	    float bestTime = db.getBestTime(this.map);
 	    db.addRace(this.map, this.player, this.time);
 	    

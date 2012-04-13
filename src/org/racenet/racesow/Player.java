@@ -11,19 +11,16 @@ import org.racenet.framework.Camera2;
 import org.racenet.framework.CameraText;
 import org.racenet.framework.FifoPool;
 import org.racenet.framework.FifoPool.PoolObjectFactory;
-import org.racenet.framework.GLGame;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.Polygon;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 import org.racenet.racesow.threads.InternalScoresThread;
+import org.racenet.racesow.threads.SubmitScoreThread;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.opengl.GLES10;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 /**
  * Class which represents the player in the game.
@@ -34,9 +31,6 @@ import android.util.Log;
  *
  */
 public class Player extends AnimatedBlock {
-	
-	public final Vector2 velocity = new Vector2();
-	public final Vector2 accel = new Vector2();
 	
 	// animations
 	public static final short ANIM_RUN = 0;
@@ -70,6 +64,8 @@ public class Player extends AnimatedBlock {
 	private static final float FIRERATE_PLASMA = 0.04f;
 	private float lastShot = 0;
 	
+	public final Vector2 velocity = new Vector2();
+	private String name;
 	private boolean onFloor = false;
 	private float lastWallJumped = 0;
 	private float distanceOnJump = -1;
@@ -101,7 +97,6 @@ public class Player extends AnimatedBlock {
 	public int frameSound = -1;
 	boolean recordDemos;
 	boolean blurEnabled;
-	private GLGame game;
 	
 	private int frames = 0;
 	
@@ -115,14 +110,17 @@ public class Player extends AnimatedBlock {
 	 * @param float y
 	 * @param boolean soundEnabled
 	 */
-	public Player(final GLGame game, Map map, Camera2 camera, float x, float y, boolean soundEnabled, boolean blurEnabled, boolean recordDemos) {
+	public Player(String name, Map map, Camera2 camera, boolean soundEnabled, boolean blurEnabled, boolean recordDemos) {
 		
 		// create the TexturedShape with static width and height
-		super(new Vector2(x,y), new Vector2(x + 9.6f, y), new Vector2(x + 9.6f, y + 9.6f), new Vector2(x, y + 9.6f));
+		super(new Vector2(map.playerX, map.playerY),
+			new Vector2(map.playerX + 9.6f, map.playerY),
+			new Vector2(map.playerX + 9.6f, map.playerY + 9.6f),
+			new Vector2(map.playerX, map.playerY + 9.6f));
+		
 		this.texScaleHeight = 0.075f;
 		this.texScaleWidth = 0.075f;
-		
-		this.game = game;
+		this.name = name;
 		this.soundEnabled = soundEnabled;
 		this.rGen = new Random();
 		this.camera = camera;
@@ -131,15 +129,15 @@ public class Player extends AnimatedBlock {
 		this.blurEnabled = blurEnabled;
 		
 		// load the sounds
-		Audio audio = (Audio)game.getAudio();
-		this.sounds[SOUND_JUMP1] = (Sound)audio.newSound("sounds/player/" + this.model + "/jump_1.ogg");
-		this.sounds[SOUND_JUMP2] = (Sound)audio.newSound("sounds/player/" + this.model + "/jump_2.ogg");
-		this.sounds[SOUND_WJ1] = (Sound)audio.newSound("sounds/player/" + this.model + "/wj_1.ogg");
-		this.sounds[SOUND_WJ2] = (Sound)audio.newSound("sounds/player/" + this.model + "/wj_2.ogg");
-		this.sounds[SOUND_DIE] = (Sound)audio.newSound("sounds/player/" + this.model + "/death.ogg");
-		this.sounds[SOUND_PICKUP] = (Sound)audio.newSound("sounds/weapon_pickup.ogg");
-		this.sounds[SOUND_ROCKET] = (Sound)audio.newSound("sounds/rocket_explosion.ogg");
-		this.sounds[SOUND_PLASMA] = (Sound)audio.newSound("sounds/plasmagun.ogg");
+		Audio audio = Audio.getInstance();
+		this.sounds[SOUND_JUMP1] = audio.newSound("sounds/player/" + this.model + "/jump_1.ogg");
+		this.sounds[SOUND_JUMP2] = audio.newSound("sounds/player/" + this.model + "/jump_2.ogg");
+		this.sounds[SOUND_WJ1] = audio.newSound("sounds/player/" + this.model + "/wj_1.ogg");
+		this.sounds[SOUND_WJ2] = audio.newSound("sounds/player/" + this.model + "/wj_2.ogg");
+		this.sounds[SOUND_DIE] = audio.newSound("sounds/player/" + this.model + "/death.ogg");
+		this.sounds[SOUND_PICKUP] = audio.newSound("sounds/weapon_pickup.ogg");
+		this.sounds[SOUND_ROCKET] = audio.newSound("sounds/rocket_explosion.ogg");
+		this.sounds[SOUND_PLASMA] = audio.newSound("sounds/plasmagun.ogg");
 		
 		this.loadAnimations();
 		this.setupVertices();
@@ -150,15 +148,15 @@ public class Player extends AnimatedBlock {
 			public TexturedBlock createObject() {
 				
 				return new TexturedBlock(
-						"decals/plasma_hit.png",
-						GameObject.FUNC_NONE,
-						-1,
-						-1,
-						0,
-						0,
-						new Vector2(-1, 0),
-						new Vector2(2, 0)
-						);
+					"decals/plasma_hit.png",
+					GameObject.FUNC_NONE,
+					-1,
+					-1,
+					0,
+					0,
+					new Vector2(-1, 0),
+					new Vector2(2, 0)
+				);
 			}
 		}, 10);
 		
@@ -168,15 +166,15 @@ public class Player extends AnimatedBlock {
             public TexturedBlock createObject() {
             	
             	return new TexturedBlock(
-        				"decals/rocket_hit.png",
-        				GameObject.FUNC_NONE,
-        				-1,
-        				-1,
-        				0,
-        				0,
-        				new Vector2(-3, 0),
-        				new Vector2(5, 0)
-        			);
+    				"decals/rocket_hit.png",
+    				GameObject.FUNC_NONE,
+    				-1,
+    				-1,
+    				0,
+    				0,
+    				new Vector2(-3, 0),
+    				new Vector2(5, 0)
+    			);
             }
         }, 1);
 	}
@@ -831,9 +829,6 @@ public class Player extends AnimatedBlock {
 					} else if (info.type == Polygon.RAMPDOWN) {
 						
 						float m = (ground.vertices[0].y - ground.vertices[2].y) / (ground.vertices[0].x - ground.vertices[2].x);
-						
-						Log.d("DEBUG", "m " + String.valueOf(new Float(m)));
-						
 						this.velocity.set(this.velocity.x, 0);
 						this.virtualSpeed += (-m + 1) * (-m + 1) * (-m + 1) * 128;
 						this.onFloor = true;
@@ -846,7 +841,7 @@ public class Player extends AnimatedBlock {
 		// when on the ground...
 		} else {
 		
-			this.velocity.set(this.velocity.x, 0);
+			this.velocity.y = 0;
 			// ... lose some speed
 			if (this.virtualSpeed > 0) {
 				
@@ -985,13 +980,17 @@ public class Player extends AnimatedBlock {
 		
 		this.map.stopTimer();
 		
-		SharedPreferences prefs = this.game.getSharedPreferences("racesow", Context.MODE_PRIVATE);
+		SubmitScoreThread t2 = new SubmitScoreThread(
+			this.map.fileName,
+			this.name,
+			this.map.getCurrentTime()
+		);
+		t2.start();
 		
 		// save the time to the local scores
 		InternalScoresThread t = new InternalScoresThread(
-			this.game.getApplicationContext(),
 			this.map.fileName,
-			prefs.getString("name", "player"),
+			this.name,
 			this.map.getCurrentTime(),
 			new Handler() {
 		    	
@@ -1011,7 +1010,6 @@ public class Player extends AnimatedBlock {
 		    		Player.this.showRestartMessage();
 		    	}
 		});
-		
 		t.start();
 	}
 	

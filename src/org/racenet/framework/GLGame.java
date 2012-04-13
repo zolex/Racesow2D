@@ -33,7 +33,6 @@ public abstract class GLGame extends Activity implements Renderer {
     }
     
     public GLSurfaceView glView;
-    Audio audio;
     Screen screen;
     GLGameState state = GLGameState.Initialized;
     Object stateChanged = new Object();
@@ -56,8 +55,8 @@ public abstract class GLGame extends Activity implements Renderer {
         setContentView(glView);
         
         FileIO.setupInstance(getAssets());
+        Audio.setupInstance(this);
         
-        audio = new Audio(this);
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
         wakeLock.acquire();
@@ -186,16 +185,6 @@ public abstract class GLGame extends Activity implements Renderer {
         glView.onPause();  
         super.onPause();
     }    
-
-    /**
-     * Get the audio interface
-     * 
-     * @return Audio
-     */
-    public Audio getAudio() {
-    	
-        return audio;
-    }
 
     /**
      * Set the current game screen

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -486,7 +487,28 @@ public class Map {
 					textureList[j] = parser.getNodeValue((Element)textures.item(j));
 				}
 				
-				((AnimatedBlock)block).setAnimations(new AnimationPreset(animDuration, textureList));
+				// assume that all frames are loaded if the first one is
+				GLTexture[] loadedTextures = new GLTexture[textureList.length];
+				if (this.textures.containsKey(textureList[0])) {
+					
+					for (int j = 0; j < numTextures; j++) {
+						
+						loadedTextures[j] = this.textures.get(textureList[j]);
+					}
+					
+					((AnimatedBlock)block).setAnimation(animDuration, loadedTextures);
+					
+				} else {
+					
+					((AnimatedBlock)block).setAnimations(new AnimationPreset(animDuration, textureList));
+					
+					for (int j = 0; j < numTextures; j++) {
+						
+						this.textures.put(textureList[j], ((AnimatedBlock)block).anims[0].keyFrames[j]);
+					}
+				}
+				
+				
 				((AnimatedBlock)block).texScaleHeight = texSY;
 				((AnimatedBlock)block).texScaleWidth = texSX;
 				((AnimatedBlock)block).texShiftX = texShiftX;
@@ -767,9 +789,7 @@ public class Map {
 			this.background2.reloadTexture();
 		}
 		
-		int length;
-		
-		length = this.items.size();
+		int length = this.items.size();
 		for (int i = 0; i < length; i++) {
 			
 			this.items.get(i).reloadTexture();
@@ -781,31 +801,10 @@ public class Map {
 			this.pickedUpItems.get(i).reloadTexture();
 		}
 		
-		length = this.ground.size();
-		for (int i = 0; i < length; i++) {
+		Set<String> textures = this.textures.keySet();
+		for (String texture :textures) {
 			
-			this.ground.get(i).reloadTexture();
-		}
-		
-		length = this.walls.size();
-		for (int i = 0; i < length; i++) {
-			
-			this.walls.get(i).reloadTexture();
-		}
-		
-		if (this.gfxHighlights) {
-			
-			length = this.front.size();
-			for (int i = 0; i < length; i++) {
-				
-				this.front.get(i).reloadTexture();
-			}
-			
-			length = this.highlights.size();
-			for (int i = 0; i < length; i++) {
-				
-				this.highlights.get(i).reloadTexture();
-			}
+			this.textures.get(texture).reload();
 		}
 	}
 	

@@ -51,6 +51,19 @@ public class AnimatedBlock extends GameObject implements Drawable {
 	}
 	
 	/**
+	 * Set a list of animations for the ractangle
+	 * 
+	 * @param String[] ... animations
+	 */
+	public void setAnimation(float duration, GLTexture ... keyFrames) {
+		
+		this.numAnims = 1;
+		float frameDuration = duration / keyFrames.length;
+		this.anims = new Animation[1];
+		this.anims[0] = new Animation(frameDuration, keyFrames);
+	}
+	
+	/**
 	 * Setup the keyframes by loading the textures for the animations
 	 * 
 	 * @param float frameDuration

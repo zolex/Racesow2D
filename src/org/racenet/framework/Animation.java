@@ -8,7 +8,7 @@ package org.racenet.framework;
  */
 public class Animation {
 
-	final GLTexture[] keyFrames;
+	public final GLTexture[] keyFrames;
 	final float frameDuration;
 	
 	/**

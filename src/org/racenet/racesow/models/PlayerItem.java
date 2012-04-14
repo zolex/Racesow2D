@@ -1,7 +1,7 @@
 package org.racenet.racesow.models;
 
 /**
- * Class to represent a single score
+ * Class to represent a single player
  * 
  * @author soh#zolex
  *

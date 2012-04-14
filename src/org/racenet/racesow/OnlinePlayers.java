@@ -3,9 +3,7 @@ package org.racenet.racesow;
 import java.io.InputStream;
 import org.racenet.framework.XMLParser;
 import org.racenet.racesow.models.OnlinePlayersAdapter;
-import org.racenet.racesow.models.OnlineScoresAdapter;
 import org.racenet.racesow.models.PlayerItem;
-import org.racenet.racesow.models.ScoreItem;
 import org.racenet.racesow.threads.XMLLoaderTask;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -22,7 +20,7 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 
 /**
- * Obtain and display the online scores
+ * Obtain and display the online players
  * 
  * @author soh#zolex
  *
@@ -38,7 +36,7 @@ public class OnlinePlayers extends XMLListActivity {
 	
     @Override
     /**
-     * Load the scores and initialize the pager and adapter
+     * Load the players and initialize the pager and adapter
      * 
      * @param Bundle savedInstanceState
      */

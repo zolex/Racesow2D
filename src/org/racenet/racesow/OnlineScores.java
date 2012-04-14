@@ -14,7 +14,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
- * Obtain and display the online scores
+ * Show the online scores menu
  * 
  * @author soh#zolex
  *
@@ -29,7 +29,7 @@ public class OnlineScores extends ListActivity {
 	
     @Override
     /**
-     * Load the scores and initialize the pager and adapter
+     * Initialite the listview
      * 
      * @param Bundle savedInstanceState
      */

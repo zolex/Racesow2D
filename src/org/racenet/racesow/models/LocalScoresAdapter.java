@@ -1,6 +1,7 @@
 package org.racenet.racesow.models;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.racenet.racesow.R;
 
@@ -97,7 +98,7 @@ public class LocalScoresAdapter implements ListAdapter {
 		ScoreItem item = (ScoreItem)getItem(pos);
 		player.setText(item.player);
 		position.setText(String.valueOf(new Integer(item.position)) + ".");
-		time.setText(String.format("%.4f", item.time));
+		time.setText(String.format(Locale.US, "%.4f", item.time));
 		createdAt.setText(item.created_at);
 
         return layout;

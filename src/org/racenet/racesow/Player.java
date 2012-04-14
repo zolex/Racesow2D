@@ -1,6 +1,7 @@
 package org.racenet.racesow;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import org.racenet.framework.Audio;
@@ -891,7 +892,7 @@ public class Player extends AnimatedBlock {
 	public void showTimeMessage() {
 		
 		this.timeMessage = this.gameScreen.createCameraText(-27, 5);
-		this.timeMessage.text = "Your time: " + String.format("%.4f", this.map.getCurrentTime());
+		this.timeMessage.text = "Your time: " + String.format(Locale.US, "%.4f", this.map.getCurrentTime());
 		this.timeMessage.red = 0;
 		this.timeMessage.green = 0;
 		this.timeMessage.blue = 1;

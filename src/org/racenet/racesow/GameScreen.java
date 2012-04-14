@@ -1,5 +1,7 @@
 package org.racenet.racesow;
 
+import java.util.Locale;
+
 import org.racenet.framework.BitmapFont;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.CameraText;
@@ -258,7 +260,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 					this.player.sounds[f.playerSound].play(player.volume);
 				}
 				
-				this.timer.text = "t " + String.format("%.4f", f.mapTime);
+				this.timer.text = "t " + String.format(Locale.US, "%.4f", f.mapTime);
 				
 				if (f.decalType != null) {
 					
@@ -365,7 +367,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 		// update hud for time
 		if (this.demoParser == null) {
 		
-			this.timer.text = "t " + String.format("%.4f", map.getCurrentTime());
+			this.timer.text = "t " + String.format(Locale.US, "%.4f", map.getCurrentTime());
 		}
 	}
 

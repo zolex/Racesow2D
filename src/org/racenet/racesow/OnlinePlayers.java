@@ -2,7 +2,9 @@ package org.racenet.racesow;
 
 import java.io.InputStream;
 import org.racenet.framework.XMLParser;
+import org.racenet.racesow.models.OnlinePlayersAdapter;
 import org.racenet.racesow.models.OnlineScoresAdapter;
+import org.racenet.racesow.models.PlayerItem;
 import org.racenet.racesow.models.ScoreItem;
 import org.racenet.racesow.threads.XMLLoaderTask;
 import org.w3c.dom.Element;
@@ -25,10 +27,10 @@ import android.widget.AbsListView.OnScrollListener;
  * @author soh#zolex
  *
  */
-public class OnlineScoresDetails extends XMLListActivity {
+public class OnlinePlayers extends XMLListActivity {
 
 	WakeLock wakeLock;
-	OnlineScoresAdapter adapter;
+	OnlinePlayersAdapter adapter;
 	boolean isLoading = false;
 	int chunkLimit = 50;
 	int chunkOffset = 0;
@@ -47,7 +49,7 @@ public class OnlineScoresDetails extends XMLListActivity {
     	PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
 		
-    	adapter = new OnlineScoresAdapter(this);
+    	adapter = new OnlinePlayersAdapter(this);
 		setListAdapter(adapter);
 		this.loadData();
 		
@@ -76,15 +78,14 @@ public class OnlineScoresDetails extends XMLListActivity {
      */
     public void loadData() {
     	
-    	pd = new ProgressDialog(OnlineScoresDetails.this);
+    	pd = new ProgressDialog(OnlinePlayers.this);
 		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		pd.setMessage("Obtaining scores...");
+		pd.setMessage("Obtaining player ranking...");
 		pd.setCancelable(false);
 		pd.show();
     	
     	isLoading = true;
-		String mapName = getIntent().getStringExtra("map");
-		String url = "http://racesow2d.warsow-race.net/scores.php?name=" + mapName + "&offset=" + this.chunkOffset + "&limit=" + this.chunkLimit;
+		String url = "http://racesow2d.warsow-race.net/players.php?offset=" + this.chunkOffset + "&limit=" + this.chunkLimit;
 		new XMLLoaderTask(this).execute(url);
     }
     
@@ -100,7 +101,7 @@ public class OnlineScoresDetails extends XMLListActivity {
 		if (xmlStream == null) {
 			
 			new AlertDialog.Builder(this)
-	            .setMessage("Could not load the scores.\nCheck your network connection and try again.")
+	            .setMessage("Could not load the player ranking.\nCheck your network connection and try again.")
 	            .setNeutralButton("OK", new OnClickListener() {
 								
 					public void onClick(DialogInterface arg0, int arg1) {
@@ -118,20 +119,18 @@ public class OnlineScoresDetails extends XMLListActivity {
 		
 			XMLParser parser = new XMLParser();
 			parser.read(xmlStream);
-			NodeList positions = parser.doc.getElementsByTagName("position");
+			NodeList positions = parser.doc.getElementsByTagName("player");
 			int numPositions = positions.getLength();
 			for (int i = 0; i < numPositions; i++) {
 
 				Element position = (Element)positions.item(i);
 		
-				ScoreItem score = new ScoreItem();
-				score.position = Integer.parseInt(parser.getValue(position, "no"));
-				score.player = parser.getValue(position, "player");
-				score.races = Integer.parseInt(parser.getValue(position, "races"));
-				score.time = Float.parseFloat(parser.getValue(position, "time"));
-				score.created_at = parser.getValue(position, "created_at");
+				PlayerItem player = new PlayerItem();
+				player.position = Integer.parseInt(parser.getValue(position, "no"));
+				player.name = parser.getValue(position, "name");
+				player.points = Integer.parseInt(parser.getValue(position, "points"));
 				
-				adapter.addItem(score);
+				adapter.addItem(player);
 			}
 			
 			// adapter.notifyDataSetChanged(); // WHY THE FUCK DOESN'T THIS WORK????

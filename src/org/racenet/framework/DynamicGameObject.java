@@ -2,8 +2,8 @@ package org.racenet.framework;
 
 /**
  * A GameObject which can move in the world
- * @author al
- *
+ * 
+ * @author soh#zolex
  */
 public class DynamicGameObject extends GameObject {
 

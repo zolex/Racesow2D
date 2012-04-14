@@ -4,7 +4,7 @@ package org.racenet.framework;
  * Represents a polygon defined by at
  * least three points
  * 
- * @author al
+ * @author soh#zolex
  */
 public class Polygon {
 

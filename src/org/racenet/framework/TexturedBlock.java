@@ -5,7 +5,7 @@ import android.opengl.GLES10;
 /**
  * A drawable rectangle with a texture applied
  * 
- * @author al
+ * @author soh#zolex
  *
  */
 public class TexturedBlock extends TexturedShape implements Drawable {

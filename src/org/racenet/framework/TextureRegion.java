@@ -3,7 +3,7 @@ package org.racenet.framework;
 /**
  * Represents a small region in a texture
  * 
- * @author al
+ * @author soh#zolex
  *
  */
 public class TextureRegion {    

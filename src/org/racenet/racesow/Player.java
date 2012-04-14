@@ -26,10 +26,9 @@ import android.os.Message;
 /**
  * Class which represents the player in the game.
  * Executes actions like shoot and jump and moves
- * the player througt the world.
+ * the player through the world.
  * 
- * @author al
- *
+ * @author soh#zolex
  */
 public class Player extends AnimatedBlock {
 	

@@ -5,7 +5,7 @@ import android.opengl.GLES10;
 /**
  * A drawable triangle with a texture applied
  * 
- * @author al
+ * @author soh#zolex
  *
  */
 public class TexturedTriangle extends TexturedShape implements Drawable {

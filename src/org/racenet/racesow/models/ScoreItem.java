@@ -12,6 +12,7 @@ public class ScoreItem {
 	public int position;
 	public float time;
 	public String player;
+	public int races;
 	public String map;
 	public String created_at;
 }

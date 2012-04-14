@@ -8,6 +8,7 @@ import org.racenet.racesow.R;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -33,6 +34,9 @@ public class OnlineScoresAdapter extends BaseAdapter {
 	 */
 	public OnlineScoresAdapter(Context context) {
 		
+		ScoreItem header = new ScoreItem();
+		header.position = 0;
+		this.scores.add(header);
 		this.context = context;
 	}
 	
@@ -113,13 +117,36 @@ public class OnlineScoresAdapter extends BaseAdapter {
 		TextView position = (TextView)layout.findViewById(R.id.pos);
 		TextView time = (TextView)layout.findViewById(R.id.time);
 		TextView player = (TextView)layout.findViewById(R.id.player);
+		TextView races = (TextView)layout.findViewById(R.id.races);
 		TextView createdAt = (TextView)layout.findViewById(R.id.created_at);
 		
 		ScoreItem item = (ScoreItem)getItem(pos);
-		player.setText(item.player);
-		position.setText(String.valueOf(new Integer(item.position)) + ".");
-		time.setText(String.format(Locale.US, "%.4f", item.time));
-		createdAt.setText(item.created_at);
+		if (item.position == 0) {
+			
+			position.setText("Pos.");
+			position.setBackgroundColor(Color.DKGRAY);
+			player.setText("Nickname");
+			player.setBackgroundColor(Color.DKGRAY);
+			time.setText("Time");
+			time.setBackgroundColor(Color.DKGRAY);
+			races.setText("(Races)");
+			races.setBackgroundColor(Color.DKGRAY);
+			createdAt.setText("Date");
+			createdAt.setBackgroundColor(Color.DKGRAY);
+			
+		} else {
+			
+			player.setText(item.player);
+			player.setBackgroundColor(Color.BLACK);
+			races.setText("(" + String.valueOf(item.races) + ")");
+			races.setBackgroundColor(Color.BLACK);
+			position.setText(String.valueOf(new Integer(item.position)) + ".");
+			position.setBackgroundColor(Color.BLACK);
+			time.setText(String.format(Locale.US, "%.4f", item.time));
+			time.setBackgroundColor(Color.BLACK);
+			createdAt.setText(item.created_at);
+			createdAt.setBackgroundColor(Color.BLACK);
+		}
 
         return layout;
 	}

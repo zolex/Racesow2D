@@ -127,6 +127,7 @@ public class OnlineScoresDetails extends XMLListActivity {
 				ScoreItem score = new ScoreItem();
 				score.position = Integer.parseInt(parser.getValue(position, "no"));
 				score.player = parser.getValue(position, "player");
+				score.races = Integer.parseInt(parser.getValue(position, "races"));
 				score.time = Float.parseFloat(parser.getValue(position, "time"));
 				score.created_at = parser.getValue(position, "created_at");
 				

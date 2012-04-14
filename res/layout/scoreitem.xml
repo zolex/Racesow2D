@@ -36,7 +36,7 @@
         android:layout_height="fill_parent"
         android:paddingLeft="10dp"
         android:gravity="center"
-        android:textSize="20dp" >
+        android:textSize="14dp" >
     </TextView>
     
     <TextView
@@ -45,7 +45,7 @@
         android:layout_height="fill_parent"
         android:paddingRight="10dp"
         android:gravity="center|right"
-        android:textSize="20dp" >
+        android:textSize="14dp" >
     </TextView>
 
 </LinearLayout>

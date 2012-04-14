@@ -12,6 +12,7 @@ public class Polygon {
 	public static final short LEFT = 1;
 	public static final short RAMPUP = 2;
 	public static final short RAMPDOWN = 3;
+	public static final short BOTTOM = 4;
 	
 	/**
 	 * The borders of the polygon represented by
@@ -69,6 +70,27 @@ public class Polygon {
 			float otherHeight = other.getHeightAt(thisX);
 			
 			if (thisX + this.width > otherX && thisX < otherX + other.width &&
+				thisY + this.height > otherY && thisY + this.height < otherY + otherHeight) {
+				
+				float distanceX = thisX + this.width - otherX;
+				float distanceY = otherY - thisY + this.height;
+				
+				if (distanceX < distanceY && other.height > this.height) {
+					
+					info.type = LEFT;
+					info.distance = distanceX;
+					
+				} else {
+					
+					info.type = BOTTOM;
+					info.distance = distanceY;
+				}
+				
+				info.collided = true;
+				return info;
+			}
+			
+			if (thisX + this.width > otherX && thisX < otherX + other.width &&
 				thisY > otherY && thisY < otherY + otherHeight) {
 				
 				float distanceX = thisX + this.width - otherX;
@@ -86,16 +108,6 @@ public class Polygon {
 				}
 				
 				info.collided = true;
-				return info;
-			}
-			
-			// rectangle from top
-			if (thisX + this.width > otherX && thisX <= otherX + other.width &&
-				thisY <= otherY + otherHeight) {
-				
-				info.collided = true;
-				info.type = TOP;
-				info.distance = thisY - (otherY + other.height);
 				return info;
 			}
 			

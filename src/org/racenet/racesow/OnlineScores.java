@@ -3,7 +3,6 @@ package org.racenet.racesow;
 import org.racenet.racesow.models.ScoresMenuAdapter;
 
 import android.app.ListActivity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,7 +24,6 @@ public class OnlineScores extends ListActivity {
 	boolean isLoading = false;
 	int chunkLimit = 50;
 	int chunkOffset = 0;
-	ProgressDialog pd;
 	
     @Override
     /**

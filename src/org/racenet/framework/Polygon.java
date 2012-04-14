@@ -73,7 +73,7 @@ public class Polygon {
 				thisY + this.height > otherY && thisY + this.height < otherY + otherHeight) {
 				
 				float distanceX = thisX + this.width - otherX;
-				float distanceY = otherY - thisY + this.height;
+				float distanceY = thisY + this.height - otherY;
 				
 				if (distanceX < distanceY && other.height > this.height) {
 					

@@ -33,20 +33,26 @@ import android.os.Message;
 public class Player extends AnimatedBlock {
 	
 	// animations
-	public static final short ANIM_RUN = 0;
-	public static final short ANIM_JUMP = 1;
-	public static final short ANIM_WALLJUMP = 2;
-	public static final short ANIM_BURN = 3;
-	public static final short ANIM_INVISIBLE = 4;
-	public static final short ANIM_ROCKET_RUN = 5;
-	public static final short ANIM_ROCKET_JUMP = 6;
-	public static final short ANIM_ROCKET_WALLJUMP = 7;
-	public static final short ANIM_PLASMA_RUN = 8;
-	public static final short ANIM_PLASMA_JUMP = 9;
-	public static final short ANIM_PLASMA_WALLJUMP = 10;
-	public static final short ANIM_DROWN = 11;
-	public static final short ANIM_DRIFTSAND = 12;
-	public AnimationPreset[] animPresets = new AnimationPreset[13];
+	public static final short ANIM_RUN_1 = 0;
+	public static final short ANIM_RUN_2 = 1;
+	public static final short ANIM_JUMP_1 = 2;
+	public static final short ANIM_JUMP_2 = 3;
+	public static final short ANIM_WALLJUMP = 4;
+	public static final short ANIM_BURN = 5;
+	public static final short ANIM_INVISIBLE = 6;
+	public static final short ANIM_ROCKET_RUN_1 = 7;
+	public static final short ANIM_ROCKET_RUN_2 = 8;
+	public static final short ANIM_ROCKET_JUMP_1 = 9;
+	public static final short ANIM_ROCKET_JUMP_2 = 10;
+	public static final short ANIM_ROCKET_WALLJUMP = 11;
+	public static final short ANIM_PLASMA_RUN_1 = 12;
+	public static final short ANIM_PLASMA_RUN_2 = 13;
+	public static final short ANIM_PLASMA_JUMP_1 = 14;
+	public static final short ANIM_PLASMA_JUMP_2 = 15;
+	public static final short ANIM_PLASMA_WALLJUMP = 16;
+	public static final short ANIM_DROWN = 17;
+	public static final short ANIM_DRIFTSAND = 18;
+	public AnimationPreset[] animPresets = new AnimationPreset[19];
 	
 	// sounds
 	public static final short SOUND_JUMP1 = 0;
@@ -101,6 +107,7 @@ public class Player extends AnimatedBlock {
 	GameObject plasmaBounds;
 	float[] worldOffset;
 	GameObject worldBounds;
+	private int lastJumpAnim = ANIM_JUMP_2;
 	
 	private int frames = 0;
 	
@@ -247,22 +254,46 @@ public class Player extends AnimatedBlock {
 	 */
 	public void loadAnimations() {
 		
-		this.animPresets[ANIM_RUN] = new AnimationPreset(0, new String[] {
-			"player/" + this.model + "/default.png"
+		this.animPresets[ANIM_RUN_1] = new AnimationPreset(0, new String[] {
+				"player/" + this.model + "/jump_f4.png"
 		});
 		
-		this.animPresets[ANIM_JUMP] = new AnimationPreset(0.3f, new String[] {
+		this.animPresets[ANIM_RUN_2] = new AnimationPreset(0, new String[] {
+			"player/" + this.model + "/jump_f1.png"
+		});
+		
+		this.animPresets[ANIM_JUMP_1] = new AnimationPreset(0.3f, new String[] {
 			"player/" + this.model + "/jump_f1.png",
+			"player/" + this.model + "/jump_f2.png",
+			"player/" + this.model + "/jump_f3.png",
+			"player/" + this.model + "/jump_f4.png"
+		});
+		
+		this.animPresets[ANIM_JUMP_2] = new AnimationPreset(0.3f, new String[] {
+			"player/" + this.model + "/jump_f4.png",
+			"player/" + this.model + "/jump_f3.png",
 			"player/" + this.model + "/jump_f2.png",
 			"player/" + this.model + "/jump_f1.png"
 		});
 		
-		this.animPresets[ANIM_ROCKET_RUN] = new AnimationPreset(0, new String[] {
-			"player/" + this.model + "/rocket_run.png"
+		this.animPresets[ANIM_ROCKET_RUN_1] = new AnimationPreset(0, new String[] {
+			"player/" + this.model + "/rocket_jump_f4.png"
 		});
 		
-		this.animPresets[ANIM_ROCKET_JUMP] = new AnimationPreset(0.3f, new String[] {
+		this.animPresets[ANIM_ROCKET_RUN_2] = new AnimationPreset(0, new String[] {
+			"player/" + this.model + "/rocket_jump_f1.png"
+		});
+		
+		this.animPresets[ANIM_ROCKET_JUMP_1] = new AnimationPreset(0.3f, new String[] {
 			"player/" + this.model + "/rocket_jump_f1.png",
+			"player/" + this.model + "/rocket_jump_f2.png",
+			"player/" + this.model + "/rocket_jump_f3.png",
+			"player/" + this.model + "/rocket_jump_f4.png"
+		});
+		
+		this.animPresets[ANIM_ROCKET_JUMP_2] = new AnimationPreset(0.3f, new String[] {
+			"player/" + this.model + "/rocket_jump_f4.png",
+			"player/" + this.model + "/rocket_jump_f3.png",
 			"player/" + this.model + "/rocket_jump_f2.png",
 			"player/" + this.model + "/rocket_jump_f1.png"
 		});
@@ -273,12 +304,24 @@ public class Player extends AnimatedBlock {
 			"player/" + this.model + "/rocket_walljump_f1.png"
 		});
 		
-		this.animPresets[ANIM_PLASMA_RUN] = new AnimationPreset(0, new String[] {
-			"player/" + this.model + "/plasma_run.png"
+		this.animPresets[ANIM_PLASMA_RUN_1] = new AnimationPreset(0, new String[] {
+			"player/" + this.model + "/plasma_jump_f4.png"
 		});
 		
-		this.animPresets[ANIM_PLASMA_JUMP] = new AnimationPreset(0.3f, new String[] {
+		this.animPresets[ANIM_PLASMA_RUN_2] = new AnimationPreset(0, new String[] {
+			"player/" + this.model + "/plasma_jump_f1.png"
+		});
+		
+		this.animPresets[ANIM_PLASMA_JUMP_1] = new AnimationPreset(0.3f, new String[] {
 			"player/" + this.model + "/plasma_jump_f1.png",
+			"player/" + this.model + "/plasma_jump_f2.png",
+			"player/" + this.model + "/plasma_jump_f3.png",
+			"player/" + this.model + "/plasma_jump_f4.png"
+		});
+		
+		this.animPresets[ANIM_PLASMA_JUMP_2] = new AnimationPreset(0.3f, new String[] {
+			"player/" + this.model + "/plasma_jump_f4.png",
+			"player/" + this.model + "/plasma_jump_f3.png",
 			"player/" + this.model + "/plasma_jump_f2.png",
 			"player/" + this.model + "/plasma_jump_f1.png"
 		});
@@ -430,22 +473,42 @@ public class Player extends AnimatedBlock {
 				switch (this.attachedItem.func) {
 				
 					case GameObject.ITEM_ROCKET:
-						this.activeAnimId = Player.ANIM_ROCKET_JUMP;
+						if (this.lastJumpAnim == ANIM_ROCKET_JUMP_1) {
+						
+							this.activeAnimId = ANIM_ROCKET_JUMP_2;
+							
+						} else {
+							
+							this.activeAnimId = ANIM_ROCKET_JUMP_1;
+						}
 						break;
 					
 					case GameObject.ITEM_PLASMA:
-						this.activeAnimId = Player.ANIM_PLASMA_JUMP;
-						break;
+						if (this.lastJumpAnim == ANIM_PLASMA_JUMP_1) {
 						
-					default:
-						this.activeAnimId = Player.ANIM_JUMP;
+							this.activeAnimId = ANIM_PLASMA_JUMP_2;
+							
+						} else {
+							
+							this.activeAnimId = ANIM_PLASMA_JUMP_1;
+						}
+						
 						break;
 				}
 				
 			} else {
 			
-				this.activeAnimId = Player.ANIM_JUMP;
+				if (this.lastJumpAnim == ANIM_JUMP_1) {
+				
+					this.activeAnimId = ANIM_JUMP_2;
+					
+				} else {
+					
+					this.activeAnimId = ANIM_JUMP_1;
+				}
 			}
+			
+			this.lastJumpAnim = this.activeAnimId;
 		
 		// when in the air check for walls to perform a walljump
 		} else {
@@ -480,21 +543,21 @@ public class Player extends AnimatedBlock {
 							switch (this.attachedItem.func) {
 							
 								case GameObject.ITEM_ROCKET:
-									this.activeAnimId = Player.ANIM_ROCKET_WALLJUMP;
+									this.activeAnimId = ANIM_ROCKET_WALLJUMP;
 									break;
 								
 								case GameObject.ITEM_PLASMA:
-									this.activeAnimId = Player.ANIM_PLASMA_WALLJUMP;
+									this.activeAnimId = ANIM_PLASMA_WALLJUMP;
 									break;
 									
 								default:
-									this.activeAnimId = Player.ANIM_WALLJUMP;
+									this.activeAnimId = ANIM_WALLJUMP;
 									break;
 							}
 							
 						} else {
 						
-							this.activeAnimId = Player.ANIM_WALLJUMP;
+							this.activeAnimId = ANIM_WALLJUMP;
 						}
 						
 						break;
@@ -653,11 +716,11 @@ public class Player extends AnimatedBlock {
 				this.animTime = 0;
 				
 				// after death animation make the player invisible
-				if (this.activeAnimId == Player.ANIM_BURN ||
-					this.activeAnimId == Player.ANIM_DROWN ||
-					this.activeAnimId == Player.ANIM_DRIFTSAND) {
+				if (this.activeAnimId == ANIM_BURN ||
+					this.activeAnimId == ANIM_DROWN ||
+					this.activeAnimId == ANIM_DRIFTSAND) {
 					
-					this.activeAnimId = Player.ANIM_INVISIBLE;
+					this.activeAnimId = ANIM_INVISIBLE;
 				
 				// when the animation is over, choose
 				// the proper default animation
@@ -668,21 +731,38 @@ public class Player extends AnimatedBlock {
 						switch (this.attachedItem.func) {
 						
 							case GameObject.ITEM_ROCKET:
-								this.activeAnimId = Player.ANIM_ROCKET_RUN;
+								if (this.activeAnimId == ANIM_ROCKET_JUMP_1) {
+									
+									this.activeAnimId = ANIM_ROCKET_RUN_1;
+									
+								} else {
+									
+									this.activeAnimId = ANIM_ROCKET_RUN_2;
+								}
 								break;
 							
 							case GameObject.ITEM_PLASMA:
-								this.activeAnimId = Player.ANIM_PLASMA_RUN;
-								break;
+								if (this.activeAnimId == ANIM_PLASMA_JUMP_1) {
+									
+									this.activeAnimId = ANIM_PLASMA_RUN_1;
 								
-							default:
-								this.activeAnimId = Player.ANIM_RUN;
+								} else {
+									
+									this.activeAnimId = ANIM_PLASMA_RUN_2;
+								}
 								break;
 						}
 						
 					} else {
 					
-						this.activeAnimId = Player.ANIM_RUN;
+						if (this.activeAnimId == ANIM_JUMP_1) {
+						
+							this.activeAnimId = ANIM_RUN_1;
+							
+						} else {
+							
+							this.activeAnimId = ANIM_RUN_2;
+						}
 					}
 				}
 			}
@@ -751,12 +831,28 @@ public class Player extends AnimatedBlock {
 				
 					case GameObject.ITEM_ROCKET:
 						texture = "items/rocket.png";
-						this.activeAnimId = ANIM_ROCKET_RUN;
+						if (this.activeAnimId == ANIM_RUN_1 || this.activeAnimId == ANIM_PLASMA_RUN_1) {
+						
+							this.activeAnimId = ANIM_ROCKET_RUN_1;
+							
+						} else {
+							
+							this.activeAnimId = ANIM_ROCKET_RUN_2;
+						}
+						
 						break;
 					
 					case GameObject.ITEM_PLASMA:
 						texture = "items/plasma.png";
-						this.activeAnimId = ANIM_PLASMA_RUN;
+						if (this.activeAnimId == ANIM_RUN_1 || this.activeAnimId == ANIM_ROCKET_RUN_1) {
+						
+							this.activeAnimId = ANIM_PLASMA_RUN_1;
+							
+						} else {
+							
+							this.activeAnimId = ANIM_PLASMA_RUN_2;
+						}
+						
 						break;
 				}
 				
@@ -833,17 +929,17 @@ public class Player extends AnimatedBlock {
 					switch (ground.func) {
 					
 						case GameObject.FUNC_LAVA:
-							this.activeAnimId = Player.ANIM_BURN;
+							this.activeAnimId = ANIM_BURN;
 							this.die();
 							return;
 							
 						case GameObject.FUNC_WATER:
-							this.activeAnimId = Player.ANIM_DROWN;
+							this.activeAnimId = ANIM_DROWN;
 							this.die();
 							return;
 							
 						case GameObject.FUNC_DRIFTSAND:
-							this.activeAnimId = Player.ANIM_DRIFTSAND;
+							this.activeAnimId = ANIM_DRIFTSAND;
 							this.die();
 							return;
 					}
@@ -1081,7 +1177,7 @@ public class Player extends AnimatedBlock {
 		
 		this.isDead = false;
 		this.onFloor = false;
-		this.activeAnimId = ANIM_RUN;
+		this.activeAnimId = ANIM_RUN_1;
 		this.virtualSpeed = 0;
 		this.velocity.set(0, 0);
 		this.setPosition(new Vector2(x, y));

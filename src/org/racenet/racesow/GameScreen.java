@@ -281,18 +281,18 @@ public class GameScreen extends Screen implements OnTouchListener {
 			
 		} else {
 			
-			// execute jump if requested
-			if (this.jumpPressed) {
-				
-				this.player.jump(this.jumpPressedTime);
-				this.jumpPressedTime += deltaTime;
-			}
-			
 			// execute shoot if requested
 			if (this.shootPressed) {
 				
 				this.player.shoot(this.shootPressedTime);
 				this.shootPressedTime += deltaTime;
+			}
+			
+			// execute jump if requested
+			if (this.jumpPressed) {
+				
+				this.player.jump(this.jumpPressedTime);
+				this.jumpPressedTime += deltaTime;
 			}
 			
 			//  nothing more to do here when paused
@@ -322,7 +322,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 			}
 			
 			// update the player
-			this.player.move(this.gravity, deltaTime, this.jumpPressed);
+			this.player.move(this.gravity, deltaTime, this.jumpPressed, this.shootPressed);
 		}
 		
 		// when playing a demo wait one frame

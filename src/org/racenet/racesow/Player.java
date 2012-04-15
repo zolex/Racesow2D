@@ -40,19 +40,21 @@ public class Player extends AnimatedBlock {
 	public static final short ANIM_WALLJUMP = 4;
 	public static final short ANIM_BURN = 5;
 	public static final short ANIM_INVISIBLE = 6;
-	public static final short ANIM_ROCKET_RUN_1 = 7;
-	public static final short ANIM_ROCKET_RUN_2 = 8;
-	public static final short ANIM_ROCKET_JUMP_1 = 9;
-	public static final short ANIM_ROCKET_JUMP_2 = 10;
-	public static final short ANIM_ROCKET_WALLJUMP = 11;
-	public static final short ANIM_PLASMA_RUN_1 = 12;
-	public static final short ANIM_PLASMA_RUN_2 = 13;
-	public static final short ANIM_PLASMA_JUMP_1 = 14;
-	public static final short ANIM_PLASMA_JUMP_2 = 15;
-	public static final short ANIM_PLASMA_WALLJUMP = 16;
-	public static final short ANIM_DROWN = 17;
-	public static final short ANIM_DRIFTSAND = 18;
-	public AnimationPreset[] animPresets = new AnimationPreset[19];
+	public static final short ANIM_ROCKET_SHOOT = 7;
+	public static final short ANIM_ROCKET_RUN_1 = 8;
+	public static final short ANIM_ROCKET_RUN_2 = 9;
+	public static final short ANIM_ROCKET_JUMP_1 = 10;
+	public static final short ANIM_ROCKET_JUMP_2 = 11;
+	public static final short ANIM_ROCKET_WALLJUMP = 12;
+	public static final short ANIM_PLASMA_SHOOT = 13;
+	public static final short ANIM_PLASMA_RUN_1 = 14;
+	public static final short ANIM_PLASMA_RUN_2 = 15;
+	public static final short ANIM_PLASMA_JUMP_1 = 16;
+	public static final short ANIM_PLASMA_JUMP_2 = 17;
+	public static final short ANIM_PLASMA_WALLJUMP = 18;
+	public static final short ANIM_DROWN = 19;
+	public static final short ANIM_DRIFTSAND = 20;
+	public AnimationPreset[] animPresets = new AnimationPreset[21];
 	
 	// sounds
 	public static final short SOUND_JUMP1 = 0;
@@ -276,6 +278,12 @@ public class Player extends AnimatedBlock {
 			"player/" + this.model + "/jump_f1.png"
 		});
 		
+		this.animPresets[ANIM_ROCKET_SHOOT] = new AnimationPreset(0.2f, new String[] {
+				"player/" + this.model + "/rocket_shoot_f1.png",
+				"player/" + this.model + "/rocket_shoot_f2.png",
+				"player/" + this.model + "/rocket_shoot_f1.png"
+		});
+		
 		this.animPresets[ANIM_ROCKET_RUN_1] = new AnimationPreset(0, new String[] {
 			"player/" + this.model + "/rocket_jump_f4.png"
 		});
@@ -302,6 +310,10 @@ public class Player extends AnimatedBlock {
 			"player/" + this.model + "/rocket_walljump_f1.png",
 			"player/" + this.model + "/rocket_walljump_f2.png",
 			"player/" + this.model + "/rocket_walljump_f1.png"
+		});
+		
+		this.animPresets[ANIM_PLASMA_SHOOT] = new AnimationPreset(0, new String[] {
+				"player/" + this.model + "/plasma_shoot.png"
 		});
 		
 		this.animPresets[ANIM_PLASMA_RUN_1] = new AnimationPreset(0, new String[] {
@@ -560,6 +572,7 @@ public class Player extends AnimatedBlock {
 							this.activeAnimId = ANIM_WALLJUMP;
 						}
 						
+						this.animTime = 0;
 						break;
 					}
 				}
@@ -611,6 +624,9 @@ public class Player extends AnimatedBlock {
 								this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
 							}
 							
+							this.animTime = 0;
+							this.activeAnimId = ANIM_ROCKET_SHOOT;
+							
 							// show the rocket explosion
 							TexturedBlock decal = this.rocketPool.newObject();
 							decal.setPosition(new Vector2(impactX, impactY));
@@ -644,6 +660,9 @@ public class Player extends AnimatedBlock {
 							
 								this.sounds[SOUND_ROCKET].play(this.volume * 1.5f);
 							}
+							
+							this.animTime = 0;
+							this.activeAnimId = ANIM_ROCKET_SHOOT;
 							
 							// show the rocket explosion
 							TexturedBlock decal = this.rocketPool.newObject();
@@ -683,6 +702,9 @@ public class Player extends AnimatedBlock {
 							
 								this.sounds[SOUND_PLASMA].play(this.volume * 1.2f);
 							}
+							
+							this.animTime = 0;
+							this.activeAnimId = ANIM_PLASMA_SHOOT;
 							
 							// show the plasma impact
 							TexturedBlock decal = (TexturedBlock)this.plasmaPool.newObject();
@@ -731,7 +753,7 @@ public class Player extends AnimatedBlock {
 						switch (this.attachedItem.func) {
 						
 							case GameObject.ITEM_ROCKET:
-								if (this.activeAnimId == ANIM_ROCKET_JUMP_1) {
+								if (this.lastJumpAnim == ANIM_ROCKET_JUMP_1) {
 									
 									this.activeAnimId = ANIM_ROCKET_RUN_1;
 									
@@ -742,7 +764,7 @@ public class Player extends AnimatedBlock {
 								break;
 							
 							case GameObject.ITEM_PLASMA:
-								if (this.activeAnimId == ANIM_PLASMA_JUMP_1) {
+								if (this.lastJumpAnim == ANIM_PLASMA_JUMP_1) {
 									
 									this.activeAnimId = ANIM_PLASMA_RUN_1;
 								
@@ -776,13 +798,48 @@ public class Player extends AnimatedBlock {
 	 * @param float deltaTime
 	 * @param boolean pressingJump
 	 */
-	public void move(Vector2 gravity, float deltaTime, boolean pressingJump) {
+	public void move(Vector2 gravity, float deltaTime, boolean pressingJump, boolean pressingShoot) {
 		
 		 // workaround for initial loading
 		if (++frames < 3) return;
 		
 		this.frameDecal = "";
 		this.frameSound = -1;
+		
+		if (this.activeAnimId == ANIM_PLASMA_SHOOT) {
+		
+			// if the player stopped pressing shoot or left a wall
+			// return from the plasma shoot anim to the normal one
+			boolean stopPlasmaAnim = false;
+			if (pressingShoot) {
+				
+				boolean collided = false;
+				List<GameObject> colliders = this.map.getPotentialWallColliders(this.plasmaBounds);
+				int length = colliders.size();
+				for (int i = 0; i < length; i++) {
+				
+					if (this.plasmaBounds.intersect(colliders.get(i)).collided) {
+						
+						collided = true;
+						break;
+					}
+				}
+				
+				if (!collided) {
+					
+					stopPlasmaAnim = true;
+				}
+				
+			} else {
+				
+				stopPlasmaAnim = true;
+			}
+			
+			if (stopPlasmaAnim) {
+			
+				this.activeAnimId = this.lastJumpAnim == ANIM_PLASMA_JUMP_1 ? ANIM_PLASMA_RUN_1 : ANIM_PLASMA_RUN_2;
+			}
+		}
 		
 		this.animate(deltaTime);
 		

@@ -280,13 +280,13 @@ public class Player extends AnimatedBlock {
 		});
 		
 		this.animPresets[ANIM_ROCKET_SHOOT] = new AnimationPreset(0.2f, new String[] {
-				"player/" + this.model + "/rocket_shoot_f1.png",
-				"player/" + this.model + "/rocket_shoot_f2.png",
-				"player/" + this.model + "/rocket_shoot_f1.png"
+			"player/" + this.model + "/rocket_shoot_f1.png",
+			"player/" + this.model + "/rocket_shoot_f2.png",
+			"player/" + this.model + "/rocket_shoot_f1.png"
 		});
 		
 		this.animPresets[ANIM_ROCKET_SHOOT_WALL] = new AnimationPreset(0.2f, new String[] {
-				"player/" + this.model + "/rocket_shoot_wall.png"
+			"player/" + this.model + "/rocket_shoot_wall.png"
 		});
 		
 		this.animPresets[ANIM_ROCKET_RUN_1] = new AnimationPreset(0, new String[] {
@@ -318,7 +318,7 @@ public class Player extends AnimatedBlock {
 		});
 		
 		this.animPresets[ANIM_PLASMA_SHOOT] = new AnimationPreset(0, new String[] {
-				"player/" + this.model + "/plasma_shoot.png"
+			"player/" + this.model + "/plasma_shoot.png"
 		});
 		
 		this.animPresets[ANIM_PLASMA_RUN_1] = new AnimationPreset(0, new String[] {
@@ -363,10 +363,10 @@ public class Player extends AnimatedBlock {
 		});
 		
 		this.animPresets[ANIM_DROWN] = new AnimationPreset(0.4f, new String[] {
-				"player/" + this.model + "/drown_f1.png",
-				"player/" + this.model + "/drown_f2.png",
-				"player/" + this.model + "/drown_f3.png",
-				"player/" + this.model + "/drown_f4.png"
+			"player/" + this.model + "/drown_f1.png",
+			"player/" + this.model + "/drown_f2.png",
+			"player/" + this.model + "/drown_f3.png",
+			"player/" + this.model + "/drown_f4.png"
 		});
 		
 		this.animPresets[ANIM_DRIFTSAND] = new AnimationPreset(0.4f, new String[] {

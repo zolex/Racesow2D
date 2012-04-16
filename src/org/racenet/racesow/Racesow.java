@@ -2,6 +2,7 @@ package org.racenet.racesow;
 
 import java.io.File;
 
+import org.racenet.framework.Audio;
 import org.racenet.framework.FileIO;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.Screen;
@@ -150,6 +151,12 @@ public class Racesow extends GLGame {
     	} else {
     		
     		LOOPER_PREPARED = false; // just to be sure...
+    		Audio audio = Audio.getInstance();
+    		if (audio != null) {
+    			
+    			audio.stopThread();
+    		}
+    		
     		this.finish();
         	this.overridePendingTransition(0, 0);
     	}

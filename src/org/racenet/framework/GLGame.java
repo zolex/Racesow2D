@@ -153,7 +153,6 @@ public abstract class GLGame extends Activity implements Renderer {
         if (state == GLGameState.Finished) {
             screen.pause();
             screen.dispose();
-            Audio.getInstance().stopThread();
             synchronized(stateChanged) {
                 this.state = GLGameState.Idle;
                 stateChanged.notifyAll();

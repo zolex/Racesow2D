@@ -1,7 +1,7 @@
 package org.racenet.framework;
 
-import android.media.SoundPool;
-
+import org.racenet.racesow.models.SoundItem;
+import org.racenet.racesow.threads.SoundThread;
 /**
  * Container for android sounds
  * 
@@ -11,17 +11,17 @@ import android.media.SoundPool;
 public class Sound {
 
 	private int soundId;
-	private SoundPool soundPool;
+	private SoundThread soundThread;
 	
 	/**
 	 * Constructor 
 	 * @param SoundPool sp
 	 * @param int sid
 	 */
-	public Sound(SoundPool sp, int sid) {
+	public Sound(SoundThread soundThread, int soundID) {
 		
-		soundPool = sp;
-		soundId = sid;
+		this.soundThread = soundThread;
+		this.soundId = soundID;
 	}
 	
 	/**
@@ -31,7 +31,9 @@ public class Sound {
 	 */
 	public void play(float volume) {
 		
-		soundPool.play(soundId, volume, volume, 0, 0, 1);
+		try {
+			this.soundThread.sounds.put(new SoundItem(this.soundId, volume));
+		} catch (InterruptedException e) {}
 	}
 
 	/**
@@ -39,6 +41,6 @@ public class Sound {
 	 */
 	public void dispose() {
 		
-		soundPool.unload(soundId);
+		this.soundThread.unloadSound(soundId);
 	}	
 }

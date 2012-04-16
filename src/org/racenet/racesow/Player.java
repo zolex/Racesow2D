@@ -41,20 +41,21 @@ public class Player extends AnimatedBlock {
 	public static final short ANIM_BURN = 5;
 	public static final short ANIM_INVISIBLE = 6;
 	public static final short ANIM_ROCKET_SHOOT = 7;
-	public static final short ANIM_ROCKET_RUN_1 = 8;
-	public static final short ANIM_ROCKET_RUN_2 = 9;
-	public static final short ANIM_ROCKET_JUMP_1 = 10;
-	public static final short ANIM_ROCKET_JUMP_2 = 11;
-	public static final short ANIM_ROCKET_WALLJUMP = 12;
-	public static final short ANIM_PLASMA_SHOOT = 13;
-	public static final short ANIM_PLASMA_RUN_1 = 14;
-	public static final short ANIM_PLASMA_RUN_2 = 15;
-	public static final short ANIM_PLASMA_JUMP_1 = 16;
-	public static final short ANIM_PLASMA_JUMP_2 = 17;
-	public static final short ANIM_PLASMA_WALLJUMP = 18;
-	public static final short ANIM_DROWN = 19;
-	public static final short ANIM_DRIFTSAND = 20;
-	public AnimationPreset[] animPresets = new AnimationPreset[21];
+	public static final short ANIM_ROCKET_SHOOT_WALL = 8;
+	public static final short ANIM_ROCKET_RUN_1 = 9;
+	public static final short ANIM_ROCKET_RUN_2 = 10;
+	public static final short ANIM_ROCKET_JUMP_1 = 11;
+	public static final short ANIM_ROCKET_JUMP_2 = 12;
+	public static final short ANIM_ROCKET_WALLJUMP = 13;
+	public static final short ANIM_PLASMA_SHOOT = 14;
+	public static final short ANIM_PLASMA_RUN_1 = 15;
+	public static final short ANIM_PLASMA_RUN_2 = 16;
+	public static final short ANIM_PLASMA_JUMP_1 = 17;
+	public static final short ANIM_PLASMA_JUMP_2 = 18;
+	public static final short ANIM_PLASMA_WALLJUMP = 19;
+	public static final short ANIM_DROWN = 20;
+	public static final short ANIM_DRIFTSAND = 21;
+	public AnimationPreset[] animPresets = new AnimationPreset[22];
 	
 	// sounds
 	public static final short SOUND_JUMP1 = 0;
@@ -282,6 +283,10 @@ public class Player extends AnimatedBlock {
 				"player/" + this.model + "/rocket_shoot_f1.png",
 				"player/" + this.model + "/rocket_shoot_f2.png",
 				"player/" + this.model + "/rocket_shoot_f1.png"
+		});
+		
+		this.animPresets[ANIM_ROCKET_SHOOT_WALL] = new AnimationPreset(0.2f, new String[] {
+				"player/" + this.model + "/rocket_shoot_wall.png"
 		});
 		
 		this.animPresets[ANIM_ROCKET_RUN_1] = new AnimationPreset(0, new String[] {
@@ -625,7 +630,7 @@ public class Player extends AnimatedBlock {
 							}
 							
 							this.animTime = 0;
-							this.activeAnimId = ANIM_ROCKET_SHOOT;
+							this.activeAnimId = ANIM_ROCKET_SHOOT_WALL;
 							
 							// show the rocket explosion
 							TexturedBlock decal = this.rocketPool.newObject();

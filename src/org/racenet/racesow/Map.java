@@ -1125,7 +1125,7 @@ public class Map {
 	}
 	
 	/**
-	 * See if it's currently beeing races
+	 * See if it's currently being raced
 	 * 
 	 * @return boolean
 	 */
@@ -1173,13 +1173,14 @@ public class Map {
 	 */
 	public void saveDemo() {
 		
-		if (this.recordDemos) {
+		if (this.recordDemos && !this.demoSaved) {
 			
 			try {
+				
 				this.demoRecorder.demoParts.put("save-demo");
 				this.demoSaved = true;
-			} catch (InterruptedException e) {
-			}
+				
+			} catch (InterruptedException e) {}
 		}
 	}
 	

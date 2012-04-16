@@ -170,6 +170,11 @@ public class GameScreen extends Screen implements OnTouchListener {
 	 */
 	public boolean onTouch(View v, MotionEvent e) {
 		
+		if (this.demoParser != null) {
+			
+			return false;
+		}
+		
 		int action = e.getAction() & MotionEvent.ACTION_MASK;
 		int pointerIndex = (e.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
         //int pointerId = e.getPointerId(pointerIndex);

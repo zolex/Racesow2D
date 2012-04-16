@@ -249,9 +249,19 @@ public class GameScreen extends Screen implements OnTouchListener {
 			
 			DemoKeyFrame f = demoParser.getKeyFrame(this.frameTime);
 			if (f != null) {
-			
-				this.player.setPosition(f.playerPosition);
+				
 				this.player.activeAnimId = f.playerAnimation;
+				if (this.player.activeAnimId == Player.ANIM_JUMP_1 ||
+					this.player.activeAnimId == Player.ANIM_JUMP_2 ||
+					this.player.activeAnimId == Player.ANIM_ROCKET_JUMP_1 ||
+					this.player.activeAnimId == Player.ANIM_ROCKET_JUMP_2 ||
+					this.player.activeAnimId == Player.ANIM_PLASMA_JUMP_1 ||
+					this.player.activeAnimId == Player.ANIM_PLASMA_JUMP_2) {
+					
+					this.player.lastJumpAnim = this.player.activeAnimId;
+				}
+				
+				this.player.setPosition(f.playerPosition);
 				this.player.virtualSpeed = f.playerSpeed;
 				this.player.animate(deltaTime);
 				

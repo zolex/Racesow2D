@@ -109,7 +109,7 @@ public class Player extends AnimatedBlock {
 	GameObject plasmaBounds;
 	float[] worldOffset;
 	GameObject worldBounds;
-	private int lastJumpAnim = ANIM_JUMP_2;
+	public int lastJumpAnim = ANIM_JUMP_2;
 	
 	private int frames = 0;
 	
@@ -703,8 +703,12 @@ public class Player extends AnimatedBlock {
 								this.sounds[SOUND_PLASMA].play(this.volume * 1.2f);
 							}
 							
-							this.animTime = 0;
-							this.activeAnimId = ANIM_PLASMA_SHOOT;
+							// let the wj anim complete
+							if (this.activeAnimId != ANIM_PLASMA_WALLJUMP) {
+								
+								this.animTime = 0;
+								this.activeAnimId = ANIM_PLASMA_SHOOT;
+							}
 							
 							// show the plasma impact
 							TexturedBlock decal = (TexturedBlock)this.plasmaPool.newObject();

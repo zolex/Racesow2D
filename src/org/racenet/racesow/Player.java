@@ -258,7 +258,7 @@ public class Player extends AnimatedBlock {
 	public void loadAnimations() {
 		
 		this.animPresets[ANIM_RUN_1] = new AnimationPreset(0, new String[] {
-				"player/" + this.model + "/jump_f4.png"
+			"player/" + this.model + "/jump_f4.png"
 		});
 		
 		this.animPresets[ANIM_RUN_2] = new AnimationPreset(0, new String[] {
@@ -1016,6 +1016,11 @@ public class Player extends AnimatedBlock {
 						this.setPosition(new Vector2(this.getPosition().x, this.getPosition().y + info.distance));
 						this.velocity.set(this.velocity.x, 0);
 						this.onFloor = true;
+						
+						if (this.map.raceFinished) {
+							
+							this.map.saveDemo();
+						}
 					
 					// wall
 					} else if (info.type == Polygon.LEFT) {
@@ -1040,6 +1045,11 @@ public class Player extends AnimatedBlock {
 							this.onFloor = true;
 						}
 						
+						if (this.map.raceFinished) {
+							
+							this.map.saveDemo();
+						}
+						
 					// ramp down
 					} else if (info.type == Polygon.RAMPDOWN) {
 						
@@ -1047,8 +1057,13 @@ public class Player extends AnimatedBlock {
 						this.velocity.set(this.velocity.x, 0);
 						this.virtualSpeed += (-m + 1) * (-m + 1) * (-m + 1) * 128;
 						this.onFloor = true;
+						
+						if (this.map.raceFinished) {
+							
+							this.map.saveDemo();
+						}
 					}
-
+					
 					break;
 				}
 			}

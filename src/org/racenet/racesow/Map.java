@@ -56,8 +56,8 @@ public class Map {
 	private List<GameObject> funcs = new ArrayList<GameObject>();
 	public float playerX = 0;
 	public float playerY = 0;
-	private boolean raceStarted = false;
-	private boolean raceFinished = false;
+	public boolean raceStarted = false;
+	public boolean raceFinished = false;
 	private float startTime = 0;
 	private float stopTime = 0;
 	private boolean gfxHighlights = true;
@@ -67,6 +67,7 @@ public class Map {
 	String demo = "";
 	public DemoRecorderThread demoRecorder;
 	boolean recordDemos;
+	boolean demoSaved = false;
 	
 	/**
 	 * Map constructor.
@@ -1079,9 +1080,16 @@ public class Map {
 	 */
 	public void restartRace(Player player) {
 		
-		if (this.recordDemos && !this.raceFinished) {
+		if (this.recordDemos) {
 		
-			this.demoRecorder.cancelDemo();
+			if (!this.raceFinished) {
+			
+				this.demoRecorder.cancelDemo();
+			
+			} else if (!this.demoSaved) {
+				
+				this.saveDemo();
+			}
 		}
 		
 		this.demo = "";
@@ -1112,6 +1120,7 @@ public class Map {
 		if (this.recordDemos) {
 			
 			this.demoRecorder.newDemo();
+			this.demoSaved = false;
 		}
 	}
 	
@@ -1157,11 +1166,18 @@ public class Map {
 		this.raceFinished = true;
 		this.raceStarted = false;
 		this.stopTime = System.nanoTime() / 1000000000.0f;
+	}
+	
+	/**
+	 * Save the currently recording demo
+	 */
+	public void saveDemo() {
 		
 		if (this.recordDemos) {
 			
 			try {
 				this.demoRecorder.demoParts.put("save-demo");
+				this.demoSaved = true;
 			} catch (InterruptedException e) {
 			}
 		}

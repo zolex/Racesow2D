@@ -127,11 +127,11 @@ public class Player extends AnimatedBlock {
 		
 		// create the TexturedShape with static width and height
 		super(new Vector2(map.playerX, map.playerY),
-			new Vector2(map.playerX + 9.6f, map.playerY),
-			new Vector2(map.playerX + 9.6f, map.playerY + 9.6f),
-			new Vector2(map.playerX, map.playerY + 9.6f));
+			new Vector2(map.playerX + 3.2f, map.playerY),
+			new Vector2(map.playerX + 3.2f, map.playerY + 6.4f),
+			new Vector2(map.playerX, map.playerY + 6.4f));
 		
-		this.worldOffset = new float[] {2.6f, 0, 6.9f, 8.2f};
+		this.worldOffset = new float[] {0, 0, 3.2f, 6.4f};
 		this.worldBounds = new GameObject(
 			new Vector2(map.playerX + this.worldOffset[0], map.playerY + this.worldOffset[1]),
 			new Vector2(map.playerX + this.worldOffset[2], map.playerY + this.worldOffset[1]),
@@ -139,7 +139,7 @@ public class Player extends AnimatedBlock {
 			new Vector2(map.playerX + this.worldOffset[0], map.playerY + this.worldOffset[3])
 		);
 		
-		this.plasmaOffset = new float[] {2.6f, 3.6f, 6.9f, 3.6f};
+		this.plasmaOffset = new float[] {0, 3, 0, 3.2f};
 		this.plasmaBounds = new GameObject(
 			new Vector2(map.playerX + this.plasmaOffset[0], map.playerY + this.plasmaOffset[1]),
 			new Vector2(map.playerX + this.plasmaOffset[2], map.playerY + this.plasmaOffset[1]),
@@ -147,8 +147,8 @@ public class Player extends AnimatedBlock {
 			new Vector2(map.playerX + this.plasmaOffset[0], map.playerY + this.plasmaOffset[3])
 		);
 		
-		this.texScaleHeight = 0.075f;
-		this.texScaleWidth = 0.075f;
+		this.texScaleHeight = 0.05f;
+		this.texScaleWidth = 0.05f;
 		this.name = name;
 		this.soundEnabled = soundEnabled;
 		this.rGen = new Random();

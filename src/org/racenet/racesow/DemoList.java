@@ -1,8 +1,11 @@
 package org.racenet.racesow;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.racenet.framework.FileIO;
+import org.racenet.helpers.InputStreamToString;
 import org.racenet.racesow.models.DemoAdapter;
 
 import android.app.AlertDialog;
@@ -72,21 +75,58 @@ public class DemoList extends ListActivity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			
 				final String demo = (String)DemoList.this.adapter.getItem(arg2);
-				new AlertDialog.Builder(DemoList.this)
-		            .setMessage("Do you want to play the demo '" + demo +"'?")
-		            .setPositiveButton("Play", new OnClickListener() {
+				String mapName = "";
+				String folder = "racesow" + File.separator + "demos" + File.separator;
+				try {
+					InputStream demoStream = FileIO.getInstance().readFile(folder + demo);
+					String[] info = InputStreamToString.convert(demoStream).split("/");
+					mapName = info[0];
+					
+				} catch (IOException e) {}
+				
+				boolean exists = true;
+				// try to read the map from the assets
+				try {
+					
+					FileIO.getInstance().readAsset("maps" + File.separator + mapName);
+					
+				} catch (IOException e) {
+					
+					// if not found in assets, try to read from sd-card
+					try {
 						
-						public void onClick(DialogInterface arg0, int arg1) {
-							
-							Intent i = new Intent(DemoList.this, Racesow.class);
-							i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-							i.putExtra("screen", "demo");
-							i.putExtra("demo", demo);
-							startActivityForResult(i, 0);
-						}
-					})
-					.setNegativeButton("No", null)
+						FileIO.getInstance().readFile("racesow" + File.separator + "maps" + File.separator + mapName);
+						
+					} catch (IOException e2) {
+						
+						exists = false;
+					}
+				}
+				
+				if (!exists) {
+					
+					new AlertDialog.Builder(DemoList.this)
+		            .setMessage("You don't have the map '" + mapName.replace(".xml", "") +"' installed.\nPlease download it to play the demo.")
+		            .setNeutralButton("OK", null)
 		            .show();
+					
+				} else {
+					new AlertDialog.Builder(DemoList.this)
+			            .setMessage("Do you want to play the demo '" + demo +"'?")
+			            .setPositiveButton("Play", new OnClickListener() {
+							
+							public void onClick(DialogInterface arg0, int arg1) {
+								
+								Intent i = new Intent(DemoList.this, Racesow.class);
+								i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+								i.putExtra("screen", "demo");
+								i.putExtra("demo", demo);
+								startActivityForResult(i, 0);
+							}
+						})
+						.setNegativeButton("No", null)
+			            .show();
+				}
 			}
 		});
     }

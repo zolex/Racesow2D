@@ -151,12 +151,6 @@ public class Racesow extends GLGame {
     	} else {
     		
     		LOOPER_PREPARED = false; // just to be sure...
-    		Audio audio = Audio.getInstance();
-    		if (audio != null) {
-    			
-    			audio.stopThread();
-    		}
-    		
     		this.finish();
         	this.overridePendingTransition(0, 0);
     	}

@@ -52,8 +52,9 @@ public class MapsScreen extends Screen implements OnTouchListener {
 
 		this.camera = new Camera2((float)game.getScreenWidth(), (float)game.getScreenHeight());
 		
-		this.refreshMapList();
+		FileIO.getInstance().createDirectory("racesow" + File.separator + "maps");
 		
+		this.refreshMapList();
 		
 		GLTexture.APP_FOLDER = "racesow";
 		String texture = "racesow.jpg";

@@ -154,6 +154,8 @@ public class Racesow extends GLGame {
     		this.finish();
         	this.overridePendingTransition(0, 0);
         	
+        	Audio.getInstance().stopThread();
+        	
         	// If I decide to not kill the process anymore, don't
         	// forget to restart the SoundThread and set this flag
         	// LOOPER_PREPARED = false;

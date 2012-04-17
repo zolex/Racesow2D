@@ -171,7 +171,6 @@ public abstract class GLGame extends Activity implements Renderer {
             if (isFinishing()) {
             	
             	state = GLGameState.Finished;
-            	Audio.getInstance().stopThread();
             	
             } else {
             	

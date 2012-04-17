@@ -127,7 +127,14 @@ public class DownloadMaps extends XMLListActivity {
     	pd = new ProgressDialog(DownloadMaps.this);
 		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		pd.setMessage("Obtaining available maps...");
-		pd.setCancelable(false);
+		pd.setCancelable(true);
+		pd.setOnCancelListener(new OnCancelListener() {
+			
+			public void onCancel(DialogInterface dialog) {
+
+				DownloadMaps.this.onBackPressed();
+			}
+		});	
 		pd.show();
         
 		String url = "http://racesow2d.warsow-race.net/downloads.php";

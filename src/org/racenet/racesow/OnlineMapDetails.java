@@ -12,6 +12,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -79,7 +80,14 @@ public class OnlineMapDetails extends XMLListActivity {
     	pd = new ProgressDialog(OnlineMapDetails.this);
 		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		pd.setMessage("Obtaining scores...");
-		pd.setCancelable(false);
+		pd.setCancelable(true);
+		pd.setOnCancelListener(new OnCancelListener() {
+			
+			public void onCancel(DialogInterface dialog) {
+
+				OnlineMapDetails.this.onBackPressed();
+			}
+		});
 		pd.show();
     	
     	isLoading = true;

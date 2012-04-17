@@ -17,6 +17,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Process;
 
 /**
  * Main Activity of the game
@@ -150,9 +151,13 @@ public class Racesow extends GLGame {
 		// quit the application
     	} else {
     		
-    		LOOPER_PREPARED = false; // just to be sure...
     		this.finish();
         	this.overridePendingTransition(0, 0);
+        	
+        	// If I decide to not kill the process anymore, don't
+        	// forget to restart the SoundThread and set this flag
+        	// LOOPER_PREPARED = false;
+        	Process.killProcess(Process.myPid());
     	}
     }
 }

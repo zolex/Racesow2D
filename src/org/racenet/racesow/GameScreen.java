@@ -15,8 +15,11 @@ import org.racenet.framework.Vector2;
 import org.racenet.racesow.models.DemoKeyFrame;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnClickListener;
 import android.opengl.GLES10;
 import android.view.MotionEvent;
 import android.view.View;
@@ -49,14 +52,16 @@ public class GameScreen extends Screen implements OnTouchListener {
 	private float currentPlayerOffset = 0;
 	private float targetPlayerOffset = 0;
 	float playerBlur = 0;
-	
+	int lowFpsLimit = 30;
+	long frameNum = 0;
 	boolean showFPS, showUPS;
-	
+	double time;
 	int fpsInterval = 5;
-	int frames = 10;
-	boolean waitForDemo = true;
+	int frames = fpsInterval;
+	boolean waitForNextFrame = true;
 	float sumDelta = 0;
 	public GameState state = GameState.Running;
+	boolean fpsDialogShown = false;
 	
 	public enum GameState {
 		
@@ -251,7 +256,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 	 * Called each frame from GLGame.
 	 */
 	public void update(float deltaTime) {
-		
+				
 		if (this.demoParser != null) {
 			
 			DemoKeyFrame f = demoParser.getKeyFrame(this.frameTime);
@@ -344,13 +349,45 @@ public class GameScreen extends Screen implements OnTouchListener {
 		}
 		
 		// when playing a demo wait one frame
-		if (this.demoParser != null && this.waitForDemo) {
+		if (this.waitForNextFrame) {
 		
-			this.waitForDemo = false;
+			this.waitForNextFrame = false;
 				
 		} else {
 			
 			this.frameTime += deltaTime;
+			
+			this.time += deltaTime;
+			this.frameNum++;
+			if (!this.fpsDialogShown && this.map.gfxHighlights && this.state != GameState.Paused && frameNum > 100 && this.frameNum / this.time < this.lowFpsLimit) {
+				
+				this.pauseGame();
+				this.fpsDialogShown = true;
+				this.game.runOnUiThread(new Runnable() {
+					
+					public void run() {
+					
+						new AlertDialog.Builder(GameScreen.this.game)
+				        .setMessage("You have less then " + GameScreen.this.lowFpsLimit + " FPS. Do you want to disable graphical highlights to increase the performance? (You can disable it persitently in the settings.)")
+				        .setPositiveButton("YES", new OnClickListener() {
+							
+							public void onClick(DialogInterface arg0, int arg1) {
+								
+								GameScreen.this.map.gfxHighlights = false;
+								GameScreen.this.resumeGame();
+							}
+						})
+						.setNegativeButton("No", new OnClickListener() {
+							
+							public void onClick(DialogInterface dialog, int which) {
+								
+								GameScreen.this.resumeGame();
+							}
+						})
+				        .show();
+					}
+				});
+			}
 		}		
 		
 		// move the camera upwards if the player goes to high

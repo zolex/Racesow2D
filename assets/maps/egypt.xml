@@ -22,6 +22,10 @@
 		<speed>2.25</speed>
 		<scale>0.1</scale>
 	</background2>
+	<ambience>
+	    <sound>sounds/egypt/ambience.mp3</sound>
+	    <volume>0.2</volume>
+	</ambience>
 	<block>
 		<level>ground</level>
 		<x>0</x>

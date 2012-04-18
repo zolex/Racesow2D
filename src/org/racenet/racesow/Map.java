@@ -9,10 +9,12 @@ import java.util.Set;
 
 import org.racenet.framework.AnimatedBlock;
 import org.racenet.framework.AnimationPreset;
+import org.racenet.framework.Audio;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.FileIO;
 import org.racenet.framework.GLTexture;
 import org.racenet.framework.GameObject;
+import org.racenet.framework.Music;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.SpatialHashGrid;
 import org.racenet.framework.TexturedShape;
@@ -68,6 +70,7 @@ public class Map {
 	public DemoRecorderThread demoRecorder;
 	boolean recordDemos;
 	boolean demoSaved = false;
+	public Music ambience;
 	
 	/**
 	 * Map constructor.
@@ -116,6 +119,24 @@ public class Map {
 			} catch (IOException e2) {
 				
 				return false;
+			}
+		}
+		
+		// obtain the ambient sound from the map
+		NodeList ambienceN = parser.doc.getElementsByTagName("ambience");
+		if (ambienceN.getLength() == 1) {
+			
+			Element ambience = (Element)ambienceN.item(0);
+			try {
+				
+				String sound = parser.getValue(ambience, "sound");
+				float ambienceVolume = Float.valueOf(parser.getValue(ambience, "volume")).floatValue();
+				this.ambience = Audio.getInstance().newMusic(sound);
+				this.ambience.setLooping(true);
+				this.ambience.setVolume(ambienceVolume);
+
+			} catch (NumberFormatException e) {
+				
 			}
 		}
 		
@@ -798,10 +819,24 @@ public class Map {
 		}
 	}
 	
+	public void enableSounds() {
+		
+		if (this.ambience != null) {
+			
+			this.ambience.play();
+		}
+	}
+	
 	/**
 	 * Get rid of the textures from the whole map
 	 */
 	public void dispose() {
+		
+		if (this.ambience != null) {
+			
+			this.ambience.stop();
+			this.ambience.dispose();
+		}
 		
 		if (this.recordDemos && this.demoRecorder != null) {
 		

@@ -70,7 +70,7 @@ public class Map {
 	public DemoRecorderThread demoRecorder;
 	boolean recordDemos;
 	boolean demoSaved = false;
-	boolean enableAmbience;
+	public boolean enableAmbience;
 	public AmbientSound[] ambience;
 	float[] ambientVolume; 
 	

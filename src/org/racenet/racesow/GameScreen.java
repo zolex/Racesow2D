@@ -271,6 +271,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 				this.player.setPosition(f.playerPosition);
 				this.player.virtualSpeed = f.playerSpeed;
 				this.player.animate(deltaTime);
+				this.map.handleAmbience(this.player.getPosition().x);
 				
 				if (this.player.soundEnabled && f.playerSound != -1) {
 					

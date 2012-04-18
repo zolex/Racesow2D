@@ -56,6 +56,10 @@ public class Settings extends PreferenceActivity {
 					
 					prefs.edit().putBoolean("sound", value.toString().equals("true") ? true : false).commit();
 
+				} else if (pref.getKey().equals("ambience")) {
+					
+					prefs.edit().putBoolean("ambience", value.toString().equals("true") ? true : false).commit();
+
 				} else if (pref.getKey().equals("gfx")) {
 					
 					prefs.edit().putBoolean("gfx", value.toString().equals("true") ? true : false).commit();
@@ -94,6 +98,7 @@ public class Settings extends PreferenceActivity {
 		findPreference("name").setOnPreferenceChangeListener(listener);
 		findPreference("demos").setOnPreferenceChangeListener(listener);
 		findPreference("sound").setOnPreferenceChangeListener(listener);
+		findPreference("ambience").setOnPreferenceChangeListener(listener);
 		findPreference("gfx").setOnPreferenceChangeListener(listener);
 		findPreference("blur").setOnPreferenceChangeListener(listener);
 		findPreference("ups").setOnPreferenceChangeListener(listener);

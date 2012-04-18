@@ -815,6 +815,8 @@ public class Player extends AnimatedBlock {
 		this.frameDecal = "";
 		this.frameSound = -1;
 		
+		this.map.handleAmbience(this.getPosition().x);
+		
 		if (this.activeAnimId == ANIM_PLASMA_SHOOT) {
 		
 			// if the player stopped pressing shoot or left a wall

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.racenet.framework.AmbientSound;
 import org.racenet.framework.AnimatedBlock;
 import org.racenet.framework.AnimationPreset;
 import org.racenet.framework.Audio;
@@ -70,7 +71,8 @@ public class Map {
 	public DemoRecorderThread demoRecorder;
 	boolean recordDemos;
 	boolean demoSaved = false;
-	public Music ambience;
+	boolean enableAmbience;
+	public AmbientSound[] ambience;
 	
 	/**
 	 * Map constructor.
@@ -99,10 +101,11 @@ public class Map {
 	 * @param String fileName
 	 * @return boolean
 	 */
-	public boolean load(String fileName, boolean demoPlayback) {
+	public boolean load(String fileName, boolean enabledAmbience, boolean demoPlayback) {
 		
 		this.fileName = fileName;
 		XMLParser parser = new XMLParser();
+		this.enableAmbience = enabledAmbience;
 		
 		// try to read the map from the assets
 		try {
@@ -122,21 +125,49 @@ public class Map {
 			}
 		}
 		
-		// obtain the ambient sound from the map
-		NodeList ambienceN = parser.doc.getElementsByTagName("ambience");
-		if (ambienceN.getLength() == 1) {
+		if (this.enableAmbience) {
 			
-			Element ambience = (Element)ambienceN.item(0);
-			try {
+			// obtain the ambient sound from the map
+			NodeList ambienceN = parser.doc.getElementsByTagName("ambience");
+			int numAmbience = ambienceN.getLength();
+			this.ambience = new AmbientSound[numAmbience];
+			for (int i = 0; i < numAmbience; i++) {
 				
-				String sound = parser.getValue(ambience, "sound");
-				float ambienceVolume = Float.valueOf(parser.getValue(ambience, "volume")).floatValue();
-				this.ambience = Audio.getInstance().newMusic(sound);
-				this.ambience.setLooping(true);
-				this.ambience.setVolume(ambienceVolume);
-
-			} catch (NumberFormatException e) {
+				Element ambienceXML = (Element)ambienceN.item(i);
+				String sound = parser.getValue(ambienceXML, "sound");
 				
+				float volume;
+				try {
+					volume = Float.valueOf(parser.getValue(ambienceXML, "volume")).floatValue();
+				} catch (NumberFormatException e) {
+					volume = 0.2f;
+				}
+				
+				boolean positional;
+				float x, distance, range;
+				try {
+					x = Float.valueOf(parser.getValue(ambienceXML, "x")).floatValue();
+					distance = Float.valueOf(parser.getValue(ambienceXML, "distance")).floatValue();
+					range = Float.valueOf(parser.getValue(ambienceXML, "range")).floatValue();
+					positional = true;
+				} catch (NumberFormatException e) {
+					x = 0;
+					distance = 0;
+					range = 0;
+					positional = false;
+				}
+				
+				AmbientSound ambience = new AmbientSound();
+				ambience.sound = Audio.getInstance().newMusic(sound);
+				ambience.sound.setLooping(true);
+				ambience.sound.setVolume(positional ? 0 : volume);
+				ambience.volume = volume;
+				ambience.positional = positional;
+				ambience.x = x;
+				ambience.distance = distance;
+				ambience.range = range;
+				
+				this.ambience[i] = ambience;
 			}
 		}
 		
@@ -819,11 +850,53 @@ public class Map {
 		}
 	}
 	
+	/**
+	 * Enable all map sounds
+	 */
 	public void enableSounds() {
 		
-		if (this.ambience != null) {
+		int length = this.ambience.length;
+		for (int i = 0; i < length; i++) {
 			
-			this.ambience.play();
+			this.ambience[i].sound.play();
+		}
+	}
+	
+	/**
+	 * Handle positional ambient sounds
+	 * 
+	 * @param float playerX
+	 */
+	public void handleAmbience(float playerX) {
+		
+		int length = this.ambience.length;
+		for (int i = 0; i < length; i++) {
+			
+			if (this.ambience[i].positional) {
+				
+				float leftRange = this.ambience[i].x - this.ambience[i].range;
+				float rightRange =  this.ambience[i].x + this.ambience[i].range;
+				float from = leftRange - this.ambience[i].distance;
+				float to = rightRange +  this.ambience[i].distance;
+				if (playerX >= from && playerX <= to) {
+					
+					float volume = this.ambience[i].volume;
+					if (playerX < leftRange) {
+						
+						volume = ((this.ambience[i].distance - (leftRange - playerX)) / this.ambience[i].distance * this.ambience[i].volume);
+						
+					} else if (playerX > rightRange) {
+						
+						volume = (((rightRange + this.ambience[i].distance - playerX)) / this.ambience[i].distance * this.ambience[i].volume);
+					}
+					 
+					this.ambience[i].sound.setVolume(volume);
+					
+				} else {
+					
+					this.ambience[i].sound.setVolume(0);
+				}
+			}
 		}
 	}
 	
@@ -832,10 +905,13 @@ public class Map {
 	 */
 	public void dispose() {
 		
-		if (this.ambience != null) {
+		int length;
+		
+		length = this.ambience.length;
+		for (int i = 0; i < length; i++) {
 			
-			this.ambience.stop();
-			this.ambience.dispose();
+			this.ambience[i].sound.stop();
+			this.ambience[i].sound.dispose();
 		}
 		
 		if (this.recordDemos && this.demoRecorder != null) {
@@ -861,7 +937,7 @@ public class Map {
 			this.background2.dispose();
 		}
 		
-		int length = this.ground.size();
+		length = this.ground.size();
 		for (int i = 0; i < length; i++) {
 			
 			this.ground.get(i).dispose();

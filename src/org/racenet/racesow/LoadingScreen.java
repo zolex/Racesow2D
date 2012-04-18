@@ -76,6 +76,7 @@ class LoadingScreen extends Screen {
 			
 			SharedPreferences prefs = ((Activity)this.game).getSharedPreferences("racesow", Context.MODE_PRIVATE);
 			boolean sound = prefs.getBoolean("sound", true);
+			boolean ambience = prefs.getBoolean("ambience", true);
 			boolean blur = prefs.getBoolean("blur", true);
 			boolean demos = prefs.getBoolean("demos", true);
 			String name = prefs.getString("name", "player");
@@ -97,7 +98,7 @@ class LoadingScreen extends Screen {
 			// right after drawing the loading screen load
 			// the map and player and pass it to the GameScreen
 			Map map = new Map(this.camera, prefs.getBoolean("gfx", true), demos);
-			map.load(this.mapName, this.demoFile != null);
+			map.load(this.mapName, ambience, this.demoFile != null);
 			Player player = new Player(name, map, this.camera, sound, blur, demos);
 			
 			game.setScreen(new GameScreen(this.game, this.camera, map, player, parser, demos));

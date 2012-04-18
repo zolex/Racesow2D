@@ -22,10 +22,6 @@
 		<speed>2.25</speed>
 		<scale>0.1</scale>
 	</background2>
-	<ambience>
-	    <sound>sounds/egypt/ambience.mp3</sound>
-	    <volume>0.2</volume>
-	</ambience>
 	<block>
 		<level>ground</level>
 		<x>0</x>
@@ -205,6 +201,13 @@
 		<height>6.4</height>
 		<texture>egypt/plant.png</texture>
 	</block>
+	<ambience>
+	    <sound>sounds/lava.ogg</sound>
+	    <volume>0.3</volume>
+	    <x>300</x>
+	    <range>25</range>
+	    <distance>50</distance>
+	</ambience>
 	<block>
 		<level>ground</level>
 		<x>275</x>
@@ -767,6 +770,13 @@
 		<height>12.8</height>
 		<texture>egypt/wall_tr.png</texture>
 	</block>
+	<ambience>
+	    <sound>sounds/lava.ogg</sound>
+	    <volume>0.3</volume>
+	    <x>887.5</x>
+	    <range>37.5</range>
+	    <distance>50</distance>
+	</ambience>
 	<block>
 		<level>ground</level>
 		<x>850</x>
@@ -874,6 +884,13 @@
 		<height>25.6</height>
 		<texture>egypt/palm.png</texture>
 	</block>
+	<ambience>
+	    <sound>sounds/lava.ogg</sound>
+	    <volume>0.3</volume>
+	    <x>1175</x>
+	    <range>125</range>
+	    <distance>50</distance>
+	</ambience>
 	<block>
 		<level>ground</level>
 		<x>1050</x>
@@ -1047,9 +1064,16 @@
 		<height>10</height>
 		<texture>egypt/stone.png</texture>
 	</block>
+	<ambience>
+	    <sound>sounds/lava.ogg</sound>
+	    <volume>0.3</volume>
+	    <x>1762.5</x>
+	    <range>115</range>
+	    <distance>50</distance>
+	</ambience>
 	<block>
 		<level>highlight</level>
-		<x>1740</x>
+		<x>1725</x>
 		<y>10</y>
 		<width>6.4</width>
 		<height>6.4</height>
@@ -1257,6 +1281,13 @@
 		<height>12.8</height>
 		<texture>egypt/wall_tr.png</texture>
 	</block>
+	<ambience>
+	    <sound>sounds/lava.ogg</sound>
+	    <volume>0.3</volume>
+	    <x>2400</x>
+	    <range>300</range>
+	    <distance>50</distance>
+	</ambience>
 	<block>
 		<level>ground</level>
 		<x>2100</x>
@@ -1528,6 +1559,13 @@
 		<height>2.5</height>
 		<texture>egypt/border_tsfl.png</texture>
 	</block>
+	<ambience>
+	    <sound>sounds/lava.ogg</sound>
+	    <volume>0.3</volume>
+	    <x>3200</x>
+	    <range>100</range>
+	    <distance>50</distance>
+	</ambience>
 	<block>
 		<level>ground</level>
 		<x>3100</x>
@@ -1765,6 +1803,13 @@
 		<height>12.8</height>
 		<texture>egypt/wall_tr.png</texture>
 	</block>
+	<ambience>
+	    <sound>sounds/lava.ogg</sound>
+	    <volume>0.3</volume>
+	    <x>4100</x>
+	    <range>250</range>
+	    <distance>50</distance>
+	</ambience>
 	<block>
 		<level>ground</level>
 		<x>3800</x>

@@ -8,18 +8,18 @@
 	<stoptimer><x>5000</x></stoptimer>
 	<sky>
 		<texture>egypt/sky.png</texture>
-		<position>5</position>
+		<position>-15</position>
 	</sky>
 	<background>
-		<texture>egypt/clouds.png</texture>
-		<position>8</position>
+		<texture>egypt/overlay.png</texture>
+		<position>5</position>
 		<speed>1.75</speed>
 		<scale>0.1</scale>
 	</background>
 	<background2>
-		<texture>egypt/overlay.png</texture>
-		<position>4</position>
-		<speed>3</speed>
+		<texture>egypt/overlay2.png</texture>
+		<position>5</position>
+		<speed>2.25</speed>
 		<scale>0.1</scale>
 	</background2>
 	<tutorial>
@@ -149,10 +149,8 @@
 		<y>0</y>
 		<width>30</width>
 		<height>5</height>
-		<texture>egypt/lava.jpg</texture>
+		<texture>egypt/driftsand_f1.png</texture>
 		<func>1</func>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
 	</block>
 	<block>
 		<level>wall</level>
@@ -160,9 +158,7 @@
 		<y>5</y>
 		<width>35</width>
 		<height>20</height>
-		<texture>egypt/wood.png</texture>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
+		<texture>egypt/wall.png</texture>
 	</block>
 	<block>
 		<level>ground</level>
@@ -273,9 +269,7 @@
 		<y>10</y>
 		<width>400</width>
 		<height>30</height>
-		<texture>egypt/wood.png</texture>
-		<texsx>0.05</texsx>
-		<texsy>0.05</texsy>
+		<texture>egypt/wall.png</texture>
 	</block>
 	<block>
 		<level>ground</level>

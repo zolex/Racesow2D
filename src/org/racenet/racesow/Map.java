@@ -73,6 +73,7 @@ public class Map {
 	boolean demoSaved = false;
 	boolean enableAmbience;
 	public AmbientSound[] ambience;
+	float[] ambientVolume; 
 	
 	/**
 	 * Map constructor.
@@ -131,6 +132,7 @@ public class Map {
 			NodeList ambienceN = parser.doc.getElementsByTagName("ambience");
 			int numAmbience = ambienceN.getLength();
 			this.ambience = new AmbientSound[numAmbience];
+			this.ambientVolume = new float[numAmbience];
 			for (int i = 0; i < numAmbience; i++) {
 				
 				Element ambienceXML = (Element)ambienceN.item(i);
@@ -167,6 +169,7 @@ public class Map {
 				ambience.distance = distance;
 				ambience.range = range;
 				
+				this.ambientVolume[i] = positional ? 0 : volume;
 				this.ambience[i] = ambience;
 			}
 		}
@@ -879,13 +882,14 @@ public class Map {
 			
 			if (this.ambience[i].positional) {
 				
+				float volume = 0;
 				float leftRange = this.ambience[i].x - this.ambience[i].range;
 				float rightRange =  this.ambience[i].x + this.ambience[i].range;
 				float from = leftRange - this.ambience[i].distance;
 				float to = rightRange +  this.ambience[i].distance;
 				if (playerX >= from && playerX <= to) {
 					
-					float volume = this.ambience[i].volume;
+					volume = this.ambience[i].volume;
 					if (playerX < leftRange) {
 						
 						volume = (this.ambience[i].distance - leftRange + playerX) / this.ambience[i].distance * this.ambience[i].volume;
@@ -894,12 +898,13 @@ public class Map {
 						
 						volume = (this.ambience[i].distance + rightRange - playerX) / this.ambience[i].distance * this.ambience[i].volume;
 					}
-					 
+					
+				}
+				
+				if (this.ambientVolume[i] != volume) {
+					
+					this.ambientVolume[i] = volume;
 					this.ambience[i].sound.setVolume(volume);
-					
-				} else {
-					
-					this.ambience[i].sound.setVolume(0);
 				}
 			}
 		}

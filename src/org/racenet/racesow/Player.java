@@ -105,7 +105,7 @@ public class Player extends AnimatedBlock {
 	public String frameDecal = "";
 	public int frameSound = -1;
 	boolean recordDemos;
-	boolean blurEnabled;
+	public boolean blurEnabled;
 	float[] plasmaOffset;
 	GameObject plasmaBounds;
 	float[] worldOffset;

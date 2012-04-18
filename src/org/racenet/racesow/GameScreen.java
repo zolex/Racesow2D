@@ -383,6 +383,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 								
 								GameScreen.this.map.gfxHighlights = false;
 								GameScreen.this.map.enableAmbience = false;
+								GameScreen.this.player.blurEnabled = false;
 								GameScreen.this.resumeGame();
 							}
 						})

@@ -858,10 +858,13 @@ public class Map {
 	 */
 	public void enableSounds() {
 		
-		int length = this.ambience.length;
-		for (int i = 0; i < length; i++) {
+		if (this.enableAmbience && this.ambience != null) {
 			
-			this.ambience[i].sound.play();
+			int length = this.ambience.length;
+			for (int i = 0; i < length; i++) {
+				
+				this.ambience[i].sound.play();
+			}
 		}
 	}
 	
@@ -872,7 +875,7 @@ public class Map {
 	 */
 	public void handleAmbience(float playerX) {
 		
-		if (!this.enableAmbience) {
+		if (!this.enableAmbience || this.ambience == null) {
 			
 			return;
 		}
@@ -917,11 +920,14 @@ public class Map {
 		
 		int length;
 		
-		length = this.ambience.length;
-		for (int i = 0; i < length; i++) {
+		if (this.enableAmbience && this.ambience != null) {
 			
-			this.ambience[i].sound.stop();
-			this.ambience[i].sound.dispose();
+			length = this.ambience.length;
+			for (int i = 0; i < length; i++) {
+				
+				this.ambience[i].sound.stop();
+				this.ambience[i].sound.dispose();
+			}
 		}
 		
 		if (this.recordDemos && this.demoRecorder != null) {

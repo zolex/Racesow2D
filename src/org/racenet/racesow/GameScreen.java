@@ -21,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.opengl.GLES10;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -55,6 +56,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 	int lowFpsLimit = 30;
 	long frameNum = 0;
 	boolean showFPS, showUPS;
+	int lowFPSCOunt = 0;
 	double time;
 	int fpsInterval = 5;
 	int frames = fpsInterval;
@@ -359,7 +361,13 @@ public class GameScreen extends Screen implements OnTouchListener {
 			
 			this.time += deltaTime;
 			this.frameNum++;
-			if (!this.fpsDialogShown && this.map.gfxHighlights && this.state != GameState.Paused && frameNum > 100 && this.frameNum / this.time < this.lowFpsLimit) {
+			float fps = 1 / deltaTime;
+			if (fps < this.lowFpsLimit) {
+				
+				this.lowFPSCOunt++;
+			}
+			
+			if (!this.fpsDialogShown && this.map.gfxHighlights && this.state != GameState.Paused && frameNum > 100 && (this.frameNum / this.time < this.lowFpsLimit || this.lowFPSCOunt > 10)) {
 				
 				this.pauseGame();
 				this.fpsDialogShown = true;

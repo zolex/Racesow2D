@@ -1367,7 +1367,7 @@ public class Player extends AnimatedBlock {
 		
 		super.draw();
 		
-		if (this.blurEnabled) {
+		if (this.blurEnabled && blur > 0) {
 			
 			GLES10.glPushMatrix();
 			GLES10.glTranslatef(this.getPosition().x - blur, this.getPosition().y, 0);

@@ -869,6 +869,11 @@ public class Map {
 	 */
 	public void handleAmbience(float playerX) {
 		
+		if (!this.enableAmbience) {
+			
+			return;
+		}
+		
 		int length = this.ambience.length;
 		for (int i = 0; i < length; i++) {
 			
@@ -883,11 +888,11 @@ public class Map {
 					float volume = this.ambience[i].volume;
 					if (playerX < leftRange) {
 						
-						volume = ((this.ambience[i].distance - (leftRange - playerX)) / this.ambience[i].distance * this.ambience[i].volume);
+						volume = (this.ambience[i].distance - leftRange + playerX) / this.ambience[i].distance * this.ambience[i].volume;
 						
 					} else if (playerX > rightRange) {
 						
-						volume = (((rightRange + this.ambience[i].distance - playerX)) / this.ambience[i].distance * this.ambience[i].volume);
+						volume = (this.ambience[i].distance + rightRange - playerX) / this.ambience[i].distance * this.ambience[i].volume;
 					}
 					 
 					this.ambience[i].sound.setVolume(volume);

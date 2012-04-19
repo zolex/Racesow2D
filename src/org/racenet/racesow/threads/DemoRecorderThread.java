@@ -9,6 +9,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.racenet.framework.FileIO;
+import org.racenet.racesow.models.DemoKeyFrame;
 
 /**
  * Thread to save the demo-data while playing
@@ -19,7 +20,7 @@ import org.racenet.framework.FileIO;
 public class DemoRecorderThread extends Thread {
 	
 	private String map;
-	public BlockingQueue<String> demoParts = new LinkedBlockingQueue<String>();
+	public BlockingQueue<DemoKeyFrame> demoParts = new LinkedBlockingQueue<DemoKeyFrame>();
 	private FileOutputStream fos;
 	private String demoFolder;
 	private String fileName;
@@ -74,7 +75,10 @@ public class DemoRecorderThread extends Thread {
 		}
 		
 		try {
-			this.demoParts.put(this.map + "/");
+			DemoKeyFrame frame = new DemoKeyFrame();
+			frame.meta = this.map + "/";
+			frame.action = DemoKeyFrame.ACTION_META;
+			this.demoParts.put(frame);
 		} catch (InterruptedException e) {
 		}
 	}
@@ -87,11 +91,11 @@ public class DemoRecorderThread extends Thread {
 		
 		try {
 			
-			String item;
+			DemoKeyFrame frame;
 			while (!this.stop) {
 				
-				item = this.demoParts.take();
-				if (item.equals("save-demo")) {
+				frame = this.demoParts.take();
+				if (frame.action == DemoKeyFrame.ACTION_SAVE) {
 					
 					if (this.fos != null) {
 						
@@ -100,14 +104,31 @@ public class DemoRecorderThread extends Thread {
 						this.fileName = null;
 					}
 					
-				} else if (item.equals("cancel")) {
+				} else if (frame.action == DemoKeyFrame.ACTION_CANCEL) {
 					
 					this.cancelDemo();
 					break;
 					
+				} else if (frame.action == DemoKeyFrame.ACTION_META) {
+					
+					if (this.fos != null) {
+						
+						this.fos.write(frame.meta.getBytes());
+					}
+					
 				} else {
 					
 					if (this.fos != null) {
+						
+						String item = frame.frameTime + ":" +
+							frame.playerPosition.x + "," +
+							frame.playerPosition.y + "," +
+							frame.playerAnimation + "," +
+							frame.playerSpeed + "," +
+							frame.mapTime + 
+							(frame.playerSound == -1 ? "" : "," + frame.playerSound) +
+							(frame.decalType == null ? "" : "," + frame.decalType + "#" + frame.decalX + "#" + frame.decalY) +
+							";";
 						
 						this.fos.write(item.getBytes());
 					}

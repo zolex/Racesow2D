@@ -20,6 +20,7 @@ import org.racenet.framework.TexturedShape;
 import org.racenet.framework.TexturedTriangle;
 import org.racenet.framework.Vector2;
 import org.racenet.framework.XMLParser;
+import org.racenet.racesow.models.DemoKeyFrame;
 import org.racenet.racesow.threads.DemoRecorderThread;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -737,17 +738,6 @@ public class Map {
 		return true;
 	}
 	
-	public void appendToDemo(String part) {
-		
-		if (this.recordDemos) {
-			
-			try {
-				this.demoRecorder.demoParts.put(part);
-			} catch (InterruptedException e) {
-			}
-		}
-	}
-	
 	/**
 	 * Update the map. Called by GameScreen each frame
 	 * 
@@ -918,9 +908,12 @@ public class Map {
 		
 		if (this.recordDemos && this.demoRecorder != null) {
 		
+			DemoKeyFrame cancel = new DemoKeyFrame();
+			cancel.action = DemoKeyFrame.ACTION_CANCEL;
+			
 			this.demoRecorder.cancelDemo();
 			this.demoRecorder.stop = true;
-			this.demoRecorder.demoParts.add("cancel");
+			this.demoRecorder.demoParts.add(cancel);
 			this.demoRecorder.interrupt();
 		}
 		
@@ -1315,12 +1308,10 @@ public class Map {
 		
 		if (this.recordDemos && !this.demoSaved) {
 			
-			try {
-				
-				this.demoRecorder.demoParts.put("save-demo");
-				this.demoSaved = true;
-				
-			} catch (InterruptedException e) {}
+			DemoKeyFrame save = new DemoKeyFrame();
+			save.action = DemoKeyFrame.ACTION_SAVE;
+			this.demoRecorder.demoParts.add(save);
+			this.demoSaved = true;
 		}
 	}
 	

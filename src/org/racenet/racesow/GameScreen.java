@@ -63,6 +63,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 	float sumDelta = 0;
 	public GameState state = GameState.Running;
 	boolean fpsDialogShown = false;
+	private DemoKeyFrame demoFrame = new DemoKeyFrame();
 	
 	public enum GameState {
 		
@@ -343,17 +344,16 @@ public class GameScreen extends Screen implements OnTouchListener {
 			
 			if (this.recordDemos) {
 				
-				this.map.appendToDemo(
-					this.frameTime + ":" +
-					this.player.vertices[0].x + "," +
-					this.player.vertices[0].y + "," +
-					this.player.activeAnimId + "," +
-					(int)this.player.virtualSpeed + "," +
-					this.map.getCurrentTime() + 
-					(this.player.frameSound == -1 ? "" : "," + this.player.frameSound) +
-					(this.player.frameDecal.equals("") ? "" : "," + this.player.frameDecal) +
-					";"
-				);
+				this.demoFrame.frameTime = this.frameTime;
+				this.demoFrame.playerPosition = this.player.vertices[0];
+				this.demoFrame.playerAnimation = this.player.activeAnimId;
+				this.demoFrame.playerSound = this.player.frameSound;
+				this.demoFrame.playerSpeed = (int)this.player.virtualSpeed;
+				this.demoFrame.decalType = this.player.frameDecalType;
+				this.demoFrame.decalX = this.player.frameDecalX;
+				this.demoFrame.decalY = this.player.frameDecalY;
+				this.demoFrame.mapTime = this.map.getCurrentTime();
+				this.map.demoRecorder.demoParts.add(this.demoFrame);
 			}
 			
 			// update the player

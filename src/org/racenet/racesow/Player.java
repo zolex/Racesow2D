@@ -102,7 +102,9 @@ public class Player extends AnimatedBlock {
 	CameraText tutorialMessage1;
 	CameraText tutorialMessage2;
 	CameraText tutorialMessage3;
-	public String frameDecal = "";
+	public String frameDecalType = null;
+	public float frameDecalX = 0;
+	public float frameDecalY = 0;
 	public int frameSound = -1;
 	boolean recordDemos;
 	public boolean blurEnabled;
@@ -664,7 +666,11 @@ public class Player extends AnimatedBlock {
 							decal.vertices[0].x = impactX;
 							decal.vertices[0].y = impactY;
 							map.addDecal(decal, rocketDecalTime);
-							if (this.recordDemos) this.frameDecal = "r#" + impactX + "#" + impactY;
+							if (this.recordDemos) {
+								this.frameDecalType = "r";
+								this.frameDecalX = impactX;
+								this.frameDecalY = impactY;
+							}
 							
 							this.lastShot = currentTime;
 							break;
@@ -703,7 +709,12 @@ public class Player extends AnimatedBlock {
 							decal.vertices[0].y = impactY;
 							map.addDecal(decal, plasmaDecalTime);
 							
-							if (this.recordDemos) this.frameDecal = "r#" + this.getPhysicalPosition().x + "#" + impactY;
+							if (this.recordDemos) {
+								
+								this.frameDecalType = "r";
+								this.frameDecalX = this.getPhysicalPosition().x;
+								this.frameDecalY = impactY;
+							}
 						}
 						
 						this.lastShot = currentTime;
@@ -749,7 +760,12 @@ public class Player extends AnimatedBlock {
 							decal.vertices[0].x = impactX;
 							decal.vertices[0].y = impactY;
 							map.addDecal(decal, plasmaDecalTime);
-							if (this.recordDemos) this.frameDecal = "p#" + impactX + "#" + impactY;
+							if (this.recordDemos) {
+								
+								this.frameDecalType = "p";
+								this.frameDecalX = impactX;
+								this.frameDecalY = impactY;
+							}
 							
 							this.lastShot = currentTime;
 							break;
@@ -842,7 +858,7 @@ public class Player extends AnimatedBlock {
 		 // workaround for initial loading
 		if (++frames < 3) return;
 		
-		this.frameDecal = "";
+		this.frameDecalType = null;
 		this.frameSound = -1;
 		
 		this.map.handleAmbience(this.vertices[0].x);

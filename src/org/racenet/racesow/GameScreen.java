@@ -21,7 +21,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.opengl.GLES10;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -287,7 +286,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 				this.player.setPosition(f.playerPosition);
 				this.player.virtualSpeed = f.playerSpeed;
 				this.player.animate(deltaTime);
-				this.map.handleAmbience(this.player.getPosition().x);
+				this.map.handleAmbience(this.player.vertices[0].x);
 				
 				if (this.player.soundEnabled && f.playerSound != -1) {
 					
@@ -301,13 +300,13 @@ public class GameScreen extends Screen implements OnTouchListener {
 					if (f.decalType.equals("r")) {
 						
 						TexturedBlock decal = player.rocketPool.newObject();
-						decal.setPosition(new Vector2(f.decalX, f.decalY));
+						decal.setPosition(f.decalX, f.decalY);
 						map.addDecal(decal, Player.rocketDecalTime);
 						
 					} else if (f.decalType.equals("p")) {
 						
 						TexturedBlock decal = player.plasmaPool.newObject();
-						decal.setPosition(new Vector2(f.decalX, f.decalY));
+						decal.setPosition(f.decalX, f.decalY);
 						map.addDecal(decal, Player.plasmaDecalTime);
 					}
 				}
@@ -344,8 +343,8 @@ public class GameScreen extends Screen implements OnTouchListener {
 				
 				this.map.appendToDemo(
 					this.frameTime + ":" +
-					this.player.getPosition().x + "," +
-					this.player.getPosition().y + "," +
+					this.player.vertices[0].x + "," +
+					this.player.vertices[0].y + "," +
 					this.player.activeAnimId + "," +
 					(int)this.player.virtualSpeed + "," +
 					this.map.getCurrentTime() + 
@@ -364,9 +363,9 @@ public class GameScreen extends Screen implements OnTouchListener {
 		
 		// move the camera upwards if the player goes to high
 		float camY = this.camera.frustumHeight / 2;
-		if (this.player.getPosition().y + 12 > this.camera.frustumHeight) {
+		if (this.player.vertices[0].y + 12 > this.camera.frustumHeight) {
 			
-			camY = this.player.getPosition().y - this.camera.frustumHeight / 2 + 12;
+			camY = this.player.vertices[0].y - this.camera.frustumHeight / 2 + 12;
 		}
 		
 		this.playerBlur = 0;
@@ -382,7 +381,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 			this.currentPlayerOffset -= ((this.currentPlayerOffset - this.targetPlayerOffset) / 10);
 		}
 		
-		this.camera.setPosition(this.player.getPosition().x + 27.5f - this.currentPlayerOffset, camY);		
+		this.camera.setPosition(this.player.vertices[0].x + 27.5f - this.currentPlayerOffset, camY);		
 		this.map.update(deltaTime);
 
 		if (this.showUPS) {
@@ -484,7 +483,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 			this.camera.draw();
 		}
 	}
-
+	
 	/**
 	 * Nothing to do on GLGame pause
 	 */

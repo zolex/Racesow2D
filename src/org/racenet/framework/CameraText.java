@@ -42,7 +42,7 @@ public class CameraText extends HudItem {
 	public void draw() {
 		
 		GLES10.glColor4f(this.red, this.green, this.blue, this.alpha);
-		this.font.draw(batcher, this.text, this.scale, this.space, this.getPosition().x, this.getPosition().y);
+		this.font.draw(batcher, this.text, this.scale, this.space, this.vertices[0].x, this.vertices[0].y);
 		GLES10.glColor4f(1, 1, 1, 1);
 	}
 

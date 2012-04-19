@@ -44,13 +44,14 @@ public class Camera2 implements Drawable {
      */
 	public void setPosition(float x, float y) {
 		
-		this.position.set(x, y);
+		this.position.x = x;
+		this.position.y = y;
 		
 		for (int i = 0; i < hudItems.size(); i++) {
 			
 			HudItem item = hudItems.get(i);
 			
-			item.setPosition(new Vector2(x + item.cameraX, y + item.cameraY));
+			item.setPosition(x + item.cameraX, y + item.cameraY);
 		}
 	}
     
@@ -67,7 +68,7 @@ public class Camera2 implements Drawable {
 		for (int i = 0; i < hudItems.size(); i++) {
 			
 			HudItem item = hudItems.get(i);
-			item.setPosition(new Vector2(item.cameraX * factor, item.cameraY * factor));
+			item.setPosition(item.cameraX * factor, item.cameraY * factor);
 		}
 	}
 	

@@ -224,9 +224,21 @@ public class Player extends AnimatedBlock {
 	 */
 	public void setPosition(Vector2 position) {
 		
-		super.setPosition(position);
-		this.worldBounds.setPosition(new Vector2(position.x + this.worldOffset[0], position.y + this.worldOffset[1]));
-		this.plasmaBounds.setPosition(new Vector2(position.x + this.plasmaOffset[0], position.y + this.plasmaOffset[1]));
+		super.setPosition(position.x, position.y);
+		this.worldBounds.setPosition(position.x + this.worldOffset[0], position.y + this.worldOffset[1]);
+		this.plasmaBounds.setPosition(position.x + this.plasmaOffset[0], position.y + this.plasmaOffset[1]);
+	}
+	
+	/**
+	 * Change all bounds when setting the position
+	 * 
+	 * @param Vector2 position
+	 */
+	public void setPosition(float x, float y) {
+		
+		super.setPosition(x, y);
+		this.worldBounds.setPosition(x + this.worldOffset[0], y + this.worldOffset[1]);
+		this.plasmaBounds.setPosition(x + this.plasmaOffset[0], y + this.plasmaOffset[1]);
 	}
 	
 	/**
@@ -449,7 +461,7 @@ public class Player extends AnimatedBlock {
 			if (ground != null) {
 				
 				this.distanceOnJump = Math.max(0.32f,
-						this.getPhysicalPosition().y - (ground.getPosition().y + ground.getHeightAt(this.getPhysicalPosition().x)));
+						this.getPhysicalPosition().y - (ground.vertices[0].y + ground.getHeightAt(this.getPhysicalPosition().x)));
 				this.distanceRemembered = true;
 			}
 		}
@@ -634,7 +646,7 @@ public class Player extends AnimatedBlock {
 							
 							// show the rocket explosion
 							TexturedBlock decal = this.rocketPool.newObject();
-							decal.setPosition(new Vector2(impactX, impactY));
+							decal.setPosition(impactX, impactY);
 							map.addDecal(decal, rocketDecalTime);
 							if (this.recordDemos) this.frameDecal = "r#" + impactX + "#" + impactY;
 							
@@ -649,7 +661,7 @@ public class Player extends AnimatedBlock {
 						GameObject ground = map.getGround(this.worldBounds);
 						if (ground != null) {
 							
-							float impactY = ground.getPosition().y + ground.getHeightAt(this.getPhysicalPosition().x) - 4;
+							float impactY = ground.vertices[0].y + ground.getHeightAt(this.getPhysicalPosition().x) - 4;
 							float distance = Math.max(0.75f, this.getPhysicalPosition().y - impactY);
 							
 							// only allow boost from blocks without functionality (ie. no lava)
@@ -671,7 +683,7 @@ public class Player extends AnimatedBlock {
 							
 							// show the rocket explosion
 							TexturedBlock decal = this.rocketPool.newObject();
-							decal.setPosition(new Vector2(this.getPhysicalPosition().x, impactY));
+							decal.setPosition(this.getPhysicalPosition().x, impactY);
 							map.addDecal(decal, plasmaDecalTime);
 							
 							if (this.recordDemos) this.frameDecal = "r#" + this.getPhysicalPosition().x + "#" + impactY;
@@ -717,7 +729,7 @@ public class Player extends AnimatedBlock {
 							
 							// show the plasma impact
 							TexturedBlock decal = (TexturedBlock)this.plasmaPool.newObject();
-							decal.setPosition(new Vector2(impactX, impactY));
+							decal.setPosition(impactX, impactY);
 							map.addDecal(decal, plasmaDecalTime);
 							if (this.recordDemos) this.frameDecal = "p#" + impactX + "#" + impactY;
 							
@@ -815,7 +827,7 @@ public class Player extends AnimatedBlock {
 		this.frameDecal = "";
 		this.frameSound = -1;
 		
-		this.map.handleAmbience(this.getPosition().x);
+		this.map.handleAmbience(this.vertices[0].x);
 		
 		if (this.activeAnimId == ANIM_PLASMA_SHOOT) {
 		
@@ -891,7 +903,7 @@ public class Player extends AnimatedBlock {
 			
 			GameObject item = this.map.items.get(i);
 			float playerX = this.getPhysicalPosition().x;
-			float itemX = item.getPosition().x;
+			float itemX = item.vertices[0].x;
 			if (playerX >= itemX && playerX <= itemX + item.width) {
 				
 				String texture = "";
@@ -1015,7 +1027,7 @@ public class Player extends AnimatedBlock {
 					// ground
 					if (info.type == Polygon.TOP) {
 					
-						this.setPosition(new Vector2(this.getPosition().x, this.getPosition().y + info.distance));
+						this.setPosition(this.vertices[0].x, this.vertices[0].y + info.distance);
 						this.velocity.set(this.velocity.x, 0);
 						this.onFloor = true;
 						
@@ -1027,14 +1039,14 @@ public class Player extends AnimatedBlock {
 					// wall
 					} else if (info.type == Polygon.LEFT) {
 					
-						this.setPosition(new Vector2(this.getPosition().x - info.distance, this.getPosition().y));
+						this.setPosition(this.vertices[0].x - info.distance, this.vertices[0].y);
 						this.velocity.set(0, this.velocity.y);
 						this.virtualSpeed = 0;
 					
 					// ramp up
 					} else if (info.type == Polygon.RAMPUP) {
 						
-						this.setPosition(new Vector2(this.getPosition().x, this.getPosition().y - info.distance));
+						this.setPosition(this.vertices[0].x, this.vertices[0].y - info.distance);
 						if (pressingJump && this.virtualSpeed >= 1000) {
 							
 							float m = (ground.vertices[2].y - ground.vertices[0].y) / (ground.vertices[2].x - ground.vertices[0].x);
@@ -1263,7 +1275,7 @@ public class Player extends AnimatedBlock {
 		this.activeAnimId = ANIM_RUN_1;
 		this.virtualSpeed = 0;
 		this.velocity.set(0, 0);
-		this.setPosition(new Vector2(x, y));
+		this.setPosition(x, y);
 		
 		if (this.attachedItem != null) {
 			
@@ -1370,12 +1382,12 @@ public class Player extends AnimatedBlock {
 		if (this.blurEnabled && blur > 0) {
 			
 			GLES10.glPushMatrix();
-			GLES10.glTranslatef(this.getPosition().x - blur, this.getPosition().y, 0);
+			GLES10.glTranslatef(this.vertices[0].x - blur, this.vertices[0].y, 0);
 			this.anims[this.activeAnimId].getKeyFrame(this.animTime).bind();
 			GLES10.glColor4f(1, 1, 1, 0.2f);
-			this.vertices.bind();
-			this.vertices.draw(GLES10.GL_TRIANGLES, 0, 6);
-			this.vertices.unbind();
+			this.glVertices.bind();
+			this.glVertices.draw(GLES10.GL_TRIANGLES, 0, 6);
+			this.glVertices.unbind();
 			GLES10.glColor4f(1, 1, 1, 1);
 			GLES10.glPopMatrix();
 		}

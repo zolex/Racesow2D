@@ -119,7 +119,7 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		
 		header = new TexturedBlock(texture,
 				TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
-		header.setPosition(new Vector2(0, camera.frustumHeight - header.height));
+		header.setPosition(0, camera.frustumHeight - header.height);
 		header.texture.setFilters(GLES10.GL_LINEAR, GLES10.GL_LINEAR);
 	}
 

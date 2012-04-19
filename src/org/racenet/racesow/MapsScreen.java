@@ -65,7 +65,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 		
 		this.header = new TexturedBlock(texture,
 				TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(this.camera.frustumWidth, 0));
-		this.header.setPosition(new Vector2(0, this.camera.frustumHeight - this.header.height));
+		this.header.setPosition(0, this.camera.frustumHeight - this.header.height);
 		this.header.texture.setFilters(GLES10.GL_LINEAR, GLES10.GL_LINEAR);
 	}
 	

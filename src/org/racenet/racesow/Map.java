@@ -765,28 +765,28 @@ public class Map {
 		// move the background layer
 		if (this.background != null) {
 			
-			this.background.setPosition(new Vector2(
+			this.background.setPosition(
 				this.camera.position.x / this.backgroundSpeed,
 				this.backgroundPosition + (this.camera.position.y - this.camera.frustumHeight / 2) / 1.5f
-			));
+			);
 		}
 		
 		// move the background layer
 		if (this.background2 != null) {
 			
-			this.background2.setPosition(new Vector2(
+			this.background2.setPosition(
 				this.camera.position.x / this.background2Speed,
 				this.background2Position + (this.camera.position.y - this.camera.frustumHeight / 2) / 1.75f
-			));
+			);
 		}
 		
 		// set the sky position (TODO: could be done only once!)
 		if (this.sky != null) {
 
-			this.sky.setPosition(new Vector2(
+			this.sky.setPosition(
 				this.camera.position.x - this.sky.width / 2,
 				this.camera.position.y - this.sky.height / 2 + this.skyPosition
-			));
+			);
 		}
 		
 		// hide decals if their time has elapsed
@@ -1046,9 +1046,9 @@ public class Map {
 		for (int i = 0; i < length; i++) {
 			
 			GameObject part = colliders.get(i);
-			if (o.getPosition().x >= part.getPosition().x && o.getPosition().x <= part.getPosition().x + part.width) {
+			if (o.vertices[0].x >= part.vertices[0].x && o.vertices[0].x <= part.vertices[0].x + part.width) {
 				
-				float height = part.getPosition().y + part.height;
+				float height = part.vertices[0].y + part.height;
 				if (height > maxHeight) {
 					
 					maxHeight = height;
@@ -1101,8 +1101,8 @@ public class Map {
 	 */
 	public void draw() {
 		
-		float fromX = this.camera.position.x - this.camera.frustumWidth / 2;
-		float toX = this.camera.position.x + this.camera.frustumWidth / 2;
+		final float fromX = this.camera.position.x - this.camera.frustumWidth / 2;
+		final float toX = this.camera.position.x + this.camera.frustumWidth / 2;
 		
 		if (this.sky != null) {
 		
@@ -1123,10 +1123,11 @@ public class Map {
 		for (int i = 0; i < length; i++) {
 			
 			GameObject shape = this.walls.get(i);
-			Vector2 shapePos = shape.getPosition();
-			if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
-				(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
-				(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
+			final float x = shape.vertices[0].x;
+			final float rightEdge = x + shape.width;
+			if ((x >= fromX && x <= toX) || // left side of shape in screen
+				(x <= fromX && rightEdge >= fromX) || // right side of shape in screen
+				(x >= fromX && rightEdge <= toX)) { // shape fully in screen
 				
 				shape.draw();
 			}
@@ -1136,10 +1137,11 @@ public class Map {
 		for (int i = 0; i < length; i++) {
 			
 			GameObject shape = this.ground.get(i);
-			Vector2 shapePos = shape.getPosition();
-			if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
-				(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
-				(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
+			final float x = shape.vertices[0].x;
+			final float rightEdge = x + shape.width;
+			if ((x >= fromX && x <= toX) || // left side of shape in screen
+				(x <= fromX && rightEdge >= fromX) || // right side of shape in screen
+				(x >= fromX && rightEdge <= toX)) { // shape fully in screen
 				
 				shape.draw();
 			}
@@ -1151,10 +1153,11 @@ public class Map {
 			for (int i = 0; i < length; i++) {
 				
 				GameObject shape = this.highlights.get(i);
-				Vector2 shapePos = shape.getPosition();
-				if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
-					(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
-					(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
+				final float x = shape.vertices[0].x;
+				final float rightEdge = x + shape.width;
+				if ((x >= fromX && x <= toX) || // left side of shape in screen
+					(x <= fromX && rightEdge >= fromX) || // right side of shape in screen
+					(x >= fromX && rightEdge <= toX)) { // shape fully in screen
 					
 					shape.draw();
 				}
@@ -1187,10 +1190,10 @@ public class Map {
 			for (int i = 0; i < length; i++) {
 				
 				GameObject shape = this.front.get(i);
-				Vector2 shapePos = shape.getPosition();
-				if ((shapePos.x >= fromX && shapePos.x <= toX) || // left side of shape in screen
-					(shapePos.x <= fromX && shapePos.x + shape.width >= fromX) || // right side of shape in screen
-					(shapePos.x >= fromX && shapePos.x + shape.width <= toX)) { // shape fully in screen
+				float x = shape.vertices[0].x;
+				if ((x >= fromX && x <= toX) || // left side of shape in screen
+					(x <= fromX && x + shape.width >= fromX) || // right side of shape in screen
+					(x >= fromX && x + shape.width <= toX)) { // shape fully in screen
 					
 					shape.draw();
 				}
@@ -1241,7 +1244,7 @@ public class Map {
 		this.pickedUpItems.clear();
 		
 		player.reset(this.playerX, this.playerY);
-		camera.setPosition(player.getPosition().x + 20, this.camera.frustumHeight / 2);
+		camera.setPosition(player.vertices[0].x + 20, this.camera.frustumHeight / 2);
 		
 		if (this.recordDemos) {
 			

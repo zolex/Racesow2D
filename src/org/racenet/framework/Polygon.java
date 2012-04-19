@@ -59,11 +59,11 @@ public class Polygon {
 		CollisionInfo info = new CollisionInfo();
 		info.collided = false;
 		
-		float thisX = this.getPosition().x;
-		float thisY = this.getPosition().y;
+		float thisX = this.vertices[0].x;
+		float thisY = this.vertices[0].y;
 		
-		float otherX = other.getPosition().x;
-		float otherY = other.getPosition().y;
+		float otherX = other.vertices[0].x;
+		float otherY = other.vertices[0].y;
 		
 		if (other.vertices.length == 4) {
 			
@@ -204,14 +204,22 @@ public class Polygon {
 	}
 	
 	/**
-	 * TODO: for now just use the first given
-	 * point as the position
+	 * Set the position by moving all borders
+	 * of the polygon
 	 * 
-	 * @return Vector2
+	 * @param Vector2 position
 	 */
-	public Vector2 getPosition() {
+	public void setPosition(Vector2 position) {
 		
-		return this.vertices[0];
+		final float diffX = position.x - this.vertices[0].x;
+		final float diffY = position.y - this.vertices[0].y;
+		
+		int length = this.vertices.length;
+		for (int i = 0; i < length; i++) {
+			
+			this.vertices[i].x += diffX;
+			this.vertices[i].y += diffY;
+		}
 	}
 	
 	/**
@@ -220,10 +228,10 @@ public class Polygon {
 	 * 
 	 * @param Vector2 position
 	 */
-	public void setPosition(Vector2 position) {
+	public void setPosition(float x, float y) {
 		
-		float diffX = position.x - this.getPosition().x;
-		float diffY = position.y - this.getPosition().y;
+		final float diffX = x - this.vertices[0].x;
+		final float diffY = y - this.vertices[0].y;
 		
 		int length = this.vertices.length;
 		for (int i = 0; i < length; i++) {

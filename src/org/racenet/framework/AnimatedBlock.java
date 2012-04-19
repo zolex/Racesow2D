@@ -11,7 +11,7 @@ import android.opengl.GLES10;
 public class AnimatedBlock extends GameObject implements Drawable {
 
 	public float animTime = 0;
-	public GLVertices vertices = null;
+	public GLVertices glVertices = null;
 	public Animation anims[];
 	public int numAnims;
 	public int activeAnimId = 0;
@@ -83,13 +83,13 @@ public class AnimatedBlock extends GameObject implements Drawable {
 	public void setupVertices() {
 		
 		GLTexture firstFrame = this.anims[0].getKeyFrame(0); // TODO: choose proper frame
-		this.vertices = new GLVertices(4, 6 , false, true);
-		this.vertices.setVertices(new float[] {
+		this.glVertices = new GLVertices(4, 6 , false, true);
+		this.glVertices.setVertices(new float[] {
 				0,			0,				-this.texShiftX, this.height / (firstFrame.height * this.texScaleHeight) + this.texShiftY,
 				this.width,	0,				this.width / (firstFrame.width * this.texScaleWidth) - this.texShiftX, height / (firstFrame.height * this.texScaleHeight) + this.texShiftY,
 				this.width,	this.height,	this.width / (firstFrame.width * this.texScaleWidth) - this.texShiftX, this.texShiftY,
 				0,			this.height,	-this.texShiftX, this.texShiftY }, 0, 16);
-		this.vertices.setIndices(new short[] {0, 1, 2, 0, 2, 3}, 0, 6);
+		this.glVertices.setIndices(new short[] {0, 1, 2, 0, 2, 3}, 0, 6);
 	}
 	
 	/**
@@ -98,11 +98,11 @@ public class AnimatedBlock extends GameObject implements Drawable {
 	public void draw() {
 		
 		GLES10.glPushMatrix();
-		GLES10.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
+		GLES10.glTranslatef(this.vertices[0].x, this.vertices[0].y, 0);
 		this.anims[this.activeAnimId].getKeyFrame(this.animTime).bind();
-		this.vertices.bind();
-		this.vertices.draw(GLES10.GL_TRIANGLES, 0, 6);
-		this.vertices.unbind();
+		this.glVertices.bind();
+		this.glVertices.draw(GLES10.GL_TRIANGLES, 0, 6);
+		this.glVertices.unbind();
 		GLES10.glPopMatrix();
 	}
 	

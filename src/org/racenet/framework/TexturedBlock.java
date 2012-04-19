@@ -91,7 +91,7 @@ public class TexturedBlock extends TexturedShape implements Drawable {
 	public void draw() {
 		
 		GLES10.glPushMatrix();
-		GLES10.glTranslatef(this.getPosition().x, this.getPosition().y, 0);
+		GLES10.glTranslatef(this.vertices[0].x, this.vertices[0].y, 0);
 		this.texture.bind();
 		this.glVertices.bind();
 		this.glVertices.draw(GLES10.GL_TRIANGLES, 0, 6);

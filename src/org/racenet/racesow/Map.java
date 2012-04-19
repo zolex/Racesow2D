@@ -1130,8 +1130,8 @@ public class Map {
 			final float x = shape.vertices[0].x;
 			final float rightEdge = x + shape.width;
 			if ((x >= fromX && x <= toX) || // left side of shape in screen
-				(x <= fromX && rightEdge >= fromX) || // right side of shape in screen
-				(x >= fromX && rightEdge <= toX)) { // shape fully in screen
+				(rightEdge >= fromX && rightEdge <= toX) || // right side of shape in screen
+				(x <= fromX && rightEdge >= toX)) { // shape fully in screen
 				
 				shape.draw();
 			}
@@ -1144,8 +1144,8 @@ public class Map {
 			final float x = shape.vertices[0].x;
 			final float rightEdge = x + shape.width;
 			if ((x >= fromX && x <= toX) || // left side of shape in screen
-				(x <= fromX && rightEdge >= fromX) || // right side of shape in screen
-				(x >= fromX && rightEdge <= toX)) { // shape fully in screen
+				(rightEdge >= fromX && rightEdge <= toX) || // right side of shape in screen
+				(x <= fromX && rightEdge >= toX)) { // shape fully in screen
 				
 				shape.draw();
 			}
@@ -1160,8 +1160,8 @@ public class Map {
 				final float x = shape.vertices[0].x;
 				final float rightEdge = x + shape.width;
 				if ((x >= fromX && x <= toX) || // left side of shape in screen
-					(x <= fromX && rightEdge >= fromX) || // right side of shape in screen
-					(x >= fromX && rightEdge <= toX)) { // shape fully in screen
+					(rightEdge >= fromX && rightEdge <= toX) || // right side of shape in screen
+					(x <= fromX && rightEdge >= toX)) { // shape fully in screen
 					
 					shape.draw();
 				}

@@ -4,10 +4,10 @@ import org.racenet.framework.Vector2;
 
 public class DemoKeyFrame {
 
-	public static short ACTION_NONE = 0;
-	public static short ACTION_SAVE = 1;
-	public static short ACTION_CANCEL = 2;
-	public static short ACTION_META = 3;
+	public static final short ACTION_NONE = 0;
+	public static final short ACTION_SAVE = 1;
+	public static final short ACTION_CANCEL = 2;
+	public static final short ACTION_META = 3;
 	
 	public String meta = null;
 	public short action = ACTION_NONE;

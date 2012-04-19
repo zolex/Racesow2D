@@ -3,10 +3,8 @@ package org.racenet.racesow;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.racenet.framework.FileIO;
-import org.racenet.helpers.InputStreamToString;
 import org.racenet.racesow.models.DemoAdapter;
 
 import android.app.AlertDialog;

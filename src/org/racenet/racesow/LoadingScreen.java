@@ -1,27 +1,20 @@
 package org.racenet.racesow;
 
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 import org.racenet.framework.BitmapFont;
 import org.racenet.framework.Camera2;
-import org.racenet.framework.FileIO;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLTexture;
 import org.racenet.framework.Screen;
 import org.racenet.framework.SpriteBatcher;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
-import org.racenet.helpers.InputStreamToString;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.opengl.GLES10;
 
 /**

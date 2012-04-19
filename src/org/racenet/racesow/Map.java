@@ -16,7 +16,6 @@ import org.racenet.framework.FileIO;
 import org.racenet.framework.GLTexture;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.TexturedBlock;
-import org.racenet.framework.SpatialHashGrid;
 import org.racenet.framework.TexturedShape;
 import org.racenet.framework.TexturedTriangle;
 import org.racenet.framework.Vector2;
@@ -53,8 +52,6 @@ public class Map {
 	private TexturedBlock background2;
 	private float background2Speed = 2;
 	float background2Position;
-	private SpatialHashGrid groundGrid;
-	private SpatialHashGrid wallGrid;
 	private List<GameObject> funcs = new ArrayList<GameObject>();
 	public float playerX = 0;
 	public float playerY = 0;
@@ -210,10 +207,6 @@ public class Map {
 				worldHeight = blockMaxY;
 			}
 		}
-		
-		// grids for pre-collision detection
-		this.groundGrid = new SpatialHashGrid(worldWidth, worldHeight, 30);
-		this.wallGrid = new SpatialHashGrid(worldWidth, worldHeight, 30);
 		
 		// parse the items like plasma and rocket from the map
 		NodeList items = parser.doc.getElementsByTagName("item");
@@ -990,7 +983,6 @@ public class Map {
 	public void addGround(GameObject block) {
 		
 		this.ground.add(block);
-		this.groundGrid.insertStaticObject(block);
 	}
 	
 	/**
@@ -1001,7 +993,6 @@ public class Map {
 	public void addWall(GameObject block) {
 		
 		this.walls.add(block);
-		this.wallGrid.insertStaticObject(block);
 	}
 	
 	/**
@@ -1034,13 +1025,13 @@ public class Map {
 		int highestPart = 0;
 		float maxHeight = 0;
 		
-		List<GameObject> colliders = groundGrid.getPotentialColliders(o);
-		int length = colliders.size();
+		final float x = o.vertices[0].x;
+		final int length = this.ground.size();
 		if (length == 0) return null;
 		for (int i = 0; i < length; i++) {
 			
-			GameObject part = colliders.get(i);
-			if (o.vertices[0].x >= part.vertices[0].x && o.vertices[0].x <= part.vertices[0].x + part.width) {
+			GameObject part = this.ground.get(i);
+			if (x >= part.vertices[0].x && x <= part.vertices[0].x + part.width) {
 				
 				float height = part.vertices[0].y + part.height;
 				if (height > maxHeight) {
@@ -1051,7 +1042,7 @@ public class Map {
 			}
 		}
 		
-		return colliders.get(highestPart);
+		return this.ground.get(highestPart);
 	}
 	
 	/**
@@ -1063,7 +1054,19 @@ public class Map {
 	 */
 	public List<GameObject> getPotentialGroundColliders(GameObject o) {
 		
-		return this.groundGrid.getPotentialColliders(o);
+		final float x = o.vertices[0].x;
+		List<GameObject> colliders = new ArrayList<GameObject>();
+		final int length = this.ground.size();
+		for (int i = 0; i < length; i++) {
+						
+			GameObject ground = this.ground.get(i);			
+			if (x >= ground.vertices[0].x && x <= ground.vertices[0].x + ground.width) {
+				
+				colliders.add(ground);
+			}
+		}
+		
+		return colliders;
 	}
 
 	/**
@@ -1075,7 +1078,21 @@ public class Map {
 	 */
 	public List<GameObject> getPotentialWallColliders(GameObject o) {
 		
-		return this.wallGrid.getPotentialColliders(o);
+		final float x = o.vertices[0].x;
+		List<GameObject> colliders = new ArrayList<GameObject>();
+		final int length = this.walls.size();
+		for (int i = 0; i < length; i++) {
+			
+			GameObject wall = this.walls.get(i);
+			if (wall.vertices[0].x > x) break;
+			
+			if (x >= wall.vertices[0].x && x <= wall.vertices[0].x + wall.width) {
+				
+				colliders.add(wall);
+			}
+		}
+		
+		return colliders;
 	}
 	
 	/**

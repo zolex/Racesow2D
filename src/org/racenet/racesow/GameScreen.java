@@ -258,188 +258,187 @@ public class GameScreen extends Screen implements OnTouchListener {
 	 */
 	public void update(float deltaTime) {
 				
-		
-		
-		// when playing a demo wait one frame
+		// always wait for the second frame because the
+		// first frame somehow has a too long deltaTime
 		if (this.waitForNextFrame) {
 		
 			this.waitForNextFrame = false;
+			return;
 				
+		}
+			
+		if (this.demoParser != null) {
+			
+			DemoKeyFrame f = demoParser.getKeyFrame(this.frameTime);
+			if (f != null) {
+				
+				this.player.activeAnimId = f.playerAnimation;
+				if (this.player.activeAnimId == Player.ANIM_JUMP_1 ||
+					this.player.activeAnimId == Player.ANIM_JUMP_2 ||
+					this.player.activeAnimId == Player.ANIM_ROCKET_JUMP_1 ||
+					this.player.activeAnimId == Player.ANIM_ROCKET_JUMP_2 ||
+					this.player.activeAnimId == Player.ANIM_PLASMA_JUMP_1 ||
+					this.player.activeAnimId == Player.ANIM_PLASMA_JUMP_2) {
+					
+					this.player.lastJumpAnim = this.player.activeAnimId;
+				}
+				
+				this.player.setPosition(f.playerPosition);
+				this.player.virtualSpeed = f.playerSpeed;
+				this.player.animate(deltaTime);
+				this.map.handleAmbience(this.player.getPosition().x);
+				
+				if (this.player.soundEnabled && f.playerSound != -1) {
+					
+					this.player.sounds[f.playerSound].play(player.volume);
+				}
+				
+				this.timer.text = "t " + String.format(Locale.US, "%.4f", f.mapTime);
+				
+				if (f.decalType != null) {
+					
+					if (f.decalType.equals("r")) {
+						
+						TexturedBlock decal = player.rocketPool.newObject();
+						decal.setPosition(new Vector2(f.decalX, f.decalY));
+						map.addDecal(decal, Player.rocketDecalTime);
+						
+					} else if (f.decalType.equals("p")) {
+						
+						TexturedBlock decal = player.plasmaPool.newObject();
+						decal.setPosition(new Vector2(f.decalX, f.decalY));
+						map.addDecal(decal, Player.plasmaDecalTime);
+					}
+				}
+			}
+			
 		} else {
 			
-			if (this.demoParser != null) {
+			// execute shoot if requested
+			if (this.shootPressed) {
 				
-				DemoKeyFrame f = demoParser.getKeyFrame(this.frameTime);
-				if (f != null) {
-					
-					this.player.activeAnimId = f.playerAnimation;
-					if (this.player.activeAnimId == Player.ANIM_JUMP_1 ||
-						this.player.activeAnimId == Player.ANIM_JUMP_2 ||
-						this.player.activeAnimId == Player.ANIM_ROCKET_JUMP_1 ||
-						this.player.activeAnimId == Player.ANIM_ROCKET_JUMP_2 ||
-						this.player.activeAnimId == Player.ANIM_PLASMA_JUMP_1 ||
-						this.player.activeAnimId == Player.ANIM_PLASMA_JUMP_2) {
-						
-						this.player.lastJumpAnim = this.player.activeAnimId;
-					}
-					
-					this.player.setPosition(f.playerPosition);
-					this.player.virtualSpeed = f.playerSpeed;
-					this.player.animate(deltaTime);
-					this.map.handleAmbience(this.player.getPosition().x);
-					
-					if (this.player.soundEnabled && f.playerSound != -1) {
-						
-						this.player.sounds[f.playerSound].play(player.volume);
-					}
-					
-					this.timer.text = "t " + String.format(Locale.US, "%.4f", f.mapTime);
-					
-					if (f.decalType != null) {
-						
-						if (f.decalType.equals("r")) {
-							
-							TexturedBlock decal = player.rocketPool.newObject();
-							decal.setPosition(new Vector2(f.decalX, f.decalY));
-							map.addDecal(decal, Player.rocketDecalTime);
-							
-						} else if (f.decalType.equals("p")) {
-							
-							TexturedBlock decal = player.plasmaPool.newObject();
-							decal.setPosition(new Vector2(f.decalX, f.decalY));
-							map.addDecal(decal, Player.plasmaDecalTime);
-						}
-					}
-				}
-				
-			} else {
-				
-				// execute shoot if requested
-				if (this.shootPressed) {
-					
-					this.player.shoot(this.shootPressedTime);
-					this.shootPressedTime += deltaTime;
-				}
-				
-				// execute jump if requested
-				if (this.jumpPressed) {
-					
-					this.player.jump(this.jumpPressedTime);
-					this.jumpPressedTime += deltaTime;
-				}
-				
-				//  nothing more to do here when paused
-				if (this.state == GameState.Paused) {
-					
-					if (map.getCurrentTime() > 0 ) {
-					
-						this.map.pauseTime += deltaTime;
-					}
-					
-					return;
-				}
-				
-				if (this.recordDemos) {
-					
-					this.map.appendToDemo(
-						this.frameTime + ":" +
-						this.player.getPosition().x + "," +
-						this.player.getPosition().y + "," +
-						this.player.activeAnimId + "," +
-						(int)this.player.virtualSpeed + "," +
-						this.map.getCurrentTime() + 
-						(this.player.frameSound == -1 ? "" : "," + this.player.frameSound) +
-						(this.player.frameDecal.equals("") ? "" : "," + this.player.frameDecal) +
-						";"
-					);
-				}
-				
-				// update the player
-				this.player.move(this.gravity, deltaTime, this.jumpPressed, this.shootPressed);
+				this.player.shoot(this.shootPressedTime);
+				this.shootPressedTime += deltaTime;
 			}
 			
-			// for demo frames
-			this.frameTime += deltaTime;
-			
-			// for low fps detection
-			this.time += deltaTime;
-			this.frameNum++;
-			float fps = 1 / deltaTime;
-			if (fps < this.lowFpsLimit) {
+			// execute jump if requested
+			if (this.jumpPressed) {
 				
-				this.lowFPSCOunt++;
+				this.player.jump(this.jumpPressedTime);
+				this.jumpPressedTime += deltaTime;
 			}
 			
-			if (!this.fpsDialogShown &&
-				(this.map.gfxHighlights || this.map.enableAmbience || this.player.blurEnabled) &&
-				this.state != GameState.Paused &&
-				frameNum > 100 &&
-				(this.frameNum / this.time < this.lowFpsLimit || this.lowFPSCOunt > 10)) {
+			//  nothing more to do here when paused
+			if (this.state == GameState.Paused) {
 				
-				this.pauseGame();
-				this.fpsDialogShown = true;
-				this.game.runOnUiThread(new Runnable() {
-					
-					public void run() {
-					
-						new AlertDialog.Builder(GameScreen.this.game)
-				        .setMessage("You have less then " + GameScreen.this.lowFpsLimit + " FPS. Do you want to disable some features to increase the performance? (You can disable them persitently in the settings.)")
-				        .setPositiveButton("YES", new OnClickListener() {
-							
-							public void onClick(DialogInterface arg0, int arg1) {
-								
-								GameScreen.this.map.gfxHighlights = false;
-								GameScreen.this.map.enableAmbience = false;
-								GameScreen.this.player.blurEnabled = false;
-								GameScreen.this.resumeGame();
-							}
-						})
-						.setNegativeButton("No", new OnClickListener() {
-							
-							public void onClick(DialogInterface dialog, int which) {
-								
-								GameScreen.this.resumeGame();
-							}
-						})
-				        .show();
-					}
-				});
+				if (map.getCurrentTime() > 0 ) {
+				
+					this.map.pauseTime += deltaTime;
+				}
+				
+				return;
 			}
 			
-			// move the camera upwards if the player goes to high
-			float camY = this.camera.frustumHeight / 2;
-			if (this.player.getPosition().y + 12 > this.camera.frustumHeight) {
+			if (this.recordDemos) {
 				
-				camY = this.player.getPosition().y - this.camera.frustumHeight / 2 + 12;
+				this.map.appendToDemo(
+					this.frameTime + ":" +
+					this.player.getPosition().x + "," +
+					this.player.getPosition().y + "," +
+					this.player.activeAnimId + "," +
+					(int)this.player.virtualSpeed + "," +
+					this.map.getCurrentTime() + 
+					(this.player.frameSound == -1 ? "" : "," + this.player.frameSound) +
+					(this.player.frameDecal.equals("") ? "" : "," + this.player.frameDecal) +
+					";"
+				);
 			}
 			
-			this.playerBlur = 0;
-			this.targetPlayerOffset =  Math.min(5000, Math.max(450, this.player.virtualSpeed)) / 128;
-			if (this.currentPlayerOffset < this.targetPlayerOffset) {
-				
-				float diff = (this.targetPlayerOffset - this.currentPlayerOffset);
-				this.currentPlayerOffset += diff / 10;
-				this.playerBlur = diff / 1.5f;
-				
-			} else if (this.currentPlayerOffset > this.targetPlayerOffset) {
-				
-				this.currentPlayerOffset -= ((this.currentPlayerOffset - this.targetPlayerOffset) / 10);
-			}
+			// update the player
+			this.player.move(this.gravity, deltaTime, this.jumpPressed, this.shootPressed);
+		}
+		
+		// for demo frames
+		this.frameTime += deltaTime;
+		
+		// move the camera upwards if the player goes to high
+		float camY = this.camera.frustumHeight / 2;
+		if (this.player.getPosition().y + 12 > this.camera.frustumHeight) {
 			
-			this.camera.setPosition(this.player.getPosition().x + 27.5f - this.currentPlayerOffset, camY);		
-			this.map.update(deltaTime);
+			camY = this.player.getPosition().y - this.camera.frustumHeight / 2 + 12;
+		}
+		
+		this.playerBlur = 0;
+		this.targetPlayerOffset =  Math.min(5000, Math.max(450, this.player.virtualSpeed)) / 128;
+		if (this.currentPlayerOffset < this.targetPlayerOffset) {
+			
+			float diff = (this.targetPlayerOffset - this.currentPlayerOffset);
+			this.currentPlayerOffset += diff / 10;
+			this.playerBlur = diff / 1.5f;
+			
+		} else if (this.currentPlayerOffset > this.targetPlayerOffset) {
+			
+			this.currentPlayerOffset -= ((this.currentPlayerOffset - this.targetPlayerOffset) / 10);
+		}
+		
+		this.camera.setPosition(this.player.getPosition().x + 27.5f - this.currentPlayerOffset, camY);		
+		this.map.update(deltaTime);
 
-			if (this.showUPS) {
+		if (this.showUPS) {
+		
+			// update HUD for player-speed
+			this.ups.text = "ups " + String.valueOf(new Integer((int)player.virtualSpeed));
+		}
+		
+		// update hud for time
+		if (this.demoParser == null) {
+		
+			this.timer.text = "t " + String.format(Locale.US, "%.4f", map.getCurrentTime());
+		}
+		
+		// low fps detection
+		this.time += deltaTime;
+		this.frameNum++;
+		float fps = 1 / deltaTime;
+		if (fps < this.lowFpsLimit) {
 			
-				// update HUD for player-speed
-				this.ups.text = "ups " + String.valueOf(new Integer((int)player.virtualSpeed));
-			}
+			this.lowFPSCOunt++;
+		}
+		
+		if (!this.fpsDialogShown &&
+			(this.map.gfxHighlights || this.map.enableAmbience || this.player.blurEnabled) &&
+			this.state != GameState.Paused &&
+			frameNum > 100 &&
+			(this.frameNum / this.time < this.lowFpsLimit || this.lowFPSCOunt > 10)) {
 			
-			// update hud for time
-			if (this.demoParser == null) {
-			
-				this.timer.text = "t " + String.format(Locale.US, "%.4f", map.getCurrentTime());
-			}
+			this.pauseGame();
+			this.fpsDialogShown = true;
+			this.game.runOnUiThread(new Runnable() {
+				
+				public void run() {
+				
+					new AlertDialog.Builder(GameScreen.this.game)
+			        .setMessage("You have less then " + GameScreen.this.lowFpsLimit + " FPS. Do you want to disable some features to increase the performance? (You can disable them persitently in the settings.)")
+			        .setPositiveButton("YES", new OnClickListener() {
+						
+						public void onClick(DialogInterface arg0, int arg1) {
+							
+							GameScreen.this.map.gfxHighlights = false;
+							GameScreen.this.map.enableAmbience = false;
+							GameScreen.this.player.blurEnabled = false;
+							GameScreen.this.resumeGame();
+						}
+					})
+					.setNegativeButton("No", new OnClickListener() {
+						
+						public void onClick(DialogInterface dialog, int which) {
+							
+							GameScreen.this.resumeGame();
+						}
+					})
+			        .show();
+				}
+			});
 		}
 	}
 

@@ -52,7 +52,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 	private float currentPlayerOffset = 0;
 	private float targetPlayerOffset = 0;
 	float playerBlur = 0;
-	int lowFpsLimit = 30;
+	int lowFpsLimit = 20;
 	long frameNum = 0;
 	boolean showFPS, showUPS;
 	int lowFPSCOunt = 0;
@@ -258,96 +258,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 	 */
 	public void update(float deltaTime) {
 				
-		if (this.demoParser != null) {
-			
-			DemoKeyFrame f = demoParser.getKeyFrame(this.frameTime);
-			if (f != null) {
-				
-				this.player.activeAnimId = f.playerAnimation;
-				if (this.player.activeAnimId == Player.ANIM_JUMP_1 ||
-					this.player.activeAnimId == Player.ANIM_JUMP_2 ||
-					this.player.activeAnimId == Player.ANIM_ROCKET_JUMP_1 ||
-					this.player.activeAnimId == Player.ANIM_ROCKET_JUMP_2 ||
-					this.player.activeAnimId == Player.ANIM_PLASMA_JUMP_1 ||
-					this.player.activeAnimId == Player.ANIM_PLASMA_JUMP_2) {
-					
-					this.player.lastJumpAnim = this.player.activeAnimId;
-				}
-				
-				this.player.setPosition(f.playerPosition);
-				this.player.virtualSpeed = f.playerSpeed;
-				this.player.animate(deltaTime);
-				this.map.handleAmbience(this.player.getPosition().x);
-				
-				if (this.player.soundEnabled && f.playerSound != -1) {
-					
-					this.player.sounds[f.playerSound].play(player.volume);
-				}
-				
-				this.timer.text = "t " + String.format(Locale.US, "%.4f", f.mapTime);
-				
-				if (f.decalType != null) {
-					
-					if (f.decalType.equals("r")) {
-						
-						TexturedBlock decal = player.rocketPool.newObject();
-						decal.setPosition(new Vector2(f.decalX, f.decalY));
-						map.addDecal(decal, Player.rocketDecalTime);
-						
-					} else if (f.decalType.equals("p")) {
-						
-						TexturedBlock decal = player.plasmaPool.newObject();
-						decal.setPosition(new Vector2(f.decalX, f.decalY));
-						map.addDecal(decal, Player.plasmaDecalTime);
-					}
-				}
-			}
-			
-		} else {
-			
-			// execute shoot if requested
-			if (this.shootPressed) {
-				
-				this.player.shoot(this.shootPressedTime);
-				this.shootPressedTime += deltaTime;
-			}
-			
-			// execute jump if requested
-			if (this.jumpPressed) {
-				
-				this.player.jump(this.jumpPressedTime);
-				this.jumpPressedTime += deltaTime;
-			}
-			
-			//  nothing more to do here when paused
-			if (this.state == GameState.Paused) {
-				
-				if (map.getCurrentTime() > 0 ) {
-				
-					this.map.pauseTime += deltaTime;
-				}
-				
-				return;
-			}
-			
-			if (this.recordDemos) {
-				
-				this.map.appendToDemo(
-					this.frameTime + ":" +
-					this.player.getPosition().x + "," +
-					this.player.getPosition().y + "," +
-					this.player.activeAnimId + "," +
-					(int)this.player.virtualSpeed + "," +
-					this.map.getCurrentTime() + 
-					(this.player.frameSound == -1 ? "" : "," + this.player.frameSound) +
-					(this.player.frameDecal.equals("") ? "" : "," + this.player.frameDecal) +
-					";"
-				);
-			}
-			
-			// update the player
-			this.player.move(this.gravity, deltaTime, this.jumpPressed, this.shootPressed);
-		}
+		
 		
 		// when playing a demo wait one frame
 		if (this.waitForNextFrame) {
@@ -356,8 +267,101 @@ public class GameScreen extends Screen implements OnTouchListener {
 				
 		} else {
 			
+			if (this.demoParser != null) {
+				
+				DemoKeyFrame f = demoParser.getKeyFrame(this.frameTime);
+				if (f != null) {
+					
+					this.player.activeAnimId = f.playerAnimation;
+					if (this.player.activeAnimId == Player.ANIM_JUMP_1 ||
+						this.player.activeAnimId == Player.ANIM_JUMP_2 ||
+						this.player.activeAnimId == Player.ANIM_ROCKET_JUMP_1 ||
+						this.player.activeAnimId == Player.ANIM_ROCKET_JUMP_2 ||
+						this.player.activeAnimId == Player.ANIM_PLASMA_JUMP_1 ||
+						this.player.activeAnimId == Player.ANIM_PLASMA_JUMP_2) {
+						
+						this.player.lastJumpAnim = this.player.activeAnimId;
+					}
+					
+					this.player.setPosition(f.playerPosition);
+					this.player.virtualSpeed = f.playerSpeed;
+					this.player.animate(deltaTime);
+					this.map.handleAmbience(this.player.getPosition().x);
+					
+					if (this.player.soundEnabled && f.playerSound != -1) {
+						
+						this.player.sounds[f.playerSound].play(player.volume);
+					}
+					
+					this.timer.text = "t " + String.format(Locale.US, "%.4f", f.mapTime);
+					
+					if (f.decalType != null) {
+						
+						if (f.decalType.equals("r")) {
+							
+							TexturedBlock decal = player.rocketPool.newObject();
+							decal.setPosition(new Vector2(f.decalX, f.decalY));
+							map.addDecal(decal, Player.rocketDecalTime);
+							
+						} else if (f.decalType.equals("p")) {
+							
+							TexturedBlock decal = player.plasmaPool.newObject();
+							decal.setPosition(new Vector2(f.decalX, f.decalY));
+							map.addDecal(decal, Player.plasmaDecalTime);
+						}
+					}
+				}
+				
+			} else {
+				
+				// execute shoot if requested
+				if (this.shootPressed) {
+					
+					this.player.shoot(this.shootPressedTime);
+					this.shootPressedTime += deltaTime;
+				}
+				
+				// execute jump if requested
+				if (this.jumpPressed) {
+					
+					this.player.jump(this.jumpPressedTime);
+					this.jumpPressedTime += deltaTime;
+				}
+				
+				//  nothing more to do here when paused
+				if (this.state == GameState.Paused) {
+					
+					if (map.getCurrentTime() > 0 ) {
+					
+						this.map.pauseTime += deltaTime;
+					}
+					
+					return;
+				}
+				
+				if (this.recordDemos) {
+					
+					this.map.appendToDemo(
+						this.frameTime + ":" +
+						this.player.getPosition().x + "," +
+						this.player.getPosition().y + "," +
+						this.player.activeAnimId + "," +
+						(int)this.player.virtualSpeed + "," +
+						this.map.getCurrentTime() + 
+						(this.player.frameSound == -1 ? "" : "," + this.player.frameSound) +
+						(this.player.frameDecal.equals("") ? "" : "," + this.player.frameDecal) +
+						";"
+					);
+				}
+				
+				// update the player
+				this.player.move(this.gravity, deltaTime, this.jumpPressed, this.shootPressed);
+			}
+			
+			// for demo frames
 			this.frameTime += deltaTime;
 			
+			// for low fps detection
 			this.time += deltaTime;
 			this.frameNum++;
 			float fps = 1 / deltaTime;
@@ -366,7 +370,11 @@ public class GameScreen extends Screen implements OnTouchListener {
 				this.lowFPSCOunt++;
 			}
 			
-			if (!this.fpsDialogShown && this.map.gfxHighlights && this.state != GameState.Paused && frameNum > 100 && (this.frameNum / this.time < this.lowFpsLimit || this.lowFPSCOunt > 10)) {
+			if (!this.fpsDialogShown &&
+				(this.map.gfxHighlights || this.map.enableAmbience || this.player.blurEnabled) &&
+				this.state != GameState.Paused &&
+				frameNum > 100 &&
+				(this.frameNum / this.time < this.lowFpsLimit || this.lowFPSCOunt > 10)) {
 				
 				this.pauseGame();
 				this.fpsDialogShown = true;
@@ -397,41 +405,41 @@ public class GameScreen extends Screen implements OnTouchListener {
 					}
 				});
 			}
-		}		
-		
-		// move the camera upwards if the player goes to high
-		float camY = this.camera.frustumHeight / 2;
-		if (this.player.getPosition().y + 12 > this.camera.frustumHeight) {
 			
-			camY = this.player.getPosition().y - this.camera.frustumHeight / 2 + 12;
-		}
-		
-		this.playerBlur = 0;
-		this.targetPlayerOffset =  Math.min(5000, Math.max(450, this.player.virtualSpeed)) / 128;
-		if (this.currentPlayerOffset < this.targetPlayerOffset) {
+			// move the camera upwards if the player goes to high
+			float camY = this.camera.frustumHeight / 2;
+			if (this.player.getPosition().y + 12 > this.camera.frustumHeight) {
+				
+				camY = this.player.getPosition().y - this.camera.frustumHeight / 2 + 12;
+			}
 			
-			float diff = (this.targetPlayerOffset - this.currentPlayerOffset);
-			this.currentPlayerOffset += diff / 10;
-			this.playerBlur = diff / 1.5f;
+			this.playerBlur = 0;
+			this.targetPlayerOffset =  Math.min(5000, Math.max(450, this.player.virtualSpeed)) / 128;
+			if (this.currentPlayerOffset < this.targetPlayerOffset) {
+				
+				float diff = (this.targetPlayerOffset - this.currentPlayerOffset);
+				this.currentPlayerOffset += diff / 10;
+				this.playerBlur = diff / 1.5f;
+				
+			} else if (this.currentPlayerOffset > this.targetPlayerOffset) {
+				
+				this.currentPlayerOffset -= ((this.currentPlayerOffset - this.targetPlayerOffset) / 10);
+			}
 			
-		} else if (this.currentPlayerOffset > this.targetPlayerOffset) {
-			
-			this.currentPlayerOffset -= ((this.currentPlayerOffset - this.targetPlayerOffset) / 10);
-		}
-		
-		this.camera.setPosition(this.player.getPosition().x + 27.5f - this.currentPlayerOffset, camY);		
-		this.map.update(deltaTime);
+			this.camera.setPosition(this.player.getPosition().x + 27.5f - this.currentPlayerOffset, camY);		
+			this.map.update(deltaTime);
 
-		if (this.showUPS) {
-		
-			// update HUD for player-speed
-			this.ups.text = "ups " + String.valueOf(new Integer((int)player.virtualSpeed));
-		}
-		
-		// update hud for time
-		if (this.demoParser == null) {
-		
-			this.timer.text = "t " + String.format(Locale.US, "%.4f", map.getCurrentTime());
+			if (this.showUPS) {
+			
+				// update HUD for player-speed
+				this.ups.text = "ups " + String.valueOf(new Integer((int)player.virtualSpeed));
+			}
+			
+			// update hud for time
+			if (this.demoParser == null) {
+			
+				this.timer.text = "t " + String.format(Locale.US, "%.4f", map.getCurrentTime());
+			}
 		}
 	}
 

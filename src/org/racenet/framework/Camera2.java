@@ -50,8 +50,8 @@ public class Camera2 implements Drawable {
 		for (int i = 0; i < hudItems.size(); i++) {
 			
 			HudItem item = hudItems.get(i);
-			
-			item.setPosition(x + item.cameraX, y + item.cameraY);
+			item.vertices[0].x = x + item.cameraX;
+			item.vertices[0].y = y + item.cameraY;
 		}
 	}
     
@@ -68,7 +68,8 @@ public class Camera2 implements Drawable {
 		for (int i = 0; i < hudItems.size(); i++) {
 			
 			HudItem item = hudItems.get(i);
-			item.setPosition(item.cameraX * factor, item.cameraY * factor);
+			item.vertices[0].x = item.cameraX * factor;
+			item.vertices[0].y = item.cameraY * factor;
 		}
 	}
 	

@@ -63,10 +63,10 @@ public class MapsScreen extends Screen implements OnTouchListener {
 			texture = "racesow_small.jpg";
 		}
 		
-		this.header = new TexturedBlock(texture,
-				TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(this.camera.frustumWidth, 0));
-		this.header.setPosition(0, this.camera.frustumHeight - this.header.height);
-		this.header.texture.setFilters(GLES10.GL_LINEAR, GLES10.GL_LINEAR);
+		header = new TexturedBlock(texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
+		header.vertices[0].x = 0;
+		header.vertices[0].y = camera.frustumHeight - header.height;
+		header.texture.setFilters(GLES10.GL_LINEAR, GLES10.GL_LINEAR);
 	}
 	
 	/**

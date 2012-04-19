@@ -75,7 +75,8 @@ public class Menu implements GestureDetector.OnGestureListener {
 			posX += this.items.get(i).width + this.spaceWidth;
 		}
 		
-		item.setPosition(posX, this.viewHeight / 2 - item.height / 2 - this.viewHeight / 5);
+		item.vertices[0].x = posX;
+		item.vertices[0].y = this.viewHeight / 2 - item.height / 2 - this.viewHeight / 5;
 		
 		this.items.add(item);
 		this.callbacks.add(callback);

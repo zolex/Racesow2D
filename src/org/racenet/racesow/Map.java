@@ -765,28 +765,22 @@ public class Map {
 		// move the background layer
 		if (this.background != null) {
 			
-			this.background.setPosition(
-				this.camera.position.x / this.backgroundSpeed,
-				this.backgroundPosition + (this.camera.position.y - this.camera.frustumHeight / 2) / 1.5f
-			);
+			this.background.vertices[0].x = this.camera.position.x / this.backgroundSpeed;
+			this.background.vertices[0].y =	this.backgroundPosition + (this.camera.position.y - this.camera.frustumHeight / 2) / 1.5f;
 		}
 		
 		// move the background layer
 		if (this.background2 != null) {
 			
-			this.background2.setPosition(
-				this.camera.position.x / this.background2Speed,
-				this.background2Position + (this.camera.position.y - this.camera.frustumHeight / 2) / 1.75f
-			);
+			this.background2.vertices[0].x = this.camera.position.x / this.background2Speed;
+			this.background2.vertices[0].y = this.background2Position + (this.camera.position.y - this.camera.frustumHeight / 2) / 1.75f;
 		}
 		
 		// set the sky position (TODO: could be done only once!)
 		if (this.sky != null) {
 
-			this.sky.setPosition(
-				this.camera.position.x - this.sky.width / 2,
-				this.camera.position.y - this.sky.height / 2 + this.skyPosition
-			);
+			this.sky.vertices[0].x = this.camera.position.x - this.sky.width / 2;
+			this.sky.vertices[0].y = this.camera.position.y - this.sky.height / 2 + this.skyPosition;
 		}
 		
 		// hide decals if their time has elapsed

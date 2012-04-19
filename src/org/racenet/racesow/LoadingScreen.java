@@ -61,9 +61,9 @@ class LoadingScreen extends Screen {
 			texture = "racesow_small.jpg";
 		}
 		
-		header = new TexturedBlock(texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0,
-				new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
-		header.setPosition(0, camera.frustumHeight - header.height);
+		header = new TexturedBlock(texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
+		header.vertices[0].x = 0;
+		header.vertices[0].y = camera.frustumHeight - header.height;
 		header.texture.setFilters(GLES10.GL_LINEAR, GLES10.GL_LINEAR);
 	}
 

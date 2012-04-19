@@ -300,13 +300,15 @@ public class GameScreen extends Screen implements OnTouchListener {
 					if (f.decalType.equals("r")) {
 						
 						TexturedBlock decal = player.rocketPool.newObject();
-						decal.setPosition(f.decalX, f.decalY);
+						decal.vertices[0].x = f.decalX;
+						decal.vertices[0].y = f.decalY;
 						map.addDecal(decal, Player.rocketDecalTime);
 						
 					} else if (f.decalType.equals("p")) {
 						
 						TexturedBlock decal = player.plasmaPool.newObject();
-						decal.setPosition(f.decalX, f.decalY);
+						decal.vertices[0].x = f.decalX;
+						decal.vertices[0].y = f.decalY;
 						map.addDecal(decal, Player.plasmaDecalTime);
 					}
 				}

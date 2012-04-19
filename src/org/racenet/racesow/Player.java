@@ -224,9 +224,14 @@ public class Player extends AnimatedBlock {
 	 */
 	public void setPosition(Vector2 position) {
 		
-		super.setPosition(position.x, position.y);
-		this.worldBounds.setPosition(position.x + this.worldOffset[0], position.y + this.worldOffset[1]);
-		this.plasmaBounds.setPosition(position.x + this.plasmaOffset[0], position.y + this.plasmaOffset[1]);
+		this.vertices[0].x = position.x;
+		this.vertices[0].y = position.y;
+		
+		this.worldBounds.vertices[0].x = position.x + this.worldOffset[0];
+		this.worldBounds.vertices[0].y = position.y + this.worldOffset[1];
+		
+		this.plasmaBounds.vertices[0].x = position.x + this.plasmaOffset[0];
+		this.plasmaBounds.vertices[0].y = position.y + this.plasmaOffset[1];
 	}
 	
 	/**
@@ -236,9 +241,14 @@ public class Player extends AnimatedBlock {
 	 */
 	public void setPosition(float x, float y) {
 		
-		super.setPosition(x, y);
-		this.worldBounds.setPosition(x + this.worldOffset[0], y + this.worldOffset[1]);
-		this.plasmaBounds.setPosition(x + this.plasmaOffset[0], y + this.plasmaOffset[1]);
+		this.vertices[0].x = x;
+		this.vertices[0].y = y;
+		
+		this.worldBounds.vertices[0].x = x + this.worldOffset[0];
+		this.worldBounds.vertices[0].y = y + this.worldOffset[1];
+		
+		this.plasmaBounds.vertices[0].x = x + this.plasmaOffset[0];
+		this.plasmaBounds.vertices[0].y = y + this.plasmaOffset[1];
 	}
 	
 	/**
@@ -249,9 +259,14 @@ public class Player extends AnimatedBlock {
 	 */
 	public void addToPosition(float x, float y) {
 		
-		super.addToPosition(x, y);
-		this.worldBounds.addToPosition(x, y);
-		this.plasmaBounds.addToPosition(x, y);
+		this.vertices[0].x += x;
+		this.vertices[0].y += y;
+		
+		this.worldBounds.vertices[0].x += x;
+		this.worldBounds.vertices[0].y += y;
+		
+		this.plasmaBounds.vertices[0].x += x;
+		this.plasmaBounds.vertices[0].y += y;
 	}
 	
 	/**
@@ -620,7 +635,7 @@ public class Player extends AnimatedBlock {
 					
 					// prefer wall-rockets 
 					List<GameObject> colliders = this.map.getPotentialWallColliders(this.worldBounds);
-					int length = colliders.size();
+					final int length = colliders.size();
 					for (int i = 0; i < length; i++) {
 					
 						GameObject part = colliders.get(i);
@@ -628,8 +643,8 @@ public class Player extends AnimatedBlock {
 						if (info.collided) {
 					
 							hitWall = true;
-							float impactX = this.getPhysicalPosition().x;
-							float impactY = this.getPhysicalPosition().y;
+							final float impactX = this.getPhysicalPosition().x;
+							final float impactY = this.getPhysicalPosition().y;
 							
 							// give the player some speed boost for wall-rockets
 							this.velocity.set(this.velocity.x, this.velocity.y < 0 ? 30 : this.velocity.y + 20);
@@ -646,7 +661,8 @@ public class Player extends AnimatedBlock {
 							
 							// show the rocket explosion
 							TexturedBlock decal = this.rocketPool.newObject();
-							decal.setPosition(impactX, impactY);
+							decal.vertices[0].x = impactX;
+							decal.vertices[0].y = impactY;
 							map.addDecal(decal, rocketDecalTime);
 							if (this.recordDemos) this.frameDecal = "r#" + impactX + "#" + impactY;
 							
@@ -683,7 +699,8 @@ public class Player extends AnimatedBlock {
 							
 							// show the rocket explosion
 							TexturedBlock decal = this.rocketPool.newObject();
-							decal.setPosition(this.getPhysicalPosition().x, impactY);
+							decal.vertices[0].x = this.getPhysicalPosition().x;
+							decal.vertices[0].y = impactY;
 							map.addDecal(decal, plasmaDecalTime);
 							
 							if (this.recordDemos) this.frameDecal = "r#" + this.getPhysicalPosition().x + "#" + impactY;
@@ -700,15 +717,15 @@ public class Player extends AnimatedBlock {
 					
 					// plasma can only hit walls
 					List<GameObject> colliders = this.map.getPotentialWallColliders(this.plasmaBounds);
-					int length = colliders.size();
+					final int length = colliders.size();
 					for (int i = 0; i < length; i++) {
 					
 						GameObject part = colliders.get(i);
 						CollisionInfo info = this.plasmaBounds.intersect(part);
 						if (info.collided) {
 
-							float impactX = this.getPhysicalPosition().x;
-							float impactY = this.getPhysicalPosition().y + 1;
+							final float impactX = this.getPhysicalPosition().x;
+							final float impactY = this.getPhysicalPosition().y + 1;
 							
 							// give the player some speed boost
 							this.velocity.add(0, 2.5f);
@@ -729,7 +746,8 @@ public class Player extends AnimatedBlock {
 							
 							// show the plasma impact
 							TexturedBlock decal = (TexturedBlock)this.plasmaPool.newObject();
-							decal.setPosition(impactX, impactY);
+							decal.vertices[0].x = impactX;
+							decal.vertices[0].y = impactY;
 							map.addDecal(decal, plasmaDecalTime);
 							if (this.recordDemos) this.frameDecal = "p#" + impactX + "#" + impactY;
 							
@@ -838,7 +856,7 @@ public class Player extends AnimatedBlock {
 				
 				boolean collided = false;
 				List<GameObject> colliders = this.map.getPotentialWallColliders(this.plasmaBounds);
-				int length = colliders.size();
+				final int length = colliders.size();
 				for (int i = 0; i < length; i++) {
 				
 					if (this.plasmaBounds.intersect(colliders.get(i)).collided) {

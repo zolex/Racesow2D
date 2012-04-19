@@ -1,5 +1,6 @@
 package org.racenet.racesow;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,8 +17,11 @@ import org.racenet.framework.Vector2;
 import org.racenet.helpers.InputStreamToString;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnClickListener;
 import android.opengl.GLES10;
 
 /**
@@ -86,13 +90,23 @@ class LoadingScreen extends Screen {
 				
 				parser = new DemoParser();
 				String folder = "racesow" + File.separator + "demos" + File.separator;
-				try {
-					InputStream demoStream = FileIO.getInstance().readFile(folder + this.demoFile);
-					parser.parse(InputStreamToString.convert(demoStream));
-					this.mapName = parser.map;
+				if (!parser.parse(folder + this.demoFile)) {
 					
-				} catch (IOException e) {
+					this.game.runOnUiThread(new Runnable() {
+						
+						public void run() {
+						
+							new AlertDialog.Builder(LoadingScreen.this.game)
+					        .setMessage("Could not load the demo")
+					        .setNeutralButton("Back", null)
+					        .show();
+						}
+					});
+					
+					this.game.finish();
 				}
+				
+				this.mapName = parser.map;
 			}
 			
 			// right after drawing the loading screen load

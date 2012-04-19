@@ -1,5 +1,6 @@
 package org.racenet.racesow.threads;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,6 +23,7 @@ public class DemoRecorderThread extends Thread {
 	private String map;
 	public BlockingQueue<DemoKeyFrame> demoParts = new LinkedBlockingQueue<DemoKeyFrame>();
 	private FileOutputStream fos;
+	private DataOutputStream dos;
 	private String demoFolder;
 	private String fileName;
 	public boolean stop = false;
@@ -47,11 +49,13 @@ public class DemoRecorderThread extends Thread {
 	 */
 	public void cancelDemo() {
 		
-		if (this.fos != null) {
+		if (this.fos != null && this.dos != null) {
 			
 			try {
+				this.dos.close();
 				this.fos.close();
 				this.fos = null;
+				this.dos = null;
 			} catch (IOException e) {
 			}
 		}
@@ -71,16 +75,14 @@ public class DemoRecorderThread extends Thread {
 		this.fileName = this.demoFolder + this.map.replace(".xml", "") + "_" + date + ".r2d";
 		try {
 			this.fos = (FileOutputStream)FileIO.getInstance().writeFile(this.fileName);
+			this.dos = new DataOutputStream(this.fos);
 		} catch (IOException e) {
 		}
 		
-		try {
-			DemoKeyFrame frame = new DemoKeyFrame();
-			frame.meta = this.map + "/";
-			frame.action = DemoKeyFrame.ACTION_META;
-			this.demoParts.put(frame);
-		} catch (InterruptedException e) {
-		}
+		DemoKeyFrame frame = new DemoKeyFrame();
+		frame.meta = this.map;
+		frame.action = DemoKeyFrame.ACTION_META;
+		this.demoParts.add(frame);
 	}
 	
 	@Override
@@ -97,10 +99,12 @@ public class DemoRecorderThread extends Thread {
 				frame = this.demoParts.take();
 				if (frame.action == DemoKeyFrame.ACTION_SAVE) {
 					
-					if (this.fos != null) {
+					if (this.fos != null && this.dos != null) {
 						
+						this.dos.close();
 						this.fos.close();
 						this.fos = null;
+						this.dos = null;
 						this.fileName = null;
 					}
 					
@@ -113,24 +117,23 @@ public class DemoRecorderThread extends Thread {
 					
 					if (this.fos != null) {
 						
-						this.fos.write(frame.meta.getBytes());
+						this.dos.writeUTF(frame.meta);
 					}
 					
 				} else {
 					
-					if (this.fos != null) {
+					if (this.fos != null && this.dos != null) {
 						
-						String item = frame.frameTime + ":" +
-							frame.playerPosition.x + "," +
-							frame.playerPosition.y + "," +
-							frame.playerAnimation + "," +
-							frame.playerSpeed + "," +
-							frame.mapTime + 
-							(frame.playerSound == -1 ? "" : "," + frame.playerSound) +
-							(frame.decalType == null ? "" : "," + frame.decalType + "#" + frame.decalX + "#" + frame.decalY) +
-							";";
-						
-						this.fos.write(item.getBytes());
+						this.dos.writeFloat(frame.frameTime);
+						this.dos.writeFloat(frame.playerPosition.x);
+						this.dos.writeFloat(frame.playerPosition.y);
+						this.dos.writeInt(frame.playerAnimation);
+						this.dos.writeInt(frame.playerSpeed);
+						this.dos.writeFloat(frame.mapTime);
+						this.dos.writeInt(frame.playerSound);
+						this.dos.writeUTF(frame.decalType);
+						this.dos.writeFloat(frame.decalX);
+						this.dos.writeFloat(frame.decalY);
 					}
 				}
 			}

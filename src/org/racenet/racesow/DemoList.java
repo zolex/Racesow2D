@@ -1,5 +1,6 @@
 package org.racenet.racesow;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -78,9 +79,10 @@ public class DemoList extends ListActivity {
 				String mapName = "";
 				String folder = "racesow" + File.separator + "demos" + File.separator;
 				try {
-					InputStream demoStream = FileIO.getInstance().readFile(folder + demo);
-					String[] info = InputStreamToString.convert(demoStream).split("/");
-					mapName = info[0];
+					
+					DataInputStream dis = new DataInputStream(FileIO.getInstance().readFile(folder + demo));
+					mapName = dis.readUTF();
+					dis.close();
 					
 				} catch (IOException e) {}
 				

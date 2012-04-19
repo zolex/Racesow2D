@@ -102,7 +102,7 @@ public class Player extends AnimatedBlock {
 	CameraText tutorialMessage1;
 	CameraText tutorialMessage2;
 	CameraText tutorialMessage3;
-	public String frameDecalType = null;
+	public String frameDecalType = "";
 	public float frameDecalX = 0;
 	public float frameDecalY = 0;
 	public int frameSound = -1;
@@ -858,7 +858,9 @@ public class Player extends AnimatedBlock {
 		 // workaround for initial loading
 		if (++frames < 3) return;
 		
-		this.frameDecalType = null;
+		this.frameDecalType = "";
+		this.frameDecalX = 0;
+		this.frameDecalY = 0;
 		this.frameSound = -1;
 		
 		this.map.handleAmbience(this.vertices[0].x);

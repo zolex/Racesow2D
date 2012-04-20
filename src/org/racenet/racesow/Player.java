@@ -19,9 +19,15 @@ import org.racenet.framework.Vector2;
 import org.racenet.racesow.threads.InternalScoresThread;
 import org.racenet.racesow.threads.SubmitScoreThread;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.opengl.GLES10;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
 
 /**
  * Class which represents the player in the game.
@@ -1183,7 +1189,7 @@ public class Player extends AnimatedBlock {
 	/**
 	 * Show "new record" message
 	 */
-	public void showtRecordMessage() {
+	public void showRecordMessage() {
 		
 		this.recordMessage = this.gameScreen.createCameraText(-27, 10);
 		this.recordMessage.text = "New personal record!";
@@ -1198,7 +1204,7 @@ public class Player extends AnimatedBlock {
 	/**
 	 * Show "race finished" message
 	 */
-	public void showtFinishMessage() {
+	public void showFinishMessage() {
 		
 		this.finishMessage= this.gameScreen.createCameraText(-20, 10);
 		this.finishMessage.text = "Race finished!";
@@ -1260,37 +1266,80 @@ public class Player extends AnimatedBlock {
 		
 		this.map.stopTimer();
 		
-		SubmitScoreThread t2 = new SubmitScoreThread(
-			this.map.fileName,
-			this.name,
-			this.map.getCurrentTime()
-		);
-		t2.start();
-		
-		// save the time to the local scores
-		InternalScoresThread t = new InternalScoresThread(
-			this.map.fileName,
-			this.name,
-			this.map.getCurrentTime(),
-			new Handler() {
-		    	
-		    	@Override
-		        public void handleMessage(Message msg) {
-		    		
-		    		if (msg.getData().getBoolean("record")) {
-		    			
-		    			Player.this.showtRecordMessage();
-		    		
-		    		} else {
-		    			
-		    			Player.this.showtFinishMessage();
-		    		}
-		    		
-		    		Player.this.showTimeMessage();
-		    		Player.this.showRestartMessage();
-		    	}
+		this.gameScreen.game.runOnUiThread(new Runnable() {
+			
+			public void run() {
+			
+				final AlertDialog alert = new AlertDialog.Builder(Player.this.gameScreen.game).create();
+				final EditText input = new EditText(Player.this.gameScreen.game);
+				input.setText(Player.this.name);
+				input.addTextChangedListener(new TextWatcher() {
+					
+					public void onTextChanged(CharSequence s, int start, int before, int count) {
+						
+						if (s.toString().trim().length() == 0) {
+						
+							alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+							
+						} else {
+							
+							alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+						}
+					}
+					
+					public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+						
+					}
+					
+					public void afterTextChanged(Editable s) {
+						
+					}
+				});
+				
+				alert.setCancelable(false);
+				alert.setMessage("Enter a nickname for the highscores.");
+		        alert.setView(input);
+		        alert.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int which) {
+						
+						SubmitScoreThread t2 = new SubmitScoreThread(
+								Player.this.map.fileName,
+								input.getText().toString().trim(),
+								Player.this.map.getCurrentTime()
+							);
+							t2.start();
+							
+							// save the time to the local scores
+							InternalScoresThread t = new InternalScoresThread(
+								Player.this.map.fileName,
+								input.getText().toString().trim(),
+								Player.this.map.getCurrentTime(),
+								new Handler() {
+							    	
+							    	@Override
+							        public void handleMessage(Message msg) {
+							    		
+							    		if (msg.getData().getBoolean("record")) {
+							    			
+							    			Player.this.showRecordMessage();
+							    		
+							    		} else {
+							    			
+							    			Player.this.showFinishMessage();
+							    		}
+							    		
+							    		Player.this.showTimeMessage();
+							    		Player.this.showRestartMessage();
+							    	}
+							});
+							t.start();
+					}
+				});
+		        alert.show();
+		        alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(!Player.this.name.equals(""));
+			}
 		});
-		t.start();
 	}
 	
 	/**

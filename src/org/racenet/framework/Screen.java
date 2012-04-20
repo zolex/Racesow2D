@@ -8,7 +8,7 @@ package org.racenet.framework;
  */
 public abstract class Screen {
 
-	protected final GLGame game;
+	public final GLGame game;
 	
 	public Screen(GLGame game) {
 		

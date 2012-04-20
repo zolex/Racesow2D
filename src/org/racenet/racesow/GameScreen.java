@@ -422,7 +422,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 				public void run() {
 				
 					new AlertDialog.Builder(GameScreen.this.game)
-			        .setMessage("You have less then " + GameScreen.this.lowFpsLimit + " FPS. Do you want to disable some features to increase the performance? (You can disable them persitently in the settings.)")
+			        .setMessage("You have less then " + GameScreen.this.lowFpsLimit + " FPS. Do you want to disable some features to increase the performance? (You can disable them permanently in the settings.)")
 			        .setPositiveButton("YES", new OnClickListener() {
 						
 						public void onClick(DialogInterface arg0, int arg1) {

@@ -107,8 +107,11 @@ public class Racesow extends GLGame {
     		// restart the race
     		else if (gameScreen.map.inRace() || gameScreen.map.raceFinished()) {
     		
-    			gameScreen.state = GameState.Running;
-    			gameScreen.map.restartRace(gameScreen.player);
+    			if (!gameScreen.map.inFinishSequence) {
+    				
+    				gameScreen.state = GameState.Running;
+    				gameScreen.map.restartRace(gameScreen.player);
+    			}
     			
     		// return to maps menu
     		} else {

@@ -3,6 +3,11 @@
 	<name>Egypt</name>
 	<mapper>soh#zolex</mapper>
 	<levelshot>egypt/levelshot.png</levelshot>
+	<ratings>
+	    <excellent>35.0</excellent>
+	    <verygood>40.0</verygood>
+	    <good>45.0</good>
+	</ratings>
 	<player><x>40</x><y>10</y></player>
 	<starttimer><x>50</x></starttimer>
 	<stoptimer><x>4480</x></stoptimer>

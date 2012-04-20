@@ -58,6 +58,7 @@ public class Map {
 	public float playerY = 0;
 	public boolean raceStarted = false;
 	public boolean raceFinished = false;
+	public boolean inFinishSequence = false;
 	private float startTime = 0;
 	private float stopTime = 0;
 	public boolean gfxHighlights = true;
@@ -71,6 +72,9 @@ public class Map {
 	public boolean enableAmbience;
 	public AmbientSound[] ambience;
 	float[] ambientVolume; 
+	public float ratingExcellent = 0;
+	public float ratingVeryGood = 0;
+	public float ratingGood = 0;
 	
 	/**
 	 * Map constructor.
@@ -169,6 +173,20 @@ public class Map {
 				this.ambientVolume[i] = positional ? 0 : volume;
 				this.ambience[i] = ambience;
 			}
+		}
+		
+		// obtain the player position from the map
+		NodeList ratingsN = parser.doc.getElementsByTagName("ratings");
+		if (ratingsN.getLength() == 1) {
+			
+			Element ratings = (Element)ratingsN.item(0);
+			try {
+				
+				this.ratingExcellent = Float.valueOf(parser.getValue(ratings, "excellent")).floatValue();
+				this.ratingVeryGood = playerY = Float.valueOf(parser.getValue(ratings, "verygood")).floatValue();
+				this.ratingGood = Float.valueOf(parser.getValue(ratings, "good")).floatValue();
+				
+			} catch (NumberFormatException e) {}
 		}
 		
 		// obtain the player position from the map
@@ -1230,7 +1248,8 @@ public class Map {
 		this.stopTime = 0;
 		this.pauseTime = 0;
 		this.raceStarted = false;
-		this.raceFinished= false;
+		this.raceFinished = false;
+		this.inFinishSequence = false;
 		
 		int length = this.pickedUpItems.size();
 		for (int i = 0; i < length; i++) {
@@ -1296,6 +1315,7 @@ public class Map {
 		
 		if (this.raceFinished) return;
 		
+		this.inFinishSequence = true;
 		this.raceFinished = true;
 		this.raceStarted = false;
 		this.stopTime = System.nanoTime() / 1000000000.0f;

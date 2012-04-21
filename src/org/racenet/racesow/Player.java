@@ -29,6 +29,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.EditText;
 
 /**
@@ -714,7 +715,7 @@ public class Player extends AnimatedBlock {
 							
 							// show the rocket explosion
 							TexturedBlock decal = this.rocketPool.newObject();
-							decal.vertices[0].x = this.getPhysicalPosition().x;
+							decal.vertices[0].x = this.getPhysicalPosition().x - 2;
 							decal.vertices[0].y = impactY;
 							map.addDecal(decal, plasmaDecalTime);
 							
@@ -948,8 +949,10 @@ public class Player extends AnimatedBlock {
 			
 			GameObject item = this.map.items.get(i);
 			float playerX = this.getPhysicalPosition().x;
+			float playerY = this.getPhysicalPosition().y;
 			float itemX = item.vertices[0].x;
-			if (playerX >= itemX && playerX <= itemX + item.width) {
+			float itemY = item.vertices[0].y;
+			if (playerX >= itemX && playerX <= itemX + item.width && playerY + this.worldBounds.height >= itemY) {
 				
 				String texture = "";
 				switch (item.func) {
@@ -1050,7 +1053,7 @@ public class Player extends AnimatedBlock {
 				
 				// check for functional collisions like water or lava
 				if (info.collided) {
-
+					
 					switch (ground.func) {
 					
 						case GameObject.FUNC_LAVA:
@@ -1068,9 +1071,14 @@ public class Player extends AnimatedBlock {
 							this.die();
 							return;
 					}
-
+					
 					// ground
-					if (info.type == Polygon.TOP) {
+					if (info.type == Polygon.BOTTOM) {
+						
+						this.setPosition(this.vertices[0].x, this.vertices[0].y - info.distance);
+						this.velocity.y = 0;
+						
+					} else if (info.type == Polygon.TOP) {
 					
 						this.setPosition(this.vertices[0].x, this.vertices[0].y + info.distance);
 						this.velocity.set(this.velocity.x, 0);
@@ -1085,7 +1093,7 @@ public class Player extends AnimatedBlock {
 					} else if (info.type == Polygon.LEFT) {
 					
 						this.setPosition(this.vertices[0].x - info.distance, this.vertices[0].y);
-						this.velocity.set(0, this.velocity.y);
+						this.velocity.x = 0;
 						this.virtualSpeed = 0;
 					
 					// ramp up

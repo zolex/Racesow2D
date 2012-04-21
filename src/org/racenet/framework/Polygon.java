@@ -61,50 +61,42 @@ public class Polygon {
 		
 		float thisX = this.vertices[0].x;
 		float thisY = this.vertices[0].y;
-		
+		float thisRight = thisX + this.width;
+		float thisTop = thisY + this.height;
 		float otherX = other.vertices[0].x;
 		float otherY = other.vertices[0].y;
+		float otherHeight = other.getHeightAt(thisX);
+		float otherRight = otherX + other.width;
+		float otherTop = otherY + otherHeight;
+		boolean otherInside = (thisY <= otherY && thisTop >= otherTop);
 		
 		if (other.vertices.length == 4) {
 			
-			float otherHeight = other.getHeightAt(thisX);
-			
-			if (thisX + this.width > otherX && thisX < otherX + other.width &&
-				thisY + this.height > otherY && thisY + this.height < otherY + otherHeight) {
+			if ((thisRight >= otherX && thisX <= otherRight) &&
+				((thisTop >= otherY && thisTop <= otherTop) ||
+				(thisY >= otherY && thisY <= otherTop) || otherInside)) {
 				
-				float distanceX = thisX + this.width - otherX;
-				float distanceY = thisY + this.height - otherY;
+				float distanceLeft = thisRight - otherX;
+				float distanceBottom = thisTop - otherY;
+				float distanceTop = otherTop - thisY;
 				
-				if (distanceX < distanceY && other.height > this.height) {
+				if (otherInside ||
+					distanceLeft < distanceBottom &&
+					distanceLeft < distanceTop &&
+					otherHeight > this.height) {
 					
 					info.type = LEFT;
-					info.distance = distanceX;
+					info.distance = distanceLeft;
+					
+				} else if (distanceTop < distanceBottom) {
+					
+					info.type = TOP;
+					info.distance = distanceTop;
 					
 				} else {
 					
 					info.type = BOTTOM;
-					info.distance = distanceY;
-				}
-				
-				info.collided = true;
-				return info;
-			}
-			
-			if (thisX + this.width > otherX && thisX < otherX + other.width &&
-				thisY > otherY && thisY < otherY + otherHeight) {
-				
-				float distanceX = thisX + this.width - otherX;
-				float distanceY = otherY + other.height - thisY;
-				
-				if (distanceX < distanceY && other.height > this.height) {
-					
-					info.type = LEFT;
-					info.distance = distanceX;
-					
-				} else {
-					
-					info.type = TOP;
-					info.distance = distanceY;
+					info.distance = distanceBottom;
 				}
 				
 				info.collided = true;
@@ -113,30 +105,20 @@ public class Polygon {
 			
 		} else if (other.vertices.length == 3) {
 		
-			// ramp up
-			if (other.vertices[1].x == other.vertices[2].x) {
+			if (thisRight >= otherX && thisX <= otherRight && thisY <= otherTop) {
 				
-				float otherHeight = other.getHeightAt(thisX);
-				if (thisX + this.width > otherX && thisX < otherX + other.width && thisY <= otherY + otherHeight) {
-					
-					info.collided = true;
-					info.distance = 0;
+				info.collided = true;
+				info.distance = 0;
+				if (other.vertices[1].x == other.vertices[2].x) {
+				
 					info.type = RAMPUP;
-					return info;
-				}
-			}
-			
-			// ramp down
-			if (other.vertices[0].x == other.vertices[1].x) {
-				
-				float otherHeight = other.getHeightAt(thisX);
-				if (thisX + this.width > otherX && thisX < otherX + other.width && thisY <= otherY + otherHeight) {
-
-					info.collided = true;
-					info.distance = 0;
+					
+				} else if (other.vertices[0].x == other.vertices[1].x) {
+					
 					info.type = RAMPDOWN;
-					return info;
 				}
+				
+				return info;
 			}
 		}
 		

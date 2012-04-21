@@ -1033,16 +1033,17 @@ public class Map {
 	 */
 	public GameObject getGround(GameObject o) {
 		
-		int highestPart = 0;
+		int highestPart = -1;
 		float maxHeight = 0;
 		
 		final float x = o.vertices[0].x;
+		final float y = o.vertices[0].y;
 		final int length = this.ground.size();
 		if (length == 0) return null;
 		for (int i = 0; i < length; i++) {
 			
 			GameObject part = this.ground.get(i);
-			if (x >= part.vertices[0].x && x <= part.vertices[0].x + part.width) {
+			if (y >= part.vertices[0].y && x >= part.vertices[0].x && x <= part.vertices[0].x + part.width) {
 				
 				float height = part.vertices[0].y + part.height;
 				if (height > maxHeight) {
@@ -1053,7 +1054,14 @@ public class Map {
 			}
 		}
 		
-		return this.ground.get(highestPart);
+		if (highestPart == -1) {
+			
+			return null;
+			
+		} else {
+		
+			return this.ground.get(highestPart);
+		}
 	}
 	
 	/**

@@ -513,7 +513,7 @@ public class Player extends AnimatedBlock {
 			
 			// give the player a speed boost according to
 			// the distance when initially pressed jump
-			if (this.distanceOnJump > 0) {
+			if (this.distanceOnJump > 0 && this.velocity.x != 0) {
 				
 				float boost = (60000 / Math.max(this.virtualSpeed, this.startSpeed) / this.distanceOnJump);
 				this.virtualSpeed += boost;
@@ -952,7 +952,7 @@ public class Player extends AnimatedBlock {
 			float playerY = this.getPhysicalPosition().y;
 			float itemX = item.vertices[0].x;
 			float itemY = item.vertices[0].y;
-			if (playerX >= itemX && playerX <= itemX + item.width && playerY + this.worldBounds.height >= itemY) {
+			if (playerX + this.worldBounds.width>= itemX && playerX <= itemX + item.width && playerY + this.worldBounds.height >= itemY) {
 				
 				String texture = "";
 				switch (item.func) {

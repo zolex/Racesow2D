@@ -1073,13 +1073,14 @@ public class Map {
 	 */
 	public List<GameObject> getPotentialGroundColliders(GameObject o) {
 		
-		final float x = o.vertices[0].x;
+		final float oLeft = o.vertices[0].x;
+		final float oRight = oLeft + o.width;
 		List<GameObject> colliders = new ArrayList<GameObject>();
 		final int length = this.ground.size();
 		for (int i = 0; i < length; i++) {
 						
 			GameObject ground = this.ground.get(i);			
-			if (x >= ground.vertices[0].x && x <= ground.vertices[0].x + ground.width) {
+			if (oRight >= ground.vertices[0].x && oLeft <= ground.vertices[0].x + ground.width) {
 				
 				colliders.add(ground);
 			}

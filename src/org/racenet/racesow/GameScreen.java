@@ -413,7 +413,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 		if (!this.fpsDialogShown &&
 			(this.map.gfxHighlights || this.map.enableAmbience || this.player.blurEnabled) &&
 			this.time > 2.0f &&
-			lowFpsPerTime > 0.5f) {
+			lowFpsPerTime > 0.75f) {
 			
 			this.pauseGame();
 			this.fpsDialogShown = true;

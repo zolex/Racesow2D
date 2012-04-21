@@ -1,5 +1,7 @@
 package org.racenet.framework;
 
+import android.util.Log;
+
 /**
  * Represents a polygon defined by at
  * least three points
@@ -56,34 +58,38 @@ public class Polygon {
 	 */
 	public CollisionInfo intersect(Polygon other){
 				
-		CollisionInfo info = new CollisionInfo();
+		final CollisionInfo info = new CollisionInfo();
 		info.collided = false;
 		
-		float thisX = this.vertices[0].x;
-		float thisY = this.vertices[0].y;
-		float thisRight = thisX + this.width;
-		float thisTop = thisY + this.height;
-		float otherX = other.vertices[0].x;
-		float otherY = other.vertices[0].y;
-		float otherHeight = other.getHeightAt(thisX);
-		float otherRight = otherX + other.width;
-		float otherTop = otherY + otherHeight;
-		boolean otherInside = (thisY <= otherY && thisTop >= otherTop);
+		final float thisLeft = this.vertices[0].x;
+		final float thisBottom = this.vertices[0].y;
+		final float thisRight = thisLeft + this.width;
+		final float thisTop = thisBottom + this.height;
+		final float otherLeft = other.vertices[0].x;
+		final float otherBottom = other.vertices[0].y;
+		final float otherHeight = other.getHeightAt(thisLeft);
+		final float otherRight = otherLeft + other.width;
+		final float otherTop = otherBottom + otherHeight;
+		final boolean otherInside = (thisBottom <= otherBottom && thisTop >= otherTop);
 		
 		if (other.vertices.length == 4) {
 			
-			if ((thisRight >= otherX && thisX <= otherRight) &&
-				((thisTop >= otherY && thisTop <= otherTop) ||
-				(thisY >= otherY && thisY <= otherTop) || otherInside)) {
+			if ( (thisRight >= otherLeft && thisLeft <= otherRight)) Log.d("DEBUG", "right " + otherLeft);
+			
+			if ((thisRight >= otherLeft && thisLeft <= otherRight) &&
+				((thisTop >= otherBottom && thisTop <= otherTop) ||
+				(thisBottom >= otherBottom && thisBottom <= otherTop) || otherInside)) {
 				
-				float distanceLeft = thisRight - otherX;
-				float distanceBottom = thisTop - otherY;
-				float distanceTop = otherTop - thisY;
+				final float distanceLeft = thisRight - otherLeft;
+				//final float distanceRight = otherRight - thisLeft;
+				final float distanceBottom = thisTop - otherBottom;
+				final float distanceTop = otherTop - thisBottom;
+				
+				Log.d("DEBUG", "left " + distanceLeft + " top " + distanceTop + " bottom " + distanceBottom);
 				
 				if (otherInside ||
-					distanceLeft < distanceBottom &&
-					distanceLeft < distanceTop &&
-					otherHeight > this.height) {
+					(distanceLeft < Math.min(distanceBottom, distanceTop) &&
+					otherHeight > this.height)) {
 					
 					info.type = LEFT;
 					info.distance = distanceLeft;
@@ -105,7 +111,7 @@ public class Polygon {
 			
 		} else if (other.vertices.length == 3) {
 		
-			if (thisRight >= otherX && thisX <= otherRight && thisY <= otherTop) {
+			if (thisRight >= otherLeft && thisLeft <= otherRight && thisBottom <= otherTop) {
 				
 				info.collided = true;
 				info.distance = 0;
@@ -125,6 +131,12 @@ public class Polygon {
 		return info;
 	}
 	
+	/**
+	 * Get the height of the polygon at the given position
+	 * 
+	 * @param float x
+	 * @return float
+	 */
 	public float getHeightAt(float x) {
 		
 		if (this.vertices.length == 3) {

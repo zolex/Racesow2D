@@ -1,7 +1,5 @@
 package org.racenet.framework;
 
-import android.util.Log;
-
 /**
  * Represents a polygon defined by at
  * least three points
@@ -74,8 +72,6 @@ public class Polygon {
 		
 		if (other.vertices.length == 4) {
 			
-			if ( (thisRight >= otherLeft && thisLeft <= otherRight)) Log.d("DEBUG", "right " + otherLeft);
-			
 			if ((thisRight >= otherLeft && thisLeft <= otherRight) &&
 				((thisTop >= otherBottom && thisTop <= otherTop) ||
 				(thisBottom >= otherBottom && thisBottom <= otherTop) || otherInside)) {
@@ -84,8 +80,6 @@ public class Polygon {
 				//final float distanceRight = otherRight - thisLeft;
 				final float distanceBottom = thisTop - otherBottom;
 				final float distanceTop = otherTop - thisBottom;
-				
-				Log.d("DEBUG", "left " + distanceLeft + " top " + distanceTop + " bottom " + distanceBottom);
 				
 				if (otherInside ||
 					(distanceLeft < Math.min(distanceBottom, distanceTop) &&

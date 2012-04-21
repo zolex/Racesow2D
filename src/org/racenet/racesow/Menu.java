@@ -183,17 +183,24 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 */
 	public boolean allowMoveMenu(float distance) {
 		
-		TexturedBlock first = this.items.get(0);
-		TexturedBlock last = this.items.get(this.items.size() - 1);
-		
-		if ((first.vertices[0].x > this.viewWidth / 2 - first.width / 2 && distance < 0) ||
-			(last.vertices[0].x < this.viewWidth / 2 - last.width / 2 && distance > 0)) {
+		if (this.items != null) {
+			
+			TexturedBlock first = this.items.get(0);
+			TexturedBlock last = this.items.get(this.items.size() - 1);
+			
+			if ((first.vertices[0].x > this.viewWidth / 2 - first.width / 2 && distance < 0) ||
+				(last.vertices[0].x < this.viewWidth / 2 - last.width / 2 && distance > 0)) {
+				
+				return false;
+			
+			} else {
+			
+				return true;
+			}
+			
+		} else {
 			
 			return false;
-		
-		} else {
-		
-			return true;
 		}
 	}
 	

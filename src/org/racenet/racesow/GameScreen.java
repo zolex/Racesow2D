@@ -399,6 +399,19 @@ public class GameScreen extends Screen implements OnTouchListener {
 			this.timer.text = "t " + String.format(Locale.US, "%.4f", map.getCurrentTime());
 		}
 		
+		if (this.showFPS) {
+			
+			// update HUD for frames per second
+			this.frames--;
+			this.sumDelta += deltaTime;
+			if (frames == 0) {
+
+				this.fps.text = "fps " + String.valueOf(new Integer((int)(this.fpsInterval / this.sumDelta)));
+				this.frames = fpsInterval;
+				this.sumDelta = 0;
+			}
+		}
+		
 		// low fps detection
 		this.time += deltaTime;
 		this.frameNum++;
@@ -469,19 +482,6 @@ public class GameScreen extends Screen implements OnTouchListener {
 		this.player.draw(this.playerBlur);
 		
 		this.map.drawFront();
-		
-		if (this.showFPS) {
-			
-			// update HUD for frames per second
-			this.frames--;
-			this.sumDelta += deltaTime;
-			if (frames == 0) {
-
-				this.fps.text = "fps " + String.valueOf(new Integer((int)(this.fpsInterval / this.sumDelta)));
-				this.frames = fpsInterval;
-				this.sumDelta = 0;
-			}
-		}
 		
 		synchronized (this.player) {
 		

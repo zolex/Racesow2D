@@ -112,6 +112,7 @@ public class Camera2 implements Drawable {
 	        1, -1);
         GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
         GLES10.glLoadIdentity();
+        GLES10.glHint(GLES10.GL_PERSPECTIVE_CORRECTION_HINT, GLES10.GL_FASTEST);
     }
     
     /**

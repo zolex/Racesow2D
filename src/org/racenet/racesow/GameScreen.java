@@ -451,7 +451,6 @@ public class GameScreen extends Screen implements OnTouchListener {
 	 */
 	public void present(float deltaTime) {
 		
-		GLES10.glClear(GLES10.GL_COLOR_BUFFER_BIT);
 		GLES10.glFrontFace(GLES10.GL_CCW);
 		GLES10.glEnable(GLES10.GL_CULL_FACE);
 		GLES10.glCullFace(GLES10.GL_BACK);
@@ -459,6 +458,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 		GLES10.glDisable(GLES10.GL_DEPTH_TEST);
 		GLES10.glDisable(GLES10.GL_NORMALIZE);
 		GLES10.glDisable(GLES10.GL_SMOOTH);
+		GLES10.glDisable(GLES10.GL_DITHER);
 		GLES10.glEnable(GLES10.GL_TEXTURE_2D);
 		GLES10.glEnable(GLES10.GL_BLEND);
 		GLES10.glBlendFunc(GLES10.GL_SRC_ALPHA, GLES10.GL_ONE_MINUS_SRC_ALPHA);

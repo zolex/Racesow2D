@@ -1,8 +1,12 @@
 package org.racenet.racesow;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLTexture;
+import org.racenet.framework.Particles;
 import org.racenet.framework.Screen;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
@@ -23,11 +27,13 @@ import android.view.View.OnTouchListener;
  */
 public class MenuScreen extends Screen implements OnTouchListener {
 	
-	public TexturedBlock header;
+	public TexturedBlock header, test;
 	Camera2 camera;
 	GestureDetector gestures;
 	float menuVelocity = 0;
 	Menu menu;
+	Particles[] p;
+	boolean e = false;
 	
 	/**
 	 * Constructor.
@@ -121,12 +127,37 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		header.vertices[0].x = 0;
 		header.vertices[0].y = camera.frustumHeight - header.height;
 		header.texture.setFilters(GLES10.GL_LINEAR, GLES10.GL_LINEAR);
+		
+		this.p = new Particles[3];
+		this.p[0] = new Particles("hud/star.png", 12.8f, new Vector2(100, 100), 0);
+		this.p[1] = new Particles("hud/star.png", 12.8f, new Vector2(400, 200), 0.5f);
+		this.p[2] = new Particles("hud/star.png", 12.8f, new Vector2(700, 300), 1);
 	}
 
 	/**
 	 * Handle view touch events
 	 */
 	public boolean onTouch(View v, MotionEvent event) {
+		
+		if(!this.e && event.getY() < 20 && event.getX() < 20) {
+			
+			this.e = true;
+			Timer t = new Timer();
+			t.schedule(new TimerTask() {
+				
+				@Override
+				public void run() {
+					
+					final int length = MenuScreen.this.p.length;
+					for (int i = 0; i < length; i++) {
+						
+						MenuScreen.this.p[i].reset();
+					}
+					
+					MenuScreen.this.e = false;
+				}
+			}, 4000);
+		}
 		
 		this.gestures.onTouchEvent(event);
 		return true;
@@ -139,6 +170,15 @@ public class MenuScreen extends Screen implements OnTouchListener {
 	public void update(float deltaTime) {
 
 		this.menu.update(deltaTime);
+		
+		if (this.e) {
+			
+			final int length = this.p.length;
+			for (int i = 0; i < length; i++) {
+				
+				this.p[i].update(deltaTime);
+			}
+		}
 	}
 
 	@Override
@@ -161,6 +201,15 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		
 		this.header.draw();
 		this.menu.draw();
+		
+		if (this.e) {
+			
+			final int length = this.p.length;
+			for (int i = 0; i < length; i++) {
+				
+				this.p[i].draw();
+			}
+		}
 	}
 
 	@Override

@@ -59,6 +59,7 @@ public class MenuScreen extends Screen implements OnTouchListener {
 
                     public void run() {
                        
+                    	game.glView.setOnTouchListener(null);
                     	game.setScreen(new MapsScreen(game));
                     }
                 });
@@ -159,7 +160,11 @@ public class MenuScreen extends Screen implements OnTouchListener {
 			}, 4000);
 		}
 		
-		this.gestures.onTouchEvent(event);
+		if (this.gestures != null) {
+		
+			this.gestures.onTouchEvent(event);
+		}
+		
 		return true;
 	}
 	

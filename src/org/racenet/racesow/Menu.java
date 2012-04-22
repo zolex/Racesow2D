@@ -96,6 +96,11 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 */
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 		
+		if (e1 == null || e2 == null) {
+			
+			return false;
+		}
+		
 		if (Math.abs(e1.getX() - e2.getX()) < 50) {
 			
 			return false;
@@ -123,7 +128,7 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 */
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 		
-		if (Math.abs(e1.getX() - e2.getX()) < 50) {
+		if (e1 == null || e2 == null || Math.abs(e1.getX() - e2.getX()) < 50) {
 			
 			return false;
 		}
@@ -183,7 +188,7 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 */
 	public boolean allowMoveMenu(float distance) {
 		
-		if (this.items != null) {
+		if (this.items != null && items.size() > 0) {
 			
 			TexturedBlock first = this.items.get(0);
 			TexturedBlock last = this.items.get(this.items.size() - 1);

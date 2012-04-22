@@ -175,6 +175,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 
 	                    public void run() {
 					
+	                    	game.glView.setOnTouchListener(null);
 	                    	game.setScreen(new LoadingScreen(game, item.filename, null));
 	                    }
 					});
@@ -199,8 +200,15 @@ public class MapsScreen extends Screen implements OnTouchListener {
 	 */
 	public boolean onTouch(View v, MotionEvent event) {
 		
-		this.gestures.onTouchEvent(event);
-		return true;
+		if (this.gestures != null) {
+		
+			this.gestures.onTouchEvent(event);
+			return true;
+			
+		} else {
+		
+			return false;
+		}
 	}
 	
 	@Override

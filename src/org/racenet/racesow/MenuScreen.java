@@ -229,6 +229,11 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		
 		this.header.reloadTexture();
 		this.menu.reloadTextures();
+		final int length = this.p.length;
+		for (int i = 0; i < length; i++) {
+			
+			this.p[i].reloadTexture();
+		}
 	}
 
 	@Override

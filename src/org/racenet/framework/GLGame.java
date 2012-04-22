@@ -1,10 +1,16 @@
 package org.racenet.framework;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.opengl.GLES10;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
@@ -50,7 +56,8 @@ public abstract class GLGame extends Activity implements Renderer {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        glView = new GLSurfaceView(this);
+        //glView = new GLSurfaceView(this);
+        glView = new GLCameraSurface(this);
         glView.setRenderer(this);
         setContentView(glView);
         
@@ -238,5 +245,42 @@ public abstract class GLGame extends Activity implements Renderer {
     public int getScreenHeight() {
     	
     	return getWindowManager().getDefaultDisplay().getHeight();
+    }
+    
+    /**
+     * Take a screenshot of the current scene
+     * 
+     * @return Bitmap
+     */
+    public Bitmap takeScreenshot() {
+    	
+    	int width = this.glView.getWidth();
+		int height = this.glView.getHeight();
+		int screenshotSize = width * height;
+        ByteBuffer bb = ByteBuffer.allocateDirect(screenshotSize * 4);
+        bb.order(ByteOrder.nativeOrder());
+        GLES10.glReadPixels(0, 0, width, height, GLES10.GL_RGBA, GLES10.GL_UNSIGNED_BYTE, bb);
+        int pixelsBuffer[] = new int[screenshotSize];
+        bb.asIntBuffer().get(pixelsBuffer);
+        bb = null;
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        bitmap.setPixels(pixelsBuffer, screenshotSize-width, -width, 0, 0, width, height);
+        pixelsBuffer = null;
+
+        // color correction
+        short sBuffer[] = new short[screenshotSize];
+        ShortBuffer sb = ShortBuffer.wrap(sBuffer);
+        bitmap.copyPixelsToBuffer(sb);
+
+        for (int i = 0; i < screenshotSize; ++i) {  
+        	
+            short v = sBuffer[i];
+            sBuffer[i] = (short) (((v&0x1f) << 11) | (v&0x7e0) | ((v&0xf800) >> 11));
+        }
+        
+        sb.rewind();
+        bitmap.copyPixelsFromBuffer(sb);
+        
+        return bitmap;
     }
 }

@@ -1,10 +1,14 @@
 package org.racenet.racesow;
 
+import java.io.IOException;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.racenet.framework.BitmapFont;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.CameraText;
+import org.racenet.framework.FileIO;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLTexture;
 import org.racenet.framework.GameObject;
@@ -20,7 +24,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
+import android.media.MediaRecorder;
 import android.opengl.GLES10;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -140,6 +146,34 @@ public class GameScreen extends Screen implements OnTouchListener {
 		}
 		
 		this.map.enableSounds();
+		
+		try {
+			
+			final MediaRecorder recorder = new MediaRecorder();
+			recorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
+			recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+			recorder.setOutputFile(FileIO.externalStoragePath + "racesow/test.avi");
+			recorder.prepare();
+			recorder.start();
+			
+			Timer t = new Timer();
+			t.schedule(new TimerTask() {
+				
+				@Override
+				public void run() {
+					
+					recorder.stop();
+					recorder.reset();
+					recorder.release();
+				}
+			}, 3000);
+		
+		} catch (IllegalStateException e) {
+			
+			Log.d("DEBUG", "error1: " + e.getMessage());
+		} catch (IOException e) {
+			Log.d("DEBUG", "error2:" + e.getMessage());
+		}
 	}
 	
 	/**
@@ -485,6 +519,18 @@ public class GameScreen extends Screen implements OnTouchListener {
 		
 			this.camera.draw();
 		}
+		
+		/*
+		try {
+	        
+        	FileOutputStream image = FileIO.getInstance().writeFile("racesow/demos/test" + this.frameNum + ".jpg");
+        	Bitmap bitmap = this.game.takeScreenshot()
+        	bitmap.compress(Bitmap.CompressFormat.JPEG, 85, image);
+        	image.flush();
+        	image.close();
+        	
+        } catch (IOException e) {}
+        */
 	}
 	
 	/**

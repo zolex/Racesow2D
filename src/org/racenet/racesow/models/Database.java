@@ -185,8 +185,6 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public void addUpdate(UpdateItem update) {
 		
-		Log.d("DEBUG", "adding update");
-		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
     	Date date = new Date();
 		
@@ -217,8 +215,6 @@ public final class Database extends SQLiteOpenHelper {
 	    		throw new Exception("failed inserting 'updates'");
 	    	}
 	    	
-	    	Log.d("DEBUG", "added update");
-	    	
 	    	int numMaps = update.maps.size();
 	    	for (int i = 0; i < numMaps; i++) {
 	    		
@@ -233,7 +229,7 @@ public final class Database extends SQLiteOpenHelper {
     		        "name = '"+ mapUpdate.name + "'", null, null, null, null);
     		    
     		    ContentValues mapValues2 = new ContentValues();
-    		    values.put("position", mapUpdate.newPosition);
+    		    mapValues2.put("position", mapUpdate.newPosition);
     		    
     		    if (c.getCount() == 0) {
     		    	
@@ -252,8 +248,6 @@ public final class Database extends SQLiteOpenHelper {
 	    			throw new Exception("failed inserting 'update_maps'");
 	    		}
 	    		
-	    		Log.d("DEBUG", "added map");
-	    		
 	    		int numBeatenBy = mapUpdate.beatenBy.size();
 	    		for (int j = 0; j < numBeatenBy; j++) {
 	    			
@@ -269,8 +263,6 @@ public final class Database extends SQLiteOpenHelper {
 		    			
 		    			throw new Exception("failed inserting 'update_beaten_by'");
 		    		}
-		    		
-		    		Log.d("DEBUG", "added beaten_by");
 	    		}
 	    	}
 	    	
@@ -278,15 +270,13 @@ public final class Database extends SQLiteOpenHelper {
 	    	
 		} catch (Exception e) {
 			
-			Log.d("DEBUG", "update exception: " + e.getMessage());
+			Log.e("DEBUG", "database update exception: " + e.getMessage());
 			
 		} finally {
 			
 			database.endTransaction();
-			Log.d("DEBUG", "transaction ended");
 		}
 		
-		Log.d("DEBUG", "update finished");
 		database.close();
 	}
 	

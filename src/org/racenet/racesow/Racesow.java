@@ -63,10 +63,8 @@ public class Racesow extends GLGame {
 			
 		} else {
 			
-			Log.d("DEBUG", "check service");
 			if (!IsServiceRunning.check("org.racenet.racesow.PullService", getApplicationContext())) {
         		
-				Log.d("DEBUG", "not running");
         		startService(new Intent(Racesow.this, PullService.class));
         	}
 		}

@@ -68,18 +68,13 @@ public class PullService extends Service {
 					postValues.add(new BasicNameValuePair("name", prefs.getString("name", "player")));
 					List<MapItem> mapList = MapList.load(getAssets());
 					int length = mapList.size();
-					/*
 					for (int i = 0; i < length; i++) {
 						
 						MapItem map = mapList.get(i);
 						int position = db.getPosition(map.filename);
 						postValues.add(new BasicNameValuePair("positions["+ map.filename +"]", String.valueOf(position)));
 					}
-					*/
-					
-					postValues.add(new BasicNameValuePair("positions[forest.xml]", String.valueOf(3)));
-					postValues.add(new BasicNameValuePair("positions[egypt.xml]", String.valueOf(1)));
-				
+
 					UpdateItem update = new UpdateItem();
 					
 					update.oldPosition = Integer.parseInt(db.get("position"));
@@ -95,15 +90,13 @@ public class PullService extends Service {
 						Element updateRoot = (Element)updateN.item(0);
 						update.newPosition = Integer.parseInt(parser.getValue(updateRoot, "position"));
 						update.newPoints = Integer.parseInt(parser.getValue(updateRoot, "points"));
-						if (update.newPoints != 0 && update.newPoints != update.oldPoints) {
+						if (update.newPoints != update.oldPoints) {
 							
 							update.changed = true;
 						}
 						
 						NodeList mapsN = updateRoot.getElementsByTagName("maps");
 						if (mapsN.getLength() == 1) {
-							
-							Log.d("DEBUG", "found maps root");
 							
 							Element mapsRoot = (Element)mapsN.item(0);
 							NodeList maps = mapsRoot.getElementsByTagName("map");
@@ -116,19 +109,14 @@ public class PullService extends Service {
 								mapUpdate.name = parser.getValue(map, "name");
 								mapUpdate.newPosition = Integer.parseInt(parser.getValue(map, "position"));
 								mapUpdate.oldPosition = db.getPosition(mapUpdate.name);
-								
-								Log.d("DEBUG", "found map: " + mapUpdate.name);
-								
-								if (mapUpdate.newPosition != 0 && mapUpdate.oldPosition != 0 &&
-									mapUpdate.newPosition != mapUpdate.oldPosition) {
+
+								if (mapUpdate.newPosition != mapUpdate.oldPosition) {
 									
 									mapUpdate.changed = true;
 									update.changed = true;
 									
 									NodeList beatenByN = map.getElementsByTagName("beaten_by");
 									if (beatenByN.getLength() == 1) {
-										
-										Log.d("DEBUG", "found beaten_by root");
 										
 										NodeList beatenBy = ((Element)beatenByN.item(0)).getElementsByTagName("player");
 										int numBeatenBy = beatenBy.getLength();
@@ -139,9 +127,6 @@ public class PullService extends Service {
 											beatenByItem.name = parser.getValue(player, "name");
 											beatenByItem.time = Float.parseFloat(parser.getValue(player, "time"));
 											beatenByItem.position = Integer.parseInt(parser.getValue(player, "position"));
-											
-											Log.d("DEBUG", "found beaten by: " + beatenByItem.name);
-											
 											mapUpdate.beatenBy.add(beatenByItem);
 										}
 									}
@@ -152,10 +137,8 @@ public class PullService extends Service {
 						}
 					}
 					
-					Log.d("DEBUG", "update?");
 					if (update.changed) {
 						
-						Log.d("DEBUG", "update!");
 						db.addUpdate(update);
 					}
 					

@@ -15,10 +15,17 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.racenet.framework.XMLParser;
 import org.racenet.helpers.InputStreamToString;
 import org.racenet.helpers.MapList;
+import org.racenet.racesow.models.BeatenByItem;
 import org.racenet.racesow.models.Database;
 import org.racenet.racesow.models.MapItem;
+import org.racenet.racesow.models.MapUpdateItem;
+import org.racenet.racesow.models.PlayerItem;
+import org.racenet.racesow.models.UpdateItem;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -35,8 +42,9 @@ public class PullService extends Service {
 	
 	private NotificationManager manager;
     private Database db;
-    private HttpClient client = new DefaultHttpClient();
-    Timer timer = new Timer("PullService", true);
+    private final HttpClient client = new DefaultHttpClient();
+    private final Timer timer = new Timer("PullService", true);
+    private final XMLParser parser = new XMLParser();
     
     public static int SERVICE_NOTIFICATION = 1;
     
@@ -60,17 +68,96 @@ public class PullService extends Service {
 					postValues.add(new BasicNameValuePair("name", prefs.getString("name", "player")));
 					List<MapItem> mapList = MapList.load(getAssets());
 					int length = mapList.size();
+					/*
 					for (int i = 0; i < length; i++) {
 						
 						MapItem map = mapList.get(i);
 						int position = db.getPosition(map.filename);
 						postValues.add(new BasicNameValuePair("positions["+ map.filename +"]", String.valueOf(position)));
 					}
-				
-					post.setEntity(new UrlEncodedFormEntity(postValues));
-					InputStream result = client.execute(post).getEntity().getContent();
-					Log.d("DEBUG", "XML: " + InputStreamToString.convert(result));
+					*/
 					
+					postValues.add(new BasicNameValuePair("positions[forest.xml]", String.valueOf(3)));
+					postValues.add(new BasicNameValuePair("positions[egypt.xml]", String.valueOf(1)));
+				
+					UpdateItem update = new UpdateItem();
+					
+					update.oldPosition = Integer.parseInt(db.get("position"));
+					update.oldPoints = Integer.parseInt(db.get("points"));
+					update.newPosition = 0;
+					update.newPoints = 0;
+					
+					post.setEntity(new UrlEncodedFormEntity(postValues));
+					parser.read(client.execute(post).getEntity().getContent());
+					NodeList updateN = parser.doc.getElementsByTagName("update");
+					if (updateN.getLength() == 1) {
+						
+						Element updateRoot = (Element)updateN.item(0);
+						update.newPosition = Integer.parseInt(parser.getValue(updateRoot, "position"));
+						update.newPoints = Integer.parseInt(parser.getValue(updateRoot, "points"));
+						if (update.newPoints != 0 && update.newPoints != update.oldPoints) {
+							
+							update.changed = true;
+						}
+						
+						NodeList mapsN = updateRoot.getElementsByTagName("maps");
+						if (mapsN.getLength() == 1) {
+							
+							Log.d("DEBUG", "found maps root");
+							
+							Element mapsRoot = (Element)mapsN.item(0);
+							NodeList maps = mapsRoot.getElementsByTagName("map");
+							int numMaps = maps.getLength();
+							for (int i = 0; i < numMaps; i++) {
+								
+								MapUpdateItem mapUpdate = new MapUpdateItem();
+								
+								Element map = (Element)maps.item(i);
+								mapUpdate.name = parser.getValue(map, "name");
+								mapUpdate.newPosition = Integer.parseInt(parser.getValue(map, "position"));
+								mapUpdate.oldPosition = db.getPosition(mapUpdate.name);
+								
+								Log.d("DEBUG", "found map: " + mapUpdate.name);
+								
+								if (mapUpdate.newPosition != 0 && mapUpdate.oldPosition != 0 &&
+									mapUpdate.newPosition != mapUpdate.oldPosition) {
+									
+									mapUpdate.changed = true;
+									update.changed = true;
+									
+									NodeList beatenByN = map.getElementsByTagName("beaten_by");
+									if (beatenByN.getLength() == 1) {
+										
+										Log.d("DEBUG", "found beaten_by root");
+										
+										NodeList beatenBy = ((Element)beatenByN.item(0)).getElementsByTagName("player");
+										int numBeatenBy = beatenBy.getLength();
+										for (int j = 0; j < numBeatenBy; j++) {
+											
+											BeatenByItem beatenByItem = new BeatenByItem();
+											Element player = (Element)beatenBy.item(j);
+											beatenByItem.name = parser.getValue(player, "name");
+											beatenByItem.time = Float.parseFloat(parser.getValue(player, "time"));
+											beatenByItem.position = Integer.parseInt(parser.getValue(player, "position"));
+											
+											Log.d("DEBUG", "found beaten by: " + beatenByItem.name);
+											
+											mapUpdate.beatenBy.add(beatenByItem);
+										}
+									}
+									
+									update.maps.add(mapUpdate);
+								}
+							}
+						}
+					}
+					
+					Log.d("DEBUG", "update?");
+					if (update.changed) {
+						
+						Log.d("DEBUG", "update!");
+						db.addUpdate(update);
+					}
 					
 				} catch (ClientProtocolException e) {
 				} catch (IOException e) {

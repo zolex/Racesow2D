@@ -10,6 +10,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Class to store information in an SQLite database
@@ -24,7 +25,7 @@ public final class Database extends SQLiteOpenHelper {
 	 * Should be increased which each change to the
 	 * database structure
 	 */
-	private static final int DATABASE_VERSION = 5;
+	private static final int DATABASE_VERSION = 6;
 	
 	/**
 	 * Filename for the SQLite database
@@ -79,16 +80,17 @@ public final class Database extends SQLiteOpenHelper {
     	
         db.execSQL("CREATE TABLE settings(key TEXT, value TEXT, PRIMARY KEY(key))");
         
-        for (String key: new String[]{"name", "sound", "celshading"}) {
+        for (String key: new String[]{"points", "position"}) {
         
 	        ContentValues values = new ContentValues();
 	        values.put("key", key);
-	        if (key.equals("sound")) {
-	        	values.put("value", "true");
-	        } else if(key.equals("celshading")) {
-	        	values.put("value", "false");
-	        } else if(key.equals("name")) {
-	        	values.put("value", "");
+	        if (key.equals("points")) {
+	        	
+	        	values.put("value", "0");
+	        	
+	        } else if(key.equals("position")) {
+	        	
+	        	values.put("value", "0");
 	        }
 	        
 	        db.insert("settings", null, values);
@@ -96,6 +98,9 @@ public final class Database extends SQLiteOpenHelper {
         
         db.execSQL("CREATE TABLE races(id INTEGER, map TEXT, player TEXT, time REAL, created_at TEXT, PRIMARY KEY(id))");
         db.execSQL("CREATE TABLE maps(name TEXT, position INTEGER, PRIMARY KEY(name))");
+        db.execSQL("CREATE TABLE updates(id INTEGER, old_points INTEGER, new_points INTEGER, old_position INTEGER, new_position INTEGER, created_at TEXT, done INTEGER, PRIMARY KEY(id))");
+		db.execSQL("CREATE TABLE update_maps(update_id INTEGER, name TEXT, old_position INTEGER, new_position INTEGER)");
+		db.execSQL("CREATE TABLE update_beaten_by(update_maps_id INTEGER, name TEXT, time REAL, position INTEGER)");
     }
 
 	@Override
@@ -108,14 +113,32 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		
+		// add player column to races table
 		if (oldVersion < 4 && newVersion >= 4) {
 			
 			db.execSQL("ALTER TABLE races ADD player TEXT");
 		}
 		
+		// create maps table
 		if (oldVersion < 5 && newVersion >= 5) {
 			
 			db.execSQL("CREATE TABLE maps(name TEXT, position INTEGER, PRIMARY KEY(name))");
+		}
+		
+		// add points and position to settings
+		if (oldVersion < 6 && newVersion >= 6) {
+			
+			for (String key: new String[]{"points", "position"}) {
+		        
+		        ContentValues values = new ContentValues();
+		        values.put("key", key);
+		        values.put("value", "0");
+		        db.insert("settings", null, values);
+	        }
+			
+			db.execSQL("CREATE TABLE updates(id INTEGER, old_points INTEGER, new_points INTEGER, old_position INTEGER, new_position INTEGER, created_at TEXT, done INTEGER, PRIMARY KEY(id))");
+			db.execSQL("CREATE TABLE update_maps(update_id INTEGER, name TEXT, old_position INTEGER, new_position INTEGER)");
+			db.execSQL("CREATE TABLE update_beaten_by(update_maps_id INTEGER, name TEXT, time REAL, position INTEGER)");
 		}
 	}
 	
@@ -153,6 +176,118 @@ public final class Database extends SQLiteOpenHelper {
 	    c.close();
 	    database.close();
 	    return value;
+	}
+	
+	/**
+	 * Save a new update to the database
+	 * 
+	 * @param UpdateItem update
+	 */
+	public void addUpdate(UpdateItem update) {
+		
+		Log.d("DEBUG", "adding update");
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+    	Date date = new Date();
+		
+		SQLiteDatabase database = getWritableDatabase();
+		try {
+			
+			database.beginTransaction();
+			
+			ContentValues posValues = new ContentValues();
+			posValues.put("value", String.valueOf(update.newPosition));
+	    	database.update("settings", posValues, "key = 'position'", null);
+			
+	    	ContentValues poiValues = new ContentValues();
+	    	poiValues.put("value", String.valueOf(update.newPoints));
+	    	database.update("settings", poiValues, "key = 'points'", null);
+			
+		    ContentValues values = new ContentValues();
+		    values.put("old_points", update.oldPoints);
+		    values.put("new_points", update.newPoints);
+		    values.put("old_position", update.oldPosition);
+		    values.put("new_position", update.newPosition);
+		    values.put("done", 0);
+	    	values.put("created_at", dateFormat.format(date));
+	    	
+	    	long updateID = database.insert("updates", "", values);
+	    	if (updateID == -1) {
+	    		
+	    		throw new Exception("failed inserting 'updates'");
+	    	}
+	    	
+	    	Log.d("DEBUG", "added update");
+	    	
+	    	int numMaps = update.maps.size();
+	    	for (int i = 0; i < numMaps; i++) {
+	    		
+	    		MapUpdateItem mapUpdate = update.maps.get(i);
+	    		ContentValues mapValues = new ContentValues();
+	    		mapValues.put("update_id", updateID);
+	    		mapValues.put("name", mapUpdate.name);
+	    		mapValues.put("old_position", mapUpdate.oldPosition);
+	    		mapValues.put("new_position", mapUpdate.newPosition);
+	    		
+	    		Cursor c = database.query("maps", new String[]{"position"},
+    		        "name = '"+ mapUpdate.name + "'", null, null, null, null);
+    		    
+    		    ContentValues mapValues2 = new ContentValues();
+    		    values.put("position", mapUpdate.newPosition);
+    		    
+    		    if (c.getCount() == 0) {
+    		    	
+    		    	values.put("name", mapUpdate.name);
+    		    	database.insert("maps", "", mapValues2);
+    		    	
+    		    } else {
+    		    	
+    		    	database.update("maps", mapValues2, "map = '"+ mapUpdate.name + "'", null);
+    		    }
+    		    c.close();
+	    		
+	    		long mapUpdateID = database.insert("update_maps", "", mapValues);
+	    		if (mapUpdateID == -1) {
+	    			
+	    			throw new Exception("failed inserting 'update_maps'");
+	    		}
+	    		
+	    		Log.d("DEBUG", "added map");
+	    		
+	    		int numBeatenBy = mapUpdate.beatenBy.size();
+	    		for (int j = 0; j < numBeatenBy; j++) {
+	    			
+	    			BeatenByItem beatenBy = mapUpdate.beatenBy.get(j);
+	    			ContentValues beatenValues = new ContentValues();
+	    			beatenValues.put("update_maps_id", mapUpdateID);
+	    			beatenValues.put("name", beatenBy.name);
+	    			beatenValues.put("time", beatenBy.time);
+	    			beatenValues.put("position", beatenBy.position);
+	    			
+	    			long beatenByID = database.insert("update_beaten_by", "", beatenValues);
+		    		if (beatenByID == -1) {
+		    			
+		    			throw new Exception("failed inserting 'update_beaten_by'");
+		    		}
+		    		
+		    		Log.d("DEBUG", "added beaten_by");
+	    		}
+	    	}
+	    	
+	    	database.setTransactionSuccessful();
+	    	
+		} catch (Exception e) {
+			
+			Log.d("DEBUG", "update exception: " + e.getMessage());
+			
+		} finally {
+			
+			database.endTransaction();
+			Log.d("DEBUG", "transaction ended");
+		}
+		
+		Log.d("DEBUG", "update finished");
+		database.close();
 	}
 	
 	/**

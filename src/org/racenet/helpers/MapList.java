@@ -11,13 +11,16 @@ import org.racenet.racesow.models.MapItem;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import android.content.res.AssetManager;
+
 public class MapList {
 
-	public static List<MapItem> load() {
+	public static List<MapItem> load(AssetManager am) {
 		
 		List<MapItem> mapList = new ArrayList<MapItem>();
 		
 		// load the available maps from the assets
+		FileIO.setupInstance(am);
 		String[] maps = FileIO.getInstance().listAssets("maps");
 		for (int i = 0; i < maps.length; i++) {
 			

@@ -86,7 +86,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 		this.menu = new Menu(this.game, this.camera.frustumWidth, this.camera.frustumHeight);
 		this.gestures = new GestureDetector(this.menu);
 		
-		List<MapItem> mapList = MapList.load();
+		List<MapItem> mapList = MapList.load(this.game.getAssets());
 		
 		// order maps by name
 		Collections.sort(mapList, new MapComperator());

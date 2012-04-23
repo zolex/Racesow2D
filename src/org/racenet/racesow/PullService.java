@@ -36,6 +36,7 @@ public class PullService extends Service {
 	private NotificationManager manager;
     private Database db;
     private HttpClient client = new DefaultHttpClient();
+    Timer timer = new Timer("PullService", true);
     
     public static int SERVICE_NOTIFICATION = 1;
     
@@ -47,8 +48,7 @@ public class PullService extends Service {
         Database.setupInstance(getApplicationContext());
         this.db = Database.getInstance();
         
-        Timer timer = new Timer("PullService", true);
-        timer.schedule(new TimerTask() {
+        this.timer.schedule(new TimerTask() {
 			
 			@Override
 			public void run() {
@@ -94,6 +94,8 @@ public class PullService extends Service {
     	
     	super.onDestroy();
     	manager.cancel(SERVICE_NOTIFICATION);
+    	this.timer.purge();
+    	this.timer.cancel();
     }
 
 	@Override

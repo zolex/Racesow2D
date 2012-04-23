@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.util.Log;
 
 public class PullService extends Service {
 	
@@ -56,6 +57,7 @@ public class PullService extends Service {
 			public void run() {
 				
 				try {
+					
 					HttpPost post = new HttpPost("http://racesow2d.warsow-race.net/updates.php");
 					List<NameValuePair> postValues = new ArrayList<NameValuePair>();
 					SharedPreferences prefs = PullService.this.getSharedPreferences("racesow", Context.MODE_PRIVATE);
@@ -86,7 +88,7 @@ public class PullService extends Service {
 						update.name = parser.getValue(updateRoot, "name");
 						update.newPosition = Integer.parseInt(parser.getValue(updateRoot, "position"));
 						update.newPoints = Integer.parseInt(parser.getValue(updateRoot, "points"));
-						if (update.newPoints != update.oldPoints) {
+						if (update.newPoints != update.oldPoints || update.newPosition != update.oldPosition) {
 							
 							update.changed = true;
 						}
@@ -104,7 +106,7 @@ public class PullService extends Service {
 								Element map = (Element)maps.item(i);
 								mapUpdate.name = parser.getValue(map, "name");
 								mapUpdate.newPosition = Integer.parseInt(parser.getValue(map, "position"));
-								mapUpdate.oldPosition = db.getPosition(mapUpdate.name);
+								mapUpdate.oldPosition = db.getMapPosition(playerName, mapUpdate.name);
 
 								if (mapUpdate.newPosition != mapUpdate.oldPosition) {
 									
@@ -143,7 +145,7 @@ public class PullService extends Service {
 				}
 			}
 			
-		}, 1000, 300000);
+		}, 1000, 300000); // after 1 second, then every 5 minutes
   
         manager.notify(SERVICE_NOTIFICATION, getServiceNotification(getApplicationContext(), this));
     }

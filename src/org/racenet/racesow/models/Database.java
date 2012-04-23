@@ -25,7 +25,7 @@ public final class Database extends SQLiteOpenHelper {
 	 * Should be increased which each change to the
 	 * database structure
 	 */
-	private static final int DATABASE_VERSION = 6;
+	private static final int DATABASE_VERSION = 1;
 	
 	/**
 	 * Filename for the SQLite database
@@ -79,8 +79,8 @@ public final class Database extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
     	
         db.execSQL("CREATE TABLE races(id INTEGER, map TEXT, player TEXT, time REAL, created_at TEXT, PRIMARY KEY(id))");
-        db.execSQL("CREATE TABLE maps(name TEXT, position INTEGER, PRIMARY KEY(name))");
-        db.execSQL("CREATE TABLE players(name TEXT, player TEXT, position INTEGER, points INTEGER, PRIMARY KEY(name))");
+        db.execSQL("CREATE TABLE maps(name TEXT, player TEXT, position INTEGER, PRIMARY KEY(name, player))");
+        db.execSQL("CREATE TABLE players(name TEXT, position INTEGER, points INTEGER, PRIMARY KEY(name))");
         db.execSQL("CREATE TABLE updates(id INTEGER, name TEXT, old_points INTEGER, new_points INTEGER, old_position INTEGER, new_position INTEGER, created_at TEXT, done INTEGER, PRIMARY KEY(id))");
 		db.execSQL("CREATE TABLE update_maps(id INTEGER, update_id INTEGER, name TEXT, old_position INTEGER, new_position INTEGER, PRIMARY KEY(id))");
 		db.execSQL("CREATE TABLE update_beaten_by(update_maps_id INTEGER, name TEXT, time REAL, position INTEGER)");
@@ -96,27 +96,6 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		
-		// add player column to races table
-		if (oldVersion < 4 && newVersion >= 4) {
-			
-			db.execSQL("ALTER TABLE races ADD player TEXT");
-		}
-		
-		// create maps table
-		if (oldVersion < 5 && newVersion >= 5) {
-			
-			db.execSQL("CREATE TABLE maps(name TEXT, position INTEGER, PRIMARY KEY(name))");
-		}
-		
-		// add points and position to settings
-		if (oldVersion < 6 && newVersion >= 6) {
-			
-			db.execSQL("ALTER TABLE maps ADD player TEXT");
-			db.execSQL("CREATE TABLE players(name TEXT, position INTEGER, points INTEGER, PRIMARY KEY(name))");
-			db.execSQL("CREATE TABLE updates(id INTEGER, name TEXT, old_points INTEGER, new_points INTEGER, old_position INTEGER, new_position INTEGER, created_at TEXT, done INTEGER, PRIMARY KEY(id))");
-			db.execSQL("CREATE TABLE update_maps(id INTEGER, update_id INTEGER, name TEXT, old_position INTEGER, new_position INTEGER, PRIMARY KEY(id))");
-			db.execSQL("CREATE TABLE update_beaten_by(update_maps_id INTEGER, name TEXT, time REAL, position INTEGER)");
-		}
 	}
 	
 	/**
@@ -174,20 +153,24 @@ public final class Database extends SQLiteOpenHelper {
 			Cursor c = database.query("players", new String[]{"name"},
 				"name = '"+ update.name + "'", null, null, null, null);
 
-		    SQLiteDatabase database2 = getWritableDatabase();
 		    ContentValues playerValues = new ContentValues();
 		    playerValues.put("points", update.newPoints);
 		    playerValues.put("position", update.newPosition);
 		    
 		    if (c.getCount() == 0) {
 		    	
-		    	
 		    	playerValues.put("name", update.name);
-		    	database2.insert("players", "", playerValues);
+		    	if (-1 == database.insert("players", "", playerValues)) {
+		    		
+		    		throw new Exception("failed inserting player position and points");
+		    	}
 		    	
 		    } else {
 		    	
-		    	database2.update("players", playerValues, "name = '"+ update.name + "'", null);
+		    	if (1 != database.update("players", playerValues, "name = '"+ update.name + "'", null)) {
+		    		
+		    		throw new Exception("invalid update player position and points");
+		    	}
 		    }
 		    c.close();
 			
@@ -220,19 +203,26 @@ public final class Database extends SQLiteOpenHelper {
 	    		
 	    		// update the online map position
 	    		Cursor c2 = database.query("maps", new String[]{"position"},
-    		        "name = '"+ mapUpdate.name + "'", null, null, null, null);
+    		        "name = '"+ mapUpdate.name + "' AND player = '" + update.name +"'", null, null, null, null);
     		    
     		    ContentValues mapValues2 = new ContentValues();
     		    mapValues2.put("position", mapUpdate.newPosition);
     		    
     		    if (c2.getCount() == 0) {
     		    	
-    		    	values.put("name", mapUpdate.name);
-    		    	database.insert("maps", "", mapValues2);
+    		    	mapValues2.put("name", mapUpdate.name);
+    		    	mapValues2.put("player", update.name);
+    		    	if (-1 == database.insert("maps", "", mapValues2)) {
+    		    		
+    		    		throw new Exception("failed inserting map position");
+    		    	}
     		    	
     		    } else {
     		    	
-    		    	database.update("maps", mapValues2, "map = '"+ mapUpdate.name + "'", null);
+    		    	if (1 != database.update("maps", mapValues2, "name = '"+ mapUpdate.name + "' AND player = '" + update.name +"'", null)) {
+    		    		
+    		    		throw new Exception("invalid update map position");
+    		    	}
     		    }
     		    c2.close();
 	    		
@@ -343,7 +333,7 @@ public final class Database extends SQLiteOpenHelper {
 	    }
 	    
 	    c.close();
-	    database.close();
+	    //database.close();
 	    
 	    return updates;
 	}
@@ -457,37 +447,6 @@ public final class Database extends SQLiteOpenHelper {
 	    c.close();
 	    database.close();
 	    return points;
-	}
-	
-	/**
-	 * Insert or update the online player position on a map
-	 * 
-	 * @param String map
-	 * @param int position
-	 */
-	public void updateMapPosition(String player, String map, int position) {
-		
-		SQLiteDatabase database = getWritableDatabase();
-	    Cursor c = database.query("maps", new String[]{"position"},
-	        "name = '"+ map + "' AND player = '"+ player +"'", null, null, null, null);
-	    
-	    ContentValues values = new ContentValues();
-	    values.put("position", position);
-	    
-	    if (c.getCount() == 0) {
-	    	
-	    	
-	    	values.put("player", player);
-	    	values.put("name", map);
-	    	database.insert("maps", "", values);
-	    	
-	    } else {
-	    	
-	    	database.update("maps", values, "name = '"+ map + "' AND player = '"+ player +"'", null);
-	    }
-	    
-	    c.close();
-	    database.close();
 	}
 	
 	/**

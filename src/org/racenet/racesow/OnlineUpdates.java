@@ -36,6 +36,7 @@ public class OnlineUpdates extends ExpandableListActivity {
         
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.onlineupdates);
+    	Database.setupInstance(this.getApplicationContext());
         mAdapter = new UpdatesAdapter(this);
         setListAdapter(mAdapter);
         registerForContextMenu(getExpandableListView());
@@ -151,4 +152,13 @@ public class OnlineUpdates extends ExpandableListActivity {
 		return true;
 	}
 	*/
+    
+    /**
+     * Disable animations when leaving the activity
+     */
+	public void onBackPressed() {
+    	
+    	this.finish();
+    	this.overridePendingTransition(0, 0);
+    }
 }

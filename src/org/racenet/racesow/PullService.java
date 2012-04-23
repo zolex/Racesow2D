@@ -30,6 +30,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -38,10 +39,11 @@ public class PullService extends Service {
 	private NotificationManager manager;
     private Database db;
     private final HttpClient client = new DefaultHttpClient();
-    private final Timer timer = new Timer("PullService", true);
+    private final Timer timer = new Timer();
     private final XMLParser parser = new XMLParser();
     
     public static int SERVICE_NOTIFICATION = 1;
+    public static int UPDATE_NOTIFICATION = 2;
     
     @Override
     public void onCreate() {
@@ -138,6 +140,23 @@ public class PullService extends Service {
 					if (update.changed) {
 						
 						db.addUpdate(update);
+						
+						String message = update.name;
+						int points = update.oldPoints - update.newPoints;
+						if (points == 0) {
+							
+							message += " initial import";
+							
+						} else if (points < 0) {
+							
+							message += " gained " + (-1 * points) + "point" + (points == - 1 ? "" : "s");
+							
+						} else {
+							
+							message += " lost " + (points) + "point" + (points == 1 ? "" : "s");
+						}
+						
+						showUpdateNotification(message);
 					}
 					
 				} catch (ClientProtocolException e) {
@@ -145,7 +164,7 @@ public class PullService extends Service {
 				}
 			}
 			
-		}, 1000, 300000); // after 1 second, then every 5 minutes
+		}, 1000, 30000); // after 1 second, then every 5 minutes
   
         manager.notify(SERVICE_NOTIFICATION, getServiceNotification(getApplicationContext(), this));
     }
@@ -161,7 +180,7 @@ public class PullService extends Service {
     public void onDestroy() {
     	
     	super.onDestroy();
-    	manager.cancel(SERVICE_NOTIFICATION);
+    	manager.cancelAll();
     	this.timer.purge();
     	this.timer.cancel();
     }
@@ -172,15 +191,39 @@ public class PullService extends Service {
 		return null;
 	}
 	
+	/**
+	 * Create the notification that the service is running
+	 * 
+	 * @param Context intentContext
+	 * @param Context pendingContext
+	 * @return Notification
+	 */
 	public static Notification getServiceNotification(Context intentContext, Context pendingContext) {
+		
+		Notification notification = new Notification(R.drawable.ic_launcher, null, System.currentTimeMillis());
+		notification.flags |= Notification.FLAG_ONGOING_EVENT;
+		notification.flags |= Notification.FLAG_NO_CLEAR;
+		Intent notifyIntent = new Intent(intentContext, Racesow.class);
+		notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		PendingIntent contentIntent = PendingIntent.getActivity(pendingContext, 0, notifyIntent, 0);
+		notification.setLatestEventInfo(pendingContext, "Racesow", null, contentIntent);
+		return notification;
+	}
+	
+	/**
+	 * Create a notification for an update
+	 * 
+	 */
+	public void showUpdateNotification(String text) {
     	
+		SharedPreferences prefs = PullService.this.getSharedPreferences("racesow", Context.MODE_PRIVATE);
     	Notification notification = new Notification(R.drawable.ic_launcher, null, System.currentTimeMillis());
-        notification.flags |= Notification.FLAG_ONGOING_EVENT;
-        notification.flags |= Notification.FLAG_NO_CLEAR;
-        Intent notifyIntent = new Intent(intentContext, Racesow.class);
-        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent contentIntent = PendingIntent.getActivity(pendingContext, 0, notifyIntent, 0);
-        notification.setLatestEventInfo(pendingContext, "Racesow", "Notification Service", contentIntent);
-        return notification;
+    	notification.sound = Uri.parse(prefs.getString("sound", "content://settings/system/notification_sound"));
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        Intent notifyIntent = new Intent(this, OnlineUpdates.class);
+        notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifyIntent, 0);
+        notification.setLatestEventInfo(this, "Racesow", text, contentIntent);
+        this.manager.notify(UPDATE_NOTIFICATION, notification);
     }
 }

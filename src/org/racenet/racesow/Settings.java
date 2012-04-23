@@ -1,8 +1,10 @@
 package org.racenet.racesow;
 
+import org.racenet.helpers.IsServiceRunning;
 import org.racenet.racesow.R;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -89,6 +91,28 @@ public class Settings extends PreferenceActivity {
 				} else if (pref.getKey().equals("demos")) {
 					
 					prefs.edit().putBoolean("demos", value.toString().equals("true") ? true : false).commit();
+					
+				} else if (pref.getKey().equals("notification")) {
+					
+					prefs.edit().putString("notification", value.toString()).commit();
+					
+				} else if (pref.getKey().equals("icon")) {
+					
+					NotificationManager manager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+					if (value.toString() == "true") {
+						
+						if (IsServiceRunning.check("org.racenet.racesow.PullService", getApplicationContext())) {
+							
+					        manager.notify(PullService.SERVICE_NOTIFICATION,
+					        	PullService.getServiceNotification(getApplicationContext(), Settings.this));
+						}
+						
+					} else {
+						
+						manager.cancel(PullService.SERVICE_NOTIFICATION);
+					}
+					
+					prefs.edit().putBoolean("icon", value.toString().equals("true") ? true : false).commit();
 				}
 				
 				return true;
@@ -103,6 +127,8 @@ public class Settings extends PreferenceActivity {
 		findPreference("blur").setOnPreferenceChangeListener(listener);
 		findPreference("ups").setOnPreferenceChangeListener(listener);
 		findPreference("fps").setOnPreferenceChangeListener(listener);
+		findPreference("icon").setOnPreferenceChangeListener(listener);
+		findPreference("notification").setOnPreferenceChangeListener(listener);
     }
     
     /**

@@ -275,7 +275,7 @@ public final class Database extends SQLiteOpenHelper {
 		List<UpdateItem> updates = new ArrayList<UpdateItem>();
 		SQLiteDatabase database = getReadableDatabase();
 	    Cursor c = database.query("updates", new String[]{"id", "name", "old_points", "new_points", "old_position", "new_position", "created_at"},
-	        null, null, null, null, null);
+	        null, null, null, null, "created_at DESC");
 	    
 	    if (c.getCount() > 0) {
 	    	
@@ -317,6 +317,7 @@ public final class Database extends SQLiteOpenHelper {
 						    	player.position = c3.getInt(2);
 						    	
 						    	map.beatenBy.add(player);
+						    	c3.moveToNext();
 						    }
 				    	}
 				    	
@@ -333,7 +334,7 @@ public final class Database extends SQLiteOpenHelper {
 	    }
 	    
 	    c.close();
-	    //database.close();
+	    database.close();
 	    
 	    return updates;
 	}

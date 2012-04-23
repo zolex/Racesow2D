@@ -38,7 +38,7 @@ public class Racesow extends GLGame {
 		
 		super.onCreate(savedInstanceState);
 
-		deleteDatabase("org.racenet.racesow.db");
+		//deleteDatabase("org.racenet.racesow.db");
 		
 		Database.setupInstance(this.getApplicationContext());
 		FileIO.getInstance().createDirectory("racesow" + File.separator + "downloads");

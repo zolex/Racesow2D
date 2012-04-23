@@ -24,7 +24,7 @@ public final class Database extends SQLiteOpenHelper {
 	 * Should be increased which each change to the
 	 * database structure
 	 */
-	private static final int DATABASE_VERSION = 4;
+	private static final int DATABASE_VERSION = 5;
 	
 	/**
 	 * Filename for the SQLite database
@@ -95,6 +95,7 @@ public final class Database extends SQLiteOpenHelper {
         }
         
         db.execSQL("CREATE TABLE races(id INTEGER, map TEXT, player TEXT, time REAL, created_at TEXT, PRIMARY KEY(id))");
+        db.execSQL("CREATE TABLE maps(name TEXT, position INTEGER, PRIMARY KEY(name))");
     }
 
 	@Override
@@ -110,6 +111,11 @@ public final class Database extends SQLiteOpenHelper {
 		if (oldVersion < 4 && newVersion >= 4) {
 			
 			db.execSQL("ALTER TABLE races ADD player TEXT");
+		}
+		
+		if (oldVersion < 5 && newVersion >= 5) {
+			
+			db.execSQL("CREATE TABLE maps(name TEXT, position INTEGER, PRIMARY KEY(name))");
 		}
 	}
 	
@@ -147,6 +153,61 @@ public final class Database extends SQLiteOpenHelper {
 	    c.close();
 	    database.close();
 	    return value;
+	}
+	
+	/**
+	 * Get the remembered online position for a map
+	 * 
+	 * @param String map
+	 * @return int
+	 */
+	public int getPosition(String map) {
+		
+		SQLiteDatabase database = getReadableDatabase();
+	    Cursor c = database.query("maps", new String[]{"position"},
+	        "name = '"+ map + "'", null, null, null, null);
+	    
+	    if (c.getCount() == 1) {
+	    	
+	    	c.moveToFirst();
+	    	return c.getInt(0);
+	    	
+	    } else {
+	    	
+	    	return 0;
+	    }
+	}
+	
+	/**
+	 * Insert or update the online player position on a map
+	 * 
+	 * @param String map
+	 * @param int position
+	 */
+	public void updatePosition(String map, int position) {
+		
+		SQLiteDatabase database = getReadableDatabase();
+	    Cursor c = database.query("maps", new String[]{"position"},
+	        "name = '"+ map + "'", null, null, null, null);
+	    
+	    SQLiteDatabase database2 = getWritableDatabase();
+	    ContentValues values = new ContentValues();
+	    values.put("position", position);
+	    
+	    if (c.getCount() == 0) {
+	    	
+	    	
+	    	values.put("name", map);
+	    	database2.insert("maps", "", values);
+	    	
+	    } else {
+	    	
+	    	database2.update("maps", values, "map = '"+ map + "'", null);
+	    }
+	    
+	    c.close();
+	    database.close();
+	    database2.close();
 	}
 	
 	/**

@@ -19,8 +19,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/banner"
-        android:background="#312843"
-        android:cacheColorHint="#312843"
+        android:background="#000000"
+        android:cacheColorHint="#000000"
         android:fadeScrollbars="true" >
     </ExpandableListView>
 

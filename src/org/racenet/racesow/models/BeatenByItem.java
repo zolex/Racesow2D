@@ -4,5 +4,4 @@ public class BeatenByItem {
 
 	public String name;
 	public float time;
-	public int position;
 }

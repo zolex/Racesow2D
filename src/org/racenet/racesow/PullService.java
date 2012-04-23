@@ -14,10 +14,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.racenet.framework.XMLParser;
-import org.racenet.helpers.MapList;
 import org.racenet.racesow.models.BeatenByItem;
 import org.racenet.racesow.models.Database;
-import org.racenet.racesow.models.MapItem;
 import org.racenet.racesow.models.MapUpdateItem;
 import org.racenet.racesow.models.UpdateItem;
 import org.w3c.dom.Element;
@@ -32,8 +30,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.IBinder;
-import android.util.Log;
-
 public class PullService extends Service {
 	
 	private NotificationManager manager;
@@ -65,17 +61,9 @@ public class PullService extends Service {
 					SharedPreferences prefs = PullService.this.getSharedPreferences("racesow", Context.MODE_PRIVATE);
 					String playerName = prefs.getString("name", "player");
 					postValues.add(new BasicNameValuePair("name", playerName));
-					List<MapItem> mapList = MapList.load(getAssets());
-					int length = mapList.size();
-					for (int i = 0; i < length; i++) {
-						
-						MapItem map = mapList.get(i);
-						int position = db.getMapPosition(playerName, map.filename);
-						postValues.add(new BasicNameValuePair("positions["+ map.filename +"]", String.valueOf(position)));
-					}
+					postValues.add(new BasicNameValuePair("updated", db.getLastUpdated(playerName)));
 
 					UpdateItem update = new UpdateItem();
-					
 					update.oldPosition = db.getPosition(playerName);
 					update.oldPoints = db.getPoints(playerName);
 					update.newPosition = 0;
@@ -88,6 +76,7 @@ public class PullService extends Service {
 						
 						Element updateRoot = (Element)updateN.item(0);
 						update.name = parser.getValue(updateRoot, "name");
+						update.updated = parser.getValue(updateRoot, "updated");
 						update.newPosition = Integer.parseInt(parser.getValue(updateRoot, "position"));
 						update.newPoints = Integer.parseInt(parser.getValue(updateRoot, "points"));
 						if (update.newPoints != update.oldPoints || update.newPosition != update.oldPosition) {
@@ -107,32 +96,29 @@ public class PullService extends Service {
 								
 								Element map = (Element)maps.item(i);
 								mapUpdate.name = parser.getValue(map, "name");
-								mapUpdate.newPosition = Integer.parseInt(parser.getValue(map, "position"));
-								mapUpdate.oldPosition = db.getMapPosition(playerName, mapUpdate.name);
-
-								if (mapUpdate.newPosition != mapUpdate.oldPosition) {
+								
+								NodeList beatenByN = map.getElementsByTagName("beaten_by");
+								if (beatenByN.getLength() == 1) {
 									
-									mapUpdate.changed = true;
-									update.changed = true;
-									
-									NodeList beatenByN = map.getElementsByTagName("beaten_by");
-									if (beatenByN.getLength() == 1) {
+									NodeList beatenBy = ((Element)beatenByN.item(0)).getElementsByTagName("player");
+									int numBeatenBy = beatenBy.getLength();
+									if (numBeatenBy > 0) {
 										
-										NodeList beatenBy = ((Element)beatenByN.item(0)).getElementsByTagName("player");
-										int numBeatenBy = beatenBy.getLength();
-										for (int j = 0; j < numBeatenBy; j++) {
-											
-											BeatenByItem beatenByItem = new BeatenByItem();
-											Element player = (Element)beatenBy.item(j);
-											beatenByItem.name = parser.getValue(player, "name");
-											beatenByItem.time = Float.parseFloat(parser.getValue(player, "time"));
-											beatenByItem.position = Integer.parseInt(parser.getValue(player, "position"));
-											mapUpdate.beatenBy.add(beatenByItem);
-										}
+										mapUpdate.changed = true;
+										update.changed = true;
 									}
 									
-									update.maps.add(mapUpdate);
+									for (int j = 0; j < numBeatenBy; j++) {
+										
+										BeatenByItem beatenByItem = new BeatenByItem();
+										Element player = (Element)beatenBy.item(j);
+										beatenByItem.name = parser.getValue(player, "name");
+										beatenByItem.time = Float.parseFloat(parser.getValue(player, "time"));
+										mapUpdate.beatenBy.add(beatenByItem);
+									}
 								}
+								
+								update.maps.add(mapUpdate);
 							}
 						}
 					}
@@ -218,7 +204,7 @@ public class PullService extends Service {
     	
 		SharedPreferences prefs = PullService.this.getSharedPreferences("racesow", Context.MODE_PRIVATE);
     	Notification notification = new Notification(R.drawable.ic_launcher, null, System.currentTimeMillis());
-    	notification.sound = Uri.parse(prefs.getString("sound", "content://settings/system/notification_sound"));
+    	notification.sound = Uri.parse(prefs.getString("notification", "content://settings/system/notification_sound"));
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         Intent notifyIntent = new Intent(this, OnlineUpdates.class);
         notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

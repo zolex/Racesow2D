@@ -8,6 +8,7 @@ public class UpdateItem {
 	public int id;
 	public String name;
 	public boolean changed = false;
+	public String updated;
 	public int oldPoints;
 	public int newPoints;
 	public int oldPosition;

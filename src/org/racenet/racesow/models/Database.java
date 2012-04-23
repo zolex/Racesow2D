@@ -99,7 +99,7 @@ public final class Database extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE races(id INTEGER, map TEXT, player TEXT, time REAL, created_at TEXT, PRIMARY KEY(id))");
         db.execSQL("CREATE TABLE maps(name TEXT, position INTEGER, PRIMARY KEY(name))");
         db.execSQL("CREATE TABLE updates(id INTEGER, old_points INTEGER, new_points INTEGER, old_position INTEGER, new_position INTEGER, created_at TEXT, done INTEGER, PRIMARY KEY(id))");
-		db.execSQL("CREATE TABLE update_maps(update_id INTEGER, name TEXT, old_position INTEGER, new_position INTEGER)");
+		db.execSQL("CREATE TABLE update_maps(id INTEGER, update_id INTEGER, name TEXT, old_position INTEGER, new_position INTEGER, PRIMARY KEY(id))");
 		db.execSQL("CREATE TABLE update_beaten_by(update_maps_id INTEGER, name TEXT, time REAL, position INTEGER)");
     }
 
@@ -137,7 +137,7 @@ public final class Database extends SQLiteOpenHelper {
 	        }
 			
 			db.execSQL("CREATE TABLE updates(id INTEGER, old_points INTEGER, new_points INTEGER, old_position INTEGER, new_position INTEGER, created_at TEXT, done INTEGER, PRIMARY KEY(id))");
-			db.execSQL("CREATE TABLE update_maps(update_id INTEGER, name TEXT, old_position INTEGER, new_position INTEGER)");
+			db.execSQL("CREATE TABLE update_maps(id INTEGER, update_id INTEGER, name TEXT, old_position INTEGER, new_position INTEGER, PRIMARY KEY(id))");
 			db.execSQL("CREATE TABLE update_beaten_by(update_maps_id INTEGER, name TEXT, time REAL, position INTEGER)");
 		}
 	}
@@ -297,7 +297,6 @@ public final class Database extends SQLiteOpenHelper {
 	    	c.moveToFirst();
 		    while (!c.isAfterLast()) {
 	    	
-		    	
 		    	UpdateItem update = new UpdateItem();
 		    	update.id = c.getInt(0);
 		    	update.oldPoints = c.getInt(1);
@@ -305,10 +304,49 @@ public final class Database extends SQLiteOpenHelper {
 		    	update.oldPosition = c.getInt(3);
 		    	update.newPosition = c.getInt(4);
 		    	update.createdAt = c.getString(5);
-		    	updates.add(update);
+		    	
+		    	Cursor c2 = database.query("update_maps", new String[]{"id", "name", "old_position", "new_position"},
+		    		"update_id = '"+ update.id +"'", null, null, null, null);
+		    	if (c2.getCount() > 0) {
+			    	
+			    	c2.moveToFirst();
+				    while (!c2.isAfterLast()) {
+				 
+				    	MapUpdateItem map = new MapUpdateItem();
+				    	map.id = c2.getInt(0);
+				    	map.name = c2.getString(1);
+				    	map.oldPosition = c2.getInt(2);
+				    	map.newPosition = c2.getInt(3);
+				    	
+				    	Cursor c3 = database.query("update_beaten_by", new String[]{"name", "time", "position"},
+				    		"update_maps_id = '"+ map.id +"'", null, null, null, null);
+				    	if (c3.getCount() > 0) {
+					    	
+					    	c3.moveToFirst();
+						    while (!c3.isAfterLast()) {
+						    	
+						    	BeatenByItem player = new BeatenByItem();
+						    	player.name = c3.getString(0);
+						    	player.time = c3.getInt(1);
+						    	player.position = c3.getInt(2);
+						    	
+						    	map.beatenBy.add(player);
+						    }
+				    	}
+				    	
+				    	c3.close();				    	
+				    	update.maps.add(map);
+				    	c2.moveToNext();
+				    }
+		    	}
+		    	
+		    	c2.close();
+		    	updates.add(update);		    	
 		    	c.moveToNext();
 		    }
 	    }
+	    
+	    c.close();
 	    
 	    return updates;
 	}

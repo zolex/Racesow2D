@@ -145,7 +145,7 @@ public class PullService extends Service {
 						int points = update.oldPoints - update.newPoints;
 						if (points == 0) {
 							
-							message += " initial import";
+							message += " your time was beaten";
 							
 						} else if (points < 0) {
 							

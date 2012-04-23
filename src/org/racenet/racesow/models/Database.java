@@ -266,6 +266,45 @@ public final class Database extends SQLiteOpenHelper {
 	}
 	
 	/**
+	 * Delete all updates
+	 */
+	public void deleteAllUpdates() {
+		
+		SQLiteDatabase database = getWritableDatabase();
+		database.delete("update_beaten_by", null, null);
+		database.delete("update_maps", null, null);
+    	database.delete("updates", null, null);
+		database.close();
+	}
+	
+	/**
+	 * Delete a complete update
+	 * 
+	 * @param int id
+	 */
+	public void deleteUpdate(int id) {
+		
+		SQLiteDatabase database = getWritableDatabase();
+		Cursor c = database.query("update_maps", new String[]{"id"},
+	    	"update_id = '"+ id +"'", null, null, null, null);
+		
+    	if (c.getCount() > 0) {
+	    	
+	    	c.moveToFirst();
+		    while (!c.isAfterLast()) {
+		    	
+		    	database.delete("update_beaten_by", "update_maps_id = " + c.getInt(0), null);
+		    	c.moveToNext();
+		    }
+    	}
+    	
+    	c.close();
+    	database.delete("update_maps", "update_id = " + id, null);
+    	database.delete("updates", "id = " + id, null);
+    	database.close();
+	}
+	
+	/**
 	 * Get a list of all updates
 	 * 
 	 * @return List<UpdateItem>
@@ -313,7 +352,7 @@ public final class Database extends SQLiteOpenHelper {
 						    	
 						    	BeatenByItem player = new BeatenByItem();
 						    	player.name = c3.getString(0);
-						    	player.time = c3.getInt(1);
+						    	player.time = c3.getFloat(1);
 						    	player.position = c3.getInt(2);
 						    	
 						    	map.beatenBy.add(player);

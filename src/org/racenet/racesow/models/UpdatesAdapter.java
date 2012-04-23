@@ -2,6 +2,8 @@ package org.racenet.racesow.models;
 
 import java.util.List;
 
+import org.racenet.racesow.R;
+
 import android.content.Context;
 import android.util.Log;
 import android.view.Gravity;
@@ -9,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -42,9 +46,7 @@ public class UpdatesAdapter extends BaseExpandableListAdapter {
 	 */
     public Object getChild(int groupPosition, int childPosition) {
     	
-    	UpdateItem update = updates.get(groupPosition);
-    	return "to be implemented...";
-    			
+    	return ((UpdateItem)this.updates.get(groupPosition)).maps.get(childPosition);
     }
 
     /**
@@ -56,7 +58,7 @@ public class UpdatesAdapter extends BaseExpandableListAdapter {
      */
     public long getChildId(int groupPosition, int childPosition) {
     	
-        return 1;
+    	return ((UpdateItem)this.updates.get(groupPosition)).maps.get(childPosition).id;
     }
 
     /**
@@ -67,7 +69,7 @@ public class UpdatesAdapter extends BaseExpandableListAdapter {
      */
     public int getChildrenCount(int groupPosition) {
     	
-        return 1;
+        return ((UpdateItem)this.updates.get(groupPosition)).maps.size();
     }
     
     /**
@@ -82,13 +84,30 @@ public class UpdatesAdapter extends BaseExpandableListAdapter {
      */
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
     	
-    	AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(lp);
-        textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-        textView.setPadding(10, 10, 10, 10);
-        textView.setText(getChild(groupPosition, childPosition).toString());
-        return textView;
+    	if (convertView == null) {
+    		
+    		convertView = (RelativeLayout)View.inflate(context, R.layout.updatemapitem, null);
+    	}
+
+    	MapUpdateItem map = (MapUpdateItem)getChild(groupPosition, childPosition);
+    	TextView name = (TextView)convertView.findViewById(R.id.name);
+    	TextView info = (TextView)convertView.findViewById(R.id.info);
+    	
+    	String infoText = "";
+    	int length = map.beatenBy.size();
+    	for (int i = 0; i < length; i++) {
+    		
+    		BeatenByItem beatenBy = map.beatenBy.get(i);
+    		infoText += beatenBy.name + " made " + String.valueOf(beatenBy.time);
+    		if (i < length - 1) {
+    			
+    			infoText += "\n";
+    		}
+    	}
+    	
+    	info.setText(infoText);
+        name.setText("Your time was beaten on " + map.name.replace(".xml", ""));
+        return convertView;
     }
 
     /**
@@ -134,18 +153,17 @@ public class UpdatesAdapter extends BaseExpandableListAdapter {
      */
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
     	
-    	AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, 96);
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(lp);
-        textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-        textView.setPadding(64, 0, 0, 0);
+    	if (convertView == null) {
+    		
+    		convertView = (RelativeLayout)View.inflate(context, R.layout.updateitem, null);
+    	}
         
         UpdateItem update = (UpdateItem)getGroup(groupPosition);
         int points = update.oldPoints - update.newPoints;
         String pointsDiff;
         if (points == 0) {
         	
-        	pointsDiff = " initial update";
+        	pointsDiff = " time was beaten";
         	
         } else if (points < 0) {
         	
@@ -156,8 +174,9 @@ public class UpdatesAdapter extends BaseExpandableListAdapter {
         	pointsDiff = " lost " + points + " point" + (points == 1 ? "" : "s");
         }
         
-        textView.setText(update.createdAt + " / " + update.name + pointsDiff);
-        return textView;
+        TextView title = (TextView)convertView.findViewById(R.id.title);
+        title.setText(update.createdAt + " / " + update.name + pointsDiff);
+        return convertView;
     }
 
     /**

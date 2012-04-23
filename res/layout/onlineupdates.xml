@@ -3,7 +3,7 @@
     android:id="@+id/layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#312843" >
+    android:background="#000000" >
 
     <org.racenet.framework.AspectRatioImageView android:layout_centerHorizontal="true"
 	    android:src="@drawable/racesow"

@@ -6,6 +6,7 @@ import org.racenet.framework.Audio;
 import org.racenet.framework.FileIO;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.Screen;
+import org.racenet.helpers.IsServiceRunning;
 import org.racenet.racesow.GameScreen.GameState;
 import org.racenet.racesow.models.Database;
 
@@ -18,6 +19,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Process;
+import android.util.Log;
 
 /**
  * Main Activity of the game
@@ -55,7 +57,16 @@ public class Racesow extends GLGame {
 					    ((Activity)Racesow.this).startActivity(i);
 					}
 				})
-		        .show();
+	           .show();
+			
+		} else {
+			
+			Log.d("DEBUG", "check service");
+			if (!IsServiceRunning.check("org.racenet.racesow.PullService", getApplicationContext())) {
+        		
+				Log.d("DEBUG", "not running");
+        		startService(new Intent(Racesow.this, PullService.class));
+        	}
 		}
 	}
 	

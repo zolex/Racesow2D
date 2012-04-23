@@ -34,12 +34,12 @@ import org.w3c.dom.NodeList;
  */
 public class Map {
 	
-	private List<GameObject> ground = new ArrayList<GameObject>();
-	private List<GameObject> walls = new ArrayList<GameObject>();
-	private List<GameObject> highlights = new ArrayList<GameObject>();
-	private List<GameObject> front = new ArrayList<GameObject>();
-	public List<GameObject> items = new ArrayList<GameObject>();
-	public List<GameObject> pickedUpItems = new ArrayList<GameObject>();
+	private GameObject[] ground;
+	private GameObject[] walls;
+	private GameObject[] highlights;
+	private GameObject[] front;
+	public GameObject[] items;
+	public boolean[] pickedUpItems;
 	public List<AnimatedBlock> animations = new ArrayList<AnimatedBlock>();
 	private HashMap<String, GLTexture> textures = new HashMap<String, GLTexture>();
 	private TexturedShape[] decals = new TexturedShape[MAX_DECALS];
@@ -206,6 +206,11 @@ public class Map {
 			}
 		}
 		
+		int numGround = 0;
+		int numWalls = 0;
+		int numHighlights = 0;
+		int numFronts = 0;
+		
 		// calculate the width and height of the map
 		float worldWidth = 0;
 		float worldHeight = 0;
@@ -225,11 +230,62 @@ public class Map {
 				
 				worldHeight = blockMaxY;
 			}
+			
+			// count number of blocks
+			String level = parser.getValue(block, "level");
+			if (level.equals("ground")) {
+				
+				numGround++;
+				
+			} else if (level.equals("wall")) {
+				
+				numWalls++;
+				
+			} else if (level.equals("highlight")) {
+				
+				numHighlights++;
+				
+			} else if (level.equals("front")) {
+				
+				numFronts++;
+			}
 		}
+		
+		NodeList triangles = parser.doc.getElementsByTagName("tri");
+		int numTriangles = triangles.getLength();
+		for (int i = 0; i < numTriangles; i++) {
+			
+			String level = parser.getValue((Element)triangles.item(i), "level");
+			
+			// count number of triangles
+			if (level.equals("ground")) {
+
+				numGround++;
+				
+			} else if (level.equals("wall")) {
+				
+				numWalls++;
+				
+			} else if (level.equals("highlight")) {
+				
+				numHighlights++;
+				
+			} else if (level.equals("front")) {
+				
+				numFronts++;
+			}
+		}
+		
+		this.ground = new GameObject[numGround];
+		this.walls = new GameObject[numWalls];
+		this.highlights = new GameObject[numHighlights];
+		this.front = new GameObject[numFronts];
 		
 		// parse the items like plasma and rocket from the map
 		NodeList items = parser.doc.getElementsByTagName("item");
 		int numItems = items.getLength();
+		this.items = new GameObject[numItems];
+		this.pickedUpItems = new boolean[numItems];
 		for (int i = 0; i < numItems; i++) {
 			
 			Element xmlItem = (Element)items.item(i);
@@ -253,7 +309,7 @@ public class Map {
 				new Vector2(itemX + 3, itemY + 3)
 			);
 
-			this.items.add(item);
+			this.items[i] = item;
 		}
 		
 		// parse the starttimer from the map
@@ -416,6 +472,11 @@ public class Map {
 			);
 		}
 		
+		int currentGround = 0;
+		int currentWall = 0;
+		int currentHighlight = 0;
+		int currentFront = 0;
+		
 		// parse the blocks from the map
 		for (int i = 0; i < numblocks; i++) {
 			
@@ -577,25 +638,23 @@ public class Map {
 			String level = parser.getValue(xmlblock, "level");
 			if (level.equals("ground")) {
 				
-				this.addGround(block);
+				this.ground[currentGround++] = block;
 				
 			} else if (level.equals("wall")) {
 				
-				this.addWall(block);
+				this.walls[currentWall++] = block;
 			
 			} else if (level.equals("highlight") && this.gfxHighlights) {
 				
-				this.highlights.add(block);
+				this.highlights[currentHighlight++] = block;
 				
 			} else if (level.equals("front") && this.gfxHighlights) {
 				
-				this.front.add(block);
+				this.front[currentFront++] = block;
 			}
 		}
 
 		// parse the triangles from the map
-		NodeList triangles = parser.doc.getElementsByTagName("tri");
-		int numTriangles = triangles.getLength();
 		for (int i = 0; i < numTriangles; i++) {
 			
 			Element xmlblock = (Element)triangles.item(i);
@@ -714,19 +773,19 @@ public class Map {
 			String level = parser.getValue(xmlblock, "level");
 			if (level.equals("ground")) {
 				
-				this.addGround(block);
+				this.ground[currentGround++] = block;
 				
 			} else if (level.equals("wall")) {
 				
-				this.addWall(block);
+				this.walls[currentWall++] = block;
 			
 			} else if (level.equals("hightlight") && this.gfxHighlights) {
 				
-				this.highlights.add(block);
+				this.highlights[currentHighlight++] = block;
 				
 			} else if (level.equals("front") && this.gfxHighlights) {
 				
-				this.front.add(block);
+				this.front[currentFront++] = block;
 			}
 		}
 		
@@ -828,16 +887,10 @@ public class Map {
 			this.background2.reloadTexture();
 		}
 		
-		int length = this.items.size();
+		int length = this.items.length;
 		for (int i = 0; i < length; i++) {
 			
-			this.items.get(i).reloadTexture();
-		}
-		
-		length = this.pickedUpItems.size();
-		for (int i = 0; i < length; i++) {
-			
-			this.pickedUpItems.get(i).reloadTexture();
+			this.items[i].reloadTexture();
 		}
 		
 		Set<String> textures = this.textures.keySet();
@@ -950,30 +1003,30 @@ public class Map {
 			this.background2.dispose();
 		}
 		
-		length = this.ground.size();
+		length = this.ground.length;
 		for (int i = 0; i < length; i++) {
 			
-			this.ground.get(i).dispose();
+			this.ground[i].dispose();
 		}
 		
-		length = this.walls.size();
+		length = this.walls.length;
 		for (int i = 0; i < length; i++) {
 			
-			this.walls.get(i).dispose();
+			this.walls[i].dispose();
 		}
 		
 		if (this.gfxHighlights) {
 			
-			length = this.front.size();
+			length = this.front.length;
 			for (int i = 0; i < length; i++) {
 				
-				this.front.get(i).dispose();
+				this.front[i].dispose();
 			}
 			
-			length = this.highlights.size();
+			length = this.highlights.length;
 			for (int i = 0; i < length; i++) {
 				
-				this.highlights.get(i).dispose();
+				this.highlights[i].dispose();
 			}
 		}
 		
@@ -984,26 +1037,6 @@ public class Map {
 				this.decals[i].dispose();
 			}
 		}
-	}
-	
-	/**
-	 * Add a ground object to the map
-	 * 
-	 * @param TexturedShape block
-	 */
-	public void addGround(GameObject block) {
-		
-		this.ground.add(block);
-	}
-	
-	/**
-	 * Add a wall object to the map
-	 * 
-	 * @param TexturedShape block
-	 */
-	public void addWall(GameObject block) {
-		
-		this.walls.add(block);
 	}
 	
 	/**
@@ -1038,11 +1071,11 @@ public class Map {
 		
 		final float x = o.vertices[0].x;
 		final float y = o.vertices[0].y;
-		final int length = this.ground.size();
+		final int length = this.ground.length;
 		if (length == 0) return null;
 		for (int i = 0; i < length; i++) {
 			
-			GameObject part = this.ground.get(i);
+			GameObject part = this.ground[i];
 			if (y >= part.vertices[0].y && x >= part.vertices[0].x && x <= part.vertices[0].x + part.width) {
 				
 				float height = part.vertices[0].y + part.height;
@@ -1060,7 +1093,7 @@ public class Map {
 			
 		} else {
 		
-			return this.ground.get(highestPart);
+			return this.ground[highestPart];
 		}
 	}
 	
@@ -1076,10 +1109,10 @@ public class Map {
 		final float oLeft = o.vertices[0].x;
 		final float oRight = oLeft + o.width;
 		List<GameObject> colliders = new ArrayList<GameObject>();
-		final int length = this.ground.size();
+		final int length = this.ground.length;
 		for (int i = 0; i < length; i++) {
 						
-			GameObject ground = this.ground.get(i);			
+			GameObject ground = this.ground[i];	
 			if (oRight >= ground.vertices[0].x && oLeft <= ground.vertices[0].x + ground.width) {
 				
 				colliders.add(ground);
@@ -1100,10 +1133,10 @@ public class Map {
 		
 		final float x = o.vertices[0].x;
 		List<GameObject> colliders = new ArrayList<GameObject>();
-		final int length = this.walls.size();
+		final int length = this.walls.length;
 		for (int i = 0; i < length; i++) {
 			
-			GameObject wall = this.walls.get(i);
+			GameObject wall = this.walls[i];
 			if (wall.vertices[0].x > x) break;
 			
 			if (x >= wall.vertices[0].x && x <= wall.vertices[0].x + wall.width) {
@@ -1150,10 +1183,10 @@ public class Map {
 			this.background2.draw();
 		}
 		
-		int length = this.walls.size();
+		int length = this.walls.length;
 		for (int i = 0; i < length; i++) {
 			
-			GameObject shape = this.walls.get(i);
+			GameObject shape = this.walls[i];
 			final float x = shape.vertices[0].x;
 			final float rightEdge = x + shape.width;
 			if ((x >= fromX && x <= toX) || // left side of shape in screen
@@ -1164,10 +1197,10 @@ public class Map {
 			}
 		}
 		
-		length = this.ground.size();
+		length = this.ground.length;
 		for (int i = 0; i < length; i++) {
 			
-			GameObject shape = this.ground.get(i);
+			GameObject shape = this.ground[i];
 			final float x = shape.vertices[0].x;
 			final float rightEdge = x + shape.width;
 			if ((x >= fromX && x <= toX) || // left side of shape in screen
@@ -1180,10 +1213,10 @@ public class Map {
 		
 		if (this.gfxHighlights) {
 			
-			length = this.highlights.size();
+			length = this.highlights.length;
 			for (int i = 0; i < length; i++) {
 				
-				GameObject shape = this.highlights.get(i);
+				GameObject shape = this.highlights[i];
 				final float x = shape.vertices[0].x;
 				final float rightEdge = x + shape.width;
 				if ((x >= fromX && x <= toX) || // left side of shape in screen
@@ -1195,10 +1228,13 @@ public class Map {
 			}
 		}
 		
-		length = this.items.size();
+		length = this.items.length;
 		for (int i = 0; i < length; i++) {
 			
-			this.items.get(i).draw();
+			if (!this.pickedUpItems[i]) {
+			
+				this.items[i].draw();
+			}
 		}
 		
 		for (int i = 0; i < MAX_DECALS; i++) {
@@ -1217,10 +1253,10 @@ public class Map {
 			float fromX = this.camera.position.x - this.camera.frustumWidth / 2;
 			float toX = this.camera.position.x + this.camera.frustumWidth / 2;
 			
-			int length = this.front.size();
+			int length = this.front.length;
 			for (int i = 0; i < length; i++) {
 				
-				GameObject shape = this.front.get(i);
+				GameObject shape = this.front[i];
 				float x = shape.vertices[0].x;
 				if ((x >= fromX && x <= toX) || // left side of shape in screen
 					(x <= fromX && x + shape.width >= fromX) || // right side of shape in screen
@@ -1260,11 +1296,10 @@ public class Map {
 		this.raceFinished = false;
 		this.inFinishSequence = false;
 		
-		int length = this.pickedUpItems.size();
+		int length = this.pickedUpItems.length;
 		for (int i = 0; i < length; i++) {
 			
-			GameObject item = this.pickedUpItems.get(i);
-			this.items.add(item);
+			this.pickedUpItems[i] = false;
 		}
 		
 		length = this.funcs.size();
@@ -1272,8 +1307,6 @@ public class Map {
 			
 			this.funcs.get(i).finished = false;
 		}
-		
-		this.pickedUpItems.clear();
 		
 		player.reset(this.playerX, this.playerY);
 		camera.setPosition(player.vertices[0].x + 20, this.camera.frustumHeight / 2);

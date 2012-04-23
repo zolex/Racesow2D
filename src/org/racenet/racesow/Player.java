@@ -943,10 +943,15 @@ public class Player extends AnimatedBlock {
 		}
 		
 		// see if the player picks up an item (plasmagun, rocketlauncher)
-		length = this.map.items.size();
+		length = this.map.items.length;
 		for (int i = 0; i < length; i++) {
 			
-			GameObject item = this.map.items.get(i);
+			if (this.map.pickedUpItems[i]) {
+				
+				continue;
+			}
+			
+			GameObject item = this.map.items[i];
 			float playerX = this.getPhysicalPosition().x;
 			float playerY = this.getPhysicalPosition().y;
 			float itemX = item.vertices[0].x;
@@ -996,8 +1001,7 @@ public class Player extends AnimatedBlock {
 				);
 				
 				camera.addHud(hudItem);
-				this.map.items.remove(item);
-				this.map.pickedUpItems.add(item);
+				this.map.pickedUpItems[i] = true;
 				if (this.attachedItem != null) {
 					
 					synchronized (this) {

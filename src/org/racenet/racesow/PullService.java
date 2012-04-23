@@ -1,13 +1,11 @@
 package org.racenet.racesow;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -16,13 +14,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.racenet.framework.XMLParser;
-import org.racenet.helpers.InputStreamToString;
 import org.racenet.helpers.MapList;
 import org.racenet.racesow.models.BeatenByItem;
 import org.racenet.racesow.models.Database;
 import org.racenet.racesow.models.MapItem;
 import org.racenet.racesow.models.MapUpdateItem;
-import org.racenet.racesow.models.PlayerItem;
 import org.racenet.racesow.models.UpdateItem;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -35,8 +31,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.util.Log;
-
 
 public class PullService extends Service {
 	
@@ -65,20 +59,21 @@ public class PullService extends Service {
 					HttpPost post = new HttpPost("http://racesow2d.warsow-race.net/updates.php");
 					List<NameValuePair> postValues = new ArrayList<NameValuePair>();
 					SharedPreferences prefs = PullService.this.getSharedPreferences("racesow", Context.MODE_PRIVATE);
-					postValues.add(new BasicNameValuePair("name", prefs.getString("name", "player")));
+					String playerName = prefs.getString("name", "player");
+					postValues.add(new BasicNameValuePair("name", playerName));
 					List<MapItem> mapList = MapList.load(getAssets());
 					int length = mapList.size();
 					for (int i = 0; i < length; i++) {
 						
 						MapItem map = mapList.get(i);
-						int position = db.getPosition(map.filename);
+						int position = db.getMapPosition(playerName, map.filename);
 						postValues.add(new BasicNameValuePair("positions["+ map.filename +"]", String.valueOf(position)));
 					}
 
 					UpdateItem update = new UpdateItem();
 					
-					update.oldPosition = Integer.parseInt(db.get("position"));
-					update.oldPoints = Integer.parseInt(db.get("points"));
+					update.oldPosition = db.getPosition(playerName);
+					update.oldPoints = db.getPoints(playerName);
 					update.newPosition = 0;
 					update.newPoints = 0;
 					
@@ -88,6 +83,7 @@ public class PullService extends Service {
 					if (updateN.getLength() == 1) {
 						
 						Element updateRoot = (Element)updateN.item(0);
+						update.name = parser.getValue(updateRoot, "name");
 						update.newPosition = Integer.parseInt(parser.getValue(updateRoot, "position"));
 						update.newPoints = Integer.parseInt(parser.getValue(updateRoot, "points"));
 						if (update.newPoints != update.oldPoints) {

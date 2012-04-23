@@ -98,8 +98,7 @@ public class UpdatesAdapter extends BaseExpandableListAdapter {
      */
     public Object getGroup(int groupPosition) {
     	
-    	UpdateItem update = updates.get(groupPosition);
-        return update.createdAt;
+    	return updates.get(groupPosition);
     }
 
     /**
@@ -139,7 +138,24 @@ public class UpdatesAdapter extends BaseExpandableListAdapter {
         textView.setLayoutParams(lp);
         textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
         textView.setPadding(64, 0, 0, 0);
-        textView.setText(getGroup(groupPosition).toString());
+        
+        UpdateItem update = (UpdateItem)getGroup(groupPosition);
+        int points = update.oldPoints - update.newPoints;
+        String pointsDiff;
+        if (points == 0) {
+        	
+        	pointsDiff = " initial update";
+        	
+        } else if (points < 0) {
+        	
+        	pointsDiff = " gained " + (-1 * points) + " point" + (points == -1 ? "" : "s");
+        	
+        } else {
+        	
+        	pointsDiff = " lost " + points + " point" + (points == 1 ? "" : "s");
+        }
+        
+        textView.setText(update.createdAt + " / " + update.name + pointsDiff);
         return textView;
     }
 

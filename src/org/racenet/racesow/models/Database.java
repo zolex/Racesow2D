@@ -78,27 +78,10 @@ public final class Database extends SQLiteOpenHelper {
      */
     public void onCreate(SQLiteDatabase db) {
     	
-        db.execSQL("CREATE TABLE settings(key TEXT, value TEXT, PRIMARY KEY(key))");
-        
-        for (String key: new String[]{"points", "position"}) {
-        
-	        ContentValues values = new ContentValues();
-	        values.put("key", key);
-	        if (key.equals("points")) {
-	        	
-	        	values.put("value", "0");
-	        	
-	        } else if(key.equals("position")) {
-	        	
-	        	values.put("value", "0");
-	        }
-	        
-	        db.insert("settings", null, values);
-        }
-        
         db.execSQL("CREATE TABLE races(id INTEGER, map TEXT, player TEXT, time REAL, created_at TEXT, PRIMARY KEY(id))");
         db.execSQL("CREATE TABLE maps(name TEXT, position INTEGER, PRIMARY KEY(name))");
-        db.execSQL("CREATE TABLE updates(id INTEGER, old_points INTEGER, new_points INTEGER, old_position INTEGER, new_position INTEGER, created_at TEXT, done INTEGER, PRIMARY KEY(id))");
+        db.execSQL("CREATE TABLE players(name TEXT, player TEXT, position INTEGER, points INTEGER, PRIMARY KEY(name))");
+        db.execSQL("CREATE TABLE updates(id INTEGER, name TEXT, old_points INTEGER, new_points INTEGER, old_position INTEGER, new_position INTEGER, created_at TEXT, done INTEGER, PRIMARY KEY(id))");
 		db.execSQL("CREATE TABLE update_maps(id INTEGER, update_id INTEGER, name TEXT, old_position INTEGER, new_position INTEGER, PRIMARY KEY(id))");
 		db.execSQL("CREATE TABLE update_beaten_by(update_maps_id INTEGER, name TEXT, time REAL, position INTEGER)");
     }
@@ -128,15 +111,9 @@ public final class Database extends SQLiteOpenHelper {
 		// add points and position to settings
 		if (oldVersion < 6 && newVersion >= 6) {
 			
-			for (String key: new String[]{"points", "position"}) {
-		        
-		        ContentValues values = new ContentValues();
-		        values.put("key", key);
-		        values.put("value", "0");
-		        db.insert("settings", null, values);
-	        }
-			
-			db.execSQL("CREATE TABLE updates(id INTEGER, old_points INTEGER, new_points INTEGER, old_position INTEGER, new_position INTEGER, created_at TEXT, done INTEGER, PRIMARY KEY(id))");
+			db.execSQL("ALTER TABLE maps ADD player TEXT");
+			db.execSQL("CREATE TABLE players(name TEXT, position INTEGER, points INTEGER, PRIMARY KEY(name))");
+			db.execSQL("CREATE TABLE updates(id INTEGER, name TEXT, old_points INTEGER, new_points INTEGER, old_position INTEGER, new_position INTEGER, created_at TEXT, done INTEGER, PRIMARY KEY(id))");
 			db.execSQL("CREATE TABLE update_maps(id INTEGER, update_id INTEGER, name TEXT, old_position INTEGER, new_position INTEGER, PRIMARY KEY(id))");
 			db.execSQL("CREATE TABLE update_beaten_by(update_maps_id INTEGER, name TEXT, time REAL, position INTEGER)");
 		}
@@ -193,15 +170,30 @@ public final class Database extends SQLiteOpenHelper {
 			
 			database.beginTransaction();
 			
-			ContentValues posValues = new ContentValues();
-			posValues.put("value", String.valueOf(update.newPosition));
-	    	database.update("settings", posValues, "key = 'position'", null);
+			// update the player's online points and position
+			Cursor c = database.query("players", new String[]{"name"},
+				"name = '"+ update.name + "'", null, null, null, null);
+
+		    SQLiteDatabase database2 = getWritableDatabase();
+		    ContentValues playerValues = new ContentValues();
+		    playerValues.put("points", update.newPoints);
+		    playerValues.put("position", update.newPosition);
+		    
+		    if (c.getCount() == 0) {
+		    	
+		    	
+		    	playerValues.put("name", update.name);
+		    	database2.insert("players", "", playerValues);
+		    	
+		    } else {
+		    	
+		    	database2.update("players", playerValues, "name = '"+ update.name + "'", null);
+		    }
+		    c.close();
 			
-	    	ContentValues poiValues = new ContentValues();
-	    	poiValues.put("value", String.valueOf(update.newPoints));
-	    	database.update("settings", poiValues, "key = 'points'", null);
-			
+		    // add the update itsself
 		    ContentValues values = new ContentValues();
+		    values.put("name", update.name);
 		    values.put("old_points", update.oldPoints);
 		    values.put("new_points", update.newPoints);
 		    values.put("old_position", update.oldPosition);
@@ -215,6 +207,7 @@ public final class Database extends SQLiteOpenHelper {
 	    		throw new Exception("failed inserting 'updates'");
 	    	}
 	    	
+	    	// add maps from the update
 	    	int numMaps = update.maps.size();
 	    	for (int i = 0; i < numMaps; i++) {
 	    		
@@ -225,13 +218,14 @@ public final class Database extends SQLiteOpenHelper {
 	    		mapValues.put("old_position", mapUpdate.oldPosition);
 	    		mapValues.put("new_position", mapUpdate.newPosition);
 	    		
-	    		Cursor c = database.query("maps", new String[]{"position"},
+	    		// update the online map position
+	    		Cursor c2 = database.query("maps", new String[]{"position"},
     		        "name = '"+ mapUpdate.name + "'", null, null, null, null);
     		    
     		    ContentValues mapValues2 = new ContentValues();
     		    mapValues2.put("position", mapUpdate.newPosition);
     		    
-    		    if (c.getCount() == 0) {
+    		    if (c2.getCount() == 0) {
     		    	
     		    	values.put("name", mapUpdate.name);
     		    	database.insert("maps", "", mapValues2);
@@ -240,7 +234,7 @@ public final class Database extends SQLiteOpenHelper {
     		    	
     		    	database.update("maps", mapValues2, "map = '"+ mapUpdate.name + "'", null);
     		    }
-    		    c.close();
+    		    c2.close();
 	    		
 	    		long mapUpdateID = database.insert("update_maps", "", mapValues);
 	    		if (mapUpdateID == -1) {
@@ -248,6 +242,7 @@ public final class Database extends SQLiteOpenHelper {
 	    			throw new Exception("failed inserting 'update_maps'");
 	    		}
 	    		
+	    		// add the beaten_bys from the update
 	    		int numBeatenBy = mapUpdate.beatenBy.size();
 	    		for (int j = 0; j < numBeatenBy; j++) {
 	    			
@@ -289,7 +284,7 @@ public final class Database extends SQLiteOpenHelper {
 		
 		List<UpdateItem> updates = new ArrayList<UpdateItem>();
 		SQLiteDatabase database = getReadableDatabase();
-	    Cursor c = database.query("updates", new String[]{"id", "old_points", "new_points", "old_position", "new_position", "created_at"},
+	    Cursor c = database.query("updates", new String[]{"id", "name", "old_points", "new_points", "old_position", "new_position", "created_at"},
 	        null, null, null, null, null);
 	    
 	    if (c.getCount() > 0) {
@@ -299,11 +294,12 @@ public final class Database extends SQLiteOpenHelper {
 	    	
 		    	UpdateItem update = new UpdateItem();
 		    	update.id = c.getInt(0);
-		    	update.oldPoints = c.getInt(1);
-		    	update.newPoints = c.getInt(2);
-		    	update.oldPosition = c.getInt(3);
-		    	update.newPosition = c.getInt(4);
-		    	update.createdAt = c.getString(5);
+		    	update.name = c.getString(1);
+		    	update.oldPoints = c.getInt(2);
+		    	update.newPoints = c.getInt(3);
+		    	update.oldPosition = c.getInt(4);
+		    	update.newPosition = c.getInt(5);
+		    	update.createdAt = c.getString(6);
 		    	
 		    	Cursor c2 = database.query("update_maps", new String[]{"id", "name", "old_position", "new_position"},
 		    		"update_id = '"+ update.id +"'", null, null, null, null);
@@ -347,6 +343,7 @@ public final class Database extends SQLiteOpenHelper {
 	    }
 	    
 	    c.close();
+	    database.close();
 	    
 	    return updates;
 	}
@@ -362,15 +359,20 @@ public final class Database extends SQLiteOpenHelper {
 	    Cursor c = database.query("updates", new String[]{"COUNT(id)"},
 	        null, null, null, null, null);
 	    
+	    int count;
 	    if (c.getCount() == 1) {
 	    	
 	    	c.moveToFirst();
-	    	return c.getInt(0);
+	    	count = c.getInt(0);
 	    	
 	    } else {
 	    	
-	    	return 0;
+	    	count = 0;
 	    }
+	    
+	    c.close();
+	    database.close();
+	    return count;
 	}
 	
 	/**
@@ -379,21 +381,82 @@ public final class Database extends SQLiteOpenHelper {
 	 * @param String map
 	 * @return int
 	 */
-	public int getPosition(String map) {
+	public int getMapPosition(String player, String map) {
 		
 		SQLiteDatabase database = getReadableDatabase();
-	    Cursor c = database.query("maps", new String[]{"position"},
-	        "name = '"+ map + "'", null, null, null, null);
+		Cursor c = database.query("maps", new String[]{"position"},
+				"name = '"+ map + "' AND player = '"+ player +"'", null, null, null, null);
+		
+		int position;
+		if (c.getCount() == 1) {
+			
+			c.moveToFirst();
+			position = c.getInt(0);
+			
+		} else {
+			
+			position = 0;
+		}
+		
+		c.close();
+		database.close();
+		return position;
+	}
+	
+	/**
+	 * Get the remembered online position
+	 * 
+	 * @param String player
+	 * @return int
+	 */
+	public int getPosition(String player) {
+		
+		SQLiteDatabase database = getReadableDatabase();
+		Cursor c = database.query("players", new String[]{"position"},
+				"name = '"+ player +"'", null, null, null, null);
+		
+		int position;
+		if (c.getCount() == 1) {
+			
+			c.moveToFirst();
+			position = c.getInt(0);
+			
+		} else {
+			
+			position = 0;
+		}
+		
+		c.close();
+		database.close();
+		return position;
+	}
+	
+	/**
+	 * Get the remembered online points
+	 * 
+	 * @param String player
+	 * @return int
+	 */
+	public int getPoints(String player) {
+		
+		SQLiteDatabase database = getReadableDatabase();
+	    Cursor c = database.query("players", new String[]{"points"},
+	        "name = '"+ player +"'", null, null, null, null);
 	    
+	    int points;
 	    if (c.getCount() == 1) {
 	    	
 	    	c.moveToFirst();
-	    	return c.getInt(0);
+	    	points = c.getInt(0);
 	    	
 	    } else {
 	    	
-	    	return 0;
+	    	points = 0;
 	    }
+	    
+	    c.close();
+	    database.close();
+	    return points;
 	}
 	
 	/**
@@ -402,30 +465,29 @@ public final class Database extends SQLiteOpenHelper {
 	 * @param String map
 	 * @param int position
 	 */
-	public void updatePosition(String map, int position) {
+	public void updateMapPosition(String player, String map, int position) {
 		
-		SQLiteDatabase database = getReadableDatabase();
+		SQLiteDatabase database = getWritableDatabase();
 	    Cursor c = database.query("maps", new String[]{"position"},
-	        "name = '"+ map + "'", null, null, null, null);
+	        "name = '"+ map + "' AND player = '"+ player +"'", null, null, null, null);
 	    
-	    SQLiteDatabase database2 = getWritableDatabase();
 	    ContentValues values = new ContentValues();
 	    values.put("position", position);
 	    
 	    if (c.getCount() == 0) {
 	    	
 	    	
+	    	values.put("player", player);
 	    	values.put("name", map);
-	    	database2.insert("maps", "", values);
+	    	database.insert("maps", "", values);
 	    	
 	    } else {
 	    	
-	    	database2.update("maps", values, "map = '"+ map + "'", null);
+	    	database.update("maps", values, "name = '"+ map + "' AND player = '"+ player +"'", null);
 	    }
 	    
 	    c.close();
 	    database.close();
-	    database2.close();
 	}
 	
 	/**

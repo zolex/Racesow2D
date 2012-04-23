@@ -147,7 +147,7 @@ public class PullService extends Service {
 				}
 			}
 			
-		}, 1000, 10000);
+		}, 1000, 300000);
   
         manager.notify(SERVICE_NOTIFICATION, getServiceNotification(getApplicationContext(), this));
     }

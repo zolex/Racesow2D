@@ -59,6 +59,12 @@ public class OnlineScores extends ListActivity {
 						i2.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 						startActivityForResult(i2, 0);
 						break;
+						
+					case 2:
+						Intent i3 = new Intent(OnlineScores.this, OnlineUpdates.class);
+						i3.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+						startActivityForResult(i3, 0);
+						break;
 				}
 			}
         });

@@ -35,6 +35,7 @@ public class ScoresMenuAdapter implements ListAdapter {
 		this.context = context;
 		this.items.add("Player ranking");
 		this.items.add("Map list");
+		this.items.add("Updates");
 	}
 
 	/**

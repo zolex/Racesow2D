@@ -281,6 +281,61 @@ public final class Database extends SQLiteOpenHelper {
 	}
 	
 	/**
+	 * Get a list of all updates
+	 * 
+	 * @return List<UpdateItem>
+	 */
+	public List<UpdateItem> getAllUpdates() {
+		
+		List<UpdateItem> updates = new ArrayList<UpdateItem>();
+		SQLiteDatabase database = getReadableDatabase();
+	    Cursor c = database.query("updates", new String[]{"id", "old_points", "new_points", "old_position", "new_position", "created_at"},
+	        null, null, null, null, null);
+	    
+	    if (c.getCount() > 0) {
+	    	
+	    	c.moveToFirst();
+		    while (!c.isAfterLast()) {
+	    	
+		    	
+		    	UpdateItem update = new UpdateItem();
+		    	update.id = c.getInt(0);
+		    	update.oldPoints = c.getInt(1);
+		    	update.newPoints = c.getInt(2);
+		    	update.oldPosition = c.getInt(3);
+		    	update.newPosition = c.getInt(4);
+		    	update.createdAt = c.getString(5);
+		    	updates.add(update);
+		    	c.moveToNext();
+		    }
+	    }
+	    
+	    return updates;
+	}
+	
+	/**
+	 * Count the number of available updates
+	 * 
+	 * @return int
+	 */
+	public int countUpdates() {
+		
+		SQLiteDatabase database = getReadableDatabase();
+	    Cursor c = database.query("updates", new String[]{"COUNT(id)"},
+	        null, null, null, null, null);
+	    
+	    if (c.getCount() == 1) {
+	    	
+	    	c.moveToFirst();
+	    	return c.getInt(0);
+	    	
+	    } else {
+	    	
+	    	return 0;
+	    }
+	}
+	
+	/**
 	 * Get the remembered online position for a map
 	 * 
 	 * @param String map

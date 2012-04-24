@@ -83,8 +83,16 @@ public class PullService extends Service {
 						Element updateRoot = (Element)updateN.item(0);
 						update.name = parser.getValue(updateRoot, "name");
 						update.updated = parser.getValue(updateRoot, "updated");
-						update.newPosition = Integer.parseInt(parser.getValue(updateRoot, "position"));
-						update.newPoints = Integer.parseInt(parser.getValue(updateRoot, "points"));
+						try {
+							update.newPosition = Integer.parseInt(parser.getValue(updateRoot, "position"));
+						} catch (NumberFormatException e) {
+							update.newPosition = 0;
+						}
+						try {
+							update.newPoints = Integer.parseInt(parser.getValue(updateRoot, "points"));
+						} catch (NumberFormatException e) {
+							update.newPoints = 0;
+						}
 						if (update.newPoints != update.oldPoints || update.newPosition != update.oldPosition) {
 							
 							update.changed = true;
@@ -119,7 +127,11 @@ public class PullService extends Service {
 										BeatenByItem beatenByItem = new BeatenByItem();
 										Element player = (Element)beatenBy.item(j);
 										beatenByItem.name = parser.getValue(player, "name");
-										beatenByItem.time = Float.parseFloat(parser.getValue(player, "time"));
+										try {
+											beatenByItem.time = Float.parseFloat(parser.getValue(player, "time"));
+										} catch (NumberFormatException e) {
+											continue;
+										}
 										mapUpdate.beatenBy.add(beatenByItem);
 									}
 								}

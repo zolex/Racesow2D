@@ -1,5 +1,7 @@
 package org.racenet.framework;
 
+import java.util.Random;
+
 import android.opengl.GLES10;
 
 public class Particles extends TexturedBlock {
@@ -66,6 +68,8 @@ public class Particles extends TexturedBlock {
 			return;
 		}
 		
+		Random color = new Random();
+		
 		this.texture.bind();
 		this.glVertices.bind();
 		final int length = this.positions.length;
@@ -73,9 +77,12 @@ public class Particles extends TexturedBlock {
 		
 			GLES10.glPushMatrix();
 			GLES10.glTranslatef(this.positions[i].x, this.positions[i].y, 0);
+			GLES10.glColor4f(color.nextFloat(), color.nextFloat(), color.nextFloat(), 1);
 			this.glVertices.draw(GLES10.GL_TRIANGLES, 0, 6);
 			GLES10.glPopMatrix();
 		}
+		
+		GLES10.glColor4f(1, 1, 1, 1);
 		
 		this.glVertices.unbind();
 	}

@@ -1,7 +1,16 @@
 package org.racenet.racesow;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.racenet.helpers.InputStreamToString;
 import org.racenet.helpers.IsServiceRunning;
 import org.racenet.racesow.R;
+import org.racenet.racesow.threads.XMLLoaderTask;
 
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -17,6 +26,7 @@ import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
+import android.util.Log;
 
 /**
  * Activity to handle the game settings
@@ -24,7 +34,7 @@ import android.preference.PreferenceActivity;
  * @author soh#zolex
  *
  */
-public class Settings extends PreferenceActivity {
+public class Settings extends PreferenceActivity implements XMLCallback {
 	
 	WakeLock wakeLock;
 	
@@ -79,6 +89,12 @@ public class Settings extends PreferenceActivity {
 						
 					} else {
 					
+						String url = "http://racesow2d.warsow-race.net/accounts.php";
+						List<NameValuePair> values = new ArrayList<NameValuePair>();
+						values.add(new BasicNameValuePair("action", "check"));
+						values.add(new BasicNameValuePair("name", nick));
+						new XMLLoaderTask(Settings.this).execute(url, values);
+						
 						prefs.edit().putString("name", nick).commit();
 					}
 				
@@ -193,4 +209,17 @@ public class Settings extends PreferenceActivity {
 	    	this.overridePendingTransition(0, 0);
     	}
     }
+
+    /**
+     * Called by XMLLoaderTask
+     * 
+     * @param InputStream xmlStream
+     */
+	public void xmlCallback(InputStream xmlStream) {
+				
+		try {
+			Log.d("DEBUG", "XML: " + InputStreamToString.convert(xmlStream));
+		} catch (IOException e) {
+		}
+	}
 }

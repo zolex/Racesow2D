@@ -30,6 +30,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.IBinder;
+
+/**
+ * Service to pull the Rracesow2D-API for updates
+ * 
+ * @author soh#zolex
+ *
+ */
 public class PullService extends Service {
 	
 	private NotificationManager manager;
@@ -42,6 +49,9 @@ public class PullService extends Service {
     public static int UPDATE_NOTIFICATION = 2;
     
     @Override
+    /**
+     * Create all required dependencies
+     */
     public void onCreate() {
     	
     	super.onCreate();
@@ -49,6 +59,7 @@ public class PullService extends Service {
         Database.setupInstance(getApplicationContext());
         this.db = Database.getInstance();
         
+        // start the frequent API pull
         this.timer.schedule(new TimerTask() {
 			
 			@Override
@@ -63,6 +74,7 @@ public class PullService extends Service {
 					postValues.add(new BasicNameValuePair("name", playerName));
 					postValues.add(new BasicNameValuePair("updated", db.getLastUpdated(playerName)));
 
+					// initialize a new update item
 					UpdateItem update = new UpdateItem();
 					update.oldPosition = db.getPosition(playerName);
 					update.oldPoints = db.getPoints(playerName);
@@ -71,12 +83,15 @@ public class PullService extends Service {
 					
 					post.setEntity(new UrlEncodedFormEntity(postValues));
 					parser.read(client.execute(post).getEntity().getContent());
+					
+					// in case of an XML error element sent by the API
 					NodeList errorN = parser.doc.getElementsByTagName("error");
 					if (errorN.getLength() > 0) {
 						
 						throw new Exception(parser.getNodeValue((Element)errorN.item(0)));
 					}
 					
+					// parse the update
 					NodeList updateN = parser.doc.getElementsByTagName("update");
 					if (updateN.getLength() == 1) {
 						
@@ -98,6 +113,7 @@ public class PullService extends Service {
 							update.changed = true;
 						}
 						
+						// parse update maps
 						NodeList mapsN = updateRoot.getElementsByTagName("maps");
 						if (mapsN.getLength() == 1) {
 							
@@ -111,6 +127,7 @@ public class PullService extends Service {
 								Element map = (Element)maps.item(i);
 								mapUpdate.name = parser.getValue(map, "name");
 								
+								// parse maps beaten-by
 								NodeList beatenByN = map.getElementsByTagName("beaten_by");
 								if (beatenByN.getLength() == 1) {
 									
@@ -141,23 +158,26 @@ public class PullService extends Service {
 						}
 					}
 					
+					// if something has changed since the last
+					// update insert it to the database and
+					// show a notification
 					if (update.changed) {
 						
 						db.addUpdate(update);
 						
 						String message = update.name;
-						int points = update.oldPoints - update.newPoints;
-						if (points == 0) {
+						int diffPoints = update.oldPoints - update.newPoints;
+						if (diffPoints == 0) {
 							
 							message += " your time was beaten";
 							
-						} else if (points < 0) {
+						} else if (diffPoints < 0) {
 							
-							message += " gained " + (-1 * points) + "point" + (points == - 1 ? "" : "s");
+							message += " gained " + (-1 * diffPoints) + "point" + (diffPoints == - 1 ? "" : "s");
 							
 						} else {
 							
-							message += " lost " + (points) + "point" + (points == 1 ? "" : "s");
+							message += " lost " + (diffPoints) + "point" + (diffPoints == 1 ? "" : "s");
 						}
 						
 						showUpdateNotification(message);

@@ -71,6 +71,12 @@ public class PullService extends Service {
 					
 					post.setEntity(new UrlEncodedFormEntity(postValues));
 					parser.read(client.execute(post).getEntity().getContent());
+					NodeList errorN = parser.doc.getElementsByTagName("error");
+					if (errorN.getLength() > 0) {
+						
+						throw new Exception(parser.getNodeValue((Element)errorN.item(0)));
+					}
+					
 					NodeList updateN = parser.doc.getElementsByTagName("update");
 					if (updateN.getLength() == 1) {
 						
@@ -147,6 +153,7 @@ public class PullService extends Service {
 					
 				} catch (ClientProtocolException e) {
 				} catch (IOException e) {
+				} catch (Exception e) {
 				}
 			}
 			

@@ -9,6 +9,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import android.app.AlertDialog;
+import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,7 +27,7 @@ import android.widget.AbsListView.OnScrollListener;
  * @author soh#zolex
  *
  */
-public class OnlinePlayers extends XMLListActivity {
+public class OnlinePlayers extends ListActivity implements XMLCallback {
 
 	WakeLock wakeLock;
 	OnlinePlayersAdapter adapter;

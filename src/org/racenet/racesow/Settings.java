@@ -76,9 +76,11 @@ public class Settings extends PreferenceActivity {
 					if (nick.equals("")) {
 				
 						askEditNick();
-					}
+						
+					} else {
 					
-					prefs.edit().putString("name", nick).commit();
+						prefs.edit().putString("name", nick).commit();
+					}
 				
 				} else if (pref.getKey().equals("ups")) {
 					

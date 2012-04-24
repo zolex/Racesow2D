@@ -2,9 +2,7 @@ package org.racenet.racesow;
 
 import java.io.InputStream;
 
-import android.app.ListActivity;
-
-public abstract class XMLListActivity extends ListActivity {
+public interface XMLCallback {
 
 	public abstract void xmlCallback(InputStream xmlStream);
 }

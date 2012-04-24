@@ -9,6 +9,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import android.app.AlertDialog;
+import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,7 +29,7 @@ import android.widget.AdapterView.OnItemClickListener;
  * @author soh#zolex
  *
  */
-public class OnlineMaps extends XMLListActivity {
+public class OnlineMaps extends ListActivity implements XMLCallback {
 
 	WakeLock wakeLock;
 	OnlineMapsAdapter adapter;

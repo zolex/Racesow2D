@@ -17,6 +17,8 @@ import org.racenet.racesow.models.Database;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import android.util.Log;
+
 /**
  * Thread to submit a race score to the web api
  * 
@@ -81,7 +83,7 @@ public class SubmitScoreThread extends Thread {
 			NodeList errorN = parser.doc.getElementsByTagName("error");
 			if (errorN.getLength() > 0) {
 				
-				throw new Exception(parser.getNodeValue((Element)errorN.item(0)));
+				throw new Exception("Server error: " + parser.getNodeValue((Element)errorN.item(0)));
 			}
 			
 			// parse the update
@@ -119,7 +121,7 @@ public class SubmitScoreThread extends Thread {
 	    	
 	    } catch (Exception e) {
 	    	
-	    	
+	    	Log.d("DEBUG", "Error: " + e.getMessage());
 	    }
 	}
 }

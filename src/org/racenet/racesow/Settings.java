@@ -22,6 +22,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
@@ -30,9 +31,12 @@ import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -295,7 +299,7 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 		if (sessions.getLength() == 1) {
 			
 			try {
-
+				
 				Element session = (Element)sessions.item(0);
 				int result = Integer.parseInt(parser.getValue(session, "result"));
 				if (result == 1) {
@@ -306,6 +310,27 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 				} else {
 					
 					showLogin("Your session has expired.\nPlease enter your Password.");
+				}
+				
+			} catch (NumberFormatException e) {}
+			return;
+		}
+		
+		// registration response
+		NodeList registrations = parser.doc.getElementsByTagName("registration");
+		if (registrations.getLength() == 1) {
+			
+			try {
+
+				Element registration = (Element)registrations.item(0);
+				int result = Integer.parseInt(parser.getValue(registration, "result"));
+				if (result == 1) {
+					
+					Database.getInstance().setSession(nick, parser.getValue(registration, "session"));
+					
+				} else {
+					
+					showError("Could not complete registration.");
 				}
 				
 			} catch (NumberFormatException e) {}
@@ -400,14 +425,106 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 	private void showRegistration() {
 		
 		ScrollView layout = (ScrollView)View.inflate(Settings.this, R.layout.registration, null);
-		TextView name = (TextView)layout.findViewById(R.id.field_name);
+		final EditText name = (EditText)layout.findViewById(R.id.field_name);
+		final TextView nameError = (TextView)layout.findViewById(R.id.name_error);
+		final EditText email = (EditText)layout.findViewById(R.id.field_email);
+		final TextView emailError = (TextView)layout.findViewById(R.id.email_error);
+		final EditText pass = (EditText)layout.findViewById(R.id.field_pass);
+		final EditText conf = (EditText)layout.findViewById(R.id.field_conf);
+		final TextView confError = (TextView)layout.findViewById(R.id.conf_error);
+		
 		name.setText(nick);
 		
-		new AlertDialog.Builder(Settings.this)
+		final AlertDialog register = new AlertDialog.Builder(Settings.this)
 			.setView(layout)
 			.setCancelable(true)
-	        .setNeutralButton("Register", null)
-	        .show();
+			.setPositiveButton("Register", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					
+					String url = "http://racesow2d.warsow-race.net/accounts.php";
+					List<NameValuePair> values = new ArrayList<NameValuePair>();
+					values.add(new BasicNameValuePair("action", "register"));
+					values.add(new BasicNameValuePair("name", name.getText().toString().trim()));
+					values.add(new BasicNameValuePair("pass", pass.getText().toString().trim()));
+					values.add(new BasicNameValuePair("email", email.getText().toString().trim()));
+					final XMLLoaderTask task = new XMLLoaderTask(Settings.this);
+					task.execute(url, values);
+					
+					pd = new ProgressDialog(Settings.this);
+					pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+					pd.setMessage("Loggin in...");
+					pd.setCancelable(true);
+					pd.setOnCancelListener(new OnCancelListener() {
+						
+						public void onCancel(DialogInterface dialog) {
+
+							task.cancel(true);
+							editNick();
+						}
+					});
+					pd.show();
+				}
+			})
+	        .setNegativeButton("Cancel", null)
+	        .create();
+		
+		TextWatcher listener = new TextWatcher() {
+			
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				
+				String nick = name.getText().toString().trim();
+				String password = pass.getText().toString().trim();
+				String confirmation = conf.getText().toString().trim();
+				boolean valid = true;
+				if (name.length() > 0) {
+					
+					nameError.setVisibility(View.GONE);
+					
+				} else {
+					
+					valid = false;
+					nameError.setVisibility(View.VISIBLE);
+				}
+				
+				if (email.getText().toString().matches(".+@.+\\..+")) {
+					
+					emailError.setVisibility(View.GONE);
+					
+				} else {
+					
+					valid = false;
+					emailError.setVisibility(View.VISIBLE);
+				}
+				
+				if (password.length() > 0 && password.equals(confirmation)) {
+					
+					confError.setVisibility(View.GONE);
+					
+				} else {
+					
+					valid = false;
+					confError.setVisibility(View.VISIBLE);
+				}
+				
+				Button button = register.getButton(AlertDialog.BUTTON_POSITIVE);
+				if (button != null) {
+				
+					button.setEnabled(valid);
+				}
+			}
+			
+			public void beforeTextChanged(CharSequence s, int start, int count,int after) {}
+			public void afterTextChanged(Editable s) {}
+		};
+		
+		name.addTextChangedListener(listener);
+		email.addTextChangedListener(listener);
+		pass.addTextChangedListener(listener);
+		conf.addTextChangedListener(listener);
+		
+		register.show();
+		register.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
 	}
 	
 	/**
@@ -433,7 +550,8 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 					values.add(new BasicNameValuePair("action", "auth"));
 					values.add(new BasicNameValuePair("name", nick));
 					values.add(new BasicNameValuePair("pass", password));
-					new XMLLoaderTask(Settings.this).execute(url, values);
+					final XMLLoaderTask task = new XMLLoaderTask(Settings.this);
+					task.execute(url, values);
 					
 					pd = new ProgressDialog(Settings.this);
 					pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -443,6 +561,7 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 						
 						public void onCancel(DialogInterface dialog) {
 
+							task.cancel(true);
 							editNick();
 						}
 					});

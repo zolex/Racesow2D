@@ -67,11 +67,17 @@ public class PullService extends Service {
 				
 				try {
 					
+					SharedPreferences prefs = PullService.this.getSharedPreferences("racesow", Context.MODE_PRIVATE);
+					String playerName = prefs.getString("name", "");
+					if (playerName.equals("")) {
+						
+						return;
+					}
+					
 					HttpPost post = new HttpPost("http://racesow2d.warsow-race.net/updates.php");
 					List<NameValuePair> postValues = new ArrayList<NameValuePair>();
-					SharedPreferences prefs = PullService.this.getSharedPreferences("racesow", Context.MODE_PRIVATE);
-					String playerName = prefs.getString("name", "player");
 					postValues.add(new BasicNameValuePair("name", playerName));
+					postValues.add(new BasicNameValuePair("session", db.getSession(playerName)));
 					postValues.add(new BasicNameValuePair("updated", db.getLastUpdated(playerName)));
 
 					// initialize a new update item
@@ -96,6 +102,13 @@ public class PullService extends Service {
 					if (updateN.getLength() == 1) {
 						
 						Element updateRoot = (Element)updateN.item(0);
+						
+						String session = parser.getValue(updateRoot, "session");
+						if (!session.equals("")) {
+							
+							db.setSession(playerName, session);
+						}
+						
 						update.name = parser.getValue(updateRoot, "name");
 						update.updated = parser.getValue(updateRoot, "updated");
 						try {

@@ -32,7 +32,11 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 /**
  * Activity to handle the game settings
@@ -395,10 +399,14 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 	 */
 	private void showRegistration() {
 		
+		ScrollView layout = (ScrollView)View.inflate(Settings.this, R.layout.registration, null);
+		TextView name = (TextView)layout.findViewById(R.id.field_name);
+		name.setText(nick);
+		
 		new AlertDialog.Builder(Settings.this)
-			.setCancelable(false)
-	        .setMessage("Not yet implemented...")
-	        .setNeutralButton("OK", null)
+			.setView(layout)
+			.setCancelable(true)
+	        .setNeutralButton("Register", null)
 	        .show();
 	}
 	

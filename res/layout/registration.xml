@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:fillViewport="true"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent" 
+	android:scrollbars="vertical" 
+	android:fadeScrollbars="false" >
+   
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" >
+       
+	    <TextView
+	        android:id="@+id/label_name"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="5dp"
+	        android:gravity="left"
+	        android:text="Nickname"
+	        android:textSize="16dp" >
+	    </TextView>
+	    
+	   <EditText 
+	        android:id="@+id/field_name"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@id/label_name"
+	        android:paddingRight="5dp"
+	        android:inputType="text" />
+	    
+	    <TextView
+	        android:id="@+id/label_email"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="5dp"
+	        android:layout_below="@id/field_name"
+	        android:gravity="left"
+	        android:textSize="16dp"
+	        android:text="E-Mail address (if you need to revocer your password)" >
+	    </TextView>
+	    
+	    <EditText 
+	        android:id="@+id/field_email"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@id/label_email"
+	        android:inputType="textEmailAddress"
+	        android:paddingRight="5dp" />
+	    
+	    <TextView
+	        android:id="@+id/label_pass"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="5dp"
+	        android:gravity="left"
+	        android:textSize="16dp"
+	        android:layout_below="@id/field_email"
+	        android:text="Password" >
+	    </TextView>
+	    
+	    <EditText 
+	        android:id="@+id/field_pass"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@id/label_pass"
+	        android:inputType="textPassword"
+	        android:paddingRight="5dp" />
+	    
+	    <TextView
+	        android:id="@+id/label_conf"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="5dp"
+	        android:paddingRight="5dp"
+	        android:gravity="left"
+	        android:textSize="16dp"
+	        android:layout_below="@id/field_pass"
+	        android:text="Password confirmation" >
+	    </TextView>
+	    
+	    <EditText 
+	        android:id="@+id/field_conf"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@id/label_conf"
+	        android:inputType="textPassword"
+	        android:paddingRight="5dp" />
+	</RelativeLayout>
+    
+</ScrollView>

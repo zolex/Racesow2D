@@ -19,15 +19,16 @@ import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
@@ -38,7 +39,6 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -107,7 +107,7 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 					} else {
 					
 						String session = Database.getInstance().getSession(nick);
-						if (session != null) {
+						if (session != null && !session.equals("")) {
 							
 							checkSession(session);
 							
@@ -236,7 +236,7 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 		// not online, just use the nick for now without checking it
 		if (xmlStream == null) {
 			
-			prefs.edit().putString("name", nick).commit();
+			setNickName(nick);
 			return;
 		}
 		
@@ -247,8 +247,18 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 		NodeList errors = parser.doc.getElementsByTagName("error");
 		if (errors.getLength() == 1) {
 			
+			String returnTo = null;
+			if (parser.doc.getElementsByTagName("registration").getLength() == 1) {
+				
+				returnTo = "registration";
+			
+			} else if (parser.doc.getElementsByTagName("recovery").getLength() == 1) {
+				
+				returnTo = "recovery";
+			}
+			
 			String message = parser.getNodeValue(errors.item(0));
-			showError(message);
+			showError(message, returnTo);
 			return;
 		}
 			
@@ -305,7 +315,7 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 				if (result == 1) {
 					
 					Database.getInstance().setSession(nick, parser.getValue(session, "session"));
-					prefs.edit().putString("name", nick).commit();
+					setNickName(nick);
 					
 				} else {
 					
@@ -321,16 +331,53 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 		if (registrations.getLength() == 1) {
 			
 			try {
-
+				
 				Element registration = (Element)registrations.item(0);
 				int result = Integer.parseInt(parser.getValue(registration, "result"));
 				if (result == 1) {
 					
 					Database.getInstance().setSession(nick, parser.getValue(registration, "session"));
+					setNickName(nick);
+					new AlertDialog.Builder(Settings.this)
+						.setCancelable(false)
+						.setMessage("Registration successful.")
+						.setNeutralButton("OK", null)
+						.show();
 					
 				} else {
 					
-					showError("Could not complete registration.");
+					showError("Could not complete registration.", "registration");
+				}
+				
+			} catch (NumberFormatException e) {}
+			return;
+		}
+		
+		// request recovery response
+		NodeList recoveries = parser.doc.getElementsByTagName("recovery");
+		if (recoveries.getLength() == 1) {
+			
+			try {
+
+				Element recovery = (Element)recoveries.item(0);
+				int result = Integer.parseInt(parser.getValue(recovery, "result"));
+				if (result == 1) {
+					
+					new AlertDialog.Builder(Settings.this)
+						.setCancelable(false)
+				        .setMessage("An E-Mail with instructions has been sent to your address.")
+				        .setNeutralButton("OK", new OnClickListener() {
+							
+							public void onClick(DialogInterface dialog, int which) {
+								
+								showPasswordRecovery();
+							}
+						})
+				        .show();
+						
+				} else {
+					
+					showError("E-Mail could not be sent. Please try again.", "recovery");
 				}
 				
 			} catch (NumberFormatException e) {}
@@ -338,17 +385,38 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 		}
 	}
     
+	private void showPasswordRecovery() {
+		
+		
+	}
+	
 	/**
 	 * Show an error message
 	 * 
 	 * @param String message
 	 */
-	private void showError(String message) {
+	private void showError(String message, final String returnTo) {
 		
 		new AlertDialog.Builder(Settings.this)
 			.setCancelable(false)
 	        .setMessage("Error: " + message)
-	        .setNeutralButton("OK", null)
+	        .setNeutralButton("OK", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					
+					if (returnTo != null) {
+						
+						if (returnTo.equals("registration")) {
+							
+							showRegistration();
+						
+						} else if (returnTo.equals("recovery")) {
+							
+							showRequestRecovery();
+						}
+					}
+				}
+			})
 	        .show();
 	}
 	
@@ -366,7 +434,16 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 	        .show();
 		
 		Database.getInstance().setSession(nick, session);
+		setNickName(nick);
+	}
+	
+	public void setNickName(String nick) {
+		
 		prefs.edit().putString("name", nick).commit();
+		if (!IsServiceRunning.check("org.racenet.racesow.PullService", getApplicationContext())) {
+        		
+    		startService(new Intent(getApplicationContext(), PullService.class));
+    	}
 	}
 	
 	/**
@@ -388,6 +465,7 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 				
 				public void onClick(DialogInterface dialog, int which) {
 	
+					((EditTextPreference)findPreference("name")).setText("");
 					editNick();
 				}
 			})
@@ -413,7 +491,7 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 				
 				public void onClick(DialogInterface dialog, int which) {
 					
-					prefs.edit().putString("name", nick).commit();
+					setNickName(nick);
 				}
 			})
 	        .show();
@@ -453,7 +531,7 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 					
 					pd = new ProgressDialog(Settings.this);
 					pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-					pd.setMessage("Loggin in...");
+					pd.setMessage("Registering...");
 					pd.setCancelable(true);
 					pd.setOnCancelListener(new OnCancelListener() {
 						
@@ -477,7 +555,7 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 				String password = pass.getText().toString().trim();
 				String confirmation = conf.getText().toString().trim();
 				boolean valid = true;
-				if (name.length() > 0) {
+				if (nick.length() > 0) {
 					
 					nameError.setVisibility(View.GONE);
 					
@@ -567,7 +645,22 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 					});
 					pd.show();
 				}
-			}).create();
+			})
+			.setNegativeButton("Cancel", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					
+					editNick();
+				}
+			})
+			.setNeutralButton("Forgot password?", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					
+					showRequestRecovery();
+				}
+			})
+			.create();
 		
 		login.setOnCancelListener(new OnCancelListener() {
 			
@@ -579,6 +672,94 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 		
 		login.show();
 	        
+	}
+	
+	/**
+	 * Show the password recovery dialog
+	 */
+	private void showRequestRecovery() {
+		
+		final EditText email = new EditText(Settings.this);
+		email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+		final AlertDialog recovery = new AlertDialog.Builder(Settings.this)
+			.setView(email)
+			.setCancelable(true)
+			.setOnCancelListener(new OnCancelListener() {
+				
+				public void onCancel(DialogInterface dialog) {
+					
+					showLogin("Please enter your password.");
+				}
+			})
+	        .setMessage("Enter your E-Mail addresss to receive a new password.")
+	        .setPositiveButton("OK", new OnClickListener() {
+				
+				public void onClick(DialogInterface arg0, int arg1) {
+					
+					requestRevoceryCode(email.getText().toString().trim());
+				}
+			})
+			.setNegativeButton("Cancel", new OnClickListener() {
+				
+				public void onClick(DialogInterface arg0, int arg1) {
+					
+					showLogin("Please enter your password.");
+				}
+			})
+	        .create();
+
+		email.addTextChangedListener(new TextWatcher() {
+			
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				
+				boolean valid;
+				if (email.getText().toString().trim().matches(".+@.+\\..+")) {
+					
+					valid = true;
+					
+				} else {
+					
+					valid = false;
+				}
+				
+				recovery.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(valid);
+			}
+			
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+			public void afterTextChanged(Editable s) {}
+		});
+		
+		recovery.show();
+		recovery.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+	}
+	
+	/**
+	 * Send a pasword recovery request
+	 * 
+	 * @param String email
+	 */
+	private void requestRevoceryCode(String email) {
+		
+		String url = "http://racesow2d.warsow-race.net/accounts.php";
+		List<NameValuePair> values = new ArrayList<NameValuePair>();
+		values.add(new BasicNameValuePair("action", "recover"));
+		values.add(new BasicNameValuePair("email", email));
+		final XMLLoaderTask task = new XMLLoaderTask(Settings.this);
+		task.execute(url, values);
+		
+		pd = new ProgressDialog(Settings.this);
+		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		pd.setMessage("Requesting recovery code...");
+		pd.setCancelable(true);
+		pd.setOnCancelListener(new OnCancelListener() {
+			
+			public void onCancel(DialogInterface dialog) {
+
+				task.cancel(true);
+				showLogin("Please enter your password.");
+			}
+		});
+		pd.show();
 	}
 	
     /**
@@ -631,7 +812,8 @@ public class Settings extends PreferenceActivity implements XMLCallback {
      */
     public void onBackPressed() {
     	
-    	if (((EditTextPreference)findPreference("name")).getText().trim().equals("")) {
+    	EditTextPreference pref = (EditTextPreference)findPreference("name");
+    	if (pref != null && (pref.getText() == null || pref.getText().trim().equals(""))) {
     	
     		askEditNick();
     		

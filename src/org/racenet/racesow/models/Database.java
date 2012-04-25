@@ -79,7 +79,7 @@ public final class Database extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
     	
         db.execSQL("CREATE TABLE races(id INTEGER, map TEXT, player TEXT, time REAL, created_at TEXT, PRIMARY KEY(id))");
-        db.execSQL("CREATE TABLE players(name TEXT, position INTEGER, points INTEGER, updated TEXT, PRIMARY KEY(name))");
+        db.execSQL("CREATE TABLE players(name TEXT, session TEXT, position INTEGER, points INTEGER, updated TEXT, PRIMARY KEY(name))");
         db.execSQL("CREATE TABLE updates(id INTEGER, name TEXT, old_points INTEGER, new_points INTEGER, old_position INTEGER, new_position INTEGER, created_at TEXT, done INTEGER, PRIMARY KEY(id))");
 		db.execSQL("CREATE TABLE update_maps(id INTEGER, update_id INTEGER, name TEXT, old_position INTEGER, new_position INTEGER, PRIMARY KEY(id))");
 		db.execSQL("CREATE TABLE update_beaten_by(update_maps_id INTEGER, name TEXT, time REAL, position INTEGER)");
@@ -134,6 +134,72 @@ public final class Database extends SQLiteOpenHelper {
 	}
 	
 	/**
+	 * Get the session for teh given player
+	 * 
+	 * @param String name
+	 * @return String
+	 */
+	public String getSession(String name) {
+		
+		SQLiteDatabase database = getReadableDatabase();
+		Cursor c = database.query("players", new String[]{"session"}, "name = '"+ name + "'", null, null, null, null);
+		String session;
+		if (c.getCount() == 1) {
+			
+			c.moveToFirst();
+			session = c.getString(0);
+			
+		} else {
+			
+			session = null;
+		}
+		
+		c.close();
+		database.close();
+		return session;
+	}
+	
+	/**
+	 * Set the session for the given player.
+	 * creates the player if required
+	 * 
+	 * @param String name
+	 * @param String session
+	 */
+	public void setSession(String name, String session) {
+		
+		SQLiteDatabase database = getWritableDatabase();
+		Cursor c = database.query("players", new String[]{"name"}, "name = '"+ name + "'", null, null, null, null);
+		try {
+
+		    ContentValues playerValues = new ContentValues();
+		    playerValues.put("session", session);
+		    
+		    if (c.getCount() == 0) {
+		    	
+		    	playerValues.put("name", name);
+		    	if (-1 == database.insert("players", "", playerValues)) {
+		    		
+		    		throw new Exception("failed inserting player session");
+		    	}
+		    	
+		    } else {
+		    	
+		    	if (1 != database.update("players", playerValues, "name = '"+ name + "'", null)) {
+		    		
+		    		throw new Exception("invalid update player session");
+		    	}
+		    }
+		    
+		} catch (Exception e) {
+			
+		}
+		
+		c.close();
+	    database.close();
+	}
+	
+	/**
 	 * Save a new update to the database
 	 * 
 	 * @param UpdateItem update
@@ -144,14 +210,12 @@ public final class Database extends SQLiteOpenHelper {
     	Date date = new Date();
 		
 		SQLiteDatabase database = getWritableDatabase();
+		Cursor c = database.query("players", new String[]{"name"}, "name = '"+ update.name + "'", null, null, null, null);
 		try {
 			
 			database.beginTransaction();
 			
 			// update the player's online points, position and last updated time
-			Cursor c = database.query("players", new String[]{"name"},
-				"name = '"+ update.name + "'", null, null, null, null);
-
 		    ContentValues playerValues = new ContentValues();
 		    playerValues.put("points", update.newPoints);
 		    playerValues.put("position", update.newPosition);
@@ -229,13 +293,12 @@ public final class Database extends SQLiteOpenHelper {
 	    	
 		} catch (Exception e) {
 			
-			Log.e("DEBUG", "database update exception: " + e.getMessage());
-			
 		} finally {
 			
 			database.endTransaction();
 		}
 		
+		c.close();
 		database.close();
 	}
 	

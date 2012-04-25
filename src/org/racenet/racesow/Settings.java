@@ -1,22 +1,26 @@
 package org.racenet.racesow;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.racenet.helpers.InputStreamToString;
+import org.racenet.framework.XMLParser;
 import org.racenet.helpers.IsServiceRunning;
 import org.racenet.racesow.R;
+import org.racenet.racesow.models.Database;
 import org.racenet.racesow.threads.XMLLoaderTask;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -26,7 +30,9 @@ import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
-import android.util.Log;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
+import android.widget.EditText;
 
 /**
  * Activity to handle the game settings
@@ -37,6 +43,9 @@ import android.util.Log;
 public class Settings extends PreferenceActivity implements XMLCallback {
 	
 	WakeLock wakeLock;
+	String nick;
+	ProgressDialog pd;
+	SharedPreferences prefs;
 	
     @Override
     /**
@@ -52,6 +61,8 @@ public class Settings extends PreferenceActivity implements XMLCallback {
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
     	this.wakeLock.acquire();
         
+    	this.prefs = Settings.this.getSharedPreferences("racesow", Context.MODE_PRIVATE);
+    	
     	if (getIntent().getBooleanExtra("setNick", false)) {
     		
     		editNick();
@@ -61,8 +72,6 @@ public class Settings extends PreferenceActivity implements XMLCallback {
         OnPreferenceChangeListener listener = new OnPreferenceChangeListener() {
 			
 			public boolean onPreferenceChange(Preference pref, Object value) {
-				
-				SharedPreferences prefs = Settings.this.getSharedPreferences("racesow", Context.MODE_PRIVATE);
 				
 				if (pref.getKey().equals("sound")) {
 					
@@ -82,20 +91,22 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 					
 				} else if (pref.getKey().equals("name")) {
 					
-					String nick = value.toString().trim();
+					nick = value.toString().trim();
 					if (nick.equals("")) {
 				
 						askEditNick();
 						
 					} else {
 					
-						String url = "http://racesow2d.warsow-race.net/accounts.php";
-						List<NameValuePair> values = new ArrayList<NameValuePair>();
-						values.add(new BasicNameValuePair("action", "check"));
-						values.add(new BasicNameValuePair("name", nick));
-						new XMLLoaderTask(Settings.this).execute(url, values);
+						String session = Database.getInstance().getSession(nick);
+						if (session != null) {
+							
+							checkSession(session);
+							
+						} else {
 						
-						prefs.edit().putString("name", nick).commit();
+							checkNick();
+						}
 					}
 				
 				} else if (pref.getKey().equals("ups")) {
@@ -149,6 +160,300 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 		findPreference("notification").setOnPreferenceChangeListener(listener);
     }
     
+    /**
+     * Check if the session is valid
+     * 
+     * @param String session
+     */
+    private void checkSession(String session) {
+    	
+    	String url = "http://racesow2d.warsow-race.net/accounts.php";
+		List<NameValuePair> values = new ArrayList<NameValuePair>();
+		values.add(new BasicNameValuePair("action", "session"));
+		values.add(new BasicNameValuePair("id", session));
+		final XMLLoaderTask task = new XMLLoaderTask(Settings.this);
+		task.execute(url, values);
+		
+		pd = new ProgressDialog(Settings.this);
+		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		pd.setMessage("Checking session...");
+		pd.setCancelable(true);
+		pd.setOnCancelListener(new OnCancelListener() {
+			
+			public void onCancel(DialogInterface dialog) {
+
+				task.cancel(true);
+				editNick();
+			}
+		});
+		pd.show();
+    }
+    
+    /**
+     * Check if the nick is available
+     */
+    private void checkNick() {
+    	
+    	String url = "http://racesow2d.warsow-race.net/accounts.php";
+		List<NameValuePair> values = new ArrayList<NameValuePair>();
+		values.add(new BasicNameValuePair("action", "check"));
+		values.add(new BasicNameValuePair("name", nick));
+		final XMLLoaderTask task = new XMLLoaderTask(Settings.this);
+		task.execute(url, values);
+		
+		pd = new ProgressDialog(Settings.this);
+		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		pd.setMessage("Checking name...");
+		pd.setCancelable(true);
+		pd.setOnCancelListener(new OnCancelListener() {
+			
+			public void onCancel(DialogInterface dialog) {
+
+				task.cancel(true);
+				editNick();
+			}
+		});
+		pd.show();
+    }
+    
+    /**
+     * Called by XMLLoaderTask
+     * 
+     * @param InputStream xmlStream
+     */
+	public void xmlCallback(InputStream xmlStream) {
+				
+		pd.dismiss();
+		
+		// not online, just use the nick for now without checking it
+		if (xmlStream == null) {
+			
+			prefs.edit().putString("name", nick).commit();
+			return;
+		}
+		
+		XMLParser parser = new XMLParser();
+		parser.read(xmlStream);
+		
+		// error response
+		NodeList errors = parser.doc.getElementsByTagName("error");
+		if (errors.getLength() == 1) {
+			
+			String message = parser.getNodeValue(errors.item(0));
+			showError(message);
+			return;
+		}
+			
+		// name availability check response
+		NodeList checks = parser.doc.getElementsByTagName("checkname");
+		if (checks.getLength() == 1) {
+			
+			try {
+				
+				int available = Integer.parseInt(parser.getValue((Element)checks.item(0), "available"));
+				if (available == 1) {
+					
+					askRegister();
+					
+				} else {
+					
+					askLogin();
+				}
+				
+			} catch (NumberFormatException e) {}
+			return;
+		}
+		
+		// login response
+		NodeList auths = parser.doc.getElementsByTagName("auth");
+		if (auths.getLength() == 1) {
+			
+			try {
+
+				Element auth = (Element)auths.item(0);
+				int result = Integer.parseInt(parser.getValue(auth, "result"));
+				if (result == 1) {
+					
+					String session = parser.getValue(auth, "session");
+					loginSuccessful(session);
+					
+				} else {
+					
+					showLogin("Wrong password. Please try again.");
+				}
+				
+			} catch (NumberFormatException e) {}
+			return;
+		}
+		
+		// session response
+		NodeList sessions = parser.doc.getElementsByTagName("checksession");
+		if (sessions.getLength() == 1) {
+			
+			try {
+
+				Element session = (Element)sessions.item(0);
+				int result = Integer.parseInt(parser.getValue(session, "result"));
+				if (result == 1) {
+					
+					Database.getInstance().setSession(nick, parser.getValue(session, "session"));
+					prefs.edit().putString("name", nick).commit();
+					
+				} else {
+					
+					showLogin("Your session has expired.\nPlease enter your Password.");
+				}
+				
+			} catch (NumberFormatException e) {}
+			return;
+		}
+	}
+    
+	/**
+	 * Show an error message
+	 * 
+	 * @param String message
+	 */
+	private void showError(String message) {
+		
+		new AlertDialog.Builder(Settings.this)
+			.setCancelable(false)
+	        .setMessage("Error: " + message)
+	        .setNeutralButton("OK", null)
+	        .show();
+	}
+	
+	/**
+	 * On Successful login
+	 * 
+	 * @param String session
+	 */
+	private void loginSuccessful(String session) {
+		
+		new AlertDialog.Builder(Settings.this)
+			.setCancelable(false)
+	        .setMessage("Login successful")
+	        .setNeutralButton("OK", null)
+	        .show();
+		
+		Database.getInstance().setSession(nick, session);
+		prefs.edit().putString("name", nick).commit();
+	}
+	
+	/**
+	 * Ask the user to login
+	 */
+	private void askLogin() {
+		
+		new AlertDialog.Builder(Settings.this)
+			.setCancelable(false)
+	        .setMessage("The name '"+ this.nick +"' is registered.\nDo you want to login?")
+	        .setPositiveButton("Yes", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+	
+					showLogin("Please enter your password.");
+				}
+			})
+			.setNegativeButton("No", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+	
+					editNick();
+				}
+			})
+	        .show();
+	}
+	
+	/**
+	 * Ask the user to register the name
+	 */
+	private void askRegister() {
+		
+		new AlertDialog.Builder(Settings.this)
+			.setCancelable(false)
+	        .setMessage("Do you want to register the name '"+ this.nick +"'?")
+	        .setPositiveButton("Yes", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+				
+					showRegistration();
+				}
+			})
+			.setNegativeButton("No, thanks", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					
+					prefs.edit().putString("name", nick).commit();
+				}
+			})
+	        .show();
+	}
+	
+	/**
+	 * Show the registration form
+	 */
+	private void showRegistration() {
+		
+		new AlertDialog.Builder(Settings.this)
+			.setCancelable(false)
+	        .setMessage("Not yet implemented...")
+	        .setNeutralButton("OK", null)
+	        .show();
+	}
+	
+	/**
+	 * Show the login window
+	 */
+	private void showLogin(String message) {
+		
+		final EditText pass = new EditText(Settings.this);
+		pass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+		pass.setTransformationMethod(PasswordTransformationMethod.getInstance());
+		AlertDialog login = new AlertDialog.Builder(Settings.this)
+			.setCancelable(true)
+			.setView(pass)
+	        .setMessage(message)
+	        .setPositiveButton("Login", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+
+					String password = pass.getText().toString();
+					
+					String url = "http://racesow2d.warsow-race.net/accounts.php";
+					List<NameValuePair> values = new ArrayList<NameValuePair>();
+					values.add(new BasicNameValuePair("action", "auth"));
+					values.add(new BasicNameValuePair("name", nick));
+					values.add(new BasicNameValuePair("pass", password));
+					new XMLLoaderTask(Settings.this).execute(url, values);
+					
+					pd = new ProgressDialog(Settings.this);
+					pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+					pd.setMessage("Loggin in...");
+					pd.setCancelable(true);
+					pd.setOnCancelListener(new OnCancelListener() {
+						
+						public void onCancel(DialogInterface dialog) {
+
+							editNick();
+						}
+					});
+					pd.show();
+				}
+			}).create();
+		
+		login.setOnCancelListener(new OnCancelListener() {
+			
+			public void onCancel(DialogInterface dialog) {
+				
+				editNick();
+			}
+		});
+		
+		login.show();
+	        
+	}
+	
     /**
      * Ask the user to set his nickname
      */
@@ -209,17 +514,4 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 	    	this.overridePendingTransition(0, 0);
     	}
     }
-
-    /**
-     * Called by XMLLoaderTask
-     * 
-     * @param InputStream xmlStream
-     */
-	public void xmlCallback(InputStream xmlStream) {
-				
-		try {
-			Log.d("DEBUG", "XML: " + InputStreamToString.convert(xmlStream));
-		} catch (IOException e) {
-		}
-	}
 }

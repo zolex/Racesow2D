@@ -109,10 +109,25 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public void set(String key, String value) {
 		
-		ContentValues values = new ContentValues();
-    	values.put("value", value);
-    	
-    	database.update("settings", values, "key = '"+ key + "'", null);
+		try {
+			
+			while (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
+			
+			database.beginTransaction();
+			ContentValues values = new ContentValues();
+			values.put("value", value);
+			database.update("settings", values, "key = '"+ key + "'", null);
+			database.setTransactionSuccessful();
+			
+		} catch (Exception e) {
+			
+		} finally {
+			
+			database.endTransaction();
+		}
 	}
 	
 	/**
@@ -164,9 +179,16 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public void setSession(String name, String session) {
 		
-		Cursor c = database.query("players", new String[]{"name"}, "name = '"+ name + "'", null, null, null, null);
+		Cursor c = null;
 		try {
 
+			while (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
+			
+			database.beginTransaction();
+			c = database.query("players", new String[]{"name"}, "name = '"+ name + "'", null, null, null, null);
 		    ContentValues playerValues = new ContentValues();
 		    playerValues.put("session", session);
 		    
@@ -186,11 +208,20 @@ public final class Database extends SQLiteOpenHelper {
 		    	}
 		    }
 		    
+		    database.setTransactionSuccessful();
+		    
 		} catch (Exception e) {
 			
-		}
-		
-		c.close();
+			
+		} finally {
+			
+			if (c != null) {
+				
+				c.close();
+			}
+			
+			database.endTransaction();
+		}		
 	}
 	
 	/**
@@ -203,10 +234,16 @@ public final class Database extends SQLiteOpenHelper {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
     	Date date = new Date();
 		
-		Cursor c = database.query("players", new String[]{"name"}, "name = '"+ update.name + "'", null, null, null, null);
+		Cursor c = null;
 		try {
 			
+			if (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
+			
 			database.beginTransaction();
+			c = database.query("players", new String[]{"name"}, "name = '"+ update.name + "'", null, null, null, null);
 			
 			// update the player's online points, position and last updated time
 		    ContentValues playerValues = new ContentValues();
@@ -288,10 +325,13 @@ public final class Database extends SQLiteOpenHelper {
 			
 		} finally {
 			
+			if (c != null) {
+				
+				c.close();
+			}
+			
 			database.endTransaction();
 		}
-		
-		c.close();
 	}
 	
 	/**
@@ -299,9 +339,25 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public void deleteAllUpdates() {
 		
-		database.delete("update_beaten_by", null, null);
-		database.delete("update_maps", null, null);
-    	database.delete("updates", null, null);
+		try {
+			
+			while (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
+			
+			database.beginTransaction();
+			database.delete("update_beaten_by", null, null);
+			database.delete("update_maps", null, null);
+			database.delete("updates", null, null);
+			database.setTransactionSuccessful();
+			
+		} catch (Exception e) {
+			
+		} finally {
+			
+			database.endTransaction();
+		}
 	}
 	
 	/**
@@ -311,22 +367,43 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public void deleteUpdate(int id) {
 		
-		Cursor c = database.query("update_maps", new String[]{"id"},
-	    	"update_id = '"+ id +"'", null, null, null, null);
-		
-    	if (c.getCount() > 0) {
-	    	
-	    	c.moveToFirst();
-		    while (!c.isAfterLast()) {
+		Cursor c = null;
+		try {
+			
+			while (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
+			
+			database.beginTransaction();
+			c = database.query("update_maps", new String[]{"id"},
+		    	"update_id = '"+ id +"'", null, null, null, null);
+			
+	    	if (c.getCount() > 0) {
 		    	
-		    	database.delete("update_beaten_by", "update_maps_id = " + c.getInt(0), null);
-		    	c.moveToNext();
-		    }
-    	}
-    	
-    	c.close();
-    	database.delete("update_maps", "update_id = " + id, null);
-    	database.delete("updates", "id = " + id, null);
+		    	c.moveToFirst();
+			    while (!c.isAfterLast()) {
+			    	
+			    	database.delete("update_beaten_by", "update_maps_id = " + c.getInt(0), null);
+			    	c.moveToNext();
+			    }
+	    	}
+	    	
+	    	database.delete("update_maps", "update_id = " + id, null);
+	    	database.delete("updates", "id = " + id, null);
+	    	database.setTransactionSuccessful();
+	    	
+		} catch (Exception e) {
+			
+		} finally {
+			
+			if (c != null) {
+				
+				c.close();
+			}
+			
+			database.endTransaction();
+		}
 	}
 	
 	/**
@@ -512,16 +589,32 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public void addRace(String map, String player, float time) {
 		
-		ContentValues values = new ContentValues();
-    	values.put("map", map);
-    	values.put("time", time);
-    	values.put("player", player);
-    	
-    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-    	Date date = new Date();
-    	values.put("created_at", dateFormat.format(date));
-    	
-    	database.insert("races", "", values);
+		try {
+			
+			while (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
+			
+			database.beginTransaction();
+			ContentValues values = new ContentValues();
+	    	values.put("map", map);
+	    	values.put("time", time);
+	    	values.put("player", player);
+	    	
+	    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+	    	Date date = new Date();
+	    	values.put("created_at", dateFormat.format(date));
+	    	
+	    	database.insert("races", "", values);
+	    	database.setTransactionSuccessful();
+	    	
+		} catch (Exception e) {
+			
+		} finally {
+			
+			database.endTransaction();
+		}
 	}
 	
 	/**

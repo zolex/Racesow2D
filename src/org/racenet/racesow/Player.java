@@ -1,11 +1,15 @@
 package org.racenet.racesow;
 
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.racenet.framework.Audio;
 import org.racenet.framework.Sound;
 import org.racenet.framework.AnimatedBlock;
@@ -13,22 +17,30 @@ import org.racenet.framework.AnimationPreset;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.CameraText;
 import org.racenet.framework.FifoPool;
+import org.racenet.framework.XMLParser;
 import org.racenet.framework.FifoPool.PoolObjectFactory;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.Polygon;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
+import org.racenet.racesow.models.Database;
+import org.racenet.racesow.threads.HttpLoaderTask;
 import org.racenet.racesow.threads.InternalScoresThread;
-import org.racenet.racesow.threads.SubmitScoreThread;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.opengl.GLES10;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
 import android.widget.EditText;
 
 /**
@@ -38,7 +50,7 @@ import android.widget.EditText;
  * 
  * @author soh#zolex
  */
-public class Player extends AnimatedBlock {
+public class Player extends AnimatedBlock implements HttpCallback {
 	
 	// animations
 	public static final short ANIM_RUN_1 = 0;
@@ -122,6 +134,8 @@ public class Player extends AnimatedBlock {
 	float[] worldOffset;
 	GameObject worldBounds;
 	public int lastJumpAnim = ANIM_JUMP_2;
+	private float lastFinishTime;
+	ProgressDialog pd;
 	
 	private int frames = 0;
 	
@@ -1311,10 +1325,10 @@ public class Player extends AnimatedBlock {
 		
 		this.map.stopTimer();
 		
-		final float finishTime = this.map.getCurrentTime();
+		this.lastFinishTime = this.map.getCurrentTime();
 		final int showDialogDelay = 2000;
 		
-		this.showRatingMessage(finishTime);
+		this.showRatingMessage(Player.this.lastFinishTime);
 		
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
@@ -1354,52 +1368,239 @@ public class Player extends AnimatedBlock {
 						});
 						
 						alert.setCancelable(false);
-						alert.setMessage("Your time is " + String.format(Locale.US, "%.4f", finishTime) + "\nEnter a nickname for the highscores.");
+						alert.setMessage("Your time is " + String.format(Locale.US, "%.4f", Player.this.lastFinishTime) + "\nEnter a nickname for the highscores.");
 				        alert.setView(input);
 				        alert.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new OnClickListener() {
 							
 							public void onClick(DialogInterface dialog, int which) {
 								
 								Player.this.map.inFinishSequence = false;
-								SubmitScoreThread t2 = new SubmitScoreThread(
-										Player.this.map.fileName,
-										input.getText().toString().trim(),
-										finishTime
-									);
-									t2.start();
-									
-									// save the time to the local scores
-									InternalScoresThread t = new InternalScoresThread(
-										Player.this.map.fileName,
-										input.getText().toString().trim(),
-										finishTime,
-										new Handler() {
-									    	
-									    	@Override
-									        public void handleMessage(Message msg) {
-									    		
-									    		if (msg.getData().getBoolean("record")) {
-									    			
-									    			Player.this.showRecordMessage();
-									    		
-									    		} else {
-									    			
-									    			Player.this.showFinishMessage();
-									    		}
-									    		
-									    		Player.this.showTimeMessage();
-									    		Player.this.showRestartMessage();
-									    	}
-									});
-									t.start();
+								
+								Player.this.name = input.getText().toString().trim();
+								Player.this.submitScore();
+								
+								// save the time to the local scores
+								InternalScoresThread t = new InternalScoresThread(
+									Player.this.map.fileName,
+									input.getText().toString().trim(),
+									Player.this.lastFinishTime,
+									new Handler() {
+								    	
+								    	@Override
+								        public void handleMessage(Message msg) {
+								    		
+								    		if (msg.getData().getBoolean("record")) {
+								    			
+								    			Player.this.showRecordMessage();
+								    		
+								    		} else {
+								    			
+								    			Player.this.showFinishMessage();
+								    		}
+								    		
+								    		Player.this.showTimeMessage();
+								    		Player.this.showRestartMessage();
+								    	}
+								});
+								t.start();
 							}
 						});
+				        
 				        alert.show();
 				        alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(!Player.this.name.equals(""));
 					}
 				});
 			}
 		}, showDialogDelay);
+	}
+	
+	/**
+	 * Show the login window
+	 */
+	private void showLogin(String message) {
+		
+		final EditText pass = new EditText(this.gameScreen.game);
+		pass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+		pass.setTransformationMethod(PasswordTransformationMethod.getInstance());
+		AlertDialog login = new AlertDialog.Builder(this.gameScreen.game)
+			.setCancelable(true)
+			.setView(pass)
+	        .setMessage(message)
+	        .setPositiveButton("Login", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+
+					String password = pass.getText().toString();
+					
+					String url = "http://racesow2d.warsow-race.net/accounts.php";
+					List<NameValuePair> values = new ArrayList<NameValuePair>();
+					values.add(new BasicNameValuePair("action", "auth"));
+					values.add(new BasicNameValuePair("name", Player.this.name));
+					values.add(new BasicNameValuePair("pass", password));
+					final HttpLoaderTask task = new HttpLoaderTask(Player.this);
+					task.execute(url, values);
+					
+					pd = new ProgressDialog(Player.this.gameScreen.game);
+					pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+					pd.setMessage("Logging in...");
+					pd.setCancelable(true);
+					pd.setOnCancelListener(new OnCancelListener() {
+						
+						public void onCancel(DialogInterface dialog) {
+
+							task.cancel(true);
+						}
+					});
+					pd.show();
+				}
+			})
+			.setNegativeButton("Cancel", null)
+			.create();
+		
+		login.show();
+	        
+	}
+	
+	/**
+	 * Submit the last time to the API
+	 */
+	public void submitScore() {
+		
+		List<NameValuePair> values = new ArrayList<NameValuePair>();
+		values.add(new BasicNameValuePair("map", this.map.fileName));
+		values.add(new BasicNameValuePair("player", this.name));
+		values.add(new BasicNameValuePair("session", Database.getInstance().getSession(Player.this.name)));
+		values.add(new BasicNameValuePair("time", String.valueOf(new Float(this.lastFinishTime))));
+		values.add(new BasicNameValuePair("key", "alpha-key"));
+        
+        final HttpLoaderTask task = new HttpLoaderTask(this);
+		task.execute("http://racesow2d.warsow-race.net/submit.php", values);
+		
+		pd = new ProgressDialog(Player.this.gameScreen.game);
+		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		pd.setMessage("Submitting time...");
+		pd.setCancelable(true);
+		pd.setOnCancelListener(new OnCancelListener() {
+			
+			public void onCancel(DialogInterface dialog) {
+
+				task.cancel(true);
+			}
+		});
+		pd.show();
+	}
+	
+	/**
+	 * Called by HttpLoaderTask
+	 * 
+	 * @param InputStream xmlStream
+	 */
+	public void httpCallback(InputStream xmlStream) {
+		
+		pd.dismiss();		
+		if (xmlStream == null) {
+			
+			return;
+		}
+		try {
+			
+			XMLParser parser = new XMLParser();
+	        parser.read(xmlStream);
+			
+			// in case of an XML error element sent by the API
+			NodeList errors = parser.doc.getElementsByTagName("error");
+			if (errors.getLength() > 0) {
+				
+				int code = -1;
+				NodeList codes = parser.doc.getElementsByTagName("code");
+				if (codes.getLength() > 0) {
+					
+					try {
+						
+						code = Integer.parseInt(parser.getNodeValue((Element)codes.item(0)));
+						
+					} catch (NumberFormatException e) {
+						
+						code = -1;
+					}
+				}
+				
+				if (code == 2) { // SESSION_INVALID
+					
+					showLogin("Your session has expired. Please login.");
+					return;
+					
+				} else {
+				
+					throw new Exception("Server error: " + parser.getNodeValue((Element)errors.item(0)));
+				}
+			}
+			
+			// parse the update
+			NodeList submissions = parser.doc.getElementsByTagName("submission");
+			if (submissions.getLength() == 1) {
+				
+				Element submissionRoot = (Element)submissions.item(0);
+				String session = parser.getValue(submissionRoot, "session");
+				if (!session.equals("")) {
+					
+					Database.getInstance().setSession(this.name, session);
+				}
+				
+				int points;
+				try {
+					
+					points = Integer.parseInt(parser.getValue(submissionRoot, "points"));
+					
+				} catch (NumberFormatException e) {
+					
+					points = 0;
+				}
+				
+				if (points > 0) {
+					
+					final int earnedPoints = points;
+					Player.this.gameScreen.game.runOnUiThread(new Runnable() {
+						
+						public void run() {
+							
+							new AlertDialog.Builder(Player.this.gameScreen.game)
+								.setCancelable(true)
+								.setMessage("You earned " + earnedPoints + " points.")
+								.setNeutralButton("OK", null)
+								.show();
+						}
+					});
+				}
+				
+				return;
+			}
+			
+			// login response
+			NodeList auths = parser.doc.getElementsByTagName("auth");
+			if (auths.getLength() == 1) {
+				
+				try {
+
+					Element auth = (Element)auths.item(0);
+					int result = Integer.parseInt(parser.getValue(auth, "result"));
+					if (result == 1) {
+						
+						Database.getInstance().setSession(this.name, parser.getValue(auth, "session"));
+						this.submitScore();
+						
+					} else {
+						
+						showLogin("Wrong password. Please try again.");
+					}
+					
+				} catch (NumberFormatException e) {}
+				return;
+			}
+			
+		} catch (Exception e) {
+			
+		}
 	}
 	
 	/**

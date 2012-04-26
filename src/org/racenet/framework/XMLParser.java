@@ -43,7 +43,7 @@ public class XMLParser {
             DocumentBuilder db = dbf.newDocumentBuilder();
             InputSource is = new InputSource();
             is.setByteStream(xml);
-            this.doc = db.parse(is);
+            this.doc = db.parse(is);            
             xml.close();
  
         } catch (ParserConfigurationException e) {

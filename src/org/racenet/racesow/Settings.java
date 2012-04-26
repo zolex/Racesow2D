@@ -10,7 +10,7 @@ import org.racenet.framework.XMLParser;
 import org.racenet.helpers.IsServiceRunning;
 import org.racenet.racesow.R;
 import org.racenet.racesow.models.Database;
-import org.racenet.racesow.threads.XMLLoaderTask;
+import org.racenet.racesow.threads.HttpLoaderTask;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -28,7 +28,6 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
-import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
@@ -48,12 +47,13 @@ import android.widget.TextView;
  * @author soh#zolex
  *
  */
-public class Settings extends PreferenceActivity implements XMLCallback {
+public class Settings extends PreferenceActivity implements HttpCallback {
 	
 	WakeLock wakeLock;
 	String nick;
 	ProgressDialog pd;
 	SharedPreferences prefs;
+	boolean quitAfterLogin = false;
 	
     @Override
     /**
@@ -74,8 +74,13 @@ public class Settings extends PreferenceActivity implements XMLCallback {
     	if (getIntent().getBooleanExtra("setNick", false)) {
     		
     		editNick();
+    		
+    	} else if (getIntent().getBooleanExtra("enterPassword", false)) {
+    		
+    		quitAfterLogin = true;
+    		nick = this.prefs.getString("name", "");
+    		showLogin("You session has expired. Please enter your password.");
     	}
-    	
     	
         OnPreferenceChangeListener listener = new OnPreferenceChangeListener() {
 			
@@ -179,7 +184,7 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 		List<NameValuePair> values = new ArrayList<NameValuePair>();
 		values.add(new BasicNameValuePair("action", "session"));
 		values.add(new BasicNameValuePair("id", session));
-		final XMLLoaderTask task = new XMLLoaderTask(Settings.this);
+		final HttpLoaderTask task = new HttpLoaderTask(Settings.this);
 		task.execute(url, values);
 		
 		pd = new ProgressDialog(Settings.this);
@@ -206,7 +211,7 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 		List<NameValuePair> values = new ArrayList<NameValuePair>();
 		values.add(new BasicNameValuePair("action", "check"));
 		values.add(new BasicNameValuePair("name", nick));
-		final XMLLoaderTask task = new XMLLoaderTask(Settings.this);
+		final HttpLoaderTask task = new HttpLoaderTask(Settings.this);
 		task.execute(url, values);
 		
 		pd = new ProgressDialog(Settings.this);
@@ -225,11 +230,11 @@ public class Settings extends PreferenceActivity implements XMLCallback {
     }
     
     /**
-     * Called by XMLLoaderTask
+     * Called by HttpLoaderTask
      * 
      * @param InputStream xmlStream
      */
-	public void xmlCallback(InputStream xmlStream) {
+	public void httpCallback(InputStream xmlStream) {
 				
 		pd.dismiss();
 		
@@ -430,7 +435,16 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 		new AlertDialog.Builder(Settings.this)
 			.setCancelable(false)
 	        .setMessage("Login successful")
-	        .setNeutralButton("OK", null)
+	        .setNeutralButton("OK", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					
+					if (quitAfterLogin) {
+						
+						Settings.this.onBackPressed();
+					}
+				}
+			})
 	        .show();
 		
 		Database.getInstance().setSession(nick, session);
@@ -526,7 +540,7 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 					values.add(new BasicNameValuePair("name", name.getText().toString().trim()));
 					values.add(new BasicNameValuePair("pass", pass.getText().toString().trim()));
 					values.add(new BasicNameValuePair("email", email.getText().toString().trim()));
-					final XMLLoaderTask task = new XMLLoaderTask(Settings.this);
+					final HttpLoaderTask task = new HttpLoaderTask(Settings.this);
 					task.execute(url, values);
 					
 					pd = new ProgressDialog(Settings.this);
@@ -628,7 +642,7 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 					values.add(new BasicNameValuePair("action", "auth"));
 					values.add(new BasicNameValuePair("name", nick));
 					values.add(new BasicNameValuePair("pass", password));
-					final XMLLoaderTask task = new XMLLoaderTask(Settings.this);
+					final HttpLoaderTask task = new HttpLoaderTask(Settings.this);
 					task.execute(url, values);
 					
 					pd = new ProgressDialog(Settings.this);
@@ -640,7 +654,14 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 						public void onCancel(DialogInterface dialog) {
 
 							task.cancel(true);
-							editNick();
+							if (quitAfterLogin) {
+								
+								Settings.this.onBackPressed();
+								
+							} else {
+							
+								editNick();
+							}
 						}
 					});
 					pd.show();
@@ -650,7 +671,14 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 				
 				public void onClick(DialogInterface dialog, int which) {
 					
-					editNick();
+					if (quitAfterLogin) {
+						
+						Settings.this.onBackPressed();
+						
+					} else {
+						
+						editNick();
+					}
 				}
 			})
 			.setNeutralButton("Forgot password?", new OnClickListener() {
@@ -666,7 +694,14 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 			
 			public void onCancel(DialogInterface dialog) {
 				
-				editNick();
+				if (quitAfterLogin) {
+					
+					Settings.this.onBackPressed();
+					
+				} else {
+				
+					editNick();
+				}
 			}
 		});
 		
@@ -744,7 +779,7 @@ public class Settings extends PreferenceActivity implements XMLCallback {
 		List<NameValuePair> values = new ArrayList<NameValuePair>();
 		values.add(new BasicNameValuePair("action", "recover"));
 		values.add(new BasicNameValuePair("email", email));
-		final XMLLoaderTask task = new XMLLoaderTask(Settings.this);
+		final HttpLoaderTask task = new HttpLoaderTask(Settings.this);
 		task.execute(url, values);
 		
 		pd = new ProgressDialog(Settings.this);

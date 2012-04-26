@@ -516,5 +516,6 @@ public class GameScreen extends Screen implements OnTouchListener {
 		this.camera.dispose();
 		this.map.dispose();
 		this.player.dispose();
+		Racesow.IN_GAME = false;
 	}
 }

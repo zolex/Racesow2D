@@ -29,6 +29,7 @@ import android.os.Process;
 public class Racesow extends GLGame {
 	
 	public static boolean LOOPER_PREPARED = false;
+	public static boolean IN_GAME = false;
 	
 	/**
 	 * Create the activity

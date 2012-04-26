@@ -4,7 +4,7 @@ import java.io.InputStream;
 import org.racenet.framework.XMLParser;
 import org.racenet.racesow.models.OnlineScoresAdapter;
 import org.racenet.racesow.models.ScoreItem;
-import org.racenet.racesow.threads.XMLLoaderTask;
+import org.racenet.racesow.threads.HttpLoaderTask;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -27,7 +27,7 @@ import android.widget.AbsListView.OnScrollListener;
  * @author soh#zolex
  *
  */
-public class OnlineMapDetails extends ListActivity implements XMLCallback {
+public class OnlineMapDetails extends ListActivity implements HttpCallback {
 
 	WakeLock wakeLock;
 	OnlineScoresAdapter adapter;
@@ -94,7 +94,7 @@ public class OnlineMapDetails extends ListActivity implements XMLCallback {
     	isLoading = true;
 		String mapName = getIntent().getStringExtra("map");
 		String url = "http://racesow2d.warsow-race.net/scores.php?name=" + mapName + "&offset=" + this.chunkOffset + "&limit=" + this.chunkLimit;
-		new XMLLoaderTask(this).execute(url);
+		new HttpLoaderTask(this).execute(url);
     }
     
     /**
@@ -102,7 +102,7 @@ public class OnlineMapDetails extends ListActivity implements XMLCallback {
      * 
      * @param InputStream xmlStream
      */
-    public void xmlCallback(InputStream xmlStream) {
+    public void httpCallback(InputStream xmlStream) {
     	
     	pd.dismiss();
 		

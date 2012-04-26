@@ -11,7 +11,7 @@ import org.racenet.racesow.models.DownloadMapsAdapter;
 import org.racenet.racesow.models.MapItem;
 import org.racenet.racesow.threads.DownloadThread;
 import org.racenet.racesow.threads.UnzipThread;
-import org.racenet.racesow.threads.XMLLoaderTask;
+import org.racenet.racesow.threads.HttpLoaderTask;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -44,7 +44,7 @@ import android.widget.AdapterView.OnItemClickListener;
  * @author soh#zolex
  *
  */
-public class DownloadMaps extends ListActivity implements XMLCallback {
+public class DownloadMaps extends ListActivity implements HttpCallback {
 
 	private static int MENU_ITEM_REFRESH = 0;
 	DownloadMapsAdapter mAdapter;
@@ -70,7 +70,7 @@ public class DownloadMaps extends ListActivity implements XMLCallback {
      * 
      * @param InputStream xmlStream
      */
-    public void xmlCallback(InputStream xmlStream) {
+    public void httpCallback(InputStream xmlStream) {
     	
     	pd.dismiss();
     	
@@ -139,7 +139,7 @@ public class DownloadMaps extends ListActivity implements XMLCallback {
 		pd.show();
         
 		String url = "http://racesow2d.warsow-race.net/downloads.php";
-		new XMLLoaderTask(this).execute(url);
+		new HttpLoaderTask(this).execute(url);
 		
 		// when clicking a map
         getListView().setOnItemClickListener(new OnItemClickListener() {

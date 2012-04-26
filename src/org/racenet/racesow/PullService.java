@@ -1,13 +1,12 @@
 package org.racenet.racesow;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -21,6 +20,10 @@ import org.racenet.racesow.models.UpdateItem;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningTaskInfo;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -30,6 +33,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.IBinder;
+import android.util.Log;
 
 /**
  * Service to pull the Rracesow2D-API for updates
@@ -67,28 +71,65 @@ public class PullService extends Service {
 				
 				try {
 					
+					SharedPreferences prefs = PullService.this.getSharedPreferences("racesow", Context.MODE_PRIVATE);
+					String playerName = prefs.getString("name", "");
+					if (playerName.equals("")) {
+						
+						return;
+					}
+					
 					HttpPost post = new HttpPost("http://racesow2d.warsow-race.net/updates.php");
 					List<NameValuePair> postValues = new ArrayList<NameValuePair>();
-					SharedPreferences prefs = PullService.this.getSharedPreferences("racesow", Context.MODE_PRIVATE);
-					String playerName = prefs.getString("name", "player");
 					postValues.add(new BasicNameValuePair("name", playerName));
+					postValues.add(new BasicNameValuePair("session", db.getSession(playerName)));
 					postValues.add(new BasicNameValuePair("updated", db.getLastUpdated(playerName)));
 
 					// initialize a new update item
 					UpdateItem update = new UpdateItem();
+					update.changed = false;
 					update.oldPosition = db.getPosition(playerName);
 					update.oldPoints = db.getPoints(playerName);
 					update.newPosition = 0;
 					update.newPoints = 0;
 					
 					post.setEntity(new UrlEncodedFormEntity(postValues));
-					parser.read(client.execute(post).getEntity().getContent());
+					InputStream xmlStream = client.execute(post).getEntity().getContent();
+					parser.read(xmlStream);
 					
 					// in case of an XML error element sent by the API
 					NodeList errorN = parser.doc.getElementsByTagName("error");
 					if (errorN.getLength() > 0) {
 						
-						throw new Exception(parser.getNodeValue((Element)errorN.item(0)));
+						int code = -1;
+						NodeList codes = parser.doc.getElementsByTagName("code");
+						if (codes.getLength() > 0) {
+							
+							try {
+								
+								code = Integer.parseInt(parser.getNodeValue((Element)codes.item(0)));
+								
+							} catch (NumberFormatException e) {
+								
+								code = -1;
+							}
+						}
+						
+						if (code == 2) { // SESSION_INVALID
+							
+							if (!Racesow.IN_GAME) {
+								
+								Intent i = new Intent(getApplicationContext(), Settings.class);
+								i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+								i.putExtra("enterPassword", true);
+							    startActivity(i);
+							}
+						    
+							return;
+							
+						} else {
+						
+							throw new Exception(parser.getNodeValue((Element)errorN.item(0)));
+						}
 					}
 					
 					// parse the update
@@ -96,6 +137,13 @@ public class PullService extends Service {
 					if (updateN.getLength() == 1) {
 						
 						Element updateRoot = (Element)updateN.item(0);
+						
+						String session = parser.getValue(updateRoot, "session");
+						if (!session.equals("")) {
+							
+							db.setSession(playerName, session);
+						}
+						
 						update.name = parser.getValue(updateRoot, "name");
 						update.updated = parser.getValue(updateRoot, "updated");
 						try {
@@ -108,7 +156,8 @@ public class PullService extends Service {
 						} catch (NumberFormatException e) {
 							update.newPoints = 0;
 						}
-						if (update.newPoints != update.oldPoints || update.newPosition != update.oldPosition) {
+						
+						if (update.newPoints < update.oldPoints) {
 							
 							update.changed = true;
 						}
@@ -135,7 +184,6 @@ public class PullService extends Service {
 									int numBeatenBy = beatenBy.getLength();
 									if (numBeatenBy > 0) {
 										
-										mapUpdate.changed = true;
 										update.changed = true;
 									}
 									
@@ -158,6 +206,8 @@ public class PullService extends Service {
 						}
 					}
 					
+					db.updatePlayer(update.name, update.newPoints, update.newPosition, update.updated);
+					
 					// if something has changed since the last
 					// update insert it to the database and
 					// show a notification
@@ -171,10 +221,6 @@ public class PullService extends Service {
 							
 							message += " your time was beaten";
 							
-						} else if (diffPoints < 0) {
-							
-							message += " gained " + (-1 * diffPoints) + "point" + (diffPoints == - 1 ? "" : "s");
-							
 						} else {
 							
 							message += " lost " + (diffPoints) + "point" + (diffPoints == 1 ? "" : "s");
@@ -183,13 +229,13 @@ public class PullService extends Service {
 						showUpdateNotification(message);
 					}
 					
-				} catch (ClientProtocolException e) {
-				} catch (IOException e) {
 				} catch (Exception e) {
+					
+					Log.d("DEBUG", "Error: " + e.getMessage());
 				}
 			}
 			
-		}, 1000, 300000); // after 1 second, then every 5 minutes
+		}, 1000, 10000); // after 1 second, then every 5 minutes
   
         manager.notify(SERVICE_NOTIFICATION, getServiceNotification(getApplicationContext(), this));
     }

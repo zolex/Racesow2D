@@ -10,7 +10,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 /**
  * Class to store information in an SQLite database
@@ -36,6 +35,7 @@ public final class Database extends SQLiteOpenHelper {
      * Instance for singleton access
      */
     private static Database __instance;
+    private SQLiteDatabase database;
     
     /**
      * Setup the singleton instance
@@ -68,6 +68,7 @@ public final class Database extends SQLiteOpenHelper {
     private Database(Context context) {
     	
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        database = getWritableDatabase();
     }
 
     @Override
@@ -79,7 +80,7 @@ public final class Database extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
     	
         db.execSQL("CREATE TABLE races(id INTEGER, map TEXT, player TEXT, time REAL, created_at TEXT, PRIMARY KEY(id))");
-        db.execSQL("CREATE TABLE players(name TEXT, position INTEGER, points INTEGER, updated TEXT, PRIMARY KEY(name))");
+        db.execSQL("CREATE TABLE players(name TEXT, session TEXT, position INTEGER, points INTEGER, updated TEXT, PRIMARY KEY(name))");
         db.execSQL("CREATE TABLE updates(id INTEGER, name TEXT, old_points INTEGER, new_points INTEGER, old_position INTEGER, new_position INTEGER, created_at TEXT, done INTEGER, PRIMARY KEY(id))");
 		db.execSQL("CREATE TABLE update_maps(id INTEGER, update_id INTEGER, name TEXT, old_position INTEGER, new_position INTEGER, PRIMARY KEY(id))");
 		db.execSQL("CREATE TABLE update_beaten_by(update_maps_id INTEGER, name TEXT, time REAL, position INTEGER)");
@@ -107,12 +108,25 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public void set(String key, String value) {
 		
-		ContentValues values = new ContentValues();
-    	values.put("value", value);
-    	
-    	SQLiteDatabase database = getWritableDatabase();
-    	database.update("settings", values, "key = '"+ key + "'", null);
-    	database.close();
+		try {
+			
+			while (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
+			
+			database.beginTransaction();
+			ContentValues values = new ContentValues();
+			values.put("value", value);
+			database.update("settings", values, "key = '"+ key + "'", null);
+			database.setTransactionSuccessful();
+			
+		} catch (Exception e) {
+			
+		} finally {
+			
+			database.endTransaction();
+		}
 	}
 	
 	/**
@@ -123,14 +137,149 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public String get(String key) {
 		
-		SQLiteDatabase database = getReadableDatabase();
 	    Cursor c = database.query("settings", new String[]{"value"},
 	        "key = '"+ key + "'", null, null, null, null);
 	    c.moveToFirst();
 	    String value = c.getString(0);
 	    c.close();
-	    database.close();
 	    return value;
+	}
+	
+	/**
+	 * Get the session for teh given player
+	 * 
+	 * @param String name
+	 * @return String
+	 */
+	public String getSession(String name) {
+		
+		Cursor c = database.query("players", new String[]{"session"}, "name = '"+ name + "'", null, null, null, null);
+		String session = null;
+		if (c.getCount() == 1) {
+			
+			c.moveToFirst();
+			session = c.getString(0);
+			
+		} else {
+			
+			session = "";
+		}
+		
+		c.close();
+		return session;
+	}
+	
+	/**
+	 * Set the session for the given player.
+	 * creates the player if required
+	 * 
+	 * @param String name
+	 * @param String session
+	 */
+	public void setSession(String name, String session) {
+		
+		Cursor c = null;
+		try {
+
+			while (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
+			
+			database.beginTransaction();
+			c = database.query("players", new String[]{"name"}, "name = '"+ name + "'", null, null, null, null);
+		    ContentValues playerValues = new ContentValues();
+		    playerValues.put("session", session);
+		    
+		    if (c.getCount() == 0) {
+		    	
+		    	playerValues.put("name", name);
+		    	if (-1 == database.insert("players", "", playerValues)) {
+		    		
+		    		throw new Exception("failed inserting player session");
+		    	}
+		    	
+		    } else {
+		    	
+		    	if (1 != database.update("players", playerValues, "name = '"+ name + "'", null)) {
+		    		
+		    		throw new Exception("invalid update player session");
+		    	}
+		    }
+		    
+		    database.setTransactionSuccessful();
+		    
+		} catch (Exception e) {
+			
+			
+		} finally {
+			
+			if (c != null) {
+				
+				c.close();
+			}
+			
+			database.endTransaction();
+		}		
+	}
+	
+	/**
+	 * Update the player
+	 * 
+	 * @param String name
+	 * @param int points
+	 * @param int position
+	 * @param String updated
+	 */
+	public void updatePlayer(String name, int points, int position, String updated) {
+		
+		Cursor c = null;
+		try {
+			
+			if (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
+			
+			database.beginTransaction();
+			c = database.query("players", new String[]{"name"}, "name = '"+ name + "'", null, null, null, null);
+			
+			// update the player's online points, position and last updated time
+		    ContentValues playerValues = new ContentValues();
+		    playerValues.put("points", points);
+		    playerValues.put("position", position);
+		    playerValues.put("updated", updated);
+		    
+		    if (c.getCount() == 0) {
+		    	
+		    	playerValues.put("name", name);
+		    	if (-1 == database.insert("players", "", playerValues)) {
+		    		
+		    		throw new Exception("failed inserting player position and points");
+		    	}
+		    	
+		    } else {
+		    	
+		    	if (1 != database.update("players", playerValues, "name = '"+ name + "'", null)) {
+		    		
+		    		throw new Exception("invalid update player position and points");
+		    	}
+		    }
+		    
+		    c.close();
+		    database.setTransactionSuccessful();
+	    	
+		} catch (Exception e) {
+			
+		} finally {
+			
+			if (c != null) {
+				
+				c.close();
+			}
+			
+			database.endTransaction();
+		}
 	}
 	
 	/**
@@ -143,36 +292,14 @@ public final class Database extends SQLiteOpenHelper {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
     	Date date = new Date();
 		
-		SQLiteDatabase database = getWritableDatabase();
 		try {
 			
-			database.beginTransaction();
+			if (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
 			
-			// update the player's online points, position and last updated time
-			Cursor c = database.query("players", new String[]{"name"},
-				"name = '"+ update.name + "'", null, null, null, null);
-
-		    ContentValues playerValues = new ContentValues();
-		    playerValues.put("points", update.newPoints);
-		    playerValues.put("position", update.newPosition);
-		    playerValues.put("updated", update.updated);
-		    
-		    if (c.getCount() == 0) {
-		    	
-		    	playerValues.put("name", update.name);
-		    	if (-1 == database.insert("players", "", playerValues)) {
-		    		
-		    		throw new Exception("failed inserting player position and points");
-		    	}
-		    	
-		    } else {
-		    	
-		    	if (1 != database.update("players", playerValues, "name = '"+ update.name + "'", null)) {
-		    		
-		    		throw new Exception("invalid update player position and points");
-		    	}
-		    }
-		    c.close();
+			database.beginTransaction();
 			
 		    // add the update itsself
 		    ContentValues values = new ContentValues();
@@ -229,14 +356,10 @@ public final class Database extends SQLiteOpenHelper {
 	    	
 		} catch (Exception e) {
 			
-			Log.e("DEBUG", "database update exception: " + e.getMessage());
-			
 		} finally {
 			
 			database.endTransaction();
 		}
-		
-		database.close();
 	}
 	
 	/**
@@ -244,11 +367,25 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public void deleteAllUpdates() {
 		
-		SQLiteDatabase database = getWritableDatabase();
-		database.delete("update_beaten_by", null, null);
-		database.delete("update_maps", null, null);
-    	database.delete("updates", null, null);
-		database.close();
+		try {
+			
+			while (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
+			
+			database.beginTransaction();
+			database.delete("update_beaten_by", null, null);
+			database.delete("update_maps", null, null);
+			database.delete("updates", null, null);
+			database.setTransactionSuccessful();
+			
+		} catch (Exception e) {
+			
+		} finally {
+			
+			database.endTransaction();
+		}
 	}
 	
 	/**
@@ -258,24 +395,43 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public void deleteUpdate(int id) {
 		
-		SQLiteDatabase database = getWritableDatabase();
-		Cursor c = database.query("update_maps", new String[]{"id"},
-	    	"update_id = '"+ id +"'", null, null, null, null);
-		
-    	if (c.getCount() > 0) {
-	    	
-	    	c.moveToFirst();
-		    while (!c.isAfterLast()) {
+		Cursor c = null;
+		try {
+			
+			while (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
+			
+			database.beginTransaction();
+			c = database.query("update_maps", new String[]{"id"},
+		    	"update_id = '"+ id +"'", null, null, null, null);
+			
+	    	if (c.getCount() > 0) {
 		    	
-		    	database.delete("update_beaten_by", "update_maps_id = " + c.getInt(0), null);
-		    	c.moveToNext();
-		    }
-    	}
-    	
-    	c.close();
-    	database.delete("update_maps", "update_id = " + id, null);
-    	database.delete("updates", "id = " + id, null);
-    	database.close();
+		    	c.moveToFirst();
+			    while (!c.isAfterLast()) {
+			    	
+			    	database.delete("update_beaten_by", "update_maps_id = " + c.getInt(0), null);
+			    	c.moveToNext();
+			    }
+	    	}
+	    	
+	    	database.delete("update_maps", "update_id = " + id, null);
+	    	database.delete("updates", "id = " + id, null);
+	    	database.setTransactionSuccessful();
+	    	
+		} catch (Exception e) {
+			
+		} finally {
+			
+			if (c != null) {
+				
+				c.close();
+			}
+			
+			database.endTransaction();
+		}
 	}
 	
 	/**
@@ -286,7 +442,6 @@ public final class Database extends SQLiteOpenHelper {
 	public List<UpdateItem> getAllUpdates() {
 		
 		List<UpdateItem> updates = new ArrayList<UpdateItem>();
-		SQLiteDatabase database = getReadableDatabase();
 	    Cursor c = database.query("updates", new String[]{"id", "name", "old_points", "new_points", "old_position", "new_position", "created_at"},
 	        null, null, null, null, "created_at DESC");
 	    
@@ -346,7 +501,6 @@ public final class Database extends SQLiteOpenHelper {
 	    }
 	    
 	    c.close();
-	    database.close();
 	    
 	    return updates;
 	}
@@ -358,7 +512,6 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public int countUpdates() {
 		
-		SQLiteDatabase database = getReadableDatabase();
 	    Cursor c = database.query("updates", new String[]{"COUNT(id)"},
 	        null, null, null, null, null);
 	    
@@ -374,7 +527,6 @@ public final class Database extends SQLiteOpenHelper {
 	    }
 	    
 	    c.close();
-	    database.close();
 	    return count;
 	}
 	
@@ -386,7 +538,6 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public String getLastUpdated(String player) {
 		
-		SQLiteDatabase database = getReadableDatabase();
 	    Cursor c = database.query("players", new String[]{"updated"},
 	        "name = '"+ player +"'", null, null, null, null);
 	    
@@ -402,7 +553,6 @@ public final class Database extends SQLiteOpenHelper {
 	    }
 	    
 	    c.close();
-	    database.close();
 	    return updated;
 	}
 	
@@ -414,7 +564,6 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public int getPosition(String player) {
 		
-		SQLiteDatabase database = getReadableDatabase();
 		Cursor c = database.query("players", new String[]{"position"},
 				"name = '"+ player +"'", null, null, null, null);
 		
@@ -430,7 +579,6 @@ public final class Database extends SQLiteOpenHelper {
 		}
 		
 		c.close();
-		database.close();
 		return position;
 	}
 	
@@ -442,7 +590,6 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public int getPoints(String player) {
 		
-		SQLiteDatabase database = getReadableDatabase();
 	    Cursor c = database.query("players", new String[]{"points"},
 	        "name = '"+ player +"'", null, null, null, null);
 	    
@@ -458,7 +605,6 @@ public final class Database extends SQLiteOpenHelper {
 	    }
 	    
 	    c.close();
-	    database.close();
 	    return points;
 	}
 	
@@ -471,18 +617,32 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public void addRace(String map, String player, float time) {
 		
-		ContentValues values = new ContentValues();
-    	values.put("map", map);
-    	values.put("time", time);
-    	values.put("player", player);
-    	
-    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-    	Date date = new Date();
-    	values.put("created_at", dateFormat.format(date));
-    	
-    	SQLiteDatabase database = getWritableDatabase();
-    	database.insert("races", "", values);
-    	database.close();
+		try {
+			
+			while (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
+			
+			database.beginTransaction();
+			ContentValues values = new ContentValues();
+	    	values.put("map", map);
+	    	values.put("time", time);
+	    	values.put("player", player);
+	    	
+	    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+	    	Date date = new Date();
+	    	values.put("created_at", dateFormat.format(date));
+	    	
+	    	database.insert("races", "", values);
+	    	database.setTransactionSuccessful();
+	    	
+		} catch (Exception e) {
+			
+		} finally {
+			
+			database.endTransaction();
+		}
 	}
 	
 	/**
@@ -493,7 +653,6 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public float getBestTime(String map) {
 		
-		SQLiteDatabase database = getReadableDatabase();
 	    Cursor c = database.query("races", new String[]{"time"},
 	        "map = '"+ map + "'", null, null, null, "time ASC");
 	    float value;
@@ -508,7 +667,6 @@ public final class Database extends SQLiteOpenHelper {
 	    }
 	    
 	    c.close();
-	    database.close();
 	    return value;
 	}
 	
@@ -520,7 +678,6 @@ public final class Database extends SQLiteOpenHelper {
 	 */
 	public List<ScoreItem> getScores(String map) {
 		
-		SQLiteDatabase database = getReadableDatabase();
 	    Cursor c = database.query("races", new String[]{"id, player, time, created_at"},
 	        "map = '"+ map + "'", null, null, null, "time ASC");
 	    List<ScoreItem> scores = new ArrayList<ScoreItem>();
@@ -542,7 +699,6 @@ public final class Database extends SQLiteOpenHelper {
 	    }
 	    
 	    c.close();
-	    database.close();
 	    return scores;
 	}
 }

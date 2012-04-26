@@ -1,8 +1,6 @@
 package org.racenet.racesow;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,12 +11,9 @@ import org.racenet.framework.GLTexture;
 import org.racenet.framework.Screen;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
-import org.racenet.framework.XMLParser;
 import org.racenet.helpers.MapComperator;
 import org.racenet.helpers.MapList;
 import org.racenet.racesow.models.MapItem;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import android.app.Activity;
 import android.content.Intent;

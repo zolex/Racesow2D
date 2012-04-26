@@ -13,7 +13,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import org.racenet.racesow.XMLCallback;
+import org.racenet.racesow.HttpCallback;
 
 import android.os.AsyncTask;
 
@@ -23,11 +23,11 @@ import android.os.AsyncTask;
  * @author soh#zolex
  *
  */
-public class XMLLoaderTask extends AsyncTask<Object, Void, InputStream> {
+public class HttpLoaderTask extends AsyncTask<Object, Void, InputStream> {
 
-	XMLCallback activity;
+	HttpCallback activity;
 	
-	public XMLLoaderTask(XMLCallback activity) {
+	public HttpLoaderTask(HttpCallback activity) {
 		
 		this.activity = activity;
 	}
@@ -107,6 +107,6 @@ public class XMLLoaderTask extends AsyncTask<Object, Void, InputStream> {
 	@Override
 	protected void onPostExecute(InputStream result) {
 		
-		this.activity.xmlCallback(result);
+		this.activity.httpCallback(result);
 	}
 }

@@ -29,6 +29,7 @@ import android.os.Process;
 public class Racesow extends GLGame {
 	
 	public static boolean LOOPER_PREPARED = false;
+	public static boolean IN_GAME = false;
 	
 	/**
 	 * Create the activity
@@ -64,7 +65,7 @@ public class Racesow extends GLGame {
 			
 			if (!IsServiceRunning.check("org.racenet.racesow.PullService", getApplicationContext())) {
         		
-        		startService(new Intent(Racesow.this, PullService.class));
+        		startService(new Intent(getApplicationContext(), PullService.class));
         	}
 		}
 	}

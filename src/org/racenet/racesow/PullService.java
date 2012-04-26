@@ -156,7 +156,8 @@ public class PullService extends Service {
 						} catch (NumberFormatException e) {
 							update.newPoints = 0;
 						}
-						if (update.newPoints != update.oldPoints || update.newPosition != update.oldPosition) {
+						
+						if (update.newPoints < update.oldPoints) {
 							
 							update.changed = true;
 						}
@@ -183,7 +184,6 @@ public class PullService extends Service {
 									int numBeatenBy = beatenBy.getLength();
 									if (numBeatenBy > 0) {
 										
-										mapUpdate.changed = true;
 										update.changed = true;
 									}
 									
@@ -206,6 +206,8 @@ public class PullService extends Service {
 						}
 					}
 					
+					db.updatePlayer(update.name, update.newPoints, update.newPosition, update.updated);
+					
 					// if something has changed since the last
 					// update insert it to the database and
 					// show a notification
@@ -218,10 +220,6 @@ public class PullService extends Service {
 						if (diffPoints == 0) {
 							
 							message += " your time was beaten";
-							
-						} else if (diffPoints < 0) {
-							
-							message += " gained " + (-1 * diffPoints) + "point" + (diffPoints == - 1 ? "" : "s");
 							
 						} else {
 							

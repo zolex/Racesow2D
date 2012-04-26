@@ -224,14 +224,14 @@ public final class Database extends SQLiteOpenHelper {
 	}
 	
 	/**
-	 * Save a new update to the database
+	 * Update the player
 	 * 
-	 * @param UpdateItem update
+	 * @param String name
+	 * @param int points
+	 * @param int position
+	 * @param String updated
 	 */
-	public void addUpdate(UpdateItem update) {
-		
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-    	Date date = new Date();
+	public void updatePlayer(String name, int points, int position, String updated) {
 		
 		Cursor c = null;
 		try {
@@ -242,17 +242,17 @@ public final class Database extends SQLiteOpenHelper {
 			}
 			
 			database.beginTransaction();
-			c = database.query("players", new String[]{"name"}, "name = '"+ update.name + "'", null, null, null, null);
+			c = database.query("players", new String[]{"name"}, "name = '"+ name + "'", null, null, null, null);
 			
 			// update the player's online points, position and last updated time
 		    ContentValues playerValues = new ContentValues();
-		    playerValues.put("points", update.newPoints);
-		    playerValues.put("position", update.newPosition);
-		    playerValues.put("updated", update.updated);
+		    playerValues.put("points", points);
+		    playerValues.put("position", position);
+		    playerValues.put("updated", updated);
 		    
 		    if (c.getCount() == 0) {
 		    	
-		    	playerValues.put("name", update.name);
+		    	playerValues.put("name", name);
 		    	if (-1 == database.insert("players", "", playerValues)) {
 		    		
 		    		throw new Exception("failed inserting player position and points");
@@ -260,12 +260,46 @@ public final class Database extends SQLiteOpenHelper {
 		    	
 		    } else {
 		    	
-		    	if (1 != database.update("players", playerValues, "name = '"+ update.name + "'", null)) {
+		    	if (1 != database.update("players", playerValues, "name = '"+ name + "'", null)) {
 		    		
 		    		throw new Exception("invalid update player position and points");
 		    	}
 		    }
+		    
 		    c.close();
+		    database.setTransactionSuccessful();
+	    	
+		} catch (Exception e) {
+			
+		} finally {
+			
+			if (c != null) {
+				
+				c.close();
+			}
+			
+			database.endTransaction();
+		}
+	}
+	
+	/**
+	 * Save a new update to the database
+	 * 
+	 * @param UpdateItem update
+	 */
+	public void addUpdate(UpdateItem update) {
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+    	Date date = new Date();
+		
+		try {
+			
+			if (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
+			
+			database.beginTransaction();
 			
 		    // add the update itsself
 		    ContentValues values = new ContentValues();
@@ -323,11 +357,6 @@ public final class Database extends SQLiteOpenHelper {
 		} catch (Exception e) {
 			
 		} finally {
-			
-			if (c != null) {
-				
-				c.close();
-			}
 			
 			database.endTransaction();
 		}

@@ -159,11 +159,7 @@ public class UpdatesAdapter extends BaseExpandableListAdapter {
         String pointsDiff;
         if (points == 0) {
         	
-        	pointsDiff = " time was beaten";
-        	
-        } else if (points < 0) {
-        	
-        	pointsDiff = " gained " + (-1 * points) + " point" + (points == -1 ? "" : "s");
+        	pointsDiff = " your time was beaten";
         	
         } else {
         	

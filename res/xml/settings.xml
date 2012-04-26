@@ -2,7 +2,7 @@
 <PreferenceScreen
     android:key="settings"
 	xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference android:title="Nickname" android:summary="For the highscore list" android:key="name" android:dialogTitle="Enter your nickname" android:negativeButtonText="Cancel" android:positiveButtonText="Save"/>
+    <EditTextPreference android:title="Nickname / Login" android:summary="For the highscore list" android:key="name" android:dialogTitle="Enter your nickname" android:negativeButtonText="Cancel" android:positiveButtonText="Save"/>
     <org.racenet.racesow.models.PasswordPreference android:title="Change password" android:summary="Set a new password for your account" android:key="password" android:dialogTitle="Change password" android:negativeButtonText="Cancel" android:positiveButtonText="Change"/>
     <org.racenet.racesow.models.RecoveryPreference android:summary="Forgot your password or want to enter a recovery code?" android:title="Password recovery" android:key="recovery" android:enabled="true"/><CheckBoxPreference android:key="demos" android:title="Record demos" android:summary="Demo recording can reduce the performance" android:defaultValue="true" android:enabled="true" />
     <CheckBoxPreference android:title="Sound effects" android:summary="Enable ingame sound effects" android:key="sound" android:summaryOn="Sound effects enabled" android:summaryOff="Sound effects disabled" android:enabled="true" android:defaultValue="true"/>

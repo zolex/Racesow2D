@@ -154,7 +154,7 @@ public final class Database extends SQLiteOpenHelper {
 	public String getSession(String name) {
 		
 		Cursor c = database.query("players", new String[]{"session"}, "name = '"+ name + "'", null, null, null, null);
-		String session;
+		String session = null;
 		if (c.getCount() == 1) {
 			
 			c.moveToFirst();

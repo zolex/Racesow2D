@@ -10,6 +10,8 @@ import org.racenet.framework.XMLParser;
 import org.racenet.helpers.IsServiceRunning;
 import org.racenet.racesow.R;
 import org.racenet.racesow.models.Database;
+import org.racenet.racesow.models.PasswordPreference;
+import org.racenet.racesow.models.RecoveryPreference;
 import org.racenet.racesow.threads.HttpLoaderTask;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -54,6 +56,8 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 	ProgressDialog pd;
 	SharedPreferences prefs;
 	boolean quitAfterLogin = false;
+	PasswordPreference password;
+	RecoveryPreference recovery;
 	
     @Override
     /**
@@ -71,6 +75,8 @@ public class Settings extends PreferenceActivity implements HttpCallback {
         
     	this.prefs = Settings.this.getSharedPreferences("racesow", Context.MODE_PRIVATE);
     	
+    	this.nick = this.prefs.getString("name", "");
+    	
     	if (getIntent().getBooleanExtra("setNick", false)) {
     		
     		editNick();
@@ -78,7 +84,6 @@ public class Settings extends PreferenceActivity implements HttpCallback {
     	} else if (getIntent().getBooleanExtra("enterPassword", false)) {
     		
     		quitAfterLogin = true;
-    		nick = this.prefs.getString("name", "");
     		showLogin("You session has expired. Please enter your password.");
     	}
     	
@@ -162,6 +167,8 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 		};
         
 		findPreference("name").setOnPreferenceChangeListener(listener);
+		findPreference("password").setOnPreferenceChangeListener(listener);
+		findPreference("recovery").setOnPreferenceChangeListener(listener);
 		findPreference("demos").setOnPreferenceChangeListener(listener);
 		findPreference("sound").setOnPreferenceChangeListener(listener);
 		findPreference("ambience").setOnPreferenceChangeListener(listener);
@@ -171,6 +178,70 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 		findPreference("fps").setOnPreferenceChangeListener(listener);
 		findPreference("icon").setOnPreferenceChangeListener(listener);
 		findPreference("notification").setOnPreferenceChangeListener(listener);
+		
+		recovery = (RecoveryPreference)findPreference("recovery");
+		recovery.setRequestListener(new OnClickListener() {
+			
+			public void onClick(DialogInterface dialog, int which) {
+				
+				showRequestRecovery(false);
+			}
+		});
+		recovery.setRecoveryListener(new OnClickListener() {
+			
+			public void onClick(DialogInterface dialog, int which) {
+
+				sendRecoveryRequest(recovery.getCode());
+			}
+		});
+		
+		password = (PasswordPreference)findPreference("password");
+		password.setMessage("Change password for '"+ this.nick +"'");
+		password.setListener(new OnClickListener() {
+			
+			public void onClick(DialogInterface dialog, int which) {
+				
+				String session = Database.getInstance().getSession(nick);
+				if (session == null || session.equals("")) {
+					
+					new AlertDialog.Builder(Settings.this)
+						.setCancelable(false)
+						.setMessage("You must be logged in to change your password.")
+						.setNeutralButton("OK", null)
+						.show();
+					return;
+				}
+				
+				String url = "http://racesow2d.warsow-race.net/accounts.php";
+				List<NameValuePair> values = new ArrayList<NameValuePair>();
+				values.add(new BasicNameValuePair("action", "pass"));
+				values.add(new BasicNameValuePair("pass", password.getPassword()));
+				values.add(new BasicNameValuePair("session", session));
+				final HttpLoaderTask task = new HttpLoaderTask(Settings.this);
+				task.execute(url, values);
+				
+				pd = new ProgressDialog(Settings.this);
+				pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+				pd.setMessage("Changing password...");
+				pd.setCancelable(true);
+				pd.setOnCancelListener(new OnCancelListener() {
+					
+					public void onCancel(DialogInterface dialog) {
+
+						task.cancel(true);
+						if (quitAfterLogin) {
+							
+							Settings.this.onBackPressed();
+							
+						} else {
+						
+							editNick();
+						}
+					}
+				});
+				pd.show();
+			}
+		});
     }
     
     /**
@@ -388,11 +459,99 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 			} catch (NumberFormatException e) {}
 			return;
 		}
+		
+		// new password response
+		NodeList newpasswords = parser.doc.getElementsByTagName("newpass");
+		if (newpasswords.getLength() == 1) {
+			
+			Element newpass = (Element)newpasswords.item(0);
+			String session = parser.getValue(newpass, "session");
+			if (!session.equals("")) {
+				
+				Database.getInstance().setSession(nick, session);
+				showNewPassword();
+				
+			} else {
+				
+				showError("Could not send code.", "recovery");
+			}
+			
+			return;
+		}
+		
+		// password change response
+		NodeList passwords = parser.doc.getElementsByTagName("pass");
+		if (passwords.getLength() == 1) {
+			
+			Element password = (Element)passwords.item(0);
+			int result = Integer.parseInt(parser.getValue(password, "result"));
+			if (result == 1) {
+				
+				String session = parser.getValue(password, "session");
+				Database.getInstance().setSession(nick, session);
+				new AlertDialog.Builder(Settings.this)
+					.setCancelable(false)
+					.setMessage("Password changed.")
+					.setNeutralButton("OK", null)
+					.show();
+				
+			} else {
+				
+				showError("Could not change password.", null);
+			}
+			
+			return;
+		}
+	}
+	
+	/**
+	 * Show the form for entering a new password
+	 * 
+	 */
+	private void showNewPassword() {
+		
+		PreferenceScreen screen = (PreferenceScreen)findPreference("settings");
+		int itemPos = findPreference("password").getOrder();
+		screen.onItemClick(null, null, itemPos, 0);
 	}
     
+	/**
+	 * Show the password recovery dialog
+	 */
 	private void showPasswordRecovery() {
 		
+		PreferenceScreen screen = (PreferenceScreen)findPreference("settings");
+		int itemPos = findPreference("recovery").getOrder();
+		screen.onItemClick(null, null, itemPos, 0);
+	}
+
+	/**
+	 * Send the request to revocer a password
+	 * 
+	 * @param String code
+	 */
+	public void sendRecoveryRequest(String code) {
 		
+		String url = "http://racesow2d.warsow-race.net/accounts.php";
+		List<NameValuePair> values = new ArrayList<NameValuePair>();
+		values.add(new BasicNameValuePair("action", "newpass"));
+		values.add(new BasicNameValuePair("code", code));
+		final HttpLoaderTask task = new HttpLoaderTask(Settings.this);
+		task.execute(url, values);
+		
+		pd = new ProgressDialog(Settings.this);
+		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		pd.setMessage("Checking code...");
+		pd.setCancelable(true);
+		pd.setOnCancelListener(new OnCancelListener() {
+			
+			public void onCancel(DialogInterface dialog) {
+
+				task.cancel(true);
+				showPasswordRecovery();
+			}
+		});
+		pd.show();
 	}
 	
 	/**
@@ -417,7 +576,7 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 						
 						} else if (returnTo.equals("recovery")) {
 							
-							showRequestRecovery();
+							showRequestRecovery(true);
 						}
 					}
 				}
@@ -451,8 +610,14 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 		setNickName(nick);
 	}
 	
+	/**
+	 * Set the current nickname
+	 * 
+	 * @param String nick
+	 */
 	public void setNickName(String nick) {
 		
+		this.password.setMessage("Change password for '"+ nick +"'");
 		prefs.edit().putString("name", nick).commit();
 		if (!IsServiceRunning.check("org.racenet.racesow.PullService", getApplicationContext())) {
         		
@@ -685,7 +850,7 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 				
 				public void onClick(DialogInterface dialog, int which) {
 					
-					showRequestRecovery();
+					showRequestRecovery(true);
 				}
 			})
 			.create();
@@ -712,7 +877,7 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 	/**
 	 * Show the password recovery dialog
 	 */
-	private void showRequestRecovery() {
+	private void showRequestRecovery(final boolean returnTo) {
 		
 		final EditText email = new EditText(Settings.this);
 		email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
@@ -723,7 +888,10 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 				
 				public void onCancel(DialogInterface dialog) {
 					
-					showLogin("Please enter your password.");
+					if (returnTo) {
+					
+						showLogin("Please enter your password.");
+					}
 				}
 			})
 	        .setMessage("Enter your E-Mail addresss to receive a new password.")
@@ -738,7 +906,10 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 				
 				public void onClick(DialogInterface arg0, int arg1) {
 					
-					showLogin("Please enter your password.");
+					if (returnTo) {
+					
+						showLogin("Please enter your password.");
+					}
 				}
 			})
 	        .create();

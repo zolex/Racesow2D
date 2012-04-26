@@ -3,7 +3,8 @@
     android:key="settings"
 	xmlns:android="http://schemas.android.com/apk/res/android">
     <EditTextPreference android:title="Nickname" android:summary="For the highscore list" android:key="name" android:dialogTitle="Enter your nickname" android:negativeButtonText="Cancel" android:positiveButtonText="Save"/>
-    <CheckBoxPreference android:key="demos" android:title="Record demos" android:summary="Demo recording can reduce the performance" android:defaultValue="true" android:enabled="true" />
+    <org.racenet.racesow.models.PasswordPreference android:title="Change password" android:summary="Set a new password for your account" android:key="password" android:dialogTitle="Change password" android:negativeButtonText="Cancel" android:positiveButtonText="Change"/>
+    <org.racenet.racesow.models.RecoveryPreference android:summary="Forgot your password or want to enter a recovery code?" android:title="Password recovery" android:key="recovery" android:enabled="true"/><CheckBoxPreference android:key="demos" android:title="Record demos" android:summary="Demo recording can reduce the performance" android:defaultValue="true" android:enabled="true" />
     <CheckBoxPreference android:title="Sound effects" android:summary="Enable ingame sound effects" android:key="sound" android:summaryOn="Sound effects enabled" android:summaryOff="Sound effects disabled" android:enabled="true" android:defaultValue="true"/>
     <CheckBoxPreference android:title="Ambient sounds" android:key="ambience" android:summary="Enable ingame ambient sounds" android:defaultValue="true" android:enabled="true" android:summaryOn="Ambient sounds enabled" android:summaryOff="Ambient sounds disabled"/>
     <CheckBoxPreference android:key="gfx" android:title="GFX-Highlights" android:enabled="true" android:defaultValue="true" android:summary="Draw graphical highlights. Disable to increase performance"/>
@@ -12,4 +13,5 @@
     <CheckBoxPreference android:summary="Show the frames per second in the HUD" android:title="Show FPS" android:key="fps" android:enabled="true" android:defaultValue="false"/>
     <CheckBoxPreference android:title="Statusbar icon" android:summary="Show an icon in the statusbar when the service is running" android:key="icon" android:defaultValue="true"/>
     <RingtonePreference android:title="Notification sound" android:summary="Choose a sound for notifications" android:showDefault="true" android:showSilent="true" android:ringtoneType="notification" android:key="notification" android:defaultValue="content://settings/system/notification_sound"/>
+    
 </PreferenceScreen>

@@ -84,7 +84,7 @@ public class Settings extends PreferenceActivity implements HttpCallback {
     	} else if (getIntent().getBooleanExtra("enterPassword", false)) {
     		
     		quitAfterLogin = true;
-    		showLogin("You session has expired. Please enter your password.");
+    		showLogin("Your session has expired. Please enter your password.");
     	}
     	
         OnPreferenceChangeListener listener = new OnPreferenceChangeListener() {

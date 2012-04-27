@@ -136,6 +136,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 	public int lastJumpAnim = ANIM_JUMP_2;
 	private float lastFinishTime;
 	ProgressDialog pd;
+	long lastRaceID = 0;
 	
 	private int frames = 0;
 	
@@ -1376,9 +1377,6 @@ public class Player extends AnimatedBlock implements HttpCallback {
 								
 								Player.this.map.inFinishSequence = false;
 								
-								Player.this.name = input.getText().toString().trim();
-								Player.this.submitScore();
-								
 								// save the time to the local scores
 								InternalScoresThread t = new InternalScoresThread(
 									Player.this.map.fileName,
@@ -1388,6 +1386,8 @@ public class Player extends AnimatedBlock implements HttpCallback {
 								    	
 								    	@Override
 								        public void handleMessage(Message msg) {
+								    		
+								    		lastRaceID = msg.getData().getLong("id");
 								    		
 								    		if (msg.getData().getBoolean("record")) {
 								    			
@@ -1403,6 +1403,9 @@ public class Player extends AnimatedBlock implements HttpCallback {
 								    	}
 								});
 								t.start();
+								
+								Player.this.name = input.getText().toString().trim();
+								Player.this.submitScore();
 							}
 						});
 				        
@@ -1546,6 +1549,8 @@ public class Player extends AnimatedBlock implements HttpCallback {
 					
 					Database.getInstance().setSession(this.name, session);
 				}
+				
+				Database.getInstance().flagRaceSubmitted(lastRaceID);
 				
 				int points;
 				try {

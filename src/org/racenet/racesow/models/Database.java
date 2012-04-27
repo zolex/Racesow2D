@@ -79,7 +79,7 @@ public final class Database extends SQLiteOpenHelper {
      */
     public void onCreate(SQLiteDatabase db) {
     	
-        db.execSQL("CREATE TABLE races(id INTEGER, map TEXT, player TEXT, time REAL, created_at TEXT, PRIMARY KEY(id))");
+        db.execSQL("CREATE TABLE races(id INTEGER, map TEXT, player TEXT, time REAL, submitted INTEGER, created_at TEXT, PRIMARY KEY(id))");
         db.execSQL("CREATE TABLE players(name TEXT, session TEXT, position INTEGER, points INTEGER, updated TEXT, PRIMARY KEY(name))");
         db.execSQL("CREATE TABLE updates(id INTEGER, name TEXT, old_points INTEGER, new_points INTEGER, old_position INTEGER, new_position INTEGER, created_at TEXT, done INTEGER, PRIMARY KEY(id))");
 		db.execSQL("CREATE TABLE update_maps(id INTEGER, update_id INTEGER, name TEXT, old_position INTEGER, new_position INTEGER, PRIMARY KEY(id))");
@@ -609,14 +609,43 @@ public final class Database extends SQLiteOpenHelper {
 	}
 	
 	/**
+	 * Flag a race as submitted to the online scores
+	 * 
+	 * @param long id
+	 */
+	public void flagRaceSubmitted(long id) {
+		
+		try {
+			
+			while (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
+			
+			database.beginTransaction();
+			ContentValues values = new ContentValues();
+			values.put("submitted", 1);
+			database.update("races", values, "id = '"+ id + "'", null);
+			database.setTransactionSuccessful();
+			
+		} catch (Exception e) {
+			
+		} finally {
+			
+			database.endTransaction();
+		}
+	}
+	
+	/**
 	 * Add a race to the local race table
 	 * 
 	 * @param String map
 	 * @param String player
 	 * @param float time
 	 */
-	public void addRace(String map, String player, float time) {
+	public long addRace(String map, String player, float time) {
 		
+		long id = 0;
 		try {
 			
 			while (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
@@ -629,12 +658,13 @@ public final class Database extends SQLiteOpenHelper {
 	    	values.put("map", map);
 	    	values.put("time", time);
 	    	values.put("player", player);
+	    	values.put("submitted", 0);
 	    	
 	    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
 	    	Date date = new Date();
 	    	values.put("created_at", dateFormat.format(date));
 	    	
-	    	database.insert("races", "", values);
+	    	id = database.insert("races", "", values);
 	    	database.setTransactionSuccessful();
 	    	
 		} catch (Exception e) {
@@ -643,6 +673,8 @@ public final class Database extends SQLiteOpenHelper {
 			
 			database.endTransaction();
 		}
+		
+		return id;
 	}
 	
 	/**

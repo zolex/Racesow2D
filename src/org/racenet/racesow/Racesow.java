@@ -98,7 +98,7 @@ public class Racesow extends GLGame implements HttpCallback {
 				switch (msg.what) {
 				
 					case 0:
-						showLogin("There are local scores which have not been yubmitted yet.\nPlease enter the password for '"+ task.currentPlayer.name +"'");
+						showLogin("There are local scores which have not been submitted yet.\nPlease enter the password for '"+ task.currentPlayer.name +"'");
 						break;
 						
 					case 1:

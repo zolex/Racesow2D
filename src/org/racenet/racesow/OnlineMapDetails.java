@@ -18,6 +18,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.util.Log;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 
@@ -35,6 +36,7 @@ public class OnlineMapDetails extends ListActivity implements HttpCallback {
 	int chunkLimit = 50;
 	int chunkOffset = 0;
 	ProgressDialog pd;
+	int count;
 	
     @Override
     /**
@@ -62,10 +64,18 @@ public class OnlineMapDetails extends ListActivity implements HttpCallback {
 			
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
+				Log.d("DEBUG", "scroll");
+				
 				if (totalItemCount > 0 && visibleItemCount > 0 && firstVisibleItem + visibleItemCount >= totalItemCount) {
+
+					Log.d("DEBUG", "yes1");
+
 					
-					if (!isLoading && adapter.getCount() % chunkLimit == 0) {
+					if (!isLoading && totalItemCount < count) {
 					
+						Log.d("DEBUG", "yes2");
+
+						
 						loadData();
 					}
 				}
@@ -104,7 +114,10 @@ public class OnlineMapDetails extends ListActivity implements HttpCallback {
      */
     public void httpCallback(InputStream xmlStream) {
     	
-    	pd.dismiss();
+    	if (pd.isShowing()) {
+    	
+    		pd.dismiss();
+    	}
 		
 		if (xmlStream == null) {
 			
@@ -127,6 +140,13 @@ public class OnlineMapDetails extends ListActivity implements HttpCallback {
 		
 			XMLParser parser = new XMLParser();
 			parser.read(xmlStream);
+			
+			NodeList counts = parser.doc.getElementsByTagName("count");
+			if (counts.getLength() == 1) {
+				
+				this.count = Integer.parseInt(parser.getNodeValue(counts.item(0)));
+			}
+			
 			NodeList positions = parser.doc.getElementsByTagName("position");
 			int numPositions = positions.getLength();
 			for (int i = 0; i < numPositions; i++) {

@@ -35,6 +35,7 @@ public class OnlinePlayers extends ListActivity implements HttpCallback {
 	int chunkLimit = 50;
 	int chunkOffset = 0;
 	ProgressDialog pd;
+	int count;
 	
     @Override
     /**
@@ -64,7 +65,7 @@ public class OnlinePlayers extends ListActivity implements HttpCallback {
 
 				if (totalItemCount > 0 && visibleItemCount > 0 && firstVisibleItem + visibleItemCount >= totalItemCount) {
 					
-					if (!isLoading && adapter.getCount() % chunkLimit == 0) {
+					if (!isLoading && totalItemCount < count) {
 					
 						loadData();
 					}
@@ -126,6 +127,13 @@ public class OnlinePlayers extends ListActivity implements HttpCallback {
 		
 			XMLParser parser = new XMLParser();
 			parser.read(xmlStream);
+			
+			NodeList counts = parser.doc.getElementsByTagName("count");
+			if (counts.getLength() == 1) {
+				
+				this.count = Integer.parseInt(parser.getNodeValue(counts.item(0)));
+			}
+			
 			NodeList positions = parser.doc.getElementsByTagName("player");
 			int numPositions = positions.getLength();
 			for (int i = 0; i < numPositions; i++) {

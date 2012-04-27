@@ -58,7 +58,7 @@ public class PullService extends Service {
         this.db = Database.getInstance();
         
         // start the frequent API pull
-        this.timer.schedule(new TimerTask() {
+        this.timer.scheduleAtFixedRate(new TimerTask() {
 			
 			@Override
 			public void run() {

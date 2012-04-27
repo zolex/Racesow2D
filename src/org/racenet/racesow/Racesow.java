@@ -49,7 +49,8 @@ public class Racesow extends GLGame implements HttpCallback {
 	public static boolean IN_GAME = false;
 	ProgressDialog pd;
 	SubmitScoresTask task = null;
-	String name;
+	String pendingName;
+	String initialName;
 	
 	/**
 	 * Create the activity
@@ -98,7 +99,8 @@ public class Racesow extends GLGame implements HttpCallback {
 				switch (msg.what) {
 				
 					case 0:
-						showLogin("There are local scores which have not been submitted yet.\nPlease enter the password for '"+ task.currentPlayer.name +"'");
+						initialName = task.currentPlayer.name;
+						showLogin("There are local scores for '"+ task.currentPlayer.name +"' which have not been submitted yet. As the name is registered you may login for it, change the name or cancel the submission.");
 						break;
 						
 					case 1:
@@ -138,6 +140,29 @@ public class Racesow extends GLGame implements HttpCallback {
 			return;
 		}
 		
+		// name availability check response
+		NodeList checks = parser.doc.getElementsByTagName("checkname");
+		if (checks.getLength() == 1) {
+			
+			try {
+				
+				int available = Integer.parseInt(parser.getValue((Element)checks.item(0), "available"));
+				if (available == 1) {
+					
+					Database.getInstance().updateRacesPlayer(initialName, pendingName);
+					task.currentPlayer.name = pendingName;
+					task.submitCurrent("");
+					
+				} else {
+					
+					task.currentPlayer.name = pendingName;
+					showLogin("The name '"+ task.currentPlayer.name +"' is also registered you may login for it, change the name or cancel the submission.");
+				}
+				
+			} catch (NumberFormatException e) {}
+			return;
+		}
+		
 		// login response
 		NodeList auths = parser.doc.getElementsByTagName("auth");
 		if (auths.getLength() == 1) {
@@ -149,11 +174,39 @@ public class Racesow extends GLGame implements HttpCallback {
 				if (result == 1) {
 					
 					String session = parser.getValue(auth, "session");
+					Database.getInstance().setSession(task.currentPlayer.name, session);
 					task.submitCurrent(session);
 					
 				} else {
 					
-					showLogin("Wrong password. Please try again.");
+					showLogin("Wrong password for '"+ task.currentPlayer.name +"'. Please try again, chage the name or skip the submission.");
+				}
+				
+			} catch (NumberFormatException e) {}
+			return;
+		}
+		
+		// session response
+		NodeList sessions = parser.doc.getElementsByTagName("checksession");
+		if (sessions.getLength() == 1) {
+			
+			try {
+				
+				Element session = (Element)sessions.item(0);
+				int result = Integer.parseInt(parser.getValue(session, "result"));
+				if (result == 1) {
+					
+					Database db = Database.getInstance();
+					String newSesssion = parser.getValue(session, "session");
+					db.setSession(pendingName, newSesssion);
+					db.updateRacesPlayer(initialName, pendingName);
+					task.currentPlayer.name = pendingName;
+					task.submitCurrent(newSesssion);
+					
+				} else {
+					
+					task.currentPlayer.name = pendingName;
+					showLogin("The sesion for '"+ pendingName +"' has expired.\nPlease enter the Password.");
 				}
 				
 			} catch (NumberFormatException e) {}
@@ -229,32 +282,24 @@ public class Racesow extends GLGame implements HttpCallback {
 						public void onCancel(DialogInterface dialog) {
 
 							task2.cancel(true);
-							task.prepareNext();
+							showLogin("There are local scores for '"+ task.currentPlayer.name +"' which have not been submitted yet. As the name is registered you may login for it, change the name or cancel the submission.");
 						}
 					});
 					pd.show();
 				}
 			})
-			.setNegativeButton("Skip", new OnClickListener() {
+			.setNegativeButton("Cancel", new OnClickListener() {
 				
 				public void onClick(DialogInterface dialog, int which) {
 					
-					task.prepareNext();
+					askSkip();
 				}
 			})
-			.setNeutralButton("Dismiss scores", new OnClickListener() {
+			.setNeutralButton("Change name", new OnClickListener() {
 				
 				public void onClick(DialogInterface dialog, int which) {
 					
-					int length = task.currentPlayer.races.size();
-					Database db = Database.getInstance();
-					for (int i = 0; i < length; i++) {
-					
-						long id = task.currentPlayer.races.get(i).id;
-						db.flagRaceSubmitted(id);
-					}
-					
-					task.prepareNext();
+					showChangeName();
 				}
 			})
 			.create();
@@ -263,11 +308,130 @@ public class Racesow extends GLGame implements HttpCallback {
 			
 			public void onCancel(DialogInterface dialog) {
 				
-				task.prepareNext();
+				askSkip();
 			}
 		});
 		
 		login.show();
+	}
+	
+	/**
+	 * Ask the user to skip the submission or dismiss it
+	 */
+	public void askSkip() {
+		
+		new AlertDialog.Builder(Racesow.this)
+		.setCancelable(false)
+        .setMessage("Do you want to skip the submission to execute it later or completely dismiss it?")
+        .setPositiveButton("Skip", new OnClickListener() {
+			
+			public void onClick(DialogInterface dialog, int which) {
+				
+				task.prepareNext();
+			}
+		})
+		.setNegativeButton("Dismiss", new OnClickListener() {
+			
+			public void onClick(DialogInterface dialog, int which) {
+				
+				int length = task.currentPlayer.races.size();
+				Database db = Database.getInstance();
+				for (int i = 0; i < length; i++) {
+				
+					long id = task.currentPlayer.races.get(i).id;
+					db.flagRaceSubmitted(id, null);
+				}
+				
+				task.prepareNext();
+			}
+		})
+		.show();
+	}
+	
+	/**
+	 * Show a dialog to allow the user to change
+	 * the name from a protected one to a new one
+	 */
+	public void showChangeName() {
+		
+		final EditText name = new EditText(Racesow.this);
+		AlertDialog change = new AlertDialog.Builder(Racesow.this)
+			.setCancelable(true)
+			.setView(name)
+	        .setMessage("Change the name for '"+ task.currentPlayer.name + "'")
+	        .setPositiveButton("Change", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					
+					pendingName = name.getText().toString().trim();
+					
+					String session = Database.getInstance().getSession(pendingName);
+					if (!session.equals("")) {
+						
+						String url = "http://racesow2d.warsow-race.net/accounts.php";
+						List<NameValuePair> values = new ArrayList<NameValuePair>();
+						values.add(new BasicNameValuePair("action", "session"));
+						values.add(new BasicNameValuePair("id", session));
+						final HttpLoaderTask task = new HttpLoaderTask(Racesow.this);
+						task.execute(url, values);
+						
+						pd = new ProgressDialog(Racesow.this);
+						pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+						pd.setMessage("Checking session...");
+						pd.setCancelable(true);
+						pd.setOnCancelListener(new OnCancelListener() {
+							
+							public void onCancel(DialogInterface dialog) {
+
+								task.cancel(true);
+								showChangeName();
+							}
+						});
+						pd.show();
+						
+					} else {
+					
+						String url = "http://racesow2d.warsow-race.net/accounts.php";
+						List<NameValuePair> values = new ArrayList<NameValuePair>();
+						values.add(new BasicNameValuePair("action", "check"));
+						values.add(new BasicNameValuePair("name", pendingName));
+						final HttpLoaderTask task = new HttpLoaderTask(Racesow.this);
+						task.execute(url, values);
+						
+						pd = new ProgressDialog(Racesow.this);
+						pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+						pd.setMessage("Checking name...");
+						pd.setCancelable(true);
+						pd.setOnCancelListener(new OnCancelListener() {
+							
+							public void onCancel(DialogInterface dialog) {
+	
+								task.cancel(true);
+								showChangeName();
+							}
+						});
+						pd.show();
+					}
+				}
+			})
+			.setNegativeButton("Cancel", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					
+					showLogin("There are local scores for '"+ task.currentPlayer.name +"' which have not been submitted yet. As the name is registered you may login for it, change the name or cancel the submission.");
+				}
+			})
+			.create();
+		
+		change.setOnCancelListener(new OnCancelListener() {
+			
+			public void onCancel(DialogInterface dialog) {
+			
+				showLogin("There are local scores for '"+ task.currentPlayer.name +"' which have not been submitted yet. As the name is registered you may login for it, change the name or cancel the submission.");
+			}
+		});
+		
+		change.show();
 	}
 	
 	/**

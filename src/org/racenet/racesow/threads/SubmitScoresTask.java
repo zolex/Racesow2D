@@ -21,7 +21,6 @@ import org.w3c.dom.NodeList;
 
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.util.Log;
 
 /**
  * Task to submit scores which were done while
@@ -188,7 +187,7 @@ public class SubmitScoresTask extends AsyncTask<Void, Void, Void> implements Htt
 			for (int i = 0; i < length; i++) {
 				
 				long id = this.currentPlayer.races.get(i).id;
-				db.flagRaceSubmitted(id);
+				db.flagRaceSubmitted(id, null);
 			}
 			
 			int points;

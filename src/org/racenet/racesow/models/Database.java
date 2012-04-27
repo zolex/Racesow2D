@@ -288,6 +288,35 @@ public final class Database extends SQLiteOpenHelper {
 	}
 	
 	/**
+	 * Update the name of a player
+	 * 
+	 * @param String oldName
+	 * @param String newName
+	 */
+	public void updateRacesPlayer(String oldName, String newName) {
+		
+		try {
+			
+			if (database.isDbLockedByCurrentThread() || database.isDbLockedByOtherThreads()) {
+				
+				Thread.sleep(10);
+			}
+			
+			database.beginTransaction();
+			ContentValues values = new ContentValues();
+			values.put("player", newName);
+			database.update("races", values, "player = '"+ oldName + "'", null);
+			database.setTransactionSuccessful();
+		    	
+		} catch (Exception e) {
+			
+		} finally {
+			
+			database.endTransaction();
+		}
+	}
+	
+	/**
 	 * Save a new update to the database
 	 * 
 	 * @param UpdateItem update
@@ -660,7 +689,7 @@ public final class Database extends SQLiteOpenHelper {
 	 * 
 	 * @param long id
 	 */
-	public void flagRaceSubmitted(long id) {
+	public void flagRaceSubmitted(long id, String name) {
 		
 		try {
 			
@@ -672,6 +701,11 @@ public final class Database extends SQLiteOpenHelper {
 			database.beginTransaction();
 			ContentValues values = new ContentValues();
 			values.put("submitted", 1);
+			if (name != null) {
+			
+				values.put("player", name);
+			}
+			
 			if (1 != database.update("races", values, "id = '"+ id + "'", null)) {
 				
 				throw new Exception("could not flag race as submitted");

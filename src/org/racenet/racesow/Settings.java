@@ -84,7 +84,18 @@ public class Settings extends PreferenceActivity implements HttpCallback {
     	} else if (getIntent().getBooleanExtra("enterPassword", false)) {
     		
     		quitAfterLogin = true;
-    		showLogin("Your session has expired. Please enter your password.");
+    		String message;
+    		String session = Database.getInstance().getSession(this.nick);
+    		if (session.equals("")) {
+    			
+    			message = "The name '"+ this.nick +"' is registered. Please login or change the name.";
+    			
+    		} else {
+    			
+    			message = "Session for '"+ this.nick +"' has expired. Please enter your password.";
+    		}
+    		
+    		showLogin(message);
     	}
     	
         OnPreferenceChangeListener listener = new OnPreferenceChangeListener() {
@@ -351,7 +362,7 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 					
 				} else {
 					
-					askLogin();
+					showLogin("The name '"+ nick +"' is registered. Please enter your password or change the name.");
 				}
 				
 			} catch (NumberFormatException e) {}
@@ -373,7 +384,7 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 					
 				} else {
 					
-					showLogin("Wrong password. Please try again.");
+					showLogin("Wrong password. Please try again or change your name.");
 				}
 				
 			} catch (NumberFormatException e) {}
@@ -395,7 +406,7 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 					
 				} else {
 					
-					showLogin("Your session has expired.\nPlease enter your Password.");
+					showLogin("The session for '"+ nick +"' has expired.\nPlease enter your Password.");
 				}
 				
 			} catch (NumberFormatException e) {}
@@ -608,6 +619,11 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 		
 		Database.getInstance().setSession(nick, session);
 		setNickName(nick);
+		
+		if (quitAfterLogin) {
+			
+			this.onBackPressed();
+		}
 	}
 	
 	/**
@@ -623,32 +639,6 @@ public class Settings extends PreferenceActivity implements HttpCallback {
         		
     		startService(new Intent(getApplicationContext(), PullService.class));
     	}
-	}
-	
-	/**
-	 * Ask the user to login
-	 */
-	private void askLogin() {
-		
-		new AlertDialog.Builder(Settings.this)
-			.setCancelable(false)
-	        .setMessage("The name '"+ this.nick +"' is registered.\nDo you want to login?")
-	        .setPositiveButton("Yes", new OnClickListener() {
-				
-				public void onClick(DialogInterface dialog, int which) {
-	
-					showLogin("Please enter your password.");
-				}
-			})
-			.setNegativeButton("No", new OnClickListener() {
-				
-				public void onClick(DialogInterface dialog, int which) {
-	
-					((EditTextPreference)findPreference("name")).setText("");
-					editNick();
-				}
-			})
-	        .show();
 	}
 	
 	/**
@@ -671,6 +661,10 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 				public void onClick(DialogInterface dialog, int which) {
 					
 					setNickName(nick);
+					if (quitAfterLogin) {
+						
+						Settings.this.onBackPressed();
+					}
 				}
 			})
 	        .show();
@@ -832,18 +826,11 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 					pd.show();
 				}
 			})
-			.setNegativeButton("Cancel", new OnClickListener() {
+			.setNegativeButton("Change name", new OnClickListener() {
 				
 				public void onClick(DialogInterface dialog, int which) {
 					
-					if (quitAfterLogin) {
-						
-						Settings.this.onBackPressed();
-						
-					} else {
-						
-						editNick();
-					}
+					editNick();
 				}
 			})
 			.setNeutralButton("Forgot password?", new OnClickListener() {
@@ -890,7 +877,7 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 					
 					if (returnTo) {
 					
-						showLogin("Please enter your password.");
+						showLogin("Please enter the password for '"+ nick +"' or change the name.");
 					}
 				}
 			})

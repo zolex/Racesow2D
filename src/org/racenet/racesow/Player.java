@@ -137,6 +137,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 	private float lastFinishTime;
 	ProgressDialog pd;
 	long lastRaceID = 0;
+	boolean savedLocally;
 	
 	private int frames = 0;
 	
@@ -1341,80 +1342,92 @@ public class Player extends AnimatedBlock implements HttpCallback {
 				Player.this.gameScreen.game.runOnUiThread(new Runnable() {
 					
 					public void run() {
-					
-						final AlertDialog alert = new AlertDialog.Builder(Player.this.gameScreen.game).create();
-						final EditText input = new EditText(Player.this.gameScreen.game);
-						input.setText(Player.this.name);
-						input.addTextChangedListener(new TextWatcher() {
-							
-							public void onTextChanged(CharSequence s, int start, int before, int count) {
-								
-								if (s.toString().trim().length() == 0) {
-								
-									alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-									
-								} else {
-									
-									alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-								}
-							}
-							
-							public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-								
-							}
-							
-							public void afterTextChanged(Editable s) {
-								
-							}
-						});
 						
-						alert.setCancelable(false);
-						alert.setMessage("Your time is " + String.format(Locale.US, "%.4f", Player.this.lastFinishTime) + "\nEnter a nickname for the highscores.");
-				        alert.setView(input);
-				        alert.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new OnClickListener() {
-							
-							public void onClick(DialogInterface dialog, int which) {
-								
-								Player.this.map.inFinishSequence = false;
-								
-								// save the time to the local scores
-								InternalScoresThread t = new InternalScoresThread(
-									Player.this.map.fileName,
-									input.getText().toString().trim(),
-									Player.this.lastFinishTime,
-									new Handler() {
-								    	
-								    	@Override
-								        public void handleMessage(Message msg) {
-								    		
-								    		lastRaceID = msg.getData().getLong("id");
-								    		
-								    		if (msg.getData().getBoolean("record")) {
-								    			
-								    			Player.this.showRecordMessage();
-								    		
-								    		} else {
-								    			
-								    			Player.this.showFinishMessage();
-								    		}
-								    		
-								    		Player.this.showTimeMessage();
-								    		Player.this.showRestartMessage();
-								    	}
-								});
-								t.start();
-								
-								Player.this.name = input.getText().toString().trim();
-								Player.this.submitScore();
-							}
-						});
-				        
-				        alert.show();
-				        alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(!Player.this.name.equals(""));
+						savedLocally = false;
+						editName();
 					}
 				});
 			}
 		}, showDialogDelay);
+	}
+	
+	/**
+	 * Show a dialog to edit the nickname
+	 */
+	private void editName() {
+		
+		final AlertDialog alert = new AlertDialog.Builder(Player.this.gameScreen.game).create();
+		final EditText input = new EditText(Player.this.gameScreen.game);
+		input.setText(Player.this.name);
+		input.addTextChangedListener(new TextWatcher() {
+			
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				
+				if (s.toString().trim().length() == 0) {
+				
+					alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+					
+				} else {
+					
+					alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+				}
+			}
+			
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+				
+			}
+			
+			public void afterTextChanged(Editable s) {
+				
+			}
+		});
+		
+		alert.setCancelable(false);
+		alert.setMessage("Your time is " + String.format(Locale.US, "%.4f", Player.this.lastFinishTime) + "\nEnter a nickname for the highscores.");
+        alert.setView(input);
+        alert.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new OnClickListener() {
+			
+			public void onClick(DialogInterface dialog, int which) {
+				
+				Player.this.map.inFinishSequence = false;
+				
+				if (!savedLocally) {
+					// save the time to the local scores
+					InternalScoresThread t = new InternalScoresThread(
+						Player.this.map.fileName,
+						input.getText().toString().trim(),
+						Player.this.lastFinishTime,
+						new Handler() {
+					    	
+					    	@Override
+					        public void handleMessage(Message msg) {
+					    		
+					    		savedLocally = true;
+					    		lastRaceID = msg.getData().getLong("id");
+					    		
+					    		if (msg.getData().getBoolean("record")) {
+					    			
+					    			Player.this.showRecordMessage();
+					    		
+					    		} else {
+					    			
+					    			Player.this.showFinishMessage();
+					    		}
+					    		
+					    		Player.this.showTimeMessage();
+					    		Player.this.showRestartMessage();
+					    	}
+					});
+					t.start();
+				}
+				
+				Player.this.name = input.getText().toString().trim();
+				Player.this.submitScore();
+			}
+		});
+        
+        alert.show();
+        alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(!Player.this.name.equals(""));
 	}
 	
 	/**
@@ -1457,7 +1470,13 @@ public class Player extends AnimatedBlock implements HttpCallback {
 					pd.show();
 				}
 			})
-			.setNegativeButton("Cancel", null)
+			.setNegativeButton("Change name", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					
+					editName();
+				}
+			})
 			.create();
 		
 		login.show();
@@ -1507,6 +1526,8 @@ public class Player extends AnimatedBlock implements HttpCallback {
 		}
 		try {
 			
+			Database db = Database.getInstance();
+			
 			XMLParser parser = new XMLParser();
 	        parser.read(xmlStream);
 			
@@ -1530,7 +1551,18 @@ public class Player extends AnimatedBlock implements HttpCallback {
 				
 				if (code == 2) { // SESSION_INVALID
 					
-					showLogin("Your session has expired. Please login.");
+					String message;
+					String session = db.getSession(this.name);
+					if (session.equals("")) {
+						
+						message = "This name is registered. Please login or change your name.";
+						
+					} else {
+						
+						message = "Your session has expired. Please login.";
+					}
+					
+					showLogin(message);
 					return;
 					
 				} else {
@@ -1547,10 +1579,10 @@ public class Player extends AnimatedBlock implements HttpCallback {
 				String session = parser.getValue(submissionRoot, "session");
 				if (!session.equals("")) {
 					
-					Database.getInstance().setSession(this.name, session);
+					db.setSession(this.name, session);
 				}
 				
-				Database.getInstance().flagRaceSubmitted(lastRaceID);
+				Database.getInstance().flagRaceSubmitted(lastRaceID, this.name);
 				
 				int points;
 				try {
@@ -1591,7 +1623,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 					int result = Integer.parseInt(parser.getValue(auth, "result"));
 					if (result == 1) {
 						
-						Database.getInstance().setSession(this.name, parser.getValue(auth, "session"));
+						db.setSession(this.name, parser.getValue(auth, "session"));
 						this.submitScore();
 						
 					} else {

@@ -1,24 +1,42 @@
 package org.racenet.racesow;
 
 import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.racenet.framework.Audio;
 import org.racenet.framework.FileIO;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.Screen;
+import org.racenet.framework.XMLParser;
 import org.racenet.helpers.IsServiceRunning;
 import org.racenet.racesow.GameScreen.GameState;
 import org.racenet.racesow.models.Database;
+import org.racenet.racesow.threads.HttpLoaderTask;
+import org.racenet.racesow.threads.SubmitScoresTask;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Process;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
+import android.widget.EditText;
 
 /**
  * Main Activity of the game
@@ -26,10 +44,13 @@ import android.os.Process;
  * @author so#zolex
  *
  */
-public class Racesow extends GLGame {
+public class Racesow extends GLGame implements HttpCallback {
 	
 	public static boolean LOOPER_PREPARED = false;
 	public static boolean IN_GAME = false;
+	ProgressDialog pd;
+	SubmitScoresTask task = null;
+	String name;
 	
 	/**
 	 * Create the activity
@@ -68,6 +89,173 @@ public class Racesow extends GLGame {
         		startService(new Intent(getApplicationContext(), PullService.class));
         	}
 		}
+		
+		task = new SubmitScoresTask(new Handler() {
+			
+			@Override
+	        public void handleMessage(Message msg) {
+				
+				switch (msg.what) {
+				
+					case 0:
+						showLogin("Please enter the password for '"+ task.currentPlayer.name +"'");
+						break;
+						
+					case 1:
+						showEarnedPoints();
+						break;
+				}
+			}
+		});
+		
+		task.execute();
+	}
+	
+	public void httpCallback(InputStream xmlStream) {
+		
+		pd.dismiss();
+		
+		// not online, just use the nick for now without checking it
+		if (xmlStream == null) {
+			
+			return;
+		}
+		
+		XMLParser parser = new XMLParser();
+		parser.read(xmlStream);
+		
+		// error response
+		NodeList errors = parser.doc.getElementsByTagName("error");
+		if (errors.getLength() == 1) {
+		
+			String message = parser.getNodeValue(errors.item(0));
+			showError(message, null);
+			return;
+		}
+		
+		// login response
+		NodeList auths = parser.doc.getElementsByTagName("auth");
+		if (auths.getLength() == 1) {
+			
+			try {
+
+				Element auth = (Element)auths.item(0);
+				int result = Integer.parseInt(parser.getValue(auth, "result"));
+				if (result == 1) {
+					
+					String session = parser.getValue(auth, "session");
+					task.submitCurrent(session);
+					
+				} else {
+					
+					showLogin("Wrong password. Please try again.");
+				}
+				
+			} catch (NumberFormatException e) {}
+			return;
+		}
+	}
+	
+	public void showEarnedPoints() {
+		
+		AlertDialog login = new AlertDialog.Builder(Racesow.this)
+		.setCancelable(true)
+        .setMessage(task.currentPlayer.name + " earned " + task.currentPlayer.points +" point" + (task.currentPlayer.points == 1 ? "" : "s") + ".")
+        .setPositiveButton("OK", new OnClickListener() {
+			
+			public void onClick(DialogInterface dialog, int which) {
+
+				task.prepareNext();
+			}
+		})
+		.create();
+	
+		login.setOnCancelListener(new OnCancelListener() {
+			
+			public void onCancel(DialogInterface dialog) {
+				
+				task.prepareNext();
+			}
+		});
+		
+		login.show();
+	}
+	
+	public void showLogin(String message) {
+		
+		final EditText pass = new EditText(Racesow.this);
+		pass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+		pass.setTransformationMethod(PasswordTransformationMethod.getInstance());
+		AlertDialog login = new AlertDialog.Builder(Racesow.this)
+			.setCancelable(true)
+			.setView(pass)
+	        .setMessage(message)
+	        .setPositiveButton("Login", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+
+					String password = pass.getText().toString();
+					
+					String url = "http://racesow2d.warsow-race.net/accounts.php";
+					List<NameValuePair> values = new ArrayList<NameValuePair>();
+					values.add(new BasicNameValuePair("action", "auth"));
+					values.add(new BasicNameValuePair("name", task.currentPlayer.name));
+					values.add(new BasicNameValuePair("pass", password));
+					final HttpLoaderTask task2 = new HttpLoaderTask(Racesow.this);
+					task2.execute(url, values);
+					
+					pd = new ProgressDialog(Racesow.this);
+					pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+					pd.setMessage("Loggin in...");
+					pd.setCancelable(true);
+					pd.setOnCancelListener(new OnCancelListener() {
+						
+						public void onCancel(DialogInterface dialog) {
+
+							task2.cancel(true);
+							task.prepareNext();
+						}
+					});
+					pd.show();
+				}
+			})
+			.setNegativeButton("Cancel", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					
+					task.prepareNext();
+				}
+			})
+			.create();
+		
+		login.setOnCancelListener(new OnCancelListener() {
+			
+			public void onCancel(DialogInterface dialog) {
+				
+				task.prepareNext();
+			}
+		});
+		
+		login.show();
+	}
+	
+	/**
+	 * Show an error message
+	 * 
+	 * @param String message
+	 */
+	private void showError(String message, final String returnTo) {
+		
+		new AlertDialog.Builder(Racesow.this)
+			.setCancelable(false)
+	        .setMessage("Error: " + message)
+	        .setNeutralButton("OK", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					
+				}
+			})
+	        .show();
 	}
 	
 	/**

@@ -64,18 +64,10 @@ public class OnlineMapDetails extends ListActivity implements HttpCallback {
 			
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
-				Log.d("DEBUG", "scroll");
-				
 				if (totalItemCount > 0 && visibleItemCount > 0 && firstVisibleItem + visibleItemCount >= totalItemCount) {
 
-					Log.d("DEBUG", "yes1");
-
-					
 					if (!isLoading && totalItemCount < count) {
 					
-						Log.d("DEBUG", "yes2");
-
-						
 						loadData();
 					}
 				}

@@ -3,6 +3,7 @@ package org.racenet.racesow.models;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -606,6 +607,48 @@ public final class Database extends SQLiteOpenHelper {
 	    
 	    c.close();
 	    return points;
+	}
+	
+	/**
+	 * Get all races grouped by player which were not yet submitted
+	 * @return
+	 */
+	public HashMap<String, PlayerItem> getNewRaces() {
+		
+		HashMap<String, PlayerItem> players = new HashMap<String, PlayerItem>();
+		Cursor c = database.query("races", new String[]{"id", "player", "map", "time"}, "submitted = 0", null, null, null, "player");
+		if (c.getCount() > 0) {
+	    	
+	    	c.moveToFirst();
+		    while(!c.isAfterLast()) {
+		 
+		    	PlayerItem player;
+		    	String name = c.getString(1);
+		    	if (players.containsKey(name)) {
+		    		
+		    		player = players.get(name);
+		    	
+		    	} else {
+		    	
+		    		player = new PlayerItem();
+		    		player.name = name;
+		    		player.session = this.getSession(name);
+		    		player.races = new ArrayList<RaceItem>();
+		    		players.put(name, player);
+		    	}
+		    	
+		    	RaceItem race = new RaceItem();
+		    	race.id = c.getLong(0);
+		    	race.map = c.getString(2);
+		    	race.time = c.getFloat(3);
+		    	player.races.add(race);
+		    	
+		    	c.moveToNext();
+		    }
+		}
+		
+		c.close();
+		return players;
 	}
 	
 	/**

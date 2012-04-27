@@ -231,7 +231,7 @@ public class PullService extends Service {
 				}
 			}
 			
-		}, 1000, 10000); // after 1 second, then every 5 minutes
+		}, 300000, 300000); // every 5 minutes
   
         manager.notify(SERVICE_NOTIFICATION, getServiceNotification(getApplicationContext(), this));
     }

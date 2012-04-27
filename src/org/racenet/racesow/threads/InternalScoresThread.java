@@ -43,10 +43,11 @@ public class InternalScoresThread extends Thread {
 
 	    Database db = Database.getInstance();
 	    float bestTime = db.getBestTime(this.map);
-	    db.addRace(this.map, this.player, this.time);
+	    long id = db.addRace(this.map, this.player, this.time);
 	    
 	    Message msg = new Message();
 	    Bundle b = new Bundle();
+	    b.putLong("id", id);
 	    b.putBoolean("record", this.time < bestTime || bestTime == 0);
 	    msg.setData(b);
         this.handler.dispatchMessage(msg);

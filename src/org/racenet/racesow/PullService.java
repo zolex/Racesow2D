@@ -160,48 +160,44 @@ public class PullService extends Service {
 						if (update.newPoints < update.oldPoints) {
 							
 							update.changed = true;
-						}
 						
-						// parse update maps
-						NodeList mapsN = updateRoot.getElementsByTagName("maps");
-						if (mapsN.getLength() == 1) {
-							
-							Element mapsRoot = (Element)mapsN.item(0);
-							NodeList maps = mapsRoot.getElementsByTagName("map");
-							int numMaps = maps.getLength();
-							for (int i = 0; i < numMaps; i++) {
+							// parse update maps
+							NodeList mapsN = updateRoot.getElementsByTagName("maps");
+							if (mapsN.getLength() == 1) {
 								
-								MapUpdateItem mapUpdate = new MapUpdateItem();
-								
-								Element map = (Element)maps.item(i);
-								mapUpdate.name = parser.getValue(map, "name");
-								
-								// parse maps beaten-by
-								NodeList beatenByN = map.getElementsByTagName("beaten_by");
-								if (beatenByN.getLength() == 1) {
+								Element mapsRoot = (Element)mapsN.item(0);
+								NodeList maps = mapsRoot.getElementsByTagName("map");
+								int numMaps = maps.getLength();
+								for (int i = 0; i < numMaps; i++) {
 									
-									NodeList beatenBy = ((Element)beatenByN.item(0)).getElementsByTagName("player");
-									int numBeatenBy = beatenBy.getLength();
-									if (numBeatenBy > 0) {
-										
-										update.changed = true;
-									}
+									MapUpdateItem mapUpdate = new MapUpdateItem();
 									
-									for (int j = 0; j < numBeatenBy; j++) {
+									Element map = (Element)maps.item(i);
+									mapUpdate.name = parser.getValue(map, "name");
+									
+									// parse maps beaten-by
+									NodeList beatenByN = map.getElementsByTagName("beaten_by");
+									if (beatenByN.getLength() == 1) {
 										
-										BeatenByItem beatenByItem = new BeatenByItem();
-										Element player = (Element)beatenBy.item(j);
-										beatenByItem.name = parser.getValue(player, "name");
-										try {
-											beatenByItem.time = Float.parseFloat(parser.getValue(player, "time"));
-										} catch (NumberFormatException e) {
-											continue;
+										NodeList beatenBy = ((Element)beatenByN.item(0)).getElementsByTagName("player");
+										int numBeatenBy = beatenBy.getLength();
+										
+										for (int j = 0; j < numBeatenBy; j++) {
+											
+											BeatenByItem beatenByItem = new BeatenByItem();
+											Element player = (Element)beatenBy.item(j);
+											beatenByItem.name = parser.getValue(player, "name");
+											try {
+												beatenByItem.time = Float.parseFloat(parser.getValue(player, "time"));
+											} catch (NumberFormatException e) {
+												continue;
+											}
+											mapUpdate.beatenBy.add(beatenByItem);
 										}
-										mapUpdate.beatenBy.add(beatenByItem);
 									}
+									
+									update.maps.add(mapUpdate);
 								}
-								
-								update.maps.add(mapUpdate);
 							}
 						}
 					}

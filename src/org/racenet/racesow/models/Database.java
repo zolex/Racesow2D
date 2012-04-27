@@ -119,7 +119,11 @@ public final class Database extends SQLiteOpenHelper {
 			database.beginTransaction();
 			ContentValues values = new ContentValues();
 			values.put("value", value);
-			database.update("settings", values, "key = '"+ key + "'", null);
+			if (1 != database.update("settings", values, "key = '"+ key + "'", null)) {
+				
+				throw new Exception("invalid settings update");
+			}
+			
 			database.setTransactionSuccessful();
 			
 		} catch (Exception e) {
@@ -668,10 +672,15 @@ public final class Database extends SQLiteOpenHelper {
 			database.beginTransaction();
 			ContentValues values = new ContentValues();
 			values.put("submitted", 1);
-			database.update("races", values, "id = '"+ id + "'", null);
+			if (1 != database.update("races", values, "id = '"+ id + "'", null)) {
+				
+				throw new Exception("could not flag race as submitted");
+			}
+			
 			database.setTransactionSuccessful();
 			
 		} catch (Exception e) {
+			
 			
 		} finally {
 			

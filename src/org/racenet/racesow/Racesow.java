@@ -35,7 +35,6 @@ import android.os.Message;
 import android.os.Process;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.widget.EditText;
 
 /**
@@ -90,6 +89,7 @@ public class Racesow extends GLGame implements HttpCallback {
         	}
 		}
 		
+		// if there are new local scores, try to submit them
 		task = new SubmitScoresTask(new Handler() {
 			
 			@Override
@@ -98,7 +98,7 @@ public class Racesow extends GLGame implements HttpCallback {
 				switch (msg.what) {
 				
 					case 0:
-						showLogin("Please enter the password for '"+ task.currentPlayer.name +"'");
+						showLogin("There are local scores which have not been yubmitted yet.\nPlease enter the password for '"+ task.currentPlayer.name +"'");
 						break;
 						
 					case 1:
@@ -111,6 +111,11 @@ public class Racesow extends GLGame implements HttpCallback {
 		task.execute();
 	}
 	
+	/**
+	 * Called by HttpLoaderTask
+	 * 
+	 * @param InputStream xmlStream
+	 */
 	public void httpCallback(InputStream xmlStream) {
 		
 		pd.dismiss();
@@ -156,6 +161,9 @@ public class Racesow extends GLGame implements HttpCallback {
 		}
 	}
 	
+	/**
+	 * Show how many points a player earned
+	 */
 	public void showEarnedPoints() {
 		
 		AlertDialog login = new AlertDialog.Builder(Racesow.this)
@@ -181,6 +189,14 @@ public class Racesow extends GLGame implements HttpCallback {
 		login.show();
 	}
 	
+	/**
+	 * Show the login dialog. Will fetch a new session
+	 * and call the submitCurrent() or prepareNext()
+	 * methods of SubmitScoresTask depending on the
+	 * user's coice.
+	 * 
+	 * @param String message
+	 */
 	public void showLogin(String message) {
 		
 		final EditText pass = new EditText(Racesow.this);
@@ -219,9 +235,24 @@ public class Racesow extends GLGame implements HttpCallback {
 					pd.show();
 				}
 			})
-			.setNegativeButton("Cancel", new OnClickListener() {
+			.setNegativeButton("Skip", new OnClickListener() {
 				
 				public void onClick(DialogInterface dialog, int which) {
+					
+					task.prepareNext();
+				}
+			})
+			.setNeutralButton("Dismiss scores", new OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					
+					int length = task.currentPlayer.races.size();
+					Database db = Database.getInstance();
+					for (int i = 0; i < length; i++) {
+					
+						long id = task.currentPlayer.races.get(i).id;
+						db.flagRaceSubmitted(id);
+					}
 					
 					task.prepareNext();
 				}

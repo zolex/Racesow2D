@@ -20,10 +20,6 @@ import org.racenet.racesow.models.UpdateItem;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -33,8 +29,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.IBinder;
-import android.util.Log;
-
 /**
  * Service to pull the Rracesow2D-API for updates
  * 
@@ -227,7 +221,6 @@ public class PullService extends Service {
 					
 				} catch (Exception e) {
 					
-					Log.d("DEBUG", "Error: " + e.getMessage());
 				}
 			}
 			

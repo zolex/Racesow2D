@@ -1,21 +1,12 @@
 package org.racenet.racesow.models;
 
-import org.racenet.racesow.R;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.preference.EditTextPreference;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 /**
  * Preference which shows a dialog with password and confirmation

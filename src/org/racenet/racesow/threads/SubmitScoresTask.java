@@ -13,18 +13,14 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.racenet.framework.XMLParser;
 import org.racenet.racesow.HttpCallback;
-import org.racenet.racesow.Player;
 import org.racenet.racesow.models.Database;
 import org.racenet.racesow.models.PlayerItem;
 import org.racenet.racesow.models.RaceItem;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import android.app.AlertDialog;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 /**
@@ -41,13 +37,24 @@ public class SubmitScoresTask extends AsyncTask<Void, Void, Void> implements Htt
 	Handler handler;
 	boolean end = false;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param Handler handler
+	 */
 	public SubmitScoresTask(Handler handler) {
 		
 		this.handler = handler;
 	}
 	
 	@Override
-	protected Void doInBackground(Void... input) {
+	/**
+	 * Run the submission queue
+	 * 
+	 * @param Void ... unused
+	 * @return Void
+	 */
+	protected Void doInBackground(Void... unused) {
 		
 		HashMap<String, PlayerItem> players = Database.getInstance().getNewRaces();
 		this.list = players.entrySet().iterator();
@@ -70,6 +77,10 @@ public class SubmitScoresTask extends AsyncTask<Void, Void, Void> implements Htt
 		return null;
 	}
 
+	/**
+	 * Prepare the next score submission in the queue.
+	 * May be called after enter-password dialog.
+	 */
 	public void prepareNext() {
 		
 		if (this.list.hasNext()) {
@@ -85,13 +96,23 @@ public class SubmitScoresTask extends AsyncTask<Void, Void, Void> implements Htt
 		}
 	}
 	
+	/**
+	 * Set the session for the current player
+	 * and submit his scores. Is called after the
+	 * enter-password dialog.
+	 * 
+	 * @param String session
+	 */
 	public void submitCurrent(String session) {
 		
 		this.currentPlayer.session = session;
 		this.submitCurrent();
 	}
 	
-	public void submitCurrent() {
+	/**
+	 * Submit the current player's scores.
+	 */
+	private void submitCurrent() {
 		
 		String url = "http://racesow2d.warsow-race.net/batchsubmit.php";
 		List<NameValuePair> values = new ArrayList<NameValuePair>();
@@ -109,7 +130,9 @@ public class SubmitScoresTask extends AsyncTask<Void, Void, Void> implements Htt
 		task.execute(url, values);
 	}
 
-
+	/**
+	 * Called by HttpLoaderTask
+	 */
 	public void httpCallback(InputStream xmlStream) {
 		
 		if (xmlStream == null) {
@@ -140,11 +163,8 @@ public class SubmitScoresTask extends AsyncTask<Void, Void, Void> implements Htt
 			
 			if (code == 2) { // SESSION_INVALID
 				
+				// will trigger the enter password dialog
 				this.handler.sendEmptyMessage(0);
-				
-			} else {
-			
-				Log.d("DEBUG", "Server error: " + parser.getNodeValue((Element)errors.item(0)));
 			}
 			
 			return;
@@ -182,6 +202,7 @@ public class SubmitScoresTask extends AsyncTask<Void, Void, Void> implements Htt
 			
 			if (points > 0) {
 				
+				// triggers the "earned points" dialog
 				this.currentPlayer.points = points;
 				this.handler.sendEmptyMessage(1);
 				

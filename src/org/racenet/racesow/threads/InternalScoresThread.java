@@ -7,8 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 
 /**
- * Task to submit scores which were done while
- * the phone was offline to the Racesow2D API
+ * Thread to save data to the internal scores database
  * 
  * @author soh#zolex
  *

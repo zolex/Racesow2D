@@ -24,7 +24,8 @@ import android.os.Handler;
 import android.util.Log;
 
 /**
- * Thread to load the online scores from the web
+ * Task to submit scores which were done while
+ * the phone was offline to the Racesow2D API
  * 
  * @author soh#zolex
  *

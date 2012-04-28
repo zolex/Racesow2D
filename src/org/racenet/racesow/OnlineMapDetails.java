@@ -54,13 +54,13 @@ public class OnlineMapDetails extends ListActivity implements HttpCallback {
     	adapter = new OnlineScoresAdapter(this);
 		setListAdapter(adapter);
 		
+		setContentView(R.layout.listview);
 		String mapName = getIntent().getStringExtra("map");
 		TextView title = (TextView)findViewById(R.id.title);
         title.setText("Map " + mapName);
 		
 		this.loadData();
 		
-		setContentView(R.layout.listview);
 		getListView().setOnScrollListener(new OnScrollListener() {
 			
 			public void onScrollStateChanged(AbsListView view, int scrollState) {

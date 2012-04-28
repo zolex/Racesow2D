@@ -57,7 +57,7 @@ public class OnlineMaps extends ListActivity implements HttpCallback {
 		
 		setContentView(R.layout.listview);
 		TextView title = (TextView)findViewById(R.id.title);
-        title.setText("Online maps");
+        title.setText("Map list");
         
         this.loadData();
 		

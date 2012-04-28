@@ -31,7 +31,7 @@ import android.view.View.OnTouchListener;
  */
 public class MapsScreen extends Screen implements OnTouchListener {
 	
-	public TexturedBlock header;
+	public TexturedBlock header, logo;
 	Camera2 camera;
 	GestureDetector gestures;
 	float menuVelocity = 0;
@@ -55,6 +55,10 @@ public class MapsScreen extends Screen implements OnTouchListener {
 		header = new TexturedBlock("racesow.png", TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
 		header.vertices[0].x = 0;
 		header.vertices[0].y = camera.frustumHeight - header.height;
+		
+		logo = new TexturedBlock("logo.png", TexturedBlock.FUNC_NONE, 0.1f, 0.1f, 0, 0, new Vector2(0, 0), new Vector2(25.6f, 0), new Vector2(25.6f, 25.6f), new Vector2(0, 25.6f));
+		logo.vertices[0].x = camera.frustumWidth / 2 - logo.width / 2;
+		logo.vertices[0].y = camera.frustumHeight - logo.height + 1;
 	}
 	
 	/**
@@ -163,6 +167,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 		GLES10.glClearColor(0.6392156862745098f, 0.1529411764705882f, 0.1764705882352941f, 1);
 		
 		this.header.draw();
+		this.logo.draw();
 		this.menu.draw();
 	}
 
@@ -182,6 +187,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 	public void resume() {
 		
 		this.header.reloadTexture();
+		this.logo.reloadTexture();
 		this.menu.reloadTextures();
 		this.refreshMapList();
 	}
@@ -193,6 +199,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 	public void dispose() {
 		
 		this.header.dispose();
+		this.logo.dispose();
 		this.menu.dispose();
 	}
 }

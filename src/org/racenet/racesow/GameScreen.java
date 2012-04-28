@@ -440,7 +440,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 						
 						public void onClick(DialogInterface arg0, int arg1) {
 							
-							GameScreen.this.map.gfxHighlights = false;
+							GameScreen.this.map.disableHighlights();
 							GameScreen.this.map.disableSounds();
 							GameScreen.this.player.blurEnabled = false;
 							GameScreen.this.resumeGame();

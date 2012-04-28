@@ -932,6 +932,26 @@ public class Map {
 	}
 	
 	/**
+	 * Disable graphical highlights
+	 */
+	public void disableHighlights() {
+		
+		this.gfxHighlights = false;
+		
+		int length = this.front.length;
+		for (int i = 0; i < length; i++) {
+			
+			this.front[i].dispose();
+		}
+		
+		length = this.highlights.length;
+		for (int i = 0; i < length; i++) {
+			
+			this.highlights[i].dispose();
+		}
+	}
+	
+	/**
 	 * Handle positional ambient sounds
 	 * 
 	 * @param float playerX

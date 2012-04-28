@@ -112,10 +112,12 @@ public class Polygon {
 				if (other.vertices[1].x == other.vertices[2].x) {
 				
 					info.type = RAMPUP;
+					info.distance = otherTop - thisBottom;
 					
 				} else if (other.vertices[0].x == other.vertices[1].x) {
 					
 					info.type = RAMPDOWN;
+					info.distance = otherTop - thisBottom;
 				}
 				
 				return info;

@@ -1121,7 +1121,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 					// ramp up
 					} else if (info.type == Polygon.RAMPUP) {
 						
-						this.setPosition(this.vertices[0].x, this.vertices[0].y - info.distance);
+						this.addToPosition(0, info.distance);
 						if (pressingJump && this.virtualSpeed >= 1000) {
 							
 							float m = (ground.vertices[2].y - ground.vertices[0].y) / (ground.vertices[2].x - ground.vertices[0].x);
@@ -1129,7 +1129,6 @@ public class Player extends AnimatedBlock implements HttpCallback {
 							
 						} else {
 						
-							this.addToPosition(0, 0.1f);
 							this.velocity.set(this.velocity.x, 0);
 							this.onFloor = true;
 						}
@@ -1142,6 +1141,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 					// ramp down
 					} else if (info.type == Polygon.RAMPDOWN) {
 						
+						this.addToPosition(0, info.distance);
 						float m = (ground.vertices[0].y - ground.vertices[2].y) / (ground.vertices[0].x - ground.vertices[2].x);
 						this.velocity.set(this.velocity.x, 0);
 						this.virtualSpeed += (-m + 1) * (-m + 1) * (-m + 1) * 128;

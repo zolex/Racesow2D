@@ -1065,6 +1065,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 			// check for collision with the ground
 			colliders = this.map.getPotentialGroundColliders(this.worldBounds);
 			length = colliders.size();
+			short collisionCount = 0;
 			for (int i = 0; i < length; i++) {
 				
 				GameObject ground = colliders.get(i);
@@ -1072,6 +1073,8 @@ public class Player extends AnimatedBlock implements HttpCallback {
 				
 				// check for functional collisions like water or lava
 				if (info.collided) {
+					
+					collisionCount++;
 					
 					switch (ground.func) {
 					
@@ -1148,6 +1151,11 @@ public class Player extends AnimatedBlock implements HttpCallback {
 							
 							this.map.saveDemo();
 						}
+					}
+					
+					if (collisionCount == 2) {
+					
+						break;
 					}
 				}
 			}

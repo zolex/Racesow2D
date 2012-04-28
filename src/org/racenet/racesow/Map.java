@@ -1076,9 +1076,9 @@ public class Map {
 		for (int i = 0; i < length; i++) {
 			
 			GameObject part = this.ground[i];
-			if (y >= part.vertices[0].y && x >= part.vertices[0].x && x <= part.vertices[0].x + part.width) {
+			if ((y >= part.vertices[0].y || y >= part.vertices[1].y) && x >= part.vertices[0].x && x <= part.vertices[0].x + part.width) {
 				
-				float height = part.vertices[0].y + part.height;
+				float height = part.vertices[0].y + part.getHeightAt(x);
 				if (height > maxHeight) {
 					
 					maxHeight = height;

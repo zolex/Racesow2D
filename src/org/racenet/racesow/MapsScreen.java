@@ -46,7 +46,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 		
 		super(game);
 
-		this.camera = new Camera2((float)game.getScreenWidth(), (float)game.getScreenHeight());
+		this.camera = new Camera2(80,  80 * (float)game.getScreenHeight() / (float)game.getScreenWidth());
 		
 		FileIO.getInstance().createDirectory("racesow" + File.separator + "maps");
 		
@@ -55,7 +55,6 @@ public class MapsScreen extends Screen implements OnTouchListener {
 		header = new TexturedBlock("racesow.png", TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
 		header.vertices[0].x = 0;
 		header.vertices[0].y = camera.frustumHeight - header.height;
-		header.texture.setFilters(GLES10.GL_LINEAR, GLES10.GL_LINEAR);
 	}
 	
 	/**
@@ -71,7 +70,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 		
 		this.game.glView.setOnTouchListener(this);
 		
-		this.menu = new Menu(this.game, this.camera.frustumWidth, this.camera.frustumHeight);
+		menu = new Menu(game, camera.frustumWidth, camera.frustumHeight, (float)game.getScreenWidth() / 80);
 		game.runOnUiThread(new Runnable() {
 			
 			public void run() {

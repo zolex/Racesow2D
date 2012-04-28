@@ -8,6 +8,7 @@ import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 
 import android.os.Looper;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
@@ -24,9 +25,10 @@ public class Menu implements GestureDetector.OnGestureListener {
 	GLGame game;
 	float viewWidth;
 	float viewHeight;
-	float spaceWidth = 1;
+	float spaceWidth = 0.1f;
 	float velocity = 0;
 	boolean scrolling = true;
+	float scale;
 	
 	/**
 	 * Simple callback for menu item clicks
@@ -46,11 +48,12 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 * @param float viewWidth
 	 * @param float viewHeight
 	 */
-	public Menu(GLGame game, float viewWidth, float viewHeight) {
+	public Menu(GLGame game, float viewWidth, float viewHeight, float scale) {
 		
 		this.game = game;
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;
+		this.scale = scale;
 	}
 	
 	public void setScrolling(boolean scrolling) {
@@ -163,7 +166,7 @@ public class Menu implements GestureDetector.OnGestureListener {
 			return false;
 		}
 		
-		this.buttonPress(event.getX(), this.viewHeight - event.getY());
+		this.buttonPress(event.getX() / this.scale, this.viewHeight - (event.getY() / this.scale));
 		return true;
 	}
 	
@@ -178,7 +181,7 @@ public class Menu implements GestureDetector.OnGestureListener {
 		
 		int length = this.items.size();
 		for (int i = 0; i < length; i++) {
-			
+		
 			TexturedBlock item = this.items.get(i);
 			if (x > item.vertices[0].x && x < item.vertices[0].x + item.width &&
 				y > item.vertices[0].y && y < item.vertices[0].y + item.height) {

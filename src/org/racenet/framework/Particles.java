@@ -8,7 +8,7 @@ public class Particles extends TexturedBlock {
 
 	Vector2[] positions;
 	Vector2[] velocities;
-	Vector2 gravity = new Vector2(0, -200);
+	Vector2 gravity = new Vector2(0, -20);
 	Vector2 origin;
 	float time;
 	float delay;
@@ -31,7 +31,7 @@ public class Particles extends TexturedBlock {
 		for (int i = 0; i < length; i++) {
 		
 			this.positions[i] = this.origin.copy();
-			this.velocities[i] = new Vector2(this.getRand(-150, 150), this.getRand(-150, 150));
+			this.velocities[i] = new Vector2(this.getRand(-20, 20), this.getRand(-20, 20));
 		}
 	}
 	

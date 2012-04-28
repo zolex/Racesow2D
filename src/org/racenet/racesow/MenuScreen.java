@@ -27,7 +27,7 @@ import android.view.View.OnTouchListener;
  */
 public class MenuScreen extends Screen implements OnTouchListener {
 	
-	public TexturedBlock header, test;
+	public TexturedBlock header, logo, test;
 	Camera2 camera;
 	GestureDetector gestures;
 	float menuVelocity = 0;
@@ -44,11 +44,11 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		
 		super(game);
 		
-		camera = new Camera2((float)game.getScreenWidth(), (float)game.getScreenHeight());
+		this.camera = new Camera2(80,  80 * (float)game.getScreenHeight() / (float)game.getScreenWidth());
 		
 		game.glView.setOnTouchListener(this);
 		
-		menu = new Menu(game, camera.frustumWidth, camera.frustumHeight);
+		menu = new Menu(game, camera.frustumWidth, camera.frustumHeight, (float)game.getScreenWidth() / 80);
 		menu.setScrolling(false);
 		game.runOnUiThread(new Runnable() {
 			
@@ -116,15 +116,19 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		});
 		
 		GLTexture.APP_FOLDER = "racesow";
+		
 		header = new TexturedBlock("racesow.png", TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
 		header.vertices[0].x = 0;
 		header.vertices[0].y = camera.frustumHeight - header.height;
-		header.texture.setFilters(GLES10.GL_LINEAR, GLES10.GL_LINEAR);
+		
+		logo = new TexturedBlock("logo.png", TexturedBlock.FUNC_NONE, 0.1f, 0.1f, 0, 0, new Vector2(0, 0), new Vector2(25.6f, 0), new Vector2(25.6f, 25.6f), new Vector2(0, 25.6f));
+		logo.vertices[0].x = camera.frustumWidth / 2 - logo.width / 2;
+		logo.vertices[0].y = camera.frustumHeight - logo.height + 1;
 		
 		this.p = new Particles[3];
-		this.p[0] = new Particles("hud/star.png", 12.8f, new Vector2(100, 100), 0);
-		this.p[1] = new Particles("hud/star.png", 12.8f, new Vector2(400, 200), 0.5f);
-		this.p[2] = new Particles("hud/star.png", 12.8f, new Vector2(700, 300), 1);
+		this.p[0] = new Particles("hud/star.png", 1.28f, new Vector2(10, 10), 0);
+		this.p[1] = new Particles("hud/star.png", 1.28f, new Vector2(35, 20), 0.5f);
+		this.p[2] = new Particles("hud/star.png", 1.28f, new Vector2(60, 38), 1);
 	}
 
 	/**
@@ -199,6 +203,7 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		GLES10.glClearColor(0.6392156862745098f, 0.1529411764705882f, 0.1764705882352941f, 1);
 		
 		this.header.draw();
+		this.logo.draw();
 		this.menu.draw();
 		
 		if (this.e) {
@@ -227,6 +232,7 @@ public class MenuScreen extends Screen implements OnTouchListener {
 	public void resume() {
 		
 		this.header.reloadTexture();
+		this.logo.reloadTexture();
 		this.menu.reloadTextures();
 		final int length = this.p.length;
 		for (int i = 0; i < length; i++) {

@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -65,6 +66,9 @@ public class DemoList extends ListActivity {
     	
     	setListAdapter(this.adapter);
         setContentView(R.layout.listview);
+        
+        TextView title = (TextView)findViewById(R.id.title);
+        title.setText("Demos");
         
         ListView list = getListView();
         registerForContextMenu(list);

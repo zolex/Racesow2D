@@ -10,6 +10,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
@@ -41,6 +42,9 @@ public class OnlineScores extends ListActivity {
 		setListAdapter(new ScoresMenuAdapter(this));
 		
 		setContentView(R.layout.listview);
+		
+		TextView title = (TextView)findViewById(R.id.title);
+        title.setText("Scores");
 		
 		getListView().setOnItemClickListener(new OnItemClickListener() {
 

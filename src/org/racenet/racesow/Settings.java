@@ -69,6 +69,9 @@ public class Settings extends PreferenceActivity implements HttpCallback {
         addPreferencesFromResource(R.xml.settings);
         setContentView(R.layout.listview);
         
+        TextView title = (TextView)findViewById(R.id.title);
+        title.setText("Settings");
+        
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
     	this.wakeLock.acquire();

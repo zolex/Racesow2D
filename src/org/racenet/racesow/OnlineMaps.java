@@ -21,6 +21,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
@@ -53,9 +54,12 @@ public class OnlineMaps extends ListActivity implements HttpCallback {
 		
     	adapter = new OnlineMapsAdapter(this);
 		setListAdapter(adapter);
-		this.loadData();
 		
 		setContentView(R.layout.listview);
+		TextView title = (TextView)findViewById(R.id.title);
+        title.setText("Online maps");
+        
+        this.loadData();
 		
 		getListView().setOnItemClickListener(new OnItemClickListener() {
 

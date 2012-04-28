@@ -36,7 +36,7 @@ public class MusicThread extends Thread {
 		int num = 1;
 		music = Audio.getInstance().newMusic("sounds/menu_"+ num +".ogg");
 		music.setLooping(true);
-		music.setVolume(0.3f);
+		music.setVolume(0.4f);
 	}
 	
 	@Override

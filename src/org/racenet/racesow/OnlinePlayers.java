@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.widget.AbsListView;
+import android.widget.TextView;
 import android.widget.AbsListView.OnScrollListener;
 
 /**
@@ -55,6 +56,10 @@ public class OnlinePlayers extends ListActivity implements HttpCallback {
 		this.loadData();
 		
 		setContentView(R.layout.listview);
+		
+		TextView title = (TextView)findViewById(R.id.title);
+        title.setText("Player ranking");
+		
 		getListView().setOnScrollListener(new OnScrollListener() {
 			
 			public void onScrollStateChanged(AbsListView view, int scrollState) {

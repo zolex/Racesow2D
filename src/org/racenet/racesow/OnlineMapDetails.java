@@ -20,6 +20,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.TextView;
 
 /**
  * Obtain and display the online scores
@@ -52,6 +53,11 @@ public class OnlineMapDetails extends ListActivity implements HttpCallback {
 		
     	adapter = new OnlineScoresAdapter(this);
 		setListAdapter(adapter);
+		
+		String mapName = getIntent().getStringExtra("map");
+		TextView title = (TextView)findViewById(R.id.title);
+        title.setText("Map " + mapName);
+		
 		this.loadData();
 		
 		setContentView(R.layout.listview);

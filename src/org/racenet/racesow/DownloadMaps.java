@@ -60,6 +60,10 @@ public class DownloadMaps extends ListActivity implements HttpCallback {
         
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.listview);
+    	
+    	TextView title = (TextView)findViewById(R.id.title);
+        title.setText("Download maps");
+    	
     	PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
         this.refreshMapList();

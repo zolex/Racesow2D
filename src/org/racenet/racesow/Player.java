@@ -878,7 +878,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 	 * @param float deltaTime
 	 * @param boolean pressingJump
 	 */
-	public void move(Vector2 gravity, float deltaTime, boolean pressingJump, boolean pressingShoot) {
+	public void move(Vector2 gravity, float deltaTime, boolean pressingJump, float jumpPressedTime, boolean pressingShoot) {
 		
 		 // workaround for initial loading
 		if (++frames < 3) return;
@@ -1122,7 +1122,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 					} else if (info.type == Polygon.RAMPUP) {
 						
 						this.addToPosition(0, info.distance);
-						if (pressingJump && this.virtualSpeed >= 1000) {
+						if (pressingJump && (jumpPressedTime > 0.5f || this.virtualSpeed >= 900)) {
 							
 							float m = (ground.vertices[2].y - ground.vertices[0].y) / (ground.vertices[2].x - ground.vertices[0].x);
 							this.velocity.set(this.velocity.x, this.velocity.x * m);

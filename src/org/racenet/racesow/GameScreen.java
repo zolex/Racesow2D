@@ -358,7 +358,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 			}
 			
 			// update the player
-			this.player.move(this.gravity, deltaTime, this.jumpPressed, this.shootPressed);
+			this.player.move(this.gravity, deltaTime, this.jumpPressed, this.jumpPressedTime, this.shootPressed);
 		}
 		
 		// for demo frames

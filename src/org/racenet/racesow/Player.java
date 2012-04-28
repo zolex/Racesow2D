@@ -1129,7 +1129,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 							
 						} else {
 						
-							this.addToPosition(0, 1);
+							this.addToPosition(0, 0.1f);
 							this.velocity.set(this.velocity.x, 0);
 							this.onFloor = true;
 						}

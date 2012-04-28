@@ -99,17 +99,22 @@ public class RecoveryPreference extends EditTextPreference {
 				
 				public void onClick(DialogInterface dialog, int which) {
 					
-					code = new EditText(getContext());
-					new AlertDialog.Builder(getContext())
-						.setView(code)
-						.setTitle("Password recovery")
-						.setMessage("Enter your recovery code.")
-						.setCancelable(true)
-						.setPositiveButton("OK", recoveryListener)
-						.setNegativeButton("Cancel", null)
-						.show();
+					enterCode();
 				}
 			})
+			.show();
+	}
+	
+	public void enterCode() {
+		
+		code = new EditText(getContext());
+		new AlertDialog.Builder(getContext())
+			.setView(code)
+			.setTitle("Password recovery")
+			.setMessage("Enter your recovery code.")
+			.setCancelable(true)
+			.setPositiveButton("OK", recoveryListener)
+			.setNegativeButton("Cancel", null)
 			.show();
 	}
 }

@@ -531,9 +531,13 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 	 */
 	private void showPasswordRecovery() {
 		
+		((RecoveryPreference)findPreference("recovery")).enterCode();
+		
+		/*
 		PreferenceScreen screen = (PreferenceScreen)findPreference("settings");
 		int itemPos = findPreference("recovery").getOrder();
 		screen.onItemClick(null, null, itemPos, 0);
+		*/
 	}
 
 	/**

@@ -10,12 +10,14 @@ import org.apache.http.message.BasicNameValuePair;
 import org.racenet.framework.Audio;
 import org.racenet.framework.FileIO;
 import org.racenet.framework.GLGame;
+import org.racenet.framework.Music;
 import org.racenet.framework.Screen;
 import org.racenet.framework.XMLParser;
 import org.racenet.helpers.IsServiceRunning;
 import org.racenet.racesow.GameScreen.GameState;
 import org.racenet.racesow.models.Database;
 import org.racenet.racesow.threads.HttpLoaderTask;
+import org.racenet.racesow.threads.MusicThread;
 import org.racenet.racesow.threads.SubmitScoresTask;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -49,6 +51,8 @@ public class Racesow extends GLGame implements HttpCallback {
 	public static boolean IN_GAME = false;
 	ProgressDialog pd;
 	SubmitScoresTask task = null;
+	public static MusicThread bg;
+	public static SharedPreferences prefs;
 	String pendingName;
 	String initialName;
 	
@@ -66,13 +70,15 @@ public class Racesow extends GLGame implements HttpCallback {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 			StrictMode.setThreadPolicy(policy);
 	    }
-
 		
 		Database.setupInstance(this.getApplicationContext());
 		FileIO.getInstance().createDirectory("racesow" + File.separator + "downloads");
 		
+		prefs = getSharedPreferences("racesow", Context.MODE_PRIVATE);
+		
+		startMusic();
+		
 		// when no nickname ist set, ask the user to do so
-		SharedPreferences prefs = getSharedPreferences("racesow", Context.MODE_PRIVATE);
 		if (prefs.getString("name", "").equals("")) {
 			
 			new AlertDialog.Builder(this)
@@ -118,6 +124,36 @@ public class Racesow extends GLGame implements HttpCallback {
 		});
 		
 		task.execute();
+	}
+	
+	public static void startMusic() {
+		
+		if (!prefs.getBoolean("bg", true)) {
+			
+			return;
+		}
+		
+		if (bg == null) {
+			
+			bg = new MusicThread();
+			bg.start();
+			
+		} else {
+			
+			if (!bg.music.isPlaying()) {
+				
+				bg.music.play();
+			}
+		}
+	}
+	
+	public static void stopMusic() {
+		
+		if (bg != null) {
+			
+			bg.stop = true;
+			bg = null;
+		}
 	}
 	
 	/**
@@ -493,6 +529,8 @@ public class Racesow extends GLGame implements HttpCallback {
     		
     		if (gameScreen.demoParser != null) {
     			
+    			Racesow.IN_GAME = false;
+    			startMusic();
     			this.finish();
     	    	this.overridePendingTransition(0, 0);
     		}
@@ -513,6 +551,8 @@ public class Racesow extends GLGame implements HttpCallback {
 
                     public void run() {
                        
+                    	Racesow.IN_GAME = false;
+                    	startMusic();
                     	Racesow.this.setScreen(new MapsScreen(Racesow.this));
                     }
                 });
@@ -539,6 +579,8 @@ public class Racesow extends GLGame implements HttpCallback {
 	
 	                public void run() {
 	                   
+	                	Racesow.IN_GAME = false;
+	                	startMusic();
 	                	Racesow.this.setScreen(new MapsScreen(Racesow.this));
 	                }
 	            });
@@ -547,7 +589,9 @@ public class Racesow extends GLGame implements HttpCallback {
 			// as it was started additionally to the main instance.
 			// will return to the previous activity = DemoList
     		} else {
-					
+				
+    			Racesow.IN_GAME = false;
+    			startMusic();
     			this.finish();
             	this.overridePendingTransition(0, 0);
     		}

@@ -102,6 +102,7 @@ class LoadingScreen extends Screen {
 			map.load(this.mapName, ambience, this.demoFile != null);
 			Player player = new Player(name, map, this.camera, sound, blur, demos);
 			
+			Racesow.stopMusic();
 			Racesow.IN_GAME = true;
 			game.setScreen(new GameScreen(this.game, this.camera, map, player, parser, demos));
 		}

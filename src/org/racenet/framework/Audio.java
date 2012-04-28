@@ -25,7 +25,7 @@ public class Audio {
 	private static Audio __instance;
 	private AssetManager assetManager;
 	private SoundPool soundPool;
-	private SoundThread thread;
+	public SoundThread thread;
 	
 	/**
 	 * Setup the singleton instance

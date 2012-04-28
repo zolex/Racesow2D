@@ -110,6 +110,19 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 					
 					prefs.edit().putBoolean("ambience", value.toString().equals("true") ? true : false).commit();
 
+				} else if (pref.getKey().equals("bg")) {
+					
+					prefs.edit().putBoolean("bg", value.toString().equals("true") ? true : false).commit();
+					
+					if (value.toString().equals("true")) {
+					
+						Racesow.startMusic();
+						
+					} else {
+						
+						Racesow.stopMusic();
+					}					
+
 				} else if (pref.getKey().equals("gfx")) {
 					
 					prefs.edit().putBoolean("gfx", value.toString().equals("true") ? true : false).commit();
@@ -180,6 +193,7 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 		findPreference("name").setOnPreferenceChangeListener(listener);
 		findPreference("password").setOnPreferenceChangeListener(listener);
 		findPreference("recovery").setOnPreferenceChangeListener(listener);
+		findPreference("bg").setOnPreferenceChangeListener(listener);
 		findPreference("demos").setOnPreferenceChangeListener(listener);
 		findPreference("sound").setOnPreferenceChangeListener(listener);
 		findPreference("ambience").setOnPreferenceChangeListener(listener);

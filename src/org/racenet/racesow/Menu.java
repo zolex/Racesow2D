@@ -114,6 +114,8 @@ public class Menu implements GestureDetector.OnGestureListener {
 			return false;
 		}
 		
+		velocityX /= this.scale;
+		
 		if (!this.allowMoveMenu(velocityX)) {
 			
 			return false;
@@ -145,6 +147,8 @@ public class Menu implements GestureDetector.OnGestureListener {
 			
 			return false;
 		}
+		
+		distanceX /= this.scale;
 		
 		return this.moveMenu(distanceX);
 	}

@@ -13,11 +13,12 @@ public class TexturedBlock extends TexturedShape implements Drawable {
 	/**
 	 * Constructor 
 	 * 
-	 * @param GLGame game
 	 * @param String texture
 	 * @param short func
 	 * @param float texScaleWidth
 	 * @param float texScaleHeight
+	 * @param float texShiftX
+	 * @param float texShiftY
 	 * @param Vector2 ... vertices
 	 */
 	public TexturedBlock(String texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {
@@ -33,6 +34,8 @@ public class TexturedBlock extends TexturedShape implements Drawable {
 	 * @param short func
 	 * @param float texScaleWidth
 	 * @param float texScaleHeight
+	 * @param float texShiftX
+	 * @param float texShiftY
 	 * @param Vector2 ... vertices
 	 */
 	public TexturedBlock(GLTexture texture, short func, float texScaleWidth, float texScaleHeight, float texShiftX, float texShiftY, Vector2 ... vertices) {

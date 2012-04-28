@@ -1149,8 +1149,6 @@ public class Player extends AnimatedBlock implements HttpCallback {
 							this.map.saveDemo();
 						}
 					}
-					
-					break;
 				}
 			}
 		

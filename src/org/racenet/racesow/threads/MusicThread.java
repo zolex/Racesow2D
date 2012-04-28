@@ -1,5 +1,6 @@
 package org.racenet.racesow.threads;
 
+import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -28,7 +29,12 @@ public class MusicThread extends Thread {
 	 */
 	public MusicThread() {
 
-		music = Audio.getInstance().newMusic("sounds/menu_1.ogg");
+		/*
+		Random gen = new Random();
+		int num = gen.nextInt(3) + 1;
+		*/
+		int num = 1;
+		music = Audio.getInstance().newMusic("sounds/menu_"+ num +".ogg");
 		music.setLooping(true);
 		music.setVolume(0.3f);
 	}

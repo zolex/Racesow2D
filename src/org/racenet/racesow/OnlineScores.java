@@ -46,25 +46,31 @@ public class OnlineScores extends ListActivity {
 
 			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
 				
+				Intent i = null;
 				switch (pos) {
 				
 					case 0:
-						Intent i = new Intent(OnlineScores.this, OnlinePlayers.class);
-						i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-						startActivityForResult(i, 0);
+						i = new Intent(OnlineScores.this, LocalScores.class);
 						break;
-						
+					
 					case 1:
-						Intent i2 = new Intent(OnlineScores.this, OnlineMaps.class);
-						i2.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-						startActivityForResult(i2, 0);
+						i = new Intent(OnlineScores.this, OnlinePlayers.class);
 						break;
 						
 					case 2:
-						Intent i3 = new Intent(OnlineScores.this, OnlineUpdates.class);
-						i3.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-						startActivityForResult(i3, 0);
+						i = new Intent(OnlineScores.this, OnlineMaps.class);
 						break;
+						
+					case 3:
+						i = new Intent(OnlineScores.this, OnlineUpdates.class);
+
+						break;
+				}
+				
+				if (i != null) {
+					
+					i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+					startActivity(i);
 				}
 			}
         });

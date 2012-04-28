@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
+import android.os.StrictMode;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.widget.EditText;
@@ -45,7 +46,6 @@ import android.widget.EditText;
  */
 public class Racesow extends GLGame implements HttpCallback {
 	
-	public static boolean LOOPER_PREPARED = false;
 	public static boolean IN_GAME = false;
 	ProgressDialog pd;
 	SubmitScoresTask task = null;
@@ -60,6 +60,13 @@ public class Racesow extends GLGame implements HttpCallback {
 		super.onCreate(savedInstanceState);
 
 		//deleteDatabase("org.racenet.racesow.db");
+		
+		if (android.os.Build.VERSION.SDK_INT > 9) {
+			
+			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+			StrictMode.setThreadPolicy(policy);
+	    }
+
 		
 		Database.setupInstance(this.getApplicationContext());
 		FileIO.getInstance().createDirectory("racesow" + File.separator + "downloads");
@@ -554,8 +561,7 @@ public class Racesow extends GLGame implements HttpCallback {
         	Audio.getInstance().stopThread();
         	
         	// If I decide to not kill the process anymore, don't
-        	// forget to restart the SoundThread and set this flag
-        	// LOOPER_PREPARED = false;
+        	// forget to restart the SoundThread
         	Process.killProcess(Process.myPid());
     	}
     }

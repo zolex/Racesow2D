@@ -52,13 +52,7 @@ class LoadingScreen extends Screen {
 		this.loading = new BitmapFont(font, 0, 0, 17, 30, 50);
 		
 		GLTexture.APP_FOLDER = "racesow";
-		String texture = "racesow.jpg";
-		if ((float)game.getScreenWidth() < 600) {
-			
-			texture = "racesow_small.jpg";
-		}
-		
-		header = new TexturedBlock(texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
+		header = new TexturedBlock("racesow.png", TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
 		header.vertices[0].x = 0;
 		header.vertices[0].y = camera.frustumHeight - header.height;
 		header.texture.setFilters(GLES10.GL_LINEAR, GLES10.GL_LINEAR);

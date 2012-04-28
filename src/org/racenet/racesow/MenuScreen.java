@@ -49,7 +49,15 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		game.glView.setOnTouchListener(this);
 		
 		menu = new Menu(game, camera.frustumWidth, camera.frustumHeight);
-		gestures = new GestureDetector(menu);
+		menu.setScrolling(false);
+		game.runOnUiThread(new Runnable() {
+			
+			public void run() {
+				
+				gestures = new GestureDetector(menu);
+			}
+		});
+		
 		
 		menu.addItem("menu/play.png", menu.new Callback() {
 			
@@ -66,17 +74,7 @@ public class MenuScreen extends Screen implements OnTouchListener {
 			}
 		});
 		
-		menu.addItem("menu/local_scores.png", menu.new Callback() {
-			
-			public void handle() {
-				
-				Intent i = new Intent((Activity)game, LocalScores.class);
-				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-				((Activity)game).startActivity(i);
-			}
-		});
-		
-		menu.addItem("menu/online_scores.png", menu.new Callback() {
+		menu.addItem("menu/scores.png", menu.new Callback() {
 			
 			public void handle() {
 				
@@ -118,13 +116,7 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		});
 		
 		GLTexture.APP_FOLDER = "racesow";
-		String texture = "racesow.jpg";
-		if ((float)game.getScreenWidth() < 600) {
-			
-			texture = "racesow_small.jpg";
-		}
-		
-		header = new TexturedBlock(texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
+		header = new TexturedBlock("racesow.png", TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
 		header.vertices[0].x = 0;
 		header.vertices[0].y = camera.frustumHeight - header.height;
 		header.texture.setFilters(GLES10.GL_LINEAR, GLES10.GL_LINEAR);
@@ -203,6 +195,8 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		GLES10.glEnable(GLES10.GL_TEXTURE_2D);
 		GLES10.glEnable(GLES10.GL_BLEND);
 		GLES10.glBlendFunc(GLES10.GL_SRC_ALPHA, GLES10.GL_ONE_MINUS_SRC_ALPHA);
+		
+		GLES10.glClearColor(0.6392156862745098f, 0.1529411764705882f, 0.1764705882352941f, 1);
 		
 		this.header.draw();
 		this.menu.draw();

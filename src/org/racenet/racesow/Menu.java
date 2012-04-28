@@ -24,8 +24,9 @@ public class Menu implements GestureDetector.OnGestureListener {
 	GLGame game;
 	float viewWidth;
 	float viewHeight;
-	float spaceWidth = 5;
+	float spaceWidth = 1;
 	float velocity = 0;
+	boolean scrolling = true;
 	
 	/**
 	 * Simple callback for menu item clicks
@@ -47,15 +48,14 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 */
 	public Menu(GLGame game, float viewWidth, float viewHeight) {
 		
-		if (!Racesow.LOOPER_PREPARED) {
-			
-			Racesow.LOOPER_PREPARED = true;
-			Looper.prepare();
-		}
-		
 		this.game = game;
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;
+	}
+	
+	public void setScrolling(boolean scrolling) {
+		
+		this.scrolling = scrolling;
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 */
 	public void addItem(String texture, Callback callback) {
 		
-		TexturedBlock item = new TexturedBlock(texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(this.viewWidth / 3, 0));
+		TexturedBlock item = new TexturedBlock(texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(this.viewWidth / 4, 0));
 		
 		float posX = 0;
 		int length = this.items.size();
@@ -95,6 +95,11 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 * When the user flings the menu
 	 */
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+		
+		if (!this.scrolling) {
+			
+			return false;
+		}
 		
 		if (e1 == null || e2 == null) {
 			
@@ -127,6 +132,11 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 * When the user scrolls the menu
 	 */
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+		
+		if (!this.scrolling) {
+			
+			return false;
+		}
 		
 		if (e1 == null || e2 == null || Math.abs(e1.getX() - e2.getX()) < 50) {
 			

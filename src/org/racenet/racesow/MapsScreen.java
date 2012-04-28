@@ -52,14 +52,7 @@ public class MapsScreen extends Screen implements OnTouchListener {
 		
 		this.refreshMapList();
 		
-		GLTexture.APP_FOLDER = "racesow";
-		String texture = "racesow.jpg";
-		if ((float)game.getScreenWidth() < 600) {
-			
-			texture = "racesow_small.jpg";
-		}
-		
-		header = new TexturedBlock(texture, TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
+		header = new TexturedBlock("racesow.png", TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
 		header.vertices[0].x = 0;
 		header.vertices[0].y = camera.frustumHeight - header.height;
 		header.texture.setFilters(GLES10.GL_LINEAR, GLES10.GL_LINEAR);
@@ -79,7 +72,13 @@ public class MapsScreen extends Screen implements OnTouchListener {
 		this.game.glView.setOnTouchListener(this);
 		
 		this.menu = new Menu(this.game, this.camera.frustumWidth, this.camera.frustumHeight);
-		this.gestures = new GestureDetector(this.menu);
+		game.runOnUiThread(new Runnable() {
+			
+			public void run() {
+				
+				gestures = new GestureDetector(menu);
+			}
+		});
 		
 		List<MapItem> mapList = MapList.load(this.game.getAssets());
 		
@@ -161,6 +160,8 @@ public class MapsScreen extends Screen implements OnTouchListener {
 		GLES10.glEnable(GLES10.GL_TEXTURE_2D);
 		GLES10.glEnable(GLES10.GL_BLEND);
 		GLES10.glBlendFunc(GLES10.GL_SRC_ALPHA, GLES10.GL_ONE_MINUS_SRC_ALPHA);
+		
+		GLES10.glClearColor(0.6392156862745098f, 0.1529411764705882f, 0.1764705882352941f, 1);
 		
 		this.header.draw();
 		this.menu.draw();

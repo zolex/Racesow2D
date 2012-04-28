@@ -916,6 +916,22 @@ public class Map {
 	}
 	
 	/**
+	 * Disable ambient sounds
+	 */
+	public void disableSounds() {
+		
+		this.enableAmbience = false;
+		if (this.ambience != null) {
+			
+			int length = this.ambience.length;
+			for (int i = 0; i < length; i++) {
+				
+				this.ambience[i].sound.dispose();
+			}
+		}
+	}
+	
+	/**
 	 * Handle positional ambient sounds
 	 * 
 	 * @param float playerX

@@ -12,6 +12,14 @@
 	    android:layout_height="wrap_content"
 	    android:layout_width="fill_parent"
 	    android:adjustViewBounds="true" />
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-6dp"
+        android:src="@drawable/logo" />
+    
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
@@ -24,5 +32,16 @@
         android:stackFromBottom="false" >
 
     </ListView>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageView1"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="16dp"
+        android:text="Listview"
+        android:textColor="#ffffff"
+        android:textSize="30dp" />
 
 </RelativeLayout>

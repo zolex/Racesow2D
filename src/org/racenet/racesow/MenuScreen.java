@@ -37,6 +37,7 @@ public class MenuScreen extends Screen implements OnTouchListener {
 	Menu menu;
 	Particles[] p;
 	boolean e = false;
+	boolean waitOneFrame = true;
 	
 	/**
 	 * Constructor.
@@ -178,6 +179,12 @@ public class MenuScreen extends Screen implements OnTouchListener {
 	 */
 	public void update(float deltaTime) {
 
+		if (this.waitOneFrame) {
+			
+			this.waitOneFrame = false;
+			return;
+		}
+		
 		this.menu.update(deltaTime);
 		this.logo.update(deltaTime);
 		

@@ -29,7 +29,8 @@ import android.view.View.OnTouchListener;
  */
 public class MenuScreen extends Screen implements OnTouchListener {
 	
-	public TexturedBlock header, logo, test;
+	public TexturedBlock header, test;
+	Logo logo;
 	Camera2 camera;
 	GestureDetector gestures;
 	float menuVelocity = 0;
@@ -123,9 +124,14 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		header.vertices[0].x = 0;
 		header.vertices[0].y = camera.frustumHeight - header.height;
 		
+		/*
 		logo = new TexturedBlock("logo.png", TexturedBlock.FUNC_NONE, 0.1f, 0.1f, 0, 0, new Vector2(0, 0), new Vector2(25.6f, 0), new Vector2(25.6f, 25.6f), new Vector2(0, 25.6f));
 		logo.vertices[0].x = camera.frustumWidth / 2 - logo.width / 2;
 		logo.vertices[0].y = camera.frustumHeight - logo.height + 1;
+		*/
+		
+		logo = new Logo();
+		logo.setPosition(camera.frustumWidth / 2 - 12.8f, camera.frustumHeight - 24.6f);
 		
 		this.p = new Particles[3];
 		this.p[0] = new Particles("hud/star.png", 1.28f, new Vector2(10, 10), 0);
@@ -173,6 +179,7 @@ public class MenuScreen extends Screen implements OnTouchListener {
 	public void update(float deltaTime) {
 
 		this.menu.update(deltaTime);
+		this.logo.update(deltaTime);
 		
 		if (this.e) {
 			

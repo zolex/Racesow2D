@@ -16,6 +16,7 @@ import org.racenet.framework.Vector2;
 import android.app.Activity;
 import android.content.Intent;
 import android.opengl.GLES10;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,7 +30,7 @@ import android.view.View.OnTouchListener;
  */
 public class MenuScreen extends Screen implements OnTouchListener {
 	
-	public TexturedBlock header, test;
+	public TexturedBlock header, test, credits, soundOn, soundOff;
 	Logo logo;
 	Camera2 camera;
 	GestureDetector gestures;
@@ -38,6 +39,8 @@ public class MenuScreen extends Screen implements OnTouchListener {
 	Particles[] p;
 	boolean e = false;
 	boolean waitOneFrame = true;
+	float scaleFactor = 80;
+	boolean musicOn;
 	
 	/**
 	 * Constructor.
@@ -48,11 +51,11 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		
 		super(game);
 		
-		this.camera = new Camera2(80,  80 * (float)game.getScreenHeight() / (float)game.getScreenWidth());
+		this.camera = new Camera2(this.scaleFactor,  this.scaleFactor * (float)game.getScreenHeight() / (float)game.getScreenWidth());
 		
 		game.glView.setOnTouchListener(this);
 		
-		menu = new Menu(game, camera.frustumWidth, camera.frustumHeight, (float)game.getScreenWidth() / 80);
+		menu = new Menu(game, camera.frustumWidth, camera.frustumHeight, (float)game.getScreenWidth() / this.scaleFactor);
 		menu.setScrolling(false);
 		game.runOnUiThread(new Runnable() {
 			
@@ -114,14 +117,22 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		header.vertices[0].x = 0;
 		header.vertices[0].y = camera.frustumHeight - header.height;
 		
-		/*
-		logo = new TexturedBlock("logo.png", TexturedBlock.FUNC_NONE, 0.1f, 0.1f, 0, 0, new Vector2(0, 0), new Vector2(25.6f, 0), new Vector2(25.6f, 25.6f), new Vector2(0, 25.6f));
-		logo.vertices[0].x = camera.frustumWidth / 2 - logo.width / 2;
-		logo.vertices[0].y = camera.frustumHeight - logo.height + 1;
-		*/
-		
 		logo = new Logo();
 		logo.setPosition(camera.frustumWidth / 2 - 12.8f, camera.frustumHeight - 24.6f);
+		
+		credits = new TexturedBlock("menu/credits.png", TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(6.4f, 0));
+		credits.vertices[0].x = camera.frustumWidth - credits.width - 1;
+		credits.vertices[0].y = camera.frustumHeight - credits.height - 1;
+		
+		soundOn = new TexturedBlock("menu/sound_on.png", TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(6.4f, 0));
+		soundOn.vertices[0].x = camera.frustumWidth - credits.width - 1;
+		soundOn.vertices[0].y = camera.frustumHeight - credits.height - 1 - 6.4f - 1;
+		
+		soundOff = new TexturedBlock("menu/sound_off.png", TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(6.4f, 0));
+		soundOff.vertices[0].x = camera.frustumWidth - credits.width - 1;
+		soundOff.vertices[0].y = camera.frustumHeight - credits.height - 1 - 6.4f - 1;
+
+		this.musicOn = Racesow.prefs.getBoolean("bg", true);
 		
 		this.p = new Particles[3];
 		this.p[0] = new Particles("hud/star.png", 1.28f, new Vector2(10, 10), 0);
@@ -133,6 +144,39 @@ public class MenuScreen extends Screen implements OnTouchListener {
 	 * Handle view touch events
 	 */
 	public boolean onTouch(View v, MotionEvent event) {
+		
+		
+		float x = (event.getX() / this.scaleFactor);
+		float y = (event.getY() / this.scaleFactor);
+		
+		if ((event.getAction() == MotionEvent.ACTION_DOWN ||
+			event.getAction() == MotionEvent.ACTION_POINTER_DOWN) &&
+			x > 9.5f) {
+			
+			if (y < 0.9f) {
+				
+				Racesow.clickSound();
+				Intent i = new Intent((Activity)game, Credits.class);
+				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				((Activity)game).startActivity(i);
+			
+			} else if (y < 1.8f) {
+				
+				Racesow.clickSound();
+				if (Racesow.prefs.getBoolean("bg", true)) {
+				
+					Racesow.prefs.edit().putBoolean("bg", false).commit();
+					Racesow.stopMusic();
+					this.musicOn = false;
+					
+				} else {
+					
+					Racesow.prefs.edit().putBoolean("bg", true).commit();
+					Racesow.startMusic();
+					this.musicOn = true;
+				}
+			}
+		}
 		
 		if(!this.e && event.getY() < 20 && event.getX() < 20) {
 			
@@ -208,6 +252,13 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		GLES10.glClearColor(0.6392156862745098f, 0.1529411764705882f, 0.1764705882352941f, 1);
 		
 		this.header.draw();
+		this.credits.draw();
+		this.soundOff.draw();
+		if (this.musicOn) {
+			
+			this.soundOn.draw();
+		}
+		
 		this.logo.draw();
 		this.menu.draw();
 		
@@ -239,6 +290,9 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		this.waitOneFrame = true;
 		this.logo.reset();
 		this.header.reloadTexture();
+		this.soundOff.reloadTexture();
+		this.soundOn.reloadTexture();
+		this.credits.reloadTexture();
 		this.logo.reloadTexture();
 		this.menu.reloadTextures();
 		final int length = this.p.length;
@@ -255,6 +309,10 @@ public class MenuScreen extends Screen implements OnTouchListener {
 	public void dispose() {
 		
 		this.header.dispose();
+		this.logo.dispose();
+		this.soundOff.dispose();
+		this.soundOn.dispose();
+		this.credits.dispose();
 		this.menu.dispose();
 	}
 }

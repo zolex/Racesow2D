@@ -209,6 +209,18 @@ public class Racesow extends GLGame implements HttpCallback {
 		}
 	}
 	
+	public void onPause() {
+		
+		super.onPause();
+		pauseMusic();
+	}
+	
+	public void onResume() {
+		
+		super.onResume();
+		resumeMusic();
+	}
+	
 	/**
 	 * Called by HttpLoaderTask
 	 * 

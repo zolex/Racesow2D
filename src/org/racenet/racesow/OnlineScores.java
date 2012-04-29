@@ -26,6 +26,15 @@ public class OnlineScores extends ListActivity {
 	int chunkLimit = 50;
 	int chunkOffset = 0;
 	
+	/**
+	 * For mostly gapless music
+	 */
+	public OnlineScores() {
+		
+		super();
+		Racesow.resumeMusic();
+	}
+	
     @Override
     /**
      * Initialite the listview
@@ -82,11 +91,21 @@ public class OnlineScores extends ListActivity {
     }
     
     /**
-	 * Acquire the wakelock on resume
+     * Pause the music
+     */
+    public void onPause() {
+		
+		super.onPause();
+		Racesow.pauseMusic();
+	}
+    
+    /**
+	 * Resume music and acquire wakelock
 	 */
     public void onResume() {
     	
     	super.onResume();
+    	Racesow.resumeMusic();
     	this.wakeLock.acquire();
     }
     

@@ -21,6 +21,15 @@ public class LocalScores extends Activity {
 	WakeLock wakeLock;
 	ViewPager viewPager;
 	
+	/**
+	 * For mostly gapless music
+	 */
+	public LocalScores() {
+		
+		super();
+		Racesow.resumeMusic();
+	}
+	
     @Override
     /**
      * Acquires wakelock and creates an instance of
@@ -40,11 +49,21 @@ public class LocalScores extends Activity {
     }
     
     /**
-	 * Acquire the wakelock on resume
+     * Pause the music
+     */
+    public void onPause() {
+		
+		super.onPause();
+		Racesow.pauseMusic();
+	}
+    
+    /**
+	 * Resume music and acquire wakelock
 	 */
     public void onResume() {
     	
     	super.onResume();
+    	Racesow.resumeMusic();
     	this.wakeLock.acquire();
     }
     

@@ -20,6 +20,15 @@ public class Credits extends ListActivity {
 	WakeLock wakeLock;
 	ViewPager viewPager;
 	
+	/**
+	 * For mostly gapless music
+	 */
+	public Credits() {
+		
+		super();
+		Racesow.resumeMusic();
+	}
+	
     @Override
     /**
      * Acquires wakelock and creates an instance of
@@ -37,11 +46,21 @@ public class Credits extends ListActivity {
     }
     
     /**
-	 * Acquire the wakelock on resume
+     * Pause the music
+     */
+    public void onPause() {
+		
+		super.onPause();
+		Racesow.pauseMusic();
+	}
+    
+    /**
+	 * Resume music and acquire wakelock
 	 */
     public void onResume() {
     	
     	super.onResume();
+    	Racesow.resumeMusic();
     	this.wakeLock.acquire();
     }
     

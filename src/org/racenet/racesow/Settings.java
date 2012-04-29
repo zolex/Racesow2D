@@ -60,6 +60,15 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 	PasswordPreference password;
 	RecoveryPreference recovery;
 	
+	/**
+	 * For mostly gapless music
+	 */
+	public Settings() {
+		
+		super();
+		Racesow.resumeMusic();
+	}
+	
     @Override
     /**
      * create the view and add handle changes in the settings
@@ -1008,11 +1017,21 @@ public class Settings extends PreferenceActivity implements HttpCallback {
     }
     
     /**
-     * Acquire the wakelock on resume
+     * Pause the music
      */
+    public void onPause() {
+		
+		super.onPause();
+		Racesow.pauseMusic();
+	}
+    
+    /**
+	 * Resume music and acquire wakelock
+	 */
     public void onResume() {
     	
     	super.onResume();
+    	Racesow.resumeMusic();
     	this.wakeLock.acquire();
     }
     

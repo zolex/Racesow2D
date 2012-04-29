@@ -52,6 +52,15 @@ public class DownloadMaps extends ListActivity implements HttpCallback {
 	ProgressDialog pd;
 	String racesowPath = FileIO.externalStoragePath + "racesow" + File.separator;
 	
+	/**
+	 * For mostly gapless music
+	 */
+	public DownloadMaps() {
+		
+		super();
+		Racesow.resumeMusic();
+	}
+	
     @Override
     /**
      * Set the listview, and initialize the maplist loading
@@ -289,11 +298,21 @@ public class DownloadMaps extends ListActivity implements HttpCallback {
     }
     
     /**
-     * Acquire the wacklock when reusming the activity
+     * Pause the music
      */
+    public void onPause() {
+		
+		super.onPause();
+		Racesow.pauseMusic();
+	}
+    
+    /**
+	 * Resume music and acquire wakelock
+	 */
     public void onResume() {
     	
     	super.onResume();
+    	Racesow.resumeMusic();
     	this.wakeLock.acquire();
     }
     

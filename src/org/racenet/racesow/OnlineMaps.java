@@ -39,6 +39,16 @@ public class OnlineMaps extends ListActivity implements HttpCallback {
 	int chunkOffset = 0;
 	ProgressDialog pd;
 	
+	/**
+	 * For mostly gapless music
+	 */
+	public OnlineMaps() {
+		
+		super();
+		Racesow.resumeMusic();
+	}	
+	
+	
     @Override
     /**
      * Load the scores and initialize the pager and adapter
@@ -142,11 +152,21 @@ public class OnlineMaps extends ListActivity implements HttpCallback {
     }
     
     /**
-	 * Acquire the wakelock on resume
+     * Pause the music
+     */
+    public void onPause() {
+		
+		super.onPause();
+		Racesow.pauseMusic();
+	}
+    
+    /**
+	 * Resume music and acquire wakelock
 	 */
     public void onResume() {
     	
     	super.onResume();
+    	Racesow.resumeMusic();
     	this.wakeLock.acquire();
     }
     

@@ -240,6 +240,7 @@ public class MenuScreen extends Screen implements OnTouchListener {
 	 */
 	public void resume() {
 		
+		this.logo.reset();
 		this.header.reloadTexture();
 		this.logo.reloadTexture();
 		this.menu.reloadTextures();

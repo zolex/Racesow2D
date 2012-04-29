@@ -1,33 +1,44 @@
 package org.racenet.racesow;
 
 import org.racenet.framework.Drawable;
-import org.racenet.framework.GLTexture;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 
+/**
+ * Animated racesow logo
+ * 
+ * @author soh#zolex
+ */
 public class Logo implements Drawable {
 
 	TexturedBlock top, middle, bottom;
 	Vector2 velTop, velMiddle, velBottom;
 	Vector2 target = new Vector2();
-	float time = 0.0f;
+	public float time = 0.0f;
 	float delayTop = 0.25f;
 	float delayMiddle = 0.45f;
 	float delayBottom = 0.65f;
 	float easing = 1.62f;
 	
+	/**
+	 * Constructor
+	 */
 	public Logo() {
 		
 		this.top = new TexturedBlock("logo_top.png", GameObject.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(25.6f, 0));
 		this.middle = new TexturedBlock("logo_middle.png", GameObject.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(25.6f, 0));
 		this.bottom = new TexturedBlock("logo_bottom.png", GameObject.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(25.6f, 0));
 		
-		this.velTop = new Vector2(20, 0);
-		this.velMiddle = new Vector2(-20, 0);
-		this.velBottom = new Vector2(0, -13.75f);
+		this.setVelocities();
 	}
 	
+	/**
+	 * Set the final position for the logo parts
+	 * 
+	 * @param float x
+	 * @param float y
+	 */
 	public void setPosition(float x, float y) {
 		
 		this.target.x = x;
@@ -43,6 +54,31 @@ public class Logo implements Drawable {
 		this.bottom.vertices[0].y = 60f;
 	}
 	
+	/**
+	 * Prepare the velocities for the logo parts
+	 */
+	private void setVelocities() {
+		
+		this.velTop = new Vector2(20, 0);
+		this.velMiddle = new Vector2(-20, 0);
+		this.velBottom = new Vector2(0, -13.75f);
+	}
+	
+	/**
+	 * Reset the logo to it's initial state
+	 */
+	public void reset() {
+		
+		this.time = 0;
+		this.setVelocities();
+		this.setPosition(this.target.x, this.target.y);
+	}
+	
+	/**
+	 * Update the positions of the logo parts
+	 * 
+	 * @param float deltaTime
+	 */
 	public void update(float deltaTime) {
 		
 		this.time += deltaTime;
@@ -89,6 +125,9 @@ public class Logo implements Drawable {
 		}
 	}
 
+	/**
+	 * Draw the logo parts
+	 */
 	public void draw() {
 		
 		this.top.draw();
@@ -96,6 +135,9 @@ public class Logo implements Drawable {
 		this.bottom.draw();
 	}
 
+	/**
+	 * Reload the textures
+	 */
 	public void reloadTexture() {
 		
 		this.top.reloadTexture();
@@ -103,6 +145,9 @@ public class Logo implements Drawable {
 		this.bottom.reloadTexture();
 	}
 
+	/**
+	 * Get rid of the textures
+	 */
 	public void dispose() {
 		
 		this.top.dispose();

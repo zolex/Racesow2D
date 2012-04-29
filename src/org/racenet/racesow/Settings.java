@@ -28,6 +28,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
@@ -193,6 +194,9 @@ public class Settings extends PreferenceActivity implements HttpCallback {
 			}
 		};
         
+		CheckBoxPreference bg = (CheckBoxPreference)findPreference("bg");
+		bg.setChecked(prefs.getBoolean("bg", true));
+		
 		findPreference("name").setOnPreferenceChangeListener(listener);
 		findPreference("password").setOnPreferenceChangeListener(listener);
 		findPreference("recovery").setOnPreferenceChangeListener(listener);

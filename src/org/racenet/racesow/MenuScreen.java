@@ -287,6 +287,7 @@ public class MenuScreen extends Screen implements OnTouchListener {
 	 */
 	public void resume() {
 		
+		this.musicOn = Racesow.prefs.getBoolean("bg", true);
 		this.waitOneFrame = true;
 		this.logo.reset();
 		this.header.reloadTexture();

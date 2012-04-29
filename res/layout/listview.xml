@@ -40,7 +40,7 @@
         android:layout_alignBottom="@+id/imageView1"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="16dp"
-        android:text="Listview"
+        android:text=""
         android:textColor="#ffffff"
         android:textSize="30dp" />
 

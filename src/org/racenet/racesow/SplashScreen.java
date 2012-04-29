@@ -1,26 +1,12 @@
 package org.racenet.racesow;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import org.racenet.framework.Audio;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
-import org.racenet.framework.GLTexture;
-import org.racenet.framework.Music;
-import org.racenet.framework.Particles;
 import org.racenet.framework.Screen;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.opengl.GLES10;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnTouchListener;
 
 /**
  * The game's main menu

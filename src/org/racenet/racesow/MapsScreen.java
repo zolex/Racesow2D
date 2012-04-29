@@ -7,7 +7,6 @@ import java.util.List;
 import org.racenet.framework.FileIO;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
-import org.racenet.framework.GLTexture;
 import org.racenet.framework.Screen;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;

@@ -3,14 +3,10 @@ package org.racenet.racesow;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.racenet.framework.Audio;
 import org.racenet.framework.GLGame;
-import org.racenet.framework.Sound;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 
-import android.os.Looper;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 

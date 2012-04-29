@@ -1,14 +1,9 @@
 package org.racenet.racesow.threads;
 
 import java.util.Random;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.racenet.framework.Audio;
 import org.racenet.framework.Music;
-import org.racenet.racesow.models.SoundItem;
-
-import android.media.SoundPool;
 
 /**
  * Thread for playing sounds

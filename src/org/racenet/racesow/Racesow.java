@@ -10,7 +10,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.racenet.framework.Audio;
 import org.racenet.framework.FileIO;
 import org.racenet.framework.GLGame;
-import org.racenet.framework.Music;
 import org.racenet.framework.Screen;
 import org.racenet.framework.Sound;
 import org.racenet.framework.XMLParser;

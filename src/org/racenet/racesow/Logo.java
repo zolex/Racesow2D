@@ -5,8 +5,6 @@ import org.racenet.framework.GameObject;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 
-import android.util.Log;
-
 /**
  * Animated racesow logo
  * 

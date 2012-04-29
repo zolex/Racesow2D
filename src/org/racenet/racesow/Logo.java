@@ -19,7 +19,7 @@ public class Logo implements Drawable {
 	float delayTop = 0.25f;
 	float delayMiddle = 0.45f;
 	float delayBottom = 0.65f;
-	float easing = 1.62f;
+	float easing = 70f;
 	
 	/**
 	 * Constructor
@@ -59,9 +59,9 @@ public class Logo implements Drawable {
 	 */
 	private void setVelocities() {
 		
-		this.velTop = new Vector2(20, 0);
-		this.velMiddle = new Vector2(-20, 0);
-		this.velBottom = new Vector2(0, -13.75f);
+		this.velTop = new Vector2(450, 0);
+		this.velMiddle = new Vector2(-450, 0);
+		this.velBottom = new Vector2(0, -320);
 	}
 	
 	/**
@@ -87,8 +87,8 @@ public class Logo implements Drawable {
 			
 			if (this.top.vertices[0].x < this.target.x) {
 		
-				this.top.vertices[0].x += this.velTop.x;
-				this.velTop.x /= this.easing;
+				this.top.vertices[0].x += this.velTop.x * deltaTime;
+				this.velTop.x /= (this.easing * deltaTime);
 				this.velTop.x = Math.max(0.25f, this.velTop.x);
 			
 			} else {
@@ -101,8 +101,8 @@ public class Logo implements Drawable {
 			
 			if (this.middle.vertices[0].x > this.target.x) {
 		
-				this.middle.vertices[0].x += this.velMiddle.x;
-				this.velMiddle.x /= this.easing;
+				this.middle.vertices[0].x += this.velMiddle.x * deltaTime;
+				this.velMiddle.x /= (this.easing * deltaTime);
 				this.velMiddle.x = Math.min(-0.25f, this.velMiddle.x);
 				
 			} else {
@@ -114,8 +114,8 @@ public class Logo implements Drawable {
 		if (this.time > this.delayBottom) {
 			if (this.bottom.vertices[0].y > this.target.y) {
 			
-				this.bottom.vertices[0].y += this.velBottom.y;
-				this.velBottom.y /= this.easing;
+				this.bottom.vertices[0].y += this.velBottom.y * deltaTime;
+				this.velBottom.y /= (this.easing * deltaTime);
 				this.velBottom.y= Math.min(-0.25f, this.velBottom.y);
 				
 			} else {

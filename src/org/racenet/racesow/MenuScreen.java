@@ -151,7 +151,7 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		
 		if ((event.getAction() == MotionEvent.ACTION_DOWN ||
 			event.getAction() == MotionEvent.ACTION_POINTER_DOWN) &&
-			x > 9.5f) {
+			x > 9.3f) {
 			
 			if (y < 0.9f) {
 				

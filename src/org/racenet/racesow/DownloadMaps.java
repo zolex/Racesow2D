@@ -150,6 +150,7 @@ public class DownloadMaps extends ListActivity implements HttpCallback {
 
 			public void onItemClick(AdapterView<?> parent, final View view, final int pos, long id) {
 				
+				Racesow.clickSound();
 				final String mapName =  ((MapItem)mAdapter.getItem(pos)).name;
 				boolean installed = ((MapItem)mAdapter.getItem(pos)).installed;
 				

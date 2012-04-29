@@ -2,14 +2,11 @@ package org.racenet.racesow;
 
 import java.util.Locale;
 
-import org.racenet.framework.BitmapFont;
 import org.racenet.framework.Camera2;
-import org.racenet.framework.CameraText;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLTexture;
 import org.racenet.framework.GameObject;
 import org.racenet.framework.Screen;
-import org.racenet.framework.SpriteBatcher;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 import org.racenet.racesow.models.DemoKeyFrame;
@@ -34,7 +31,6 @@ import android.view.View.OnTouchListener;
 public class GameScreen extends Screen implements OnTouchListener {
 		
 	public Player player;
-	CameraText ups, fps, timer;
 	public Map map;
 	
 	Vector2 gravity = new Vector2(0, -30);
@@ -44,8 +40,6 @@ public class GameScreen extends Screen implements OnTouchListener {
 	float jumpPressedTime = 0;
 	boolean shootPressed = false;
 	float shootPressedTime = 0;
-	SpriteBatcher batcher;
-	BitmapFont font;
 	public float frameTime = 0;
 	public DemoParser demoParser;
 	boolean recordDemos;
@@ -94,31 +88,10 @@ public class GameScreen extends Screen implements OnTouchListener {
 		
 		game.glView.setOnTouchListener(this);
 		
-		// for bitmap-font rendering
-		this.batcher = new SpriteBatcher(96);
-		GLTexture texture = new GLTexture("font.png");
-		this.font = new BitmapFont(texture, 0, 0, 17, 30, 50);
-		
 		// user settings
 		SharedPreferences prefs = ((Activity)this.game).getSharedPreferences("racesow", Context.MODE_PRIVATE);
 		this.showFPS = prefs.getBoolean("fps", false);
 		this.showUPS = prefs.getBoolean("ups", true);
-		
-		if (this.showFPS) {
-		
-			this.fps = this.createCameraText(this.camera.frustumWidth / 2 - 10, this.camera.frustumHeight / 2 - 3);
-			this.fps.text = "fps";
-			this.camera.addHud(this.fps);
-		}
-		
-		if (this.showUPS) {
-			
-			this.ups = this.createCameraText(this.camera.frustumWidth / 2 - 25, this.camera.frustumHeight / 2 - 3);
-			this.camera.addHud(this.ups);
-		}
-		
-		this.timer = this.createCameraText(this.camera.frustumWidth / 2 - 45, this.camera.frustumHeight / 2 - 3);
-		this.camera.addHud(this.timer);
 		
 		// don't show pause/play button when playing a demo
 		if (this.demoParser == null) {
@@ -140,19 +113,6 @@ public class GameScreen extends Screen implements OnTouchListener {
 		}
 		
 		this.map.enableSounds();
-	}
-	
-	/**
-	 * Create a new instance of the CamraText which
-	 * is used as a HudItem on the Camera.
-	 * 
-	 * @param float cameraX
-	 * @param float cameraY
-	 * @return CameraText
-	 */
-	public CameraText createCameraText(float cameraX, float cameraY) {
-		
-		return new CameraText(this.batcher, this.font, cameraX, cameraY);
 	}
 	
 	/**
@@ -258,7 +218,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 	 * Update player, map and camera.
 	 * Called each frame from GLGame.
 	 */
-	public void update(float deltaTime) {
+	public void update(final float deltaTime) {
 				
 		// always wait for the second frame because the
 		// first frame somehow has a too long deltaTime
@@ -271,7 +231,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 			
 		if (this.demoParser != null) {
 			
-			DemoKeyFrame f = demoParser.getKeyFrame(this.frameTime);
+			final DemoKeyFrame f = demoParser.getKeyFrame(this.frameTime);
 			if (f != null) {
 				
 				this.player.activeAnimId = f.playerAnimation;
@@ -295,7 +255,15 @@ public class GameScreen extends Screen implements OnTouchListener {
 					this.player.sounds[f.playerSound].play(player.volume);
 				}
 				
-				this.timer.text = "t " + String.format(Locale.US, "%.4f", f.mapTime);
+				//this.timer.text = "t " + String.format(Locale.US, "%.4f", f.mapTime);
+				game.runOnUiThread(new Runnable() {
+					
+					public void run() {
+						
+						Racesow.raceTime.setText(String.format(Locale.US, "%.4f", f.mapTime));
+					}
+				});
+				
 				
 				if (f.decalType != null) {
 					
@@ -385,32 +353,40 @@ public class GameScreen extends Screen implements OnTouchListener {
 		}
 		
 		this.camera.setPosition(this.player.vertices[0].x + 27.5f - this.currentPlayerOffset, camY);		
-		this.map.update(deltaTime);
-
-		if (this.showUPS) {
+		this.map.update(deltaTime);		
 		
-			// update HUD for player-speed
-			this.ups.text = "ups " + String.valueOf(new Integer((int)player.virtualSpeed));
-		}
-		
-		// update hud for time
-		if (this.demoParser == null) {
-		
-			this.timer.text = "t " + String.format(Locale.US, "%.4f", map.getCurrentTime());
-		}
-		
-		if (this.showFPS) {
+		//this.timer.text = "t " + String.format(Locale.US, "%.4f", map.getCurrentTime());
+		game.runOnUiThread(new Runnable() {
 			
-			// update HUD for frames per second
-			this.frames--;
-			this.sumDelta += deltaTime;
-			if (frames == 0) {
+			public void run() {
+				
+				// update hud for time
+				if (demoParser == null) {
+					
+					Racesow.raceTime.setText("t " + String.format(Locale.US, "%.4f", map.getCurrentTime()));
+				}
+				
 
-				this.fps.text = "fps " + String.valueOf(new Integer((int)(this.fpsInterval / this.sumDelta)));
-				this.frames = fpsInterval;
-				this.sumDelta = 0;
+				if (showUPS) {
+				
+					// update HUD for player-speed
+					Racesow.ups.setText("ups " + String.valueOf(new Integer((int)player.virtualSpeed)));
+				}
+				
+				if (showFPS) {
+					
+					// update HUD for frames per second
+					frames--;
+					sumDelta += deltaTime;
+					if (frames == 0) {
+
+						Racesow.fps.setText("fps " + String.valueOf(new Integer((int)(fpsInterval / sumDelta))));
+						frames = fpsInterval;
+						sumDelta = 0;
+					}
+				}
 			}
-		}
+		});
 		
 		// low fps detection
 		this.time += deltaTime;
@@ -512,6 +488,17 @@ public class GameScreen extends Screen implements OnTouchListener {
 	 * current demo when leaving the screen
 	 */
 	public void dispose() {
+		
+		this.game.runOnUiThread(new Runnable() {
+			
+			public void run() {
+				
+				Racesow.raceTime.setText("");
+				Racesow.ups.setText("");
+				Racesow.fps.setText("");
+				Racesow.tutorial.setText("");
+			}
+		});
 		
 		this.camera.dispose();
 		this.map.dispose();

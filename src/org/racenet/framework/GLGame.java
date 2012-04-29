@@ -3,6 +3,8 @@ package org.racenet.framework;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import org.racenet.racesow.R;
+
 import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -50,9 +52,11 @@ public abstract class GLGame extends Activity implements Renderer {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        glView = new GLSurfaceView(this);
+        
+        setContentView(R.layout.glview);
+        
+        glView = (GLSurfaceView)findViewById(R.id.glview);
         glView.setRenderer(this);
-        setContentView(glView);
         
         FileIO.setupInstance(getAssets());
         Audio.setupInstance(this);

@@ -26,9 +26,7 @@ public class GameObject extends Polygon implements Drawable {
 	public short func;
 	
 	// only for tutorial
-	public String info1 = "";
-	public String info2 = "";
-	public String info3 = "";
+	public String text = "";
 	public boolean finished = false;
 	public String event = "";
 	

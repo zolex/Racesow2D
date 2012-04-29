@@ -2,12 +2,10 @@ package org.racenet.racesow;
 
 import java.io.File;
 
-import org.racenet.framework.BitmapFont;
 import org.racenet.framework.Camera2;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.GLTexture;
 import org.racenet.framework.Screen;
-import org.racenet.framework.SpriteBatcher;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 
@@ -15,6 +13,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.opengl.GLES10;
 
 /**
@@ -27,10 +26,8 @@ class LoadingScreen extends Screen {
 
 	public Camera2 camera;
 	TexturedBlock header, logo;
-	SpriteBatcher batcher;
 	String mapName;
 	public String demoFile;
-	BitmapFont loading;
 	int frames = 0;
 	
 	/**
@@ -47,10 +44,6 @@ class LoadingScreen extends Screen {
 		
 		this.camera = new Camera2(80,  80 * (float)game.getScreenHeight() / (float)game.getScreenWidth());
 		
-		this.batcher = new SpriteBatcher(96);
-		GLTexture font = new GLTexture("font.png");
-		this.loading = new BitmapFont(font, 0, 0, 17, 30, 50);
-		
 		GLTexture.APP_FOLDER = "racesow";
 		header = new TexturedBlock("racesow.png", TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));
 		header.vertices[0].x = 0;
@@ -59,6 +52,15 @@ class LoadingScreen extends Screen {
 		logo = new TexturedBlock("logo.png", TexturedBlock.FUNC_NONE, 0.1f, 0.1f, 0, 0, new Vector2(0, 0), new Vector2(25.6f, 0), new Vector2(25.6f, 25.6f), new Vector2(0, 25.6f));
 		logo.vertices[0].x = camera.frustumWidth / 2 - logo.width / 2;
 		logo.vertices[0].y = camera.frustumHeight - logo.height + 1;
+		
+		game.runOnUiThread(new Runnable() {
+			
+			public void run() {
+				
+				Racesow.centertext3.setText("LOADING...");
+				Racesow.centertext3.setTextColor(Color.RED);
+			}
+		});
 	}
 
 	/**
@@ -107,6 +109,15 @@ class LoadingScreen extends Screen {
 			
 			Racesow.stopMusic();
 			Racesow.IN_GAME = true;
+			
+			game.runOnUiThread(new Runnable() {
+				
+				public void run() {
+					
+					Racesow.centertext3.setText("");
+				}
+			});
+			
 			game.setScreen(new GameScreen(this.game, this.camera, map, player, parser, demos));
 		}
 	}
@@ -132,7 +143,6 @@ class LoadingScreen extends Screen {
 		
 		this.header.draw();
 		this.logo.draw();
-		this.loading.draw(this.batcher, "LOADING", 0.1f, 0.1f, this.camera.frustumWidth / 2 -10, this.camera.frustumHeight / 2);
 	}
 
 	/**
@@ -150,7 +160,6 @@ class LoadingScreen extends Screen {
 
 		this.header.reloadTexture();
 		this.logo.reloadTexture();
-		this.loading.texture.reload();
 	}
 
 	/**
@@ -161,6 +170,5 @@ class LoadingScreen extends Screen {
 
 		this.header.dispose();
 		this.logo.dispose();
-		this.loading.texture.dispose();
 	}
 }

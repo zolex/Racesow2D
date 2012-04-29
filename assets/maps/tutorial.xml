@@ -24,114 +24,82 @@
 	</background2>
 	<tutorial>
 	    <x>40</x>
-	    <info1>Read the follwing statements</info1>
-	    <info2>and act as they determine: Touch</info2>
-	    <info3>the right side of the screen.</info3>
+	    <text>Read the follwing statements and act as they determine: Touch the right side of the screen.</text>
 	    <event>jump</event>
 	</tutorial>
 	<tutorial>
 	    <x>40</x>
-	    <info1>The jump key is on the</info1>
-	    <info2>right side of the screen.</info2>
-	    <info3>Touch jump to continue</info3>
+	    <text>The jump key is on the right side of the screen. Touch jump to continue</text>
 	    <event>jump</event>
 	</tutorial>
 	<tutorial>
 	    <x>40</x>
-	    <info1>The shoot key is on the</info1>
-	    <info2>left side of the screen.</info2>
-	    <info3>Touch shoot to continue</info3>
+	    <text>The shoot key is on the left side of the screen. Touch shoot to continue</text>
 	    <event>shoot</event>
 	</tutorial>
 	<tutorial>
 	    <x>40</x>
-	    <info1>Touch and hold jump.</info1>
-	    <info2>You will continue jumping</info2>
-	    <info3>as long as you hold jump</info3>
+	    <text>Touch and hold jump. You will continue jumping as long as you hold jump</text>
 	    <event>jump</event>
 	</tutorial>
 	<tutorial>
 	    <x>135</x>
-	    <info1>Release jump</info1>
-	    <info2> </info2>
-	    <info3> </info3>
+	    <text>Release jump</text>
 	    <event>release</event>
 	</tutorial>
 	<tutorial>
 	    <x>165</x>
-	    <info1>Touch jump right before</info1>
-	    <info2>you touch the ground</info2>
-	    <info3>to gain more speed</info3>
+	    <text>Touch jump right before you touch the ground to gain more speed</text>
 	    <event>jump</event>
 	</tutorial>
 	<tutorial>
 	    <x>265</x>
-	    <info1>Touch jump in front of a</info1>
-	    <info2>wall to perform a walljump</info2>
-	    <info3> </info3>
+	    <text>Touch jump in front of a wall to perform a walljump</text>
 	    <event>jump</event>
 	</tutorial>
 	<tutorial>
 	    <x>400</x>
-	    <info1>Touch and hold jump to</info1>
-	    <info2>run up stariways</info2>
-	    <info3> </info3>
+	    <text>Touch and hold jump to run up stariways</text>
 	    <event>jump</event>
 	</tutorial>
 	<tutorial>
 	    <x>610</x>
-	    <info1>You will gain speed</info1>
-	    <info2>when jumping downhill</info2>
-	    <info3> </info3>
+	    <text>You will gain speed when jumping downhill</text>
 	    <event>jump</event>
 	</tutorial>
 	<tutorial>
 	    <x>940</x>
-	    <info1>Touch and hold jump to</info1>
-	    <info2>slide up ramps</info2>
-	    <info3> </info3>
+	    <text>Touch and hold jump to slide up ramps</text>
 	    <event>jump</event>
 	</tutorial>
 	<tutorial>
 	    <x>1400</x>
-	    <info1>To perform a rocket-jump</info1>
-	    <info2>hold jump and touch shoot</info2>
-	    <info3>when you are on the ground</info3>
+	    <text>To perform a rocket-jump hold jump and touch shoot when you are on the ground</text>
 	    <event>jump</event>
 	</tutorial>
 	<tutorial>
 	    <x>1780</x>
-	    <info1>Touch and hold jump</info1>
-	    <info2>to slide the ramp up</info2>
-	    <info3> </info3>
+	    <text>Touch and hold jump to slide the ramp up</text>
 	    <event>jump</event>
 	</tutorial>
 		<tutorial>
 	    <x>1845</x>
-	    <info1>Touch shoot while</info1>
-	    <info2>keeping jump pressed</info2>
-	    <info3> </info3>
+	    <text>Touch shoot while keeping jump pressed</text>
 	    <event>shoot</event>
 	</tutorial>
 	<tutorial>
 	    <x>2500</x>
-	    <info1>You got the Plasma Gun.</info1>
-	    <info2>keep on jumping to</info2>
-	    <info3>the next wall</info3>
+	    <text>You got the Plasma Gun. Keep on jumping to the next wall</text>
 	    <event>jump</event>
 	</tutorial>
 	<tutorial>
 	    <x>2610</x>
-	    <info1>Touch and hold shoot to</info1>
-	    <info2>perform a plasma-slide on</info2>
-	    <info3>the wall. release in between.</info3>
+	    <text>Touch and hold shoot to perform a plasma-slide on the wall. release in between.</text>
 	    <event>shoot</event>
 	</tutorial>
 		<tutorial>
 	    <x>3280</x>
-	    <info1>Gratulations! You finished</info1>
-	    <info2>the tutorial. Touch back twice</info2>
-	    <info3>to return to the menu.</info3>
+	    <text>Gratulations! You finished the tutorial. Touch back twice to return to the menu.</text>
 	    <func>5</func>
 	    <event>reset</event>
 	</tutorial>

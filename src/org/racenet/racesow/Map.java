@@ -799,9 +799,7 @@ public class Map {
 			
 			GameObject tutorial = new GameObject(new Vector2(tutorialX, 0), new Vector2(tutorialX + 1, 0), new Vector2(tutorialX + 1, worldHeight), new Vector2(tutorialX, worldHeight));
 			tutorial.func = GameObject.FUNC_TUTORIAL;
-			tutorial.info1 = parser.getValue(xmlTutorial, "info1");
-			tutorial.info2 = parser.getValue(xmlTutorial, "info2");
-			tutorial.info3 = parser.getValue(xmlTutorial, "info3");
+			tutorial.text = parser.getValue(xmlTutorial, "text");
 			tutorial.event = parser.getValue(xmlTutorial, "event");
 			this.funcs.add(tutorial);
 		}

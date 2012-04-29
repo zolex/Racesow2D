@@ -15,7 +15,6 @@ import org.racenet.framework.Sound;
 import org.racenet.framework.AnimatedBlock;
 import org.racenet.framework.AnimationPreset;
 import org.racenet.framework.Camera2;
-import org.racenet.framework.CameraText;
 import org.racenet.framework.FifoPool;
 import org.racenet.framework.XMLParser;
 import org.racenet.framework.FifoPool.PoolObjectFactory;
@@ -34,6 +33,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
+import android.graphics.Color;
 import android.opengl.GLES10;
 import android.os.Handler;
 import android.os.Message;
@@ -114,15 +114,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 	public static float plasmaDecalTime = 0.25f;
 	public boolean soundEnabled;
 	private GameScreen gameScreen;
-	CameraText restartMessage;
-	CameraText timeMessage;
-	CameraText finishMessage;
-	CameraText recordMessage;
-	CameraText ratingMessage;
 	GameObject tutorialActive;
-	CameraText tutorialMessage1;
-	CameraText tutorialMessage2;
-	CameraText tutorialMessage3;
 	public String frameDecalType = "";
 	public float frameDecalX = 0;
 	public float frameDecalY = 0;
@@ -452,32 +444,13 @@ public class Player extends AnimatedBlock implements HttpCallback {
 			this.tutorialActive = null;
 			this.gameScreen.resumeGame();
 			
-			if (this.tutorialMessage1 != null) {
+			gameScreen.game.runOnUiThread(new Runnable() {
 				
-				synchronized (this) {
+				public void run() {
 					
-					this.camera.removeHud(this.tutorialMessage1);
-					this.tutorialMessage1 = null;
+					Racesow.tutorial.setText("");
 				}
-			}
-			
-			if (this.tutorialMessage2 != null) {
-				
-				synchronized (this) {
-					
-					this.camera.removeHud(this.tutorialMessage2);
-					this.tutorialMessage2 = null;
-				}
-			}
-			
-			if (this.tutorialMessage3 != null) {
-				
-				synchronized (this) {
-				
-					this.camera.removeHud(this.tutorialMessage3);
-					this.tutorialMessage3 = null;
-				}
-			}
+			});
 		}
 	}
 	
@@ -1189,37 +1162,47 @@ public class Player extends AnimatedBlock implements HttpCallback {
 		
 		this.isDead = true;
 		
-		this.showRestartMessage();
+		this.showRestartMessage(2);
 	}
 	
 	/**
 	 * Show a restart message
 	 */
-	public void showRestartMessage() {
+	public void showRestartMessage(final int pos) {
 		
-		this.restartMessage = this.gameScreen.createCameraText(-30, -0);
-		this.restartMessage.text = "Press back to restart";
-		this.restartMessage.red = 1;
-		this.restartMessage.green = 0;
-		this.restartMessage.blue = 0;
-		this.restartMessage.scale = 0.15f;
-		this.restartMessage.space = 0.1f;
-		this.camera.addHud(this.restartMessage);
+		gameScreen.game.runOnUiThread(new Runnable() {
+			
+			public void run() {
+				
+				switch(pos) {
+				
+					case 2:
+						Racesow.centertext2.setText("Press back to restart");
+						Racesow.centertext2.setTextColor(Color.RED);
+						break;
+						
+					case 3:
+						Racesow.centertext3.setText("Press back to restart");
+						Racesow.centertext3.setTextColor(Color.RED);
+						break;
+				}
+			}
+		});
 	}
 	
 	/**
 	 * Show the current time
 	 */
 	public void showTimeMessage() {
-		
-		this.timeMessage = this.gameScreen.createCameraText(-27, 5);
-		this.timeMessage.text = "Your time: " + String.format(Locale.US, "%.4f", this.map.getCurrentTime());
-		this.timeMessage.red = 0;
-		this.timeMessage.green = 0;
-		this.timeMessage.blue = 1;
-		this.timeMessage.scale = 0.15f;
-		this.timeMessage.space = 0.1f;
-		this.camera.addHud(this.timeMessage);
+
+		gameScreen.game.runOnUiThread(new Runnable() {
+			
+			public void run() {
+				
+				Racesow.centertext2.setText("Your time: " + String.format(Locale.US, "%.4f", map.getCurrentTime()));
+				Racesow.centertext2.setTextColor(Color.GREEN);
+			}
+		});
 	}
 	
 	/**
@@ -1227,45 +1210,52 @@ public class Player extends AnimatedBlock implements HttpCallback {
 	 */
 	public void showRecordMessage() {
 		
-		this.recordMessage = this.gameScreen.createCameraText(-27, 10);
-		this.recordMessage.text = "New personal record!";
-		this.recordMessage.red = 0;
-		this.recordMessage.green = 1;
-		this.recordMessage.blue = 0;
-		this.recordMessage.scale = 0.15f;
-		this.recordMessage.space = 0.1f;
-		this.camera.addHud(this.recordMessage);
+		gameScreen.game.runOnUiThread(new Runnable() {
+			
+			public void run() {
+				
+				Racesow.centertext1.setText("New personal record!");
+				Racesow.centertext1.setTextColor(Color.GREEN);
+			}
+		});
 	}
 	
 	/**
 	 * Show "new record" message
 	 */
-	public void showRatingMessage(float time) {
+	public void showRatingMessage(final float time) {
 		
-		this.ratingMessage = this.gameScreen.createCameraText(-27, 10);
-		if (time <= this.map.ratingExcellent) {
+		gameScreen.game.runOnUiThread(new Runnable() {
 			
-			this.ratingMessage.text = "Excellent race!";
-			
-		} else if (time <= this.map.ratingVeryGood) {
-			
-			this.ratingMessage.text = "Very good race!";
-			
-		} else if (time <= this.map.ratingGood) {
-			
-			this.ratingMessage.text = "Good race!";
-			
-		} else {
-			
-			this.ratingMessage.text = "Not bad!";
-		}
-		
-		this.ratingMessage.red = 0;
-		this.ratingMessage.green = 1;
-		this.ratingMessage.blue = 0;
-		this.ratingMessage.scale = 0.15f;
-		this.ratingMessage.space = 0.1f;
-		this.camera.addHud(this.ratingMessage);
+			public void run() {
+				
+				String message;
+				int color;
+				if (time <= map.ratingExcellent) {
+					
+					message = "Excellent race!";
+					color = Color.GREEN;
+					
+				} else if (time <= map.ratingVeryGood) {
+					
+					message = "Very good race!";
+					color = Color.GREEN;
+					
+				} else if (time <= map.ratingGood) {
+					
+					message = "Good race!";
+					color = Color.YELLOW;
+					
+				} else {
+					
+					message = "Not bad!";
+					color = Color.RED;
+				}
+				
+				Racesow.centertext2.setText(message);
+				Racesow.centertext2.setTextColor(color);
+			}
+		});
 	}
 	
 	/**
@@ -1273,14 +1263,14 @@ public class Player extends AnimatedBlock implements HttpCallback {
 	 */
 	public void showFinishMessage() {
 		
-		this.finishMessage= this.gameScreen.createCameraText(-20, 10);
-		this.finishMessage.text = "Race finished!";
-		this.finishMessage.red = 1;
-		this.finishMessage.green = 1;
-		this.finishMessage.blue = 0;
-		this.finishMessage.scale = 0.15f;
-		this.finishMessage.space = 0.1f;
-		this.camera.addHud(this.finishMessage);
+		gameScreen.game.runOnUiThread(new Runnable() {
+			
+			public void run() {
+				
+				Racesow.centertext1.setText("Race finished!");
+				Racesow.centertext1.setTextColor(Color.YELLOW);
+			}
+		});
 	}
 	
 	/**
@@ -1288,7 +1278,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 	 * 
 	 * @param GameObject tutorial
 	 */
-	public void showTutorialMessage(GameObject tutorial) {
+	public void showTutorialMessage(final GameObject tutorial) {
 		
 		if (tutorial.finished || this.tutorialActive != null) return;
 		
@@ -1296,32 +1286,13 @@ public class Player extends AnimatedBlock implements HttpCallback {
 		tutorial.finished = true;
 		this.gameScreen.pauseGame();
 		
-		this.tutorialMessage1= this.gameScreen.createCameraText(-32, 10);
-		this.tutorialMessage1.text = tutorial.info1;
-		this.tutorialMessage1.red = 0;
-		this.tutorialMessage1.green = 1;
-		this.tutorialMessage1.blue = 0;
-		this.tutorialMessage1.scale = 0.1f;
-		this.tutorialMessage1.space = 0.075f;
-		this.camera.addHud(this.tutorialMessage1);
-		
-		this.tutorialMessage2 = this.gameScreen.createCameraText(-32, 6);
-		this.tutorialMessage2.text = tutorial.info2;
-		this.tutorialMessage2.red = 0;
-		this.tutorialMessage2.green = 1;
-		this.tutorialMessage2.blue = 0;
-		this.tutorialMessage2.scale = 0.1f;
-		this.tutorialMessage2.space = 0.075f;
-		this.camera.addHud(this.tutorialMessage2);
-		
-		this.tutorialMessage3 = this.gameScreen.createCameraText(-32, 2);
-		this.tutorialMessage3.text = tutorial.info3;
-		this.tutorialMessage3.red = 0;
-		this.tutorialMessage3.green = 1;
-		this.tutorialMessage3.blue = 0;
-		this.tutorialMessage3.scale = 0.1f;
-		this.tutorialMessage3.space = 0.075f;
-		this.camera.addHud(this.tutorialMessage3);
+		gameScreen.game.runOnUiThread(new Runnable() {
+			
+			public void run() {
+				
+				Racesow.tutorial.setText(tutorial.text);
+			}
+		});
 	}
 	
 	/**
@@ -1344,11 +1315,11 @@ public class Player extends AnimatedBlock implements HttpCallback {
 			@Override
 			public void run() {
 				
-				Player.this.camera.removeHud(Player.this.ratingMessage);
-				Player.this.gameScreen.game.runOnUiThread(new Runnable() {
+				gameScreen.game.runOnUiThread(new Runnable() {
 					
 					public void run() {
 						
+						Racesow.centertext2.setText("");
 						savedLocally = false;
 						editName();
 					}
@@ -1421,7 +1392,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 					    		}
 					    		
 					    		Player.this.showTimeMessage();
-					    		Player.this.showRestartMessage();
+					    		Player.this.showRestartMessage(3);
 					    	}
 					});
 					t.start();
@@ -1676,41 +1647,15 @@ public class Player extends AnimatedBlock implements HttpCallback {
 			}
 		}
 		
-		if (this.restartMessage != null) {
+		gameScreen.game.runOnUiThread(new Runnable() {
 			
-			synchronized (this) {
-			
-				this.camera.removeHud(this.restartMessage);
-				this.restartMessage.dispose();
-			}
-		}
-		
-		if (this.timeMessage != null) {
-			
-			synchronized (this) {
+			public void run() {
 				
-				this.camera.removeHud(this.timeMessage);
-				this.timeMessage.dispose();
+				Racesow.centertext1.setText("");
+				Racesow.centertext2.setText("");
+				Racesow.centertext3.setText("");
 			}
-		}
-		
-		if (this.finishMessage != null) {
-			
-			synchronized (this) {
-				
-				this.camera.removeHud(this.finishMessage);
-				this.finishMessage.dispose();
-			}
-		}
-		
-		if (this.recordMessage != null) {
-			
-			synchronized (this) {
-				
-				this.camera.removeHud(this.recordMessage);
-				this.recordMessage.dispose();
-			}
-		}
+		});
 	}
 	
 	/**

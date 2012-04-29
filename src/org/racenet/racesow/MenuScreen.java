@@ -108,17 +108,6 @@ public class MenuScreen extends Screen implements OnTouchListener {
 			}
 		});
 		
-		
-		menu.addItem("menu/credits.png", menu.new Callback() {
-			
-			public void handle() {
-				
-				Intent i = new Intent((Activity)game, Credits.class);
-				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-			    ((Activity)game).startActivity(i);
-			}
-		});
-		
 		GLTexture.APP_FOLDER = "racesow";
 		
 		header = new TexturedBlock("racesow.png", TexturedBlock.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(camera.frustumWidth, 0));

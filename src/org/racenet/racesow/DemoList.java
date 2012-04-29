@@ -77,6 +77,8 @@ public class DemoList extends ListActivity {
 
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			
+				Racesow.clickSound();
+				
 				final String demo = (String)DemoList.this.adapter.getItem(arg2);
 				String mapName = "";
 				String folder = "racesow" + File.separator + "demos" + File.separator;

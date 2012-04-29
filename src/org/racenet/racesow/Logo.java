@@ -61,7 +61,7 @@ public class Logo implements Drawable {
 		
 		this.velTop = new Vector2(450, 0);
 		this.velMiddle = new Vector2(-450, 0);
-		this.velBottom = new Vector2(0, -320);
+		this.velBottom = new Vector2(0, -291);
 	}
 	
 	/**

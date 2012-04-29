@@ -5,6 +5,8 @@ import org.racenet.framework.GameObject;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 
+import android.util.Log;
+
 /**
  * Animated racesow logo
  * 
@@ -13,13 +15,12 @@ import org.racenet.framework.Vector2;
 public class Logo implements Drawable {
 
 	TexturedBlock top, middle, bottom;
-	Vector2 velTop, velMiddle, velBottom;
 	Vector2 target = new Vector2();
 	public float time = 0.0f;
 	float delayTop = 0.25f;
 	float delayMiddle = 0.45f;
 	float delayBottom = 0.65f;
-	float easing = 70f;
+	float topX, middleX, bottomY;
 	
 	/**
 	 * Constructor
@@ -29,8 +30,6 @@ public class Logo implements Drawable {
 		this.top = new TexturedBlock("logo_top.png", GameObject.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(25.6f, 0));
 		this.middle = new TexturedBlock("logo_middle.png", GameObject.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(25.6f, 0));
 		this.bottom = new TexturedBlock("logo_bottom.png", GameObject.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(25.6f, 0));
-		
-		this.setVelocities();
 	}
 	
 	/**
@@ -44,24 +43,17 @@ public class Logo implements Drawable {
 		this.target.x = x;
 		this.target.y = y;
 		
-		this.top.vertices[0].x = -25.6f;
+		this.topX = -25.6f;
+		this.top.vertices[0].x = this.topX;
 		this.top.vertices[0].y = y;
 		
-		this.middle.vertices[0].x = 80;
+		this.middleX = 80;
+		this.middle.vertices[0].x = this.middleX;
 		this.middle.vertices[0].y = y;
 		
+		this.bottomY = 60;
 		this.bottom.vertices[0].x = x;
-		this.bottom.vertices[0].y = 60f;
-	}
-	
-	/**
-	 * Prepare the velocities for the logo parts
-	 */
-	private void setVelocities() {
-		
-		this.velTop = new Vector2(450, 0);
-		this.velMiddle = new Vector2(-450, 0);
-		this.velBottom = new Vector2(0, -291);
+		this.bottom.vertices[0].y = this.bottomY;
 	}
 	
 	/**
@@ -70,7 +62,6 @@ public class Logo implements Drawable {
 	public void reset() {
 		
 		this.time = 0;
-		this.setVelocities();
 		this.setPosition(this.target.x, this.target.y);
 	}
 	
@@ -85,42 +76,28 @@ public class Logo implements Drawable {
 		
 		if (this.time > this.delayTop) {
 			
-			if (this.top.vertices[0].x < this.target.x) {
-		
-				this.top.vertices[0].x += this.velTop.x * deltaTime;
-				this.velTop.x /= (this.easing * deltaTime);
-				this.velTop.x = Math.max(0.25f, this.velTop.x);
+			float progress = (this.time - this.delayTop) / 0.75f;
+			if (progress <= 1.0f) {
 			
-			} else {
-				
-				this.top.vertices[0].x = this.target.x;
+				this.top.vertices[0].x = (this.target.x - this.topX) * 2 * ( progress - (progress * progress) / 2 ) + this.topX;
 			}
 		}
 		
 		if (this.time > this.delayMiddle) {
 			
-			if (this.middle.vertices[0].x > this.target.x) {
-		
-				this.middle.vertices[0].x += this.velMiddle.x * deltaTime;
-				this.velMiddle.x /= (this.easing * deltaTime);
-				this.velMiddle.x = Math.min(-0.25f, this.velMiddle.x);
-				
-			} else {
-				
-				this.middle.vertices[0].x = this.target.x;
+			float progress = (this.time - this.delayMiddle) / 0.75f;
+			if (progress <= 1.0f) {
+			
+				this.middle.vertices[0].x = (this.target.x - this.middleX) * 2 * ( progress - (progress * progress) / 2 ) + this.middleX;
 			}
 		}
 		
 		if (this.time > this.delayBottom) {
-			if (this.bottom.vertices[0].y > this.target.y) {
 			
-				this.bottom.vertices[0].y += this.velBottom.y * deltaTime;
-				this.velBottom.y /= (this.easing * deltaTime);
-				this.velBottom.y= Math.min(-0.25f, this.velBottom.y);
-				
-			} else {
-				
-				this.bottom.vertices[0].y = this.target.y;
+			float progress = (this.time - this.delayBottom) / 0.75f;
+			if (progress <= 1.0f) {
+			
+				this.bottom.vertices[0].y = (this.target.y - this.bottomY) * 2 * ( progress - (progress * progress) / 2 ) + this.bottomY;
 			}
 		}
 	}

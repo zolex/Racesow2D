@@ -126,6 +126,9 @@ public class Racesow extends GLGame implements HttpCallback {
 		task.execute();
 	}
 	
+	/**
+	 * Start the menu music if it's not yet playing
+	 */
 	public static void startMusic() {
 		
 		if (!prefs.getBoolean("bg", true)) {
@@ -147,12 +150,40 @@ public class Racesow extends GLGame implements HttpCallback {
 		}
 	}
 	
+	/**
+	 * Stop the menu music if it's playing
+	 */
 	public static void stopMusic() {
 		
 		if (bg != null) {
 			
 			bg.stop = true;
 			bg = null;
+		}
+	}
+	
+	/**
+	 * Pause the menu music if it's playing
+	 */
+	public static void pauseMusic() {
+		
+		if (bg != null) {
+			
+			if (bg.music.isPlaying()) {
+				
+				bg.music.pause();
+			}
+		}
+	}
+	
+	/**
+	 * Resume the menu music from pause state
+	 */
+	public static void resumeMusic() {
+		
+		if (bg != null) {
+			
+			bg.music.play();
 		}
 	}
 	

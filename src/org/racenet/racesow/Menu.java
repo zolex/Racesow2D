@@ -24,13 +24,20 @@ public class Menu implements GestureDetector.OnGestureListener {
 
 	List<TexturedBlock> items = new ArrayList<TexturedBlock>();
 	List<Callback> callbacks = new ArrayList<Callback>();
+	List<Float> yTargets = new ArrayList<Float>();
+	List<Float> delays = new ArrayList<Float>();
 	GLGame game;
 	float viewWidth;
 	float viewHeight;
 	float spaceWidth = 0.1f;
 	float velocity = 0;
 	boolean scrolling = true;
+	boolean inStartup = false;
 	float scale;
+	float currentDelay = 0f;
+	float itemDelay = 0.1f;
+	float time = 0;
+	float speed = 0.5f;
 	
 	/**
 	 * Simple callback for menu item clicks
@@ -58,6 +65,18 @@ public class Menu implements GestureDetector.OnGestureListener {
 		this.scale = scale;
 	}
 	
+	public void enableStartup() {
+		
+		this.time = 0;
+		this.inStartup = true;
+		int length = this.items.size();
+		for (int i = 0; i < length; i++) {
+			
+			TexturedBlock item = this.items.get(i);
+			item.vertices[0].y = -this.viewHeight - item.height;
+		}
+	}
+	
 	public void setScrolling(boolean scrolling) {
 		
 		this.scrolling = scrolling;
@@ -80,11 +99,17 @@ public class Menu implements GestureDetector.OnGestureListener {
 			posX += this.items.get(i).width + this.spaceWidth;
 		}
 		
+		float posY = this.viewHeight / 2 - item.height / 2 - this.viewHeight / 5;
+		
+		this.currentDelay += this.itemDelay;
+		
 		item.vertices[0].x = posX;
-		item.vertices[0].y = this.viewHeight / 2 - item.height / 2 - this.viewHeight / 5;
+		item.vertices[0].y = posY;
 		
 		this.items.add(item);
 		this.callbacks.add(callback);
+		this.yTargets.add(posY);
+		this.delays.add(this.currentDelay);
 	}
 	
 	/**
@@ -101,7 +126,7 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 */
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 		
-		if (!this.scrolling) {
+		if (!this.scrolling || this.inStartup) {
 			
 			return false;
 		}
@@ -140,7 +165,7 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 */
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 		
-		if (!this.scrolling) {
+		if (!this.scrolling || this.inStartup) {
 			
 			return false;
 		}
@@ -167,6 +192,11 @@ public class Menu implements GestureDetector.OnGestureListener {
 	 */
 	public boolean onSingleTapUp(MotionEvent event) {
 
+		if (this.inStartup) {
+			
+			return false;
+		}
+		
 		if (event == null) {
 			
 			return false;
@@ -252,13 +282,57 @@ public class Menu implements GestureDetector.OnGestureListener {
 	}
 	
 	/**
+	 * Animate the menu startup
+	 * 
+	 * @param float deltaTime
+	 */
+	public void startupAnimation(float deltaTime) {
+		
+		int length = this.items.size();
+		boolean finished = true;
+		for (int i = 0; i < length; i++) {
+			
+			TexturedBlock item = this.items.get(i);
+			float delay = this.delays.get(i);
+			float yTarget = this.yTargets.get(i);
+			
+			if (this.time >= delay) {
+				
+				float progress = (this.time - delay) / 0.5f;
+				if (progress <= 1.0f) {
+				
+					finished = false;
+					item.vertices[0].y = (yTarget - (-this.viewHeight - item.height))
+	                        * (this.speed / (this.speed - 1))
+	                        * (progress - (float) Math.pow(progress, this.speed)
+	                        / this.speed) + (-this.viewHeight - item.height);
+				}
+				
+			} else {
+				
+				finished = false;
+			}
+		}
+		
+		if (finished) {
+			
+			this.inStartup = false;
+		}
+	}
+	
+	/**
 	 * Update he menu position according to it's velocity
 	 * 
 	 * @param float deltaTime
 	 */
 	public void update(float deltaTime) {
 		
-		if (this.velocity != 0) {
+		this.time += deltaTime;
+		if (this.inStartup) {
+			
+			this.startupAnimation(deltaTime);
+			
+		} else if (this.velocity != 0) {
 			
 			this.moveMenu(-this.velocity  * deltaTime);
 			this.velocity = this.velocity / 1.025f;

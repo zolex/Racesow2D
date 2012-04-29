@@ -57,6 +57,7 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		
 		menu = new Menu(game, camera.frustumWidth, camera.frustumHeight, (float)game.getScreenWidth() / this.scaleFactor);
 		menu.setScrolling(false);
+		
 		game.runOnUiThread(new Runnable() {
 			
 			public void run() {
@@ -110,6 +111,8 @@ public class MenuScreen extends Screen implements OnTouchListener {
 				((Activity)game).startActivity(i);
 			}
 		});
+		
+		menu.enableStartup();
 		
 		GLTexture.APP_FOLDER = "racesow";
 		
@@ -290,6 +293,7 @@ public class MenuScreen extends Screen implements OnTouchListener {
 		this.musicOn = Racesow.prefs.getBoolean("bg", true);
 		this.waitOneFrame = true;
 		this.logo.reset();
+		this.menu.enableStartup();
 		this.header.reloadTexture();
 		this.soundOff.reloadTexture();
 		this.soundOn.reloadTexture();

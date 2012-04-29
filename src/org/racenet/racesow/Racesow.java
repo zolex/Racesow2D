@@ -569,7 +569,7 @@ public class Racesow extends GLGame implements HttpCallback {
     	String screen = getIntent().getStringExtra("screen");
     	if (screen == null) {
     	
-    		return new MenuScreen(this);
+    		return new SplashScreen(this);
     		
     	} else if (screen.equals("demo")) {
     		
@@ -633,7 +633,7 @@ public class Racesow extends GLGame implements HttpCallback {
                 public void run() {
                    
                 	backSound();
-                	Racesow.this.setScreen(Racesow.this.getStartScreen());
+                	Racesow.this.setScreen(new MenuScreen(Racesow.this));
                 }
             });
     	

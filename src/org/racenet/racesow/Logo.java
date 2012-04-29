@@ -17,10 +17,13 @@ public class Logo implements Drawable {
 	TexturedBlock top, middle, bottom;
 	Vector2 target = new Vector2();
 	public float time = 0.0f;
-	float delayTop = 0.25f;
+	float delayTop = 0f;
 	float delayMiddle = 0.45f;
 	float delayBottom = 0.65f;
 	float topX, middleX, bottomY;
+	float initialSpeed = 100000000;
+	float endSpeed = 0;
+	float speed = 0.5f;
 	
 	/**
 	 * Constructor
@@ -30,10 +33,14 @@ public class Logo implements Drawable {
 		this.top = new TexturedBlock("logo_top.png", GameObject.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(25.6f, 0));
 		this.middle = new TexturedBlock("logo_middle.png", GameObject.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(25.6f, 0));
 		this.bottom = new TexturedBlock("logo_bottom.png", GameObject.FUNC_NONE, -1, -1, 0, 0, new Vector2(0, 0), new Vector2(25.6f, 0));
+		
+		this.topX = -25.6f;
+		this.middleX = 80;
+		this.bottomY = 60;
 	}
 	
 	/**
-	 * Set the final position for the logo parts
+	 * Set initial and final positions for the logo parts
 	 * 
 	 * @param float x
 	 * @param float y
@@ -43,15 +50,12 @@ public class Logo implements Drawable {
 		this.target.x = x;
 		this.target.y = y;
 		
-		this.topX = -25.6f;
 		this.top.vertices[0].x = this.topX;
 		this.top.vertices[0].y = y;
 		
-		this.middleX = 80;
 		this.middle.vertices[0].x = this.middleX;
 		this.middle.vertices[0].y = y;
 		
-		this.bottomY = 60;
 		this.bottom.vertices[0].x = x;
 		this.bottom.vertices[0].y = this.bottomY;
 	}
@@ -79,7 +83,10 @@ public class Logo implements Drawable {
 			float progress = (this.time - this.delayTop) / 0.75f;
 			if (progress <= 1.0f) {
 			
-				this.top.vertices[0].x = (this.target.x - this.topX) * 2 * ( progress - (progress * progress) / 2 ) + this.topX;
+				this.top.vertices[0].x = (this.target.x - this.topX)
+                        * (this.speed / (this.speed - 1))
+                        * (progress - (float) Math.pow(progress, this.speed)
+                        / this.speed) + this.topX;
 			}
 		}
 		
@@ -88,7 +95,10 @@ public class Logo implements Drawable {
 			float progress = (this.time - this.delayMiddle) / 0.75f;
 			if (progress <= 1.0f) {
 			
-				this.middle.vertices[0].x = (this.target.x - this.middleX) * 2 * ( progress - (progress * progress) / 2 ) + this.middleX;
+				this.middle.vertices[0].x = (this.target.x - this.middleX)
+                        * (this.speed / (this.speed - 1))
+                        * (progress - (float) Math.pow(progress, this.speed)
+                        / this.speed) + this.middleX;
 			}
 		}
 		
@@ -97,7 +107,10 @@ public class Logo implements Drawable {
 			float progress = (this.time - this.delayBottom) / 0.75f;
 			if (progress <= 1.0f) {
 			
-				this.bottom.vertices[0].y = (this.target.y - this.bottomY) * 2 * ( progress - (progress * progress) / 2 ) + this.bottomY;
+				this.bottom.vertices[0].y = (this.target.y - this.bottomY)
+                        * (this.speed / (this.speed - 1))
+                        * (progress - (float) Math.pow(progress, this.speed)
+                        / this.speed) + this.bottomY;
 			}
 		}
 	}

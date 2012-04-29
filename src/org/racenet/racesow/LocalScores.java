@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.support.v4.view.ViewPager;
+import android.widget.TextView;
 
 /**
  * Shows pages of lists of map-highscores
@@ -44,6 +45,9 @@ public class LocalScores extends Activity {
     	
     	FileIO.setupInstance(getAssets());
         setContentView(R.layout.viewpager);
+        TextView title = (TextView)findViewById(R.id.title);
+        title.setTypeface(Racesow.font);
+        
         viewPager = (ViewPager)findViewById(R.id.pager);
     	viewPager.setAdapter(new LocalMapPagesAdapter(getApplicationContext()));
     }

@@ -1,5 +1,6 @@
 package org.racenet.racesow;
 
+import org.racenet.framework.FileIO;
 import org.racenet.racesow.models.CreditsAdapter;
 
 import android.app.ListActivity;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.support.v4.view.ViewPager;
+import android.widget.TextView;
 
 /**
  * Shows the game credits
@@ -42,6 +44,11 @@ public class Credits extends ListActivity {
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
     	
         setContentView(R.layout.listview);
+        
+        TextView title = (TextView)findViewById(R.id.title);
+        title.setText("Credits");
+        title.setTypeface(Racesow.font);
+        
         setListAdapter(new CreditsAdapter(getApplicationContext()));
     }
     

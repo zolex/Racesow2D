@@ -72,6 +72,7 @@ public class DownloadMaps extends ListActivity implements HttpCallback {
     	
     	TextView title = (TextView)findViewById(R.id.title);
         title.setText("Download maps");
+        title.setTypeface(Racesow.font);
     	
     	PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");

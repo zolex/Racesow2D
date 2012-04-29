@@ -50,6 +50,9 @@ public class OnlineUpdates extends ExpandableListActivity {
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");
     	
     	setContentView(R.layout.onlineupdates);
+    	TextView title = (TextView)findViewById(R.id.title);
+    	title.setTypeface(Racesow.font);
+    	
     	Database.setupInstance(this.getApplicationContext());
         mAdapter = new UpdatesAdapter(this);
         setListAdapter(mAdapter);

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.racenet.framework.FileIO;
 import org.racenet.framework.XMLParser;
 import org.racenet.helpers.IsServiceRunning;
 import org.racenet.racesow.R;
@@ -81,6 +82,7 @@ public class Settings extends PreferenceActivity implements HttpCallback {
         
         TextView title = (TextView)findViewById(R.id.title);
         title.setText("Settings");
+        title.setTypeface(Racesow.font);
         
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
     	this.wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "racesow");

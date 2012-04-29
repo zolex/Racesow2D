@@ -32,6 +32,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -58,6 +59,7 @@ public class Racesow extends GLGame implements HttpCallback {
 	String initialName;
 	public static Sound back;
 	public static Sound click;
+	public static Typeface font;
 	
 	/**
 	 * Create the activity
@@ -76,7 +78,7 @@ public class Racesow extends GLGame implements HttpCallback {
 		
 		Database.setupInstance(this.getApplicationContext());
 		FileIO.getInstance().createDirectory("racesow" + File.separator + "downloads");
-		
+		font = FileIO.getInstance().getFont("font.ttf");
 		
 		click = Audio.getInstance().newSound("sounds/ok.wav");
 		back = Audio.getInstance().newSound("sounds/back.wav");

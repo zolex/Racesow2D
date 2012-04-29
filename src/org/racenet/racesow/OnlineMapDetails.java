@@ -67,7 +67,8 @@ public class OnlineMapDetails extends ListActivity implements HttpCallback {
 		String mapName = getIntent().getStringExtra("map");
 		TextView title = (TextView)findViewById(R.id.title);
         title.setText("Map " + mapName);
-		
+        title.setTypeface(Racesow.font);
+        
 		this.loadData();
 		
 		getListView().setOnScrollListener(new OnScrollListener() {

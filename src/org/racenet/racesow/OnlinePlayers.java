@@ -68,7 +68,8 @@ public class OnlinePlayers extends ListActivity implements HttpCallback {
 		
 		TextView title = (TextView)findViewById(R.id.title);
         title.setText("Player ranking");
-		
+        title.setTypeface(Racesow.font);
+        
 		getListView().setOnScrollListener(new OnScrollListener() {
 			
 			public void onScrollStateChanged(AbsListView view, int scrollState) {

@@ -12,6 +12,7 @@ import org.racenet.helpers.FileCreatedComperator;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
 import android.content.res.AssetManager;
+import android.graphics.Typeface;
 import android.os.Environment;
 
 /**
@@ -81,6 +82,17 @@ public class FileIO {
 	public InputStream readFile(String fileName) throws IOException {
 
 		return new FileInputStream(externalStoragePath + fileName);
+	}
+	
+	/**
+	 * Load a font
+	 * 
+	 * @param String fileName
+	 * @return Typeface
+	 */
+	public Typeface getFont(String fileName) {
+		
+		return Typeface.createFromAsset(this.assetManager, fileName);
 	}
 
 	/**

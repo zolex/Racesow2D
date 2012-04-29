@@ -78,6 +78,7 @@ public class DemoList extends ListActivity {
         
         TextView title = (TextView)findViewById(R.id.title);
         title.setText("Demos");
+        title.setTypeface(Racesow.font);
         
         ListView list = getListView();
         registerForContextMenu(list);

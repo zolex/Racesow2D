@@ -54,7 +54,8 @@ public class OnlineScores extends ListActivity {
 		
 		TextView title = (TextView)findViewById(R.id.title);
         title.setText("Scores");
-		
+        title.setTypeface(Racesow.font);
+        
 		getListView().setOnItemClickListener(new OnItemClickListener() {
 
 			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {

@@ -73,6 +73,7 @@ public class OnlineScores extends ListActivity {
 				
 				if (i != null) {
 					
+					Racesow.clickSound();
 					i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 					startActivity(i);
 				}
@@ -103,6 +104,7 @@ public class OnlineScores extends ListActivity {
      */
 	public void onBackPressed() {
     	
+		Racesow.backSound();
     	this.finish();
     	this.overridePendingTransition(0, 0);
     }

@@ -29,14 +29,24 @@ public class MusicThread extends Thread {
 	 */
 	public MusicThread() {
 
-		/*
 		Random gen = new Random();
-		int num = gen.nextInt(3) + 1;
-		*/
-		int num = 1;
+		int num = gen.nextInt(2) + 1;
 		music = Audio.getInstance().newMusic("sounds/menu_"+ num +".ogg");
 		music.setLooping(true);
-		music.setVolume(0.4f);
+		
+		float vol = 0;
+		switch (num) {
+		
+			case 1:
+				vol = 0.5f;
+				break;
+				
+			case 2:
+				vol = 0.1f;
+				break;
+		}
+		
+		music.setVolume(vol);
 	}
 	
 	@Override

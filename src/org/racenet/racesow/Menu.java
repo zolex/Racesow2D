@@ -3,7 +3,9 @@ package org.racenet.racesow;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.racenet.framework.Audio;
 import org.racenet.framework.GLGame;
+import org.racenet.framework.Sound;
 import org.racenet.framework.TexturedBlock;
 import org.racenet.framework.Vector2;
 
@@ -190,6 +192,7 @@ public class Menu implements GestureDetector.OnGestureListener {
 			if (x > item.vertices[0].x && x < item.vertices[0].x + item.width &&
 				y > item.vertices[0].y && y < item.vertices[0].y + item.height) {
 				
+				Racesow.clickSound();
 				this.callbacks.get(i).handle();
 				break;
 			}

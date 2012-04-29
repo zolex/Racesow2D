@@ -67,6 +67,7 @@ public class OnlineMaps extends ListActivity implements HttpCallback {
 				
 				final String mapName =  ((MapItem)adapter.getItem(pos)).name;
 				
+				Racesow.clickSound();
 				Intent i = new Intent(OnlineMaps.this, OnlineMapDetails.class);
 				i.putExtra("map", mapName);
 				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -163,6 +164,7 @@ public class OnlineMaps extends ListActivity implements HttpCallback {
      */
 	public void onBackPressed() {
     	
+		Racesow.backSound();
     	this.finish();
     	this.overridePendingTransition(0, 0);
     }

@@ -193,6 +193,7 @@ public class OnlineMapDetails extends ListActivity implements HttpCallback {
      */
 	public void onBackPressed() {
     	
+		Racesow.backSound();
     	this.finish();
     	this.overridePendingTransition(0, 0);
     }

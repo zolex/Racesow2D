@@ -153,6 +153,7 @@ public class OnlineUpdates extends ExpandableListActivity {
      */
 	public void onBackPressed() {
     	
+		Racesow.backSound();
     	this.finish();
     	this.overridePendingTransition(0, 0);
     }

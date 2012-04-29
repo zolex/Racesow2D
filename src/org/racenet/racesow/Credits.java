@@ -59,6 +59,7 @@ public class Credits extends ListActivity {
      */
 	public void onBackPressed() {
     	
+		Racesow.backSound();
     	this.finish();
     	this.overridePendingTransition(0, 0);
     }

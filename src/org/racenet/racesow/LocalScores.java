@@ -62,6 +62,7 @@ public class LocalScores extends Activity {
      */
 	public void onBackPressed() {
     	
+		Racesow.backSound();
     	this.finish();
     	this.overridePendingTransition(0, 0);
     }

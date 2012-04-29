@@ -12,6 +12,7 @@ import org.racenet.framework.FileIO;
 import org.racenet.framework.GLGame;
 import org.racenet.framework.Music;
 import org.racenet.framework.Screen;
+import org.racenet.framework.Sound;
 import org.racenet.framework.XMLParser;
 import org.racenet.helpers.IsServiceRunning;
 import org.racenet.racesow.GameScreen.GameState;
@@ -55,6 +56,8 @@ public class Racesow extends GLGame implements HttpCallback {
 	public static SharedPreferences prefs;
 	String pendingName;
 	String initialName;
+	public static Sound back;
+	public static Sound click;
 	
 	/**
 	 * Create the activity
@@ -74,6 +77,9 @@ public class Racesow extends GLGame implements HttpCallback {
 		Database.setupInstance(this.getApplicationContext());
 		FileIO.getInstance().createDirectory("racesow" + File.separator + "downloads");
 		
+		
+		click = Audio.getInstance().newSound("sounds/ok.wav");
+		back = Audio.getInstance().newSound("sounds/back.wav");
 		prefs = getSharedPreferences("racesow", Context.MODE_PRIVATE);
 		
 		startMusic();
@@ -124,6 +130,22 @@ public class Racesow extends GLGame implements HttpCallback {
 		});
 		
 		task.execute();
+	}
+	
+	/**
+	 * Play the click-sound
+	 */
+	public static void clickSound() {
+		
+		click.play(0.25f);
+	}
+	
+	/**
+	 * Play the back-sound
+	 */
+	public static void backSound() {
+		
+		back.play(0.6f);
 	}
 	
 	/**
@@ -560,6 +582,7 @@ public class Racesow extends GLGame implements HttpCallback {
     		
     		if (gameScreen.demoParser != null) {
     			
+    			backSound();
     			Racesow.IN_GAME = false;
     			startMusic();
     			this.finish();
@@ -582,6 +605,7 @@ public class Racesow extends GLGame implements HttpCallback {
 
                     public void run() {
                        
+                    	backSound();
                     	Racesow.IN_GAME = false;
                     	startMusic();
                     	Racesow.this.setScreen(new MapsScreen(Racesow.this));
@@ -596,12 +620,15 @@ public class Racesow extends GLGame implements HttpCallback {
 
                 public void run() {
                    
+                	backSound();
                 	Racesow.this.setScreen(Racesow.this.getStartScreen());
                 }
             });
     	
 		// quit the application
     	} else if (screenName.endsWith("LoadingScreen")) {
+    		
+    		backSound();
     		
     		// if no demo is loading we come from the mapsScreen
     		if (((LoadingScreen)screen).demoFile == null) {
@@ -630,6 +657,7 @@ public class Racesow extends GLGame implements HttpCallback {
 		// quit the application
     	} else {
     		
+    		backSound();
     		this.finish();
         	this.overridePendingTransition(0, 0);
         	

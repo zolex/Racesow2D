@@ -1033,6 +1033,7 @@ public class Settings extends PreferenceActivity implements HttpCallback {
     		
     	} else {
     	
+    		Racesow.backSound();
 	    	this.finish();
 	    	this.overridePendingTransition(0, 0);
     	}

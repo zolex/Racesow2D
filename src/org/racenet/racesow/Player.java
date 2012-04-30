@@ -1200,7 +1200,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 			public void run() {
 				
 				Racesow.centertext2.setText("Your time: " + String.format(Locale.US, "%.4f", map.getCurrentTime()));
-				Racesow.centertext2.setTextColor(Color.GREEN);
+				Racesow.centertext2.setTextColor(Color.BLUE);
 			}
 		});
 	}

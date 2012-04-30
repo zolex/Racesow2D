@@ -80,39 +80,12 @@ public class Racesow extends GLGame implements HttpCallback {
 		
 		Database.setupInstance(this.getApplicationContext());
 		FileIO.getInstance().createDirectory("racesow" + File.separator + "downloads");
+		
 		font = FileIO.getInstance().getFont("font.ttf");
 		
 		click = Audio.getInstance().newSound("sounds/ok.wav");
 		back = Audio.getInstance().newSound("sounds/back.wav");
 		prefs = getSharedPreferences("racesow", Context.MODE_PRIVATE);
-		
-		raceTime = (TextView)findViewById(R.id.time);
-		raceTime.setTypeface(font);
-		raceTime.setTextColor(Color.GREEN);
-		
-		ups = (TextView)findViewById(R.id.ups);
-		ups.setTypeface(font);
-		ups.setTextColor(Color.GREEN);
-		
-		fps = (TextView)findViewById(R.id.fps);
-		fps.setTypeface(font);
-		fps.setTextColor(Color.GREEN);
-		
-		tutorial = (TextView)findViewById(R.id.tutorial);
-		tutorial.setTypeface(font);
-		tutorial.setTextColor(Color.GREEN);
-		
-		centertext1 = (TextView)findViewById(R.id.centertext1);
-		centertext1.setTypeface(font);
-		centertext1.setTextColor(Color.GREEN);
-		
-		centertext2 = (TextView)findViewById(R.id.centertext2);
-		centertext2.setTypeface(font);
-		centertext2.setTextColor(Color.GREEN);
-		
-		centertext3 = (TextView)findViewById(R.id.centertext3);
-		centertext3.setTypeface(font);
-		centertext3.setTextColor(Color.GREEN);
 		
 		startMusic();
 		
@@ -251,6 +224,34 @@ public class Racesow extends GLGame implements HttpCallback {
 		
 		super.onResume();
 		resumeMusic();
+		
+		raceTime = (TextView)findViewById(R.id.time);
+		raceTime.setTypeface(font);
+		raceTime.setTextColor(Color.GREEN);
+		
+		ups = (TextView)findViewById(R.id.ups);
+		ups.setTypeface(font);
+		ups.setTextColor(Color.GREEN);
+		
+		fps = (TextView)findViewById(R.id.fps);
+		fps.setTypeface(font);
+		fps.setTextColor(Color.GREEN);
+		
+		tutorial = (TextView)findViewById(R.id.tutorial);
+		tutorial.setTypeface(font);
+		tutorial.setTextColor(Color.GREEN);
+		
+		centertext1 = (TextView)findViewById(R.id.centertext1);
+		centertext1.setTypeface(font);
+		centertext1.setTextColor(Color.GREEN);
+		
+		centertext2 = (TextView)findViewById(R.id.centertext2);
+		centertext2.setTypeface(font);
+		centertext2.setTextColor(Color.GREEN);
+		
+		centertext3 = (TextView)findViewById(R.id.centertext3);
+		centertext3.setTypeface(font);
+		centertext3.setTextColor(Color.GREEN);
 	}
 	
 	/**

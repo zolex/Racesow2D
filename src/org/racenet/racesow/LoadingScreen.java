@@ -57,8 +57,8 @@ class LoadingScreen extends Screen {
 			
 			public void run() {
 				
-				Racesow.centertext3.setText("LOADING...");
-				Racesow.centertext3.setTextColor(Color.RED);
+				Racesow.centertext3.setText("LOADING");
+				Racesow.centertext3.setTextColor(Color.WHITE);
 			}
 		});
 	}

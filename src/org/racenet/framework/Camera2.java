@@ -50,8 +50,11 @@ public class Camera2 implements Drawable {
 		for (int i = 0; i < hudItems.size(); i++) {
 			
 			HudItem item = hudItems.get(i);
-			item.vertices[0].x = x + item.cameraX;
-			item.vertices[0].y = y + item.cameraY;
+			if (item != null) {
+			
+				item.vertices[0].x = x + item.cameraX;
+				item.vertices[0].y = y + item.cameraY;
+			}
 		}
 	}
     

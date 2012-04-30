@@ -137,7 +137,7 @@ public class DemoList extends ListActivity {
 								i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 								i.putExtra("screen", "demo");
 								i.putExtra("demo", demo);
-								startActivityForResult(i, 0);
+								startActivity(i);
 							}
 						})
 						.setNegativeButton("No", null)

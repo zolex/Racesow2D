@@ -219,7 +219,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 	 * Called each frame from GLGame.
 	 */
 	public void update(final float deltaTime) {
-				
+		
 		// always wait for the second frame because the
 		// first frame somehow has a too long deltaTime
 		if (this.waitForNextFrame) {
@@ -234,11 +234,21 @@ public class GameScreen extends Screen implements OnTouchListener {
 			final DemoKeyFrame f = demoParser.getKeyFrame(this.frameTime);
 			if (f != null) {
 				
+				if (this.player.lastJumpAnim == Player.ANIM_STAND ||
+					this.player.lastJumpAnim == Player.ANIM_ROCKET_STAND ||
+					this.player.lastJumpAnim == Player.ANIM_PLASMA_STAND) {
+					
+					this.player.animTime = 0.15f;
+				}
+				
 				this.player.activeAnimId = f.playerAnimation;
-				if (this.player.activeAnimId == Player.ANIM_JUMP_1 ||
+				if (this.player.activeAnimId == Player.ANIM_STAND ||
+					this.player.activeAnimId == Player.ANIM_JUMP_1 ||
 					this.player.activeAnimId == Player.ANIM_JUMP_2 ||
+					this.player.activeAnimId == Player.ANIM_ROCKET_STAND ||
 					this.player.activeAnimId == Player.ANIM_ROCKET_JUMP_1 ||
 					this.player.activeAnimId == Player.ANIM_ROCKET_JUMP_2 ||
+					this.player.activeAnimId == Player.ANIM_PLASMA_STAND ||
 					this.player.activeAnimId == Player.ANIM_PLASMA_JUMP_1 ||
 					this.player.activeAnimId == Player.ANIM_PLASMA_JUMP_2) {
 					
@@ -255,7 +265,6 @@ public class GameScreen extends Screen implements OnTouchListener {
 					this.player.sounds[f.playerSound].play(player.volume);
 				}
 				
-				//this.timer.text = "t " + String.format(Locale.US, "%.4f", f.mapTime);
 				game.runOnUiThread(new Runnable() {
 					
 					public void run() {

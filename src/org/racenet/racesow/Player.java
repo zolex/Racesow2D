@@ -838,7 +838,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 						switch (this.attachedItem.func) {
 						
 							case GameObject.ITEM_ROCKET:
-								if (this.lastJumpAnim == ANIM_ROCKET_JUMP_1) {
+								if (this.lastJumpAnim == ANIM_ROCKET_JUMP_1 && this.lastJumpAnim != ANIM_ROCKET_STAND) {
 									
 									this.activeAnimId = ANIM_ROCKET_RUN_1;
 									
@@ -849,7 +849,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 								break;
 							
 							case GameObject.ITEM_PLASMA:
-								if (this.lastJumpAnim == ANIM_PLASMA_JUMP_1) {
+								if (this.lastJumpAnim == ANIM_PLASMA_JUMP_1 && this.lastJumpAnim != ANIM_PLASMA_STAND) {
 									
 									this.activeAnimId = ANIM_PLASMA_RUN_1;
 								
@@ -862,7 +862,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 						
 					} else {
 					
-						if (this.activeAnimId == ANIM_JUMP_1) {
+						if (this.lastJumpAnim == ANIM_JUMP_1 && this.lastJumpAnim != ANIM_STAND) {
 						
 							this.activeAnimId = ANIM_RUN_1;
 							
@@ -986,10 +986,12 @@ public class Player extends AnimatedBlock implements HttpCallback {
 						texture = "items/rocket.png";
 						if (this.activeAnimId == ANIM_RUN_1 || this.activeAnimId == ANIM_PLASMA_RUN_1) {
 						
+							this.lastJumpAnim = ANIM_ROCKET_JUMP_1;
 							this.activeAnimId = ANIM_ROCKET_RUN_1;
 							
 						} else {
 							
+							this.lastJumpAnim = ANIM_ROCKET_JUMP_2;
 							this.activeAnimId = ANIM_ROCKET_RUN_2;
 						}
 						
@@ -999,10 +1001,12 @@ public class Player extends AnimatedBlock implements HttpCallback {
 						texture = "items/plasma.png";
 						if (this.activeAnimId == ANIM_RUN_1 || this.activeAnimId == ANIM_ROCKET_RUN_1) {
 						
+							this.lastJumpAnim = ANIM_PLASMA_JUMP_1;
 							this.activeAnimId = ANIM_PLASMA_RUN_1;
 							
 						} else {
 							
+							this.lastJumpAnim = ANIM_PLASMA_JUMP_2;
 							this.activeAnimId = ANIM_PLASMA_RUN_2;
 						}
 						

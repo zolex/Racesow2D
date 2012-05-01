@@ -52,8 +52,8 @@ public class GameScreen extends Screen implements OnTouchListener {
 	boolean showFPS, showUPS;
 	int lowFPSCOunt = 0;
 	double time;
-	int fpsInterval = 5;
-	int frames = fpsInterval;
+	public int hudUpdateInterval = 5;
+	public int frames = hudUpdateInterval;
 	boolean waitForNextFrame = true;
 	float sumDelta = 0;
 	public GameState state = GameState.Running;
@@ -355,9 +355,12 @@ public class GameScreen extends Screen implements OnTouchListener {
 		this.camera.setPosition(this.player.vertices[0].x + 27.5f - this.currentPlayerOffset, camY);		
 		this.map.update(deltaTime);		
 		
+		frames--;
+		sumDelta += deltaTime;
+		
 		// pause updating the HUD when submitting scores
 		// because it slows down the submission
-		if (!this.player.submittingScore) {
+		if (frames == 0 && !this.player.submittingScore) {
 			
 			game.runOnUiThread(new Runnable() {
 				
@@ -379,16 +382,12 @@ public class GameScreen extends Screen implements OnTouchListener {
 					if (showFPS) {
 						
 						// update HUD for frames per second
-						frames--;
-						sumDelta += deltaTime;
-						if (frames == 0) {
-	
-							Racesow.fps.setText("fps " + String.valueOf(new Integer((int)(fpsInterval / sumDelta))));
-							frames = fpsInterval;
-							sumDelta = 0;
-						}
+						Racesow.fps.setText("fps " + String.valueOf(new Integer((int)(hudUpdateInterval / sumDelta))));
 					}
-				}
+					
+					sumDelta = 0;
+					frames = hudUpdateInterval;
+				}				
 			});
 		}
 		

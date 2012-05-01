@@ -1222,60 +1222,20 @@ public class Player extends AnimatedBlock implements HttpCallback {
 		
 		this.isDead = true;
 		
-		this.showRestartMessage(2);
+		this.showRestartMessage();
 	}
 	
 	/**
 	 * Show a restart message
 	 */
-	public void showRestartMessage(final int pos) {
+	public void showRestartMessage() {
 		
 		gameScreen.game.runOnUiThread(new Runnable() {
 			
 			public void run() {
 				
-				switch(pos) {
-				
-					case 2:
-						Racesow.centertext2.setText("Press back to restart");
-						Racesow.centertext2.setTextColor(Color.RED);
-						break;
-						
-					case 3:
-						Racesow.centertext3.setText("Press back to restart");
-						Racesow.centertext3.setTextColor(Color.RED);
-						break;
-				}
-			}
-		});
-	}
-	
-	/**
-	 * Show the current time
-	 */
-	public void showTimeMessage() {
-
-		gameScreen.game.runOnUiThread(new Runnable() {
-			
-			public void run() {
-				
-				Racesow.centertext2.setText("Your time: " + String.format(Locale.US, "%.4f", map.getCurrentTime()));
-				Racesow.centertext2.setTextColor(Color.BLUE);
-			}
-		});
-	}
-	
-	/**
-	 * Show "new record" message
-	 */
-	public void showRecordMessage() {
-		
-		gameScreen.game.runOnUiThread(new Runnable() {
-			
-			public void run() {
-				
-				Racesow.centertext1.setText("New personal record!");
-				Racesow.centertext1.setTextColor(Color.GREEN);
+				Racesow.centertext2.setText("Press back to restart");
+				Racesow.centertext2.setTextColor(Color.RED);
 			}
 		});
 	}
@@ -1317,22 +1277,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 			}
 		});
 	}
-	
-	/**
-	 * Show "race finished" message
-	 */
-	public void showFinishMessage() {
-		
-		gameScreen.game.runOnUiThread(new Runnable() {
-			
-			public void run() {
-				
-				Racesow.centertext1.setText("Race finished!");
-				Racesow.centertext1.setTextColor(Color.YELLOW);
-			}
-		});
-	}
-	
+
 	/**
 	 * Show a tutorial message
 	 * 
@@ -1437,22 +1382,33 @@ public class Player extends AnimatedBlock implements HttpCallback {
 						new Handler() {
 					    	
 					    	@Override
-					        public void handleMessage(Message msg) {
+					        public void handleMessage(final Message msg) {
 					    		
 					    		savedLocally = true;
 					    		lastRaceID = msg.getData().getLong("id");
 					    		
-					    		if (msg.getData().getBoolean("record")) {
-					    			
-					    			Player.this.showRecordMessage();
-					    		
-					    		} else {
-					    			
-					    			Player.this.showFinishMessage();
-					    		}
-					    		
-					    		Player.this.showTimeMessage();
-					    		Player.this.showRestartMessage(3);
+					    		gameScreen.game.runOnUiThread(new Runnable() {
+									
+									public void run() {
+										
+							    		if (msg.getData().getBoolean("record")) {
+							    			
+							    			Racesow.centertext1.setText("New personal record!");
+											Racesow.centertext1.setTextColor(Color.GREEN);
+							    		
+							    		} else {
+							    			
+							    			Racesow.centertext1.setText("Race finished!");
+											Racesow.centertext1.setTextColor(Color.YELLOW);
+							    		}
+							    		
+										Racesow.centertext2.setText("Your time: " + String.format(Locale.US, "%.4f", map.getCurrentTime()));
+										Racesow.centertext2.setTextColor(Color.BLUE);
+										
+										Racesow.centertext3.setText("Press back to restart");
+										Racesow.centertext3.setTextColor(Color.RED);	
+									}
+								});
 					    	}
 					});
 					t.start();
@@ -1690,6 +1646,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 				
 		this.updateTutorial("reset");
 		
+		this.gameScreen.frames = this.gameScreen.hudUpdateInterval;
 		this.gameScreen.frameTime = 0;
 		
 		this.isDead = false;

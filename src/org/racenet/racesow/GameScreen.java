@@ -355,38 +355,42 @@ public class GameScreen extends Screen implements OnTouchListener {
 		this.camera.setPosition(this.player.vertices[0].x + 27.5f - this.currentPlayerOffset, camY);		
 		this.map.update(deltaTime);		
 		
-		//this.timer.text = "t " + String.format(Locale.US, "%.4f", map.getCurrentTime());
-		game.runOnUiThread(new Runnable() {
+		// pause updating the HUD when submitting scores
+		// because it slows down the submission
+		if (!this.player.submittingScore) {
 			
-			public void run() {
+			game.runOnUiThread(new Runnable() {
 				
-				// update hud for time
-				if (demoParser == null) {
+				public void run() {
 					
-					Racesow.raceTime.setText("t " + String.format(Locale.US, "%.4f", map.getCurrentTime()));
-				}
-				
-
-				if (showUPS) {
-				
-					// update HUD for player-speed
-					Racesow.ups.setText("ups " + String.valueOf(new Integer((int)player.virtualSpeed)));
-				}
-				
-				if (showFPS) {
+					// update hud for time
+					if (demoParser == null) {
+						
+						Racesow.raceTime.setText("t " + String.format(Locale.US, "%.4f", map.getCurrentTime()));
+					}
 					
-					// update HUD for frames per second
-					frames--;
-					sumDelta += deltaTime;
-					if (frames == 0) {
-
-						Racesow.fps.setText("fps " + String.valueOf(new Integer((int)(fpsInterval / sumDelta))));
-						frames = fpsInterval;
-						sumDelta = 0;
+	
+					if (showUPS) {
+					
+						// update HUD for player-speed
+						Racesow.ups.setText("ups " + String.valueOf(new Integer((int)player.virtualSpeed)));
+					}
+					
+					if (showFPS) {
+						
+						// update HUD for frames per second
+						frames--;
+						sumDelta += deltaTime;
+						if (frames == 0) {
+	
+							Racesow.fps.setText("fps " + String.valueOf(new Integer((int)(fpsInterval / sumDelta))));
+							frames = fpsInterval;
+							sumDelta = 0;
+						}
 					}
 				}
-			}
-		});
+			});
+		}
 		
 		// low fps detection
 		this.time += deltaTime;
@@ -402,7 +406,7 @@ public class GameScreen extends Screen implements OnTouchListener {
 		if (!this.fpsDialogShown &&
 			(this.map.gfxHighlights || this.map.enableAmbience || this.player.blurEnabled) &&
 			this.time > 2.0f &&
-			lowFpsPerTime > 0.75f) {
+			lowFpsPerTime > 1.0f) {
 			
 			this.pauseGame();
 			this.fpsDialogShown = true;

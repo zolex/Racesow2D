@@ -53,29 +53,32 @@ import android.widget.EditText;
 public class Player extends AnimatedBlock implements HttpCallback {
 	
 	// animations
-	public static final short ANIM_RUN_1 = 0;
-	public static final short ANIM_RUN_2 = 1;
-	public static final short ANIM_JUMP_1 = 2;
-	public static final short ANIM_JUMP_2 = 3;
-	public static final short ANIM_WALLJUMP = 4;
-	public static final short ANIM_BURN = 5;
-	public static final short ANIM_INVISIBLE = 6;
-	public static final short ANIM_ROCKET_SHOOT = 7;
-	public static final short ANIM_ROCKET_SHOOT_WALL = 8;
-	public static final short ANIM_ROCKET_RUN_1 = 9;
-	public static final short ANIM_ROCKET_RUN_2 = 10;
-	public static final short ANIM_ROCKET_JUMP_1 = 11;
-	public static final short ANIM_ROCKET_JUMP_2 = 12;
-	public static final short ANIM_ROCKET_WALLJUMP = 13;
-	public static final short ANIM_PLASMA_SHOOT = 14;
-	public static final short ANIM_PLASMA_RUN_1 = 15;
-	public static final short ANIM_PLASMA_RUN_2 = 16;
-	public static final short ANIM_PLASMA_JUMP_1 = 17;
-	public static final short ANIM_PLASMA_JUMP_2 = 18;
-	public static final short ANIM_PLASMA_WALLJUMP = 19;
-	public static final short ANIM_DROWN = 20;
-	public static final short ANIM_DRIFTSAND = 21;
-	public AnimationPreset[] animPresets = new AnimationPreset[22];
+	public static final short ANIM_STAND = 0;
+	public static final short ANIM_RUN_1 = 1;
+	public static final short ANIM_RUN_2 = 2;
+	public static final short ANIM_JUMP_1 = 3;
+	public static final short ANIM_JUMP_2 = 4;
+	public static final short ANIM_WALLJUMP = 5;
+	public static final short ANIM_BURN = 6;
+	public static final short ANIM_INVISIBLE = 7;
+	public static final short ANIM_ROCKET_SHOOT = 8;
+	public static final short ANIM_ROCKET_SHOOT_WALL = 9;
+	public static final short ANIM_ROCKET_STAND = 10;
+	public static final short ANIM_ROCKET_RUN_1 = 11;
+	public static final short ANIM_ROCKET_RUN_2 = 12;
+	public static final short ANIM_ROCKET_JUMP_1 = 13;
+	public static final short ANIM_ROCKET_JUMP_2 = 14;
+	public static final short ANIM_ROCKET_WALLJUMP = 15;
+	public static final short ANIM_PLASMA_SHOOT = 16;
+	public static final short ANIM_PLASMA_STAND = 17;
+	public static final short ANIM_PLASMA_RUN_1 = 18;
+	public static final short ANIM_PLASMA_RUN_2 = 19;
+	public static final short ANIM_PLASMA_JUMP_1 = 20;
+	public static final short ANIM_PLASMA_JUMP_2 = 21;
+	public static final short ANIM_PLASMA_WALLJUMP = 22;
+	public static final short ANIM_DROWN = 23;
+	public static final short ANIM_DRIFTSAND = 24;
+	public AnimationPreset[] animPresets = new AnimationPreset[25];
 	
 	// sounds
 	public static final short SOUND_JUMP1 = 0;
@@ -130,7 +133,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 	ProgressDialog pd;
 	long lastRaceID = 0;
 	boolean savedLocally;
-	
+	public boolean submittingScore = false;
 	private int frames = 0;
 	
 	/**
@@ -147,11 +150,11 @@ public class Player extends AnimatedBlock implements HttpCallback {
 		
 		// create the TexturedShape with static width and height
 		super(new Vector2(map.playerX, map.playerY),
-			new Vector2(map.playerX + 3.2f, map.playerY),
-			new Vector2(map.playerX + 3.2f, map.playerY + 6.4f),
-			new Vector2(map.playerX, map.playerY + 6.4f));
+			new Vector2(map.playerX + 12.8f, map.playerY),
+			new Vector2(map.playerX + 12.8f, map.playerY + 12.8f),
+			new Vector2(map.playerX, map.playerY + 12.8f));
 		
-		this.worldOffset = new float[] {0, 0, 3.2f, 6.4f};
+		this.worldOffset = new float[] {0, 0, 8.0f, 9.0f};
 		this.worldBounds = new GameObject(
 			new Vector2(map.playerX + this.worldOffset[0], map.playerY + this.worldOffset[1]),
 			new Vector2(map.playerX + this.worldOffset[2], map.playerY + this.worldOffset[1]),
@@ -159,7 +162,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 			new Vector2(map.playerX + this.worldOffset[0], map.playerY + this.worldOffset[3])
 		);
 		
-		this.plasmaOffset = new float[] {0, 3, 0, 3.2f};
+		this.plasmaOffset = new float[] {0, 5.6f, 0, 6.4f};
 		this.plasmaBounds = new GameObject(
 			new Vector2(map.playerX + this.plasmaOffset[0], map.playerY + this.plasmaOffset[1]),
 			new Vector2(map.playerX + this.plasmaOffset[2], map.playerY + this.plasmaOffset[1]),
@@ -167,8 +170,8 @@ public class Player extends AnimatedBlock implements HttpCallback {
 			new Vector2(map.playerX + this.plasmaOffset[0], map.playerY + this.plasmaOffset[3])
 		);
 		
-		this.texScaleHeight = 0.05f;
-		this.texScaleWidth = 0.05f;
+		this.texScaleHeight = 0.1f;
+		this.texScaleWidth = 0.1f;
 		this.name = name;
 		this.soundEnabled = soundEnabled;
 		this.rGen = new Random();
@@ -303,119 +306,143 @@ public class Player extends AnimatedBlock implements HttpCallback {
 	 */
 	public void loadAnimations() {
 		
+		this.animPresets[ANIM_STAND] = new AnimationPreset(0, new String[] {
+				"player/" + this.model + "/stand.png"
+		});
+		
 		this.animPresets[ANIM_RUN_1] = new AnimationPreset(0, new String[] {
-			"player/" + this.model + "/jump_f4.png"
+			"player/" + this.model + "/jump_1_f6.png"
 		});
 		
 		this.animPresets[ANIM_RUN_2] = new AnimationPreset(0, new String[] {
-			"player/" + this.model + "/jump_f1.png"
+			"player/" + this.model + "/jump_2_f6.png"
 		});
 		
 		this.animPresets[ANIM_JUMP_1] = new AnimationPreset(0.3f, new String[] {
-			"player/" + this.model + "/jump_f1.png",
-			"player/" + this.model + "/jump_f2.png",
-			"player/" + this.model + "/jump_f3.png",
-			"player/" + this.model + "/jump_f4.png"
+			"player/" + this.model + "/jump_1_f1.png",
+			"player/" + this.model + "/jump_1_f2.png",
+			"player/" + this.model + "/jump_1_f3.png",
+			"player/" + this.model + "/jump_1_f4.png",
+			"player/" + this.model + "/jump_1_f5.png",
+			"player/" + this.model + "/jump_1_f6.png"
 		});
 		
 		this.animPresets[ANIM_JUMP_2] = new AnimationPreset(0.3f, new String[] {
-			"player/" + this.model + "/jump_f4.png",
-			"player/" + this.model + "/jump_f3.png",
-			"player/" + this.model + "/jump_f2.png",
-			"player/" + this.model + "/jump_f1.png"
+			"player/" + this.model + "/jump_2_f1.png",
+			"player/" + this.model + "/jump_2_f2.png",
+			"player/" + this.model + "/jump_2_f3.png",
+			"player/" + this.model + "/jump_2_f4.png",
+			"player/" + this.model + "/jump_2_f5.png",
+			"player/" + this.model + "/jump_2_f6.png"
 		});
 		
 		this.animPresets[ANIM_ROCKET_SHOOT] = new AnimationPreset(0.2f, new String[] {
-			"player/" + this.model + "/rocket_shoot_f1.png",
 			"player/" + this.model + "/rocket_shoot_f2.png",
-			"player/" + this.model + "/rocket_shoot_f1.png"
+			"player/" + this.model + "/rocket_shoot_f3.png",
+			"player/" + this.model + "/rocket_shoot_f2.png"
 		});
 		
 		this.animPresets[ANIM_ROCKET_SHOOT_WALL] = new AnimationPreset(0.2f, new String[] {
 			"player/" + this.model + "/rocket_shoot_wall.png"
 		});
 		
+		this.animPresets[ANIM_ROCKET_STAND] = new AnimationPreset(0, new String[] {
+				"player/" + this.model + "/rocket_stand.png"
+		});
+		
 		this.animPresets[ANIM_ROCKET_RUN_1] = new AnimationPreset(0, new String[] {
-			"player/" + this.model + "/rocket_jump_f4.png"
+			"player/" + this.model + "/rocket_jump_1_f6.png"
 		});
 		
 		this.animPresets[ANIM_ROCKET_RUN_2] = new AnimationPreset(0, new String[] {
-			"player/" + this.model + "/rocket_jump_f1.png"
+			"player/" + this.model + "/rocket_jump_2_f6.png"
 		});
 		
 		this.animPresets[ANIM_ROCKET_JUMP_1] = new AnimationPreset(0.3f, new String[] {
-			"player/" + this.model + "/rocket_jump_f1.png",
-			"player/" + this.model + "/rocket_jump_f2.png",
-			"player/" + this.model + "/rocket_jump_f3.png",
-			"player/" + this.model + "/rocket_jump_f4.png"
+			"player/" + this.model + "/rocket_jump_1_f1.png",
+			"player/" + this.model + "/rocket_jump_1_f2.png",
+			"player/" + this.model + "/rocket_jump_1_f3.png",
+			"player/" + this.model + "/rocket_jump_1_f4.png",
+			"player/" + this.model + "/rocket_jump_1_f5.png",
+			"player/" + this.model + "/rocket_jump_1_f6.png"
 		});
 		
 		this.animPresets[ANIM_ROCKET_JUMP_2] = new AnimationPreset(0.3f, new String[] {
-			"player/" + this.model + "/rocket_jump_f4.png",
-			"player/" + this.model + "/rocket_jump_f3.png",
-			"player/" + this.model + "/rocket_jump_f2.png",
-			"player/" + this.model + "/rocket_jump_f1.png"
+			"player/" + this.model + "/rocket_jump_2_f1.png",
+			"player/" + this.model + "/rocket_jump_2_f2.png",
+			"player/" + this.model + "/rocket_jump_2_f3.png",
+			"player/" + this.model + "/rocket_jump_2_f4.png",
+			"player/" + this.model + "/rocket_jump_2_f5.png",
+			"player/" + this.model + "/rocket_jump_2_f6.png"
 		});
 		
-		this.animPresets[ANIM_ROCKET_WALLJUMP] = new AnimationPreset(0.3f, new String[] {
+		this.animPresets[ANIM_ROCKET_WALLJUMP] = new AnimationPreset(0.2f, new String[] {
 			"player/" + this.model + "/rocket_walljump_f1.png",
 			"player/" + this.model + "/rocket_walljump_f2.png",
-			"player/" + this.model + "/rocket_walljump_f1.png"
+			"player/" + this.model + "/rocket_walljump_f3.png"
 		});
 		
 		this.animPresets[ANIM_PLASMA_SHOOT] = new AnimationPreset(0, new String[] {
 			"player/" + this.model + "/plasma_shoot.png"
 		});
 		
+		this.animPresets[ANIM_PLASMA_STAND] = new AnimationPreset(0, new String[] {
+				"player/" + this.model + "/plasma_stand.png"
+		});
+		
 		this.animPresets[ANIM_PLASMA_RUN_1] = new AnimationPreset(0, new String[] {
-			"player/" + this.model + "/plasma_jump_f4.png"
+			"player/" + this.model + "/plasma_jump_1_f6.png"
 		});
 		
 		this.animPresets[ANIM_PLASMA_RUN_2] = new AnimationPreset(0, new String[] {
-			"player/" + this.model + "/plasma_jump_f1.png"
+			"player/" + this.model + "/plasma_jump_2_f6.png"
 		});
 		
 		this.animPresets[ANIM_PLASMA_JUMP_1] = new AnimationPreset(0.3f, new String[] {
-			"player/" + this.model + "/plasma_jump_f1.png",
-			"player/" + this.model + "/plasma_jump_f2.png",
-			"player/" + this.model + "/plasma_jump_f3.png",
-			"player/" + this.model + "/plasma_jump_f4.png"
+			"player/" + this.model + "/plasma_jump_1_f1.png",
+			"player/" + this.model + "/plasma_jump_1_f2.png",
+			"player/" + this.model + "/plasma_jump_1_f3.png",
+			"player/" + this.model + "/plasma_jump_1_f4.png",
+			"player/" + this.model + "/plasma_jump_1_f5.png",
+			"player/" + this.model + "/plasma_jump_1_f6.png"
 		});
 		
 		this.animPresets[ANIM_PLASMA_JUMP_2] = new AnimationPreset(0.3f, new String[] {
-			"player/" + this.model + "/plasma_jump_f4.png",
-			"player/" + this.model + "/plasma_jump_f3.png",
-			"player/" + this.model + "/plasma_jump_f2.png",
-			"player/" + this.model + "/plasma_jump_f1.png"
+			"player/" + this.model + "/plasma_jump_2_f1.png",
+			"player/" + this.model + "/plasma_jump_2_f2.png",
+			"player/" + this.model + "/plasma_jump_2_f3.png",
+			"player/" + this.model + "/plasma_jump_2_f4.png",
+			"player/" + this.model + "/plasma_jump_2_f5.png",
+			"player/" + this.model + "/plasma_jump_2_f6.png"
 		});
 		
-		this.animPresets[ANIM_PLASMA_WALLJUMP] = new AnimationPreset(0.3f, new String[] {
+		this.animPresets[ANIM_PLASMA_WALLJUMP] = new AnimationPreset(0.2f, new String[] {
 			"player/" + this.model + "/plasma_walljump_f1.png",
 			"player/" + this.model + "/plasma_walljump_f2.png",
-			"player/" + this.model + "/plasma_walljump_f1.png"
+			"player/" + this.model + "/plasma_walljump_f3.png"
 		});
 		
-		this.animPresets[ANIM_WALLJUMP] = new AnimationPreset(0.3f, new String[] {
+		this.animPresets[ANIM_WALLJUMP] = new AnimationPreset(0.2f, new String[] {
 			"player/" + this.model + "/walljump_f1.png",
 			"player/" + this.model + "/walljump_f2.png",
-			"player/" + this.model + "/walljump_f1.png"
+			"player/" + this.model + "/walljump_f3.png"
 		});
 		
-		this.animPresets[ANIM_BURN] = new AnimationPreset(0.4f, new String[] {
+		this.animPresets[ANIM_BURN] = new AnimationPreset(0.3f, new String[] {
 			"player/" + this.model + "/burn_f1.png",
 			"player/" + this.model + "/burn_f2.png",
 			"player/" + this.model + "/burn_f3.png",
 			"player/" + this.model + "/burn_f4.png"
 		});
 		
-		this.animPresets[ANIM_DROWN] = new AnimationPreset(0.4f, new String[] {
+		this.animPresets[ANIM_DROWN] = new AnimationPreset(0.3f, new String[] {
 			"player/" + this.model + "/drown_f1.png",
 			"player/" + this.model + "/drown_f2.png",
 			"player/" + this.model + "/drown_f3.png",
 			"player/" + this.model + "/drown_f4.png"
 		});
 		
-		this.animPresets[ANIM_DRIFTSAND] = new AnimationPreset(0.4f, new String[] {
+		this.animPresets[ANIM_DRIFTSAND] = new AnimationPreset(0.3f, new String[] {
 			"player/" + this.model + "/sand_f1.png",
 			"player/" + this.model + "/sand_f2.png",
 			"player/" + this.model + "/sand_f3.png",
@@ -517,7 +544,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 				switch (this.attachedItem.func) {
 				
 					case GameObject.ITEM_ROCKET:
-						if (this.lastJumpAnim == ANIM_ROCKET_JUMP_1) {
+						if (this.lastJumpAnim == ANIM_ROCKET_JUMP_1 && this.lastJumpAnim != ANIM_ROCKET_STAND) {
 						
 							this.activeAnimId = ANIM_ROCKET_JUMP_2;
 							
@@ -528,7 +555,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 						break;
 					
 					case GameObject.ITEM_PLASMA:
-						if (this.lastJumpAnim == ANIM_PLASMA_JUMP_1) {
+						if (this.lastJumpAnim == ANIM_PLASMA_JUMP_1 && this.lastJumpAnim != ANIM_PLASMA_STAND) {
 						
 							this.activeAnimId = ANIM_PLASMA_JUMP_2;
 							
@@ -542,7 +569,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 				
 			} else {
 			
-				if (this.lastJumpAnim == ANIM_JUMP_1) {
+				if (this.lastJumpAnim == ANIM_JUMP_1 && this.lastJumpAnim != ANIM_STAND) {
 				
 					this.activeAnimId = ANIM_JUMP_2;
 					
@@ -550,6 +577,11 @@ public class Player extends AnimatedBlock implements HttpCallback {
 					
 					this.activeAnimId = ANIM_JUMP_1;
 				}
+			}
+			
+			if (this.lastJumpAnim == ANIM_STAND || this.lastJumpAnim == ANIM_ROCKET_STAND || this.lastJumpAnim == ANIM_PLASMA_STAND) {
+				
+				this.animTime = 0.15f;
 			}
 			
 			this.lastJumpAnim = this.activeAnimId;
@@ -733,8 +765,8 @@ public class Player extends AnimatedBlock implements HttpCallback {
 						CollisionInfo info = this.plasmaBounds.intersect(part);
 						if (info.collided) {
 
-							final float impactX = this.getPhysicalPosition().x;
-							final float impactY = this.getPhysicalPosition().y + 1;
+							final float impactX = this.getPhysicalPosition().x + 4;
+							final float impactY = this.getPhysicalPosition().y + 3;
 							
 							// give the player some speed boost
 							this.velocity.add(0, 2.5f);
@@ -1144,6 +1176,33 @@ public class Player extends AnimatedBlock implements HttpCallback {
 			}
 		}
 		
+		if (this.virtualSpeed == 0) {
+			
+			if (this.attachedItem != null) {
+			
+				switch (this.attachedItem.func) {
+				
+					case GameObject.ITEM_ROCKET:
+						this.activeAnimId = ANIM_ROCKET_STAND;
+						break;
+						
+					case GameObject.ITEM_PLASMA:
+						this.activeAnimId = ANIM_PLASMA_STAND;
+						break;
+						
+					default:
+						this.activeAnimId = ANIM_STAND;
+						break;
+				}
+				
+			} else {
+					
+				this.activeAnimId = ANIM_STAND;	
+			}
+			
+			this.lastJumpAnim = this.activeAnimId;
+		}
+		
 		// apply the velocity given by the virtual-speed
 		this.velocity.set(this.virtualSpeed / 15, this.velocity.y);
 	}
@@ -1153,6 +1212,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 	 */
 	public void die() {
 		
+		this.animTime = 0;
 		this.virtualSpeed = 0;
 		this.frameSound = SOUND_DIE;
 		if (this.soundEnabled) {
@@ -1465,6 +1525,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 	 */
 	public void submitScore() {
 		
+		this.submittingScore = true;
 		List<NameValuePair> values = new ArrayList<NameValuePair>();
 		values.add(new BasicNameValuePair("map", this.map.fileName));
 		values.add(new BasicNameValuePair("player", this.name));
@@ -1496,6 +1557,7 @@ public class Player extends AnimatedBlock implements HttpCallback {
 	 */
 	public void httpCallback(InputStream xmlStream) {
 		
+		this.submittingScore = false;
 		pd.dismiss();		
 		if (xmlStream == null) {
 			

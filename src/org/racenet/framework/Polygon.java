@@ -83,7 +83,8 @@ public class Polygon {
 				
 				if (otherInside ||
 					(distanceLeft < Math.min(distanceBottom, distanceTop) &&
-					otherHeight > this.height)) {
+					otherHeight > this.height / 2 && // no left collisions for small heights (ie. stairs)
+					distanceTop > 1.2f)) { // fix for stuck at and of ramp with aligned block
 					
 					info.type = LEFT;
 					info.distance = distanceLeft;

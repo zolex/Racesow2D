@@ -142,7 +142,10 @@ public class Racesow extends GLGame implements HttpCallback {
 	 */
 	public static void clickSound() {
 		
-		click.play(0.25f);
+		if (click != null) {
+			
+			click.play(0.25f);
+		}
 	}
 	
 	/**
@@ -150,7 +153,10 @@ public class Racesow extends GLGame implements HttpCallback {
 	 */
 	public static void backSound() {
 		
-		back.play(0.6f);
+		if (back != null) {
+		
+			back.play(0.6f);
+		}
 	}
 	
 	/**

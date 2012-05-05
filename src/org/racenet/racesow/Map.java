@@ -899,23 +899,6 @@ public class Map {
 	}
 	
 	/**
-	 * Enable all map sounds
-	 */
-	public void enableSounds() {
-		
-		/*
-		if (this.enableAmbience && this.ambience != null) {
-			
-			int length = this.ambience.length;
-			for (int i = 0; i < length; i++) {
-				
-				this.ambience[i].sound.play();
-			}
-		}
-		*/
-	}
-	
-	/**
 	 * Disable ambient sounds
 	 */
 	public void disableSounds() {

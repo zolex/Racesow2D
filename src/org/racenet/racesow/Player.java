@@ -876,6 +876,12 @@ public class Player extends AnimatedBlock implements HttpCallback {
 		}
 	}
 	
+	/**
+	 * See if the player is still plasma-sliding,
+	 * otherwise stop the slide-anomation
+	 * 
+	 * @param boolean pressingShoot
+	 */
 	public void handlePlasma(boolean pressingShoot) {
 		
 		if (this.activeAnimId == ANIM_PLASMA_SHOOT) {

@@ -111,8 +111,6 @@ public class GameScreen extends Screen implements OnTouchListener {
 			this.camera.addHud(play);
 			this.camera.addHud(pause);
 		}
-		
-		this.map.enableSounds();
 	}
 	
 	/**

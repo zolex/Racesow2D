@@ -903,6 +903,7 @@ public class Map {
 	 */
 	public void enableSounds() {
 		
+		/*
 		if (this.enableAmbience && this.ambience != null) {
 			
 			int length = this.ambience.length;
@@ -911,6 +912,7 @@ public class Map {
 				this.ambience[i].sound.play();
 			}
 		}
+		*/
 	}
 	
 	/**
@@ -988,7 +990,18 @@ public class Map {
 				if (this.ambientVolume[i] != volume) {
 					
 					this.ambientVolume[i] = volume;
-					this.ambience[i].sound.setVolume(volume);
+					if (volume == 0) {
+						
+						if (this.ambience[i].sound.isPlaying()) {
+							
+							this.ambience[i].sound.stop();
+						}
+						
+					} else {
+					
+						this.ambience[i].sound.play();
+						this.ambience[i].sound.setVolume(volume);
+					}
 				}
 			}
 		}

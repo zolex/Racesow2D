@@ -371,6 +371,11 @@ public class GameScreen extends Screen implements OnTouchListener {
 		// because it slows down the submission
 		if (frames == 0 && !this.player.submittingScore) {
 			
+			if (this.demoParser == null) {
+				
+				this.player.handlePlasma(this.shootPressed);
+			}
+			
 			game.runOnUiThread(new Runnable() {
 				
 				public void run() {

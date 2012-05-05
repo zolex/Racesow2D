@@ -876,27 +876,10 @@ public class Player extends AnimatedBlock implements HttpCallback {
 		}
 	}
 	
-	/**
-	 * Move the player in the map
-	 * 
-	 * @param Vector2 gravity
-	 * @param float deltaTime
-	 * @param boolean pressingJump
-	 */
-	public void move(Vector2 gravity, float deltaTime, boolean pressingJump, float jumpPressedTime, boolean pressingShoot) {
-		
-		 // workaround for initial loading
-		if (++frames < 3) return;
-		
-		this.frameDecalType = "";
-		this.frameDecalX = 0;
-		this.frameDecalY = 0;
-		this.frameSound = -1;
-		
-		this.map.handleAmbience(this.vertices[0].x);
+	public void handlePlasma(boolean pressingShoot) {
 		
 		if (this.activeAnimId == ANIM_PLASMA_SHOOT) {
-		
+			
 			// if the player stopped pressing shoot or left a wall
 			// return from the plasma shoot anim to the normal one
 			boolean stopPlasmaAnim = false;
@@ -929,6 +912,26 @@ public class Player extends AnimatedBlock implements HttpCallback {
 				this.activeAnimId = this.lastJumpAnim == ANIM_PLASMA_JUMP_1 ? ANIM_PLASMA_RUN_1 : ANIM_PLASMA_RUN_2;
 			}
 		}
+	}
+	
+	/**
+	 * Move the player in the map
+	 * 
+	 * @param Vector2 gravity
+	 * @param float deltaTime
+	 * @param boolean pressingJump
+	 */
+	public void move(Vector2 gravity, float deltaTime, boolean pressingJump, float jumpPressedTime, boolean pressingShoot) {
+		
+		 // workaround for initial loading
+		if (++frames < 3) return;
+		
+		this.frameDecalType = "";
+		this.frameDecalX = 0;
+		this.frameDecalY = 0;
+		this.frameSound = -1;
+		
+		this.map.handleAmbience(this.vertices[0].x);
 		
 		this.animate(deltaTime);
 		
